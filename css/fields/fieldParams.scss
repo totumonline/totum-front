@@ -1,0 +1,12 @@
+@import "../vars";
+.field-param-lable a{
+  cursor: pointer;
+  margin-left: 4px;
+  i{
+    color: #ddd;
+    margin-left: 5px;
+    &:hover{
+      color: $btn-danger-bgcolor;
+    }
+  }
+}

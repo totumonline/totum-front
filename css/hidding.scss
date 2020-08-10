@@ -1,0 +1,68 @@
+.hidding-form {
+  max-height: 70vh;
+  overflow: auto;
+
+  .category-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+
+  input[type="number"] {
+    visibility: hidden;
+    width: 70px;
+    margin-right: 6px;
+    color: #737373;
+
+    ::-webkit-input-placeholder {
+      color: #eee;
+    }
+
+    ::-moz-placeholder {
+      color: #eee;
+    }
+
+    :-ms-input-placeholder {
+      color: #eee;
+    }
+
+    font-size: 12px;
+    padding-left: 3px;
+    border: 1px solid #e8e8e8;
+    margin-left: 5px;
+  }
+
+  .form-check-label {
+    margin: 0px;
+  }
+
+  .form-check {
+    margin-bottom: 5px;
+  }
+
+  div[data-checked="true"] input[type="number"] {
+    visibility: visible;
+  }
+}
+
+.fieldsHiddenSets span {
+  display: inline-block;
+  padding-right: 10px;
+
+  .btn {
+    margin-left: 3px;
+  }
+
+}
+
+#hide-hell {
+  width: 28px;
+  color: $btn-danger-bgcolor;
+  &.btn-contour{
+    background-color: #fff;
+  }
+  &.btn-danger:not(.btn-contour){
+    background-color: $btn-warning-bgcolor;
+    color: #000;
+  }
+}

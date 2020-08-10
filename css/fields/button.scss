@@ -1,0 +1,89 @@
+button {
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  td & {
+    max-width: 100%;
+  }
+
+}
+
+.button-field {
+  text-shadow: none;
+
+}
+
+td.cell-button {
+  button.button-field {
+    border-color: transparent;
+    box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+
+    &:hover {
+      border-color: transparent;
+      box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
+    }
+  }
+
+  button.button-field {
+    i.cell-icon {
+      padding-top: 2px;
+      padding-bottom: 0;
+      opacity: 1;
+    }
+
+    height: 19px;
+  }
+
+  button:not(.ibtn) {
+    width: 100%;
+  }
+}
+
+.pcTable-floatBlock .pcTable-floatInner > div.no-border td.cell-button {
+  padding: 2px 4px;
+
+  button {
+    height: 25px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background-color: #fffdf9;
+
+    &:disabled {
+      background-color: #faf9f8;
+      box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+    }
+  }
+}
+
+@media(max-device-width: 1199px) {
+  .DataRow, .pcTable-footers {
+    td.cell-button button.button-field {
+      height: 28px;
+      padding-top: 5px;
+    }
+  }
+}
+
+@media(min-device-width: 1200px) {
+  td.cell-button {
+    .cell-value {
+      overflow: visible !important;
+
+      button.button-field:disabled:hover {
+        background-color: #fff;
+        border-color: transparent;
+      }
+    }
+    .text-center{
+      padding-top: 2px;
+    }
+  }
+  td.cell-button {
+    padding-top: 4px !important;
+  }
+  div.no-border {
+    td.cell-button {
+      padding-top: 2px !important;
+    }
+  }
+}

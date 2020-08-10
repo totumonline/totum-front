@@ -1,0 +1,152 @@
+@import "vars.scss";
+
+.TreeContainer {
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.Tree {
+  /* хром, сафари */
+  ::-webkit-scrollbar {
+    width: 0;
+  }
+
+  /* ie 10+ */
+  overflow: hidden;
+  -ms-overflow-style: none;
+
+  position: absolute;
+  background-color: #f3f3f3;
+  /*color: #ccc;*/
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+
+}
+
+@import "brand";
+
+#branch-title {
+  padding-left: 20px;
+  padding-top: 10px;
+  font-size: 16px;
+}
+
+#leftTree {
+  padding-left: 10px;
+  padding-bottom: 30px;
+  background-color: #f3f3f3;
+  padding-top: 10px;
+  width: 300px;
+  /* color: #bbb;*/
+
+
+  /* &.jstree-default .jstree-open > .jstree-ocl {
+     background-position: -68px -4px;
+   }
+
+   &.jstree-default .jstree-closed > .jstree-ocl {
+     background-position: -68px -4px;
+   }
+
+   &.jstree-default .jstree-open > a > i:not(.jstree-themeicon-custom) {
+     background-position: -260px -5px;
+   }
+ */
+
+  .jstree-node {
+    background: none;
+  }
+
+  .jstree-icon {
+    opacity: 0.4;
+  }
+
+  .jstree-icon.jstree-themeicon.jstree-themeicon-custom.fa {
+    font-size: 12px;
+  }
+
+  .jstree-clicked {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .jstree-selected a, a.jstree-hovered {
+    color: #000;
+    font-weight: 500;
+    background: none;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  .jstree-creatorView a {
+    color: #ff8585;
+    opacity: 0.4;
+  }
+
+  .jstree-last {
+    margin-bottom: 5px;
+  }
+
+}
+
+#page-tree #leftTree {
+  width: 100%;
+
+  border-radius: 6px;
+  max-width: 400px;
+  padding-top: 20px;
+}
+
+
+#TreeMinimizer {
+  font-size: 15px;
+  cursor: pointer;
+  display: inline-block;
+  margin-bottom: 24px;
+  vertical-align: bottom;
+  color: #333;
+  margin-left: 30px;
+}
+
+#TreeMaximizer {
+  display: none;
+  font-size: 24px;
+  height: 50px;
+  width: 53px;
+  color: #333;
+
+  span {
+    vertical-align: bottom;
+    display: inline-block;
+    margin-bottom: -1px;
+  }
+}
+
+.tree-minifyed {
+  .TreeContainer {
+    display: none;
+  }
+
+  #TreeMaximizer {
+    display: block;
+    text-align: center;
+
+    span {
+      cursor: pointer;
+    }
+  }
+
+  .Tree {
+    height: 50px;
+  }
+
+  .totbar-default {
+    margin-left: 48px;
+  }
+
+  &.page_content {
+    margin-left: 0px;
+  }
+}

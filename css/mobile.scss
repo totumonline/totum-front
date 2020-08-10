@@ -1,0 +1,486 @@
+#pk .mobile-panel {
+
+
+  #row-mobile-panel .menu-item {
+    line-height: 50px;
+  }
+
+  .modal-content {
+    width: calc(100vw - 20px);
+  }
+
+  .modal-body {
+    padding: 7px;
+  }
+
+  .modal-dialog {
+    .bootstrap-dialog-message {
+      height: calc(100vh - 130px);
+      max-height: 70vh;
+      overflow: auto;
+    }
+  }
+
+  &.with-buttons {
+    .modal-dialog {
+      .bootstrap-dialog-message {
+        height: calc(100vh - 260px);
+      }
+    }
+  }
+
+  #selectPanel.text {
+    width: 100%;
+    overflow: auto;
+  }
+
+  .modal-header .bootstrap-dialog-title {
+    font-size: 16px;
+  }
+
+  .bootstrap-dialog-message {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 15px;
+
+    #selectPanel, #selectPanel .field-value {
+      font-size: 15px;
+    }
+  }
+
+  &.mobile-menu {
+
+    #leftTree {
+      width: 100%;
+      display: block;
+    }
+
+    .modal-header {
+      padding-top: 10px;
+      padding-bottom: 0px;
+    }
+
+    .modal-content, .modal-header {
+      background-color: #f3f3f3;
+    }
+
+    .bootstrap-dialog-title, .bootstrap-dialog-close-button .close {
+      color: #333
+    }
+
+    .totum-brand {
+      background-size: 22px;
+      padding-left: 35px;
+      margin-left: 15px;
+      padding-bottom: 0;
+      max-width: 217px;
+      line-height: 20px;
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: pre;
+      color: #333;
+      font-size: 40px;
+    }
+
+  }
+}
+
+@media(min-device-width: 1200px) {
+
+  /*button-field*/
+
+  .InsertRow td.cell-button .cell-value {
+    overflow: hidden !important;
+  }
+
+  .pcTable-tabls {
+    margin-left: -45px;
+  }
+
+  .tree-minifyed {
+    > .panel-default {
+      margin-left: 40px;
+      width: 400px;
+    }
+
+    #page-tree {
+      padding-left: 40px;
+    }
+  }
+
+  .id {
+
+    &:hover {
+      button {
+        display: inline-block;
+      }
+
+      .nm {
+        display: none;
+      }
+    }
+
+    &.checked {
+      button.chbox {
+        display: inline-block;
+      }
+
+      button.chbox i:before {
+        content: "\f00c";
+      }
+
+      .nm {
+        display: none;
+      }
+    }
+  }
+}
+
+@media(max-device-width: 1199px) {
+  .plus-top-branch{
+    display: none !important;
+  }
+  .cell-value {
+    line-height: 35px;
+    min-height: 35px;
+
+  }
+  #pk .modal-content {
+    box-shadow: 0 1px 12px rgba(0, 0, 0, 0.2);
+  }
+
+
+  .pcTable-paramsTable td, .pcTable-footersTable td, .pcTable-filtersTable td, .pcTable-hiddenFieldsTable td, .pcTable-table tbody td, .pcTable-table tbody td.id {
+    padding-top: 5px;
+  }
+  .pcTable-selectpicker.bootstrap-select.btn-group.bs-container .dropdown-menu {
+    margin-top: 8px;
+  }
+
+  #pk .pcTable-container td {
+    height: 46px;
+
+    input {
+      height: 36px;
+
+      &[type="checkbox"] {
+        height: 20px;
+      }
+    }
+
+    .bootstrap-select {
+      margin-top: -8px;
+
+      button {
+        height: 32px
+      }
+    }
+
+  }
+
+  #main-page {
+    padding: 10px;
+  }
+  .totbar-default .navbar-nav > li > a:hover {
+    background-color: transparent;
+  }
+
+  .totum-math-operations {
+    th:first-child {
+      width: 220px;
+    }
+
+  }
+  .pcTable-table {
+    th {
+      height: 40px
+    }
+
+
+    .cell-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .pcTable-filters {
+      top: 20px;
+      right: 4px;
+      margin-top: 0;
+
+      .btn {
+        margin-left: 5px;
+        border-color: transparent;
+
+        &:hover, &:active {
+          border-color: transparent;
+        }
+      }
+    }
+
+    /* th.with-filter, .pcTable-table th.with-filter2 {
+       padding-right: 25px;
+
+       &.with-filter.with-filter2 {
+         padding-right: 50px;
+       }
+
+       padding-bottom: 0;
+     }*/
+  }
+  th span.cell-title {
+    font-weight: 500;
+  }
+  .worker-view table th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .pcTable-paramsTable {
+    margin-bottom: 15px;
+  }
+  .pcTable-container .pcTable-sectionTitle, .pcTable-container .pcTable-rowsTitle {
+    font-size: 20px;
+  }
+  .pcTable-filtersTables .pcTable-sectionTitle {
+    font-size: 14px;
+  }
+
+  .check-status-bar {
+    > * {
+      display: none;
+    }
+
+    > [data-name="count_visible_rows"] {
+      display: inline;
+    }
+  }
+  .InsertPanel {
+    grid-template-columns: 1fr;
+
+    .cell-wrapper {
+      box-shadow: none;
+
+    }
+  }
+  input:not([type=checkbox]):not([type=radio]),
+  textarea,
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid #ddd !important;
+    font-size: 14px;
+  }
+
+  .ibtn, i.fa-exclamation-triangle.ttm-panel {
+    padding-top: 11px;
+  }
+  .pcTable-table i.fa-exclamation-triangle.ttm-panel {
+    padding-top: 9px;
+  }
+
+
+  .cell-button {
+    .ibtn {
+      padding-left: 10px;
+      padding-top: 12px;
+
+    }
+
+    button.button-field {
+      height: 25px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      background-color: #fffdf9;
+
+      &:disabled {
+        background-color: #faf9f8;
+        box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+      }
+    }
+  }
+
+  .pcTable-filtersTables {
+    &.with_danger, &.with_changed {
+      #go-buttons {
+        td {
+          background-color: transparent;
+        }
+
+      }
+    }
+
+    &.with_danger button.button-go {
+      background-color: mistyrose;
+    }
+
+    &.with_changed button.button-go {
+      background-color: #ffeeb4;
+    }
+  }
+  .pcTable-noDataRow button {
+    height: 30px;
+  }
+
+
+  .pcTable-container {
+    .pcTable-table {
+      th.id, td.id {
+        width: 40px;
+      }
+    }
+
+    .pcTable-table tbody td .cell-icon {
+      padding-top: 9px;
+    }
+
+    td .cell-icon {
+      padding-top: 9px;
+    }
+
+    .pcTable-title {
+      font-size: 20px;
+    }
+
+    .pcTable-rowsTable {
+      margin-left: 0;
+    }
+
+    th.worker-with-i .pcTable-filters .cell-help {
+      font-size: 12px;
+    }
+
+    .pcTable-title, .table-description, .pcTable-sectionTitle {
+      padding-left: 5px;
+    }
+    .table-description{
+      padding-right: 0;
+    }
+
+    .pcTable-tabls {
+      margin-bottom: 10px;
+
+      a {
+        max-width: 100px;
+      }
+    }
+
+    .pcTable-rowsTitle {
+      padding-left: 10px;
+    }
+
+    .pcTable-filtersTables, .innerContainer, .pcTable-rowsTable {
+      margin-right: 0;
+    }
+
+    .pcTable-table {
+      td {
+        font-size: 15px;
+      }
+    }
+
+    .pcTable-paramsTable, .pcTable-filtersTable, .pcTable-footersTable, .pcTable-filtersTables.with_changed .pcTable-filtersTable:not(#go-buttons), .pcTable-footersTable {
+      td, th {
+        border-color: transparent;
+        background-color: transparent;
+      }
+
+      td {
+        font-size: 15px;
+
+        .button-field, .button-go {
+          height: 30px;
+          font-size: 14px;
+        }
+
+        .button-go {
+          width: calc(50% - 5px);
+          margin-right: 2px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
+
+      th {
+        height: auto;
+        font-size: 15px;
+
+        .cell-help {
+          border-color: transparent;
+        }
+      }
+    }
+  }
+  .pcTable-table tbody {
+    td, td.with-code {
+      background-color: #fff;
+    }
+  }
+  body {
+    overflow-y: auto;
+  }
+  #pk .modal-dialog {
+    width: calc(100vw - 20px) !important;
+    margin: 14px 8px 100px;
+
+    .bootstrap-dialog-title {
+      width: calc(100% - 15px);
+    }
+  }
+  #pk .edit-row-panel .modal-dialog {
+    width: 420px !important;
+    max-width: calc(100vw - 20px);
+  }
+  .edit-row-panel {
+
+  }
+
+  .pcTable-paramsTable, .pcTable-filtersTable, .pcTable-hiddenFieldsTable, .pcTable-beforeSpace, .pcTable-footersTable {
+    width: 100%;
+    margin-left: 0px;
+  }
+  .pcTable-buttons {
+    padding-left: 10px;
+  }
+  .pcTable-tableText {
+    margin-left: 5px;
+    margin-right: 5px;
+
+  }
+
+  .TreeContainer {
+    display: none;
+  }
+
+  #TreeMaximizer {
+    display: block;
+    text-align: center;
+
+    span {
+      cursor: pointer;
+    }
+  }
+  #nav-top-line {
+    position: absolute;
+    width: 100%;
+  }
+  .Tree {
+    height: 50px;
+  }
+
+  #pk nav.navbar-default {
+    margin-left: 48px;
+  }
+  .page_content {
+    margin-left: 0px;
+
+    .pcTable-scrollWrapper {
+      padding-bottom: 0px;
+    }
+  }
+}
+

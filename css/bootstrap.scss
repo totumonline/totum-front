@@ -1,0 +1,139 @@
+@import "vars.scss";
+
+.btn {
+  background-color: #fff;
+  &:focus, &:active {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+  }
+
+}
+
+.btn-success {
+  background-color: $btn-success-bgcolor;
+}
+.bootstrap-dialog .btn-empty-with-icon .bootstrap-dialog-button-icon{
+  margin: 0;
+}
+.bootstrap-select span.text small.text-muted {
+  padding-left: 3px;
+}
+.bootstrap-select .dropdown-toggle:focus {
+  outline: #333 !important;
+}
+
+.bootstrap-select > .dropdown-toggle.bs-placeholder, .bootstrap-select > .dropdown-toggle.bs-placeholder:active, .bootstrap-select > .dropdown-toggle.bs-placeholder:focus, .bootstrap-select > .dropdown-toggle.bs-placeholder:hover {
+  color: #333;
+}
+
+.bootstrap-select.btn-group .dropdown-menu li a {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.popover .dropdown-menu {
+  box-shadow: none;
+}
+
+.bootstrap-dialog {
+
+  .modal-header {
+    border-radius: 0px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 17px;
+    border-bottom-color: transparent;
+  }
+
+  .modal-footer {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+  }
+
+  .bootstrap-dialog-title {
+    color: #000;
+    display: inline-block;
+    font-size: 14px;
+    font-family: 'Open Sans', serif;
+  }
+
+  .bootstrap-dialog-message {
+    font-size: 14px;
+  }
+
+  .bootstrap-dialog-button-icon {
+    margin-right: 3px;
+  }
+
+  .bootstrap-dialog-close-button {
+    font-size: 20px;
+    float: right;
+    color: #fff;
+  }
+
+  .bootstrap-dialog-footer-buttons{
+    line-height: 41px;
+  }
+  .bootstrap-dialog-close-button .close {
+    opacity: 1;
+    color: #000;
+    text-shadow: none;
+  }
+
+  .bootstrap-dialog-close-button {
+    cursor: pointer;
+  }
+
+ /* &.type-default .modal-header {
+    background-color: #ffffff;
+  }
+
+  &.type-default .bootstrap-dialog-title {
+    color: #333;
+  }*/
+
+  .modal-header{
+    font-weight: bold;
+  }
+
+  &.type-info .modal-header {
+    background-color: #5bc0de;
+  }
+
+  &.type-primary .modal-header {
+    background-color: lightskyblue;
+  }
+
+  &.type-success .modal-header {
+    background-color: $tmp-table-background-line-color;
+  }
+
+  &.type-warning .modal-header {
+    background-color: $btn-warning-bgcolor;
+  }
+
+  &.type-danger .modal-header {
+    box-shadow: $btn-danger-background-new 0px 2px 0px 0px inset;
+  }
+
+  input {
+      border-radius: 3px;
+    }
+}
+button{
+  &:focus, &:active {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+label.field-param-lable {
+  span {
+    font-weight: 500;
+  }
+  &.switcheble{
+    margin-bottom: 5px;
+  }
+}

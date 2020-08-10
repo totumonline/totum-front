@@ -1,0 +1,8 @@
+div.jsoneditor-tree{
+ min-height: 200px;
+}
+div[data-field-type="text"].nonowrap{
+ .cell-value{
+  white-space: pre-line;
+ }
+}

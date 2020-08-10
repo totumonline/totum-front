@@ -1,0 +1,43 @@
+@import "vars.scss";
+
+.login-brand{
+  background-image: url('/fls/6_main_img.png');
+  background-repeat: no-repeat;
+  background-position: center left;
+  background-size: 45px;
+  padding-left: 65px;
+  margin-left: 23px;
+  padding-bottom: 0px;
+  white-space: pre;
+}
+
+
+  .totum-brand {
+    background-image: url('/fls/6_main_img.png');
+    background-repeat: no-repeat;
+    background-position: center left;
+    background-size: 45px;
+    padding-left: 65px;
+    margin-left: 23px;
+    padding-bottom: 0px;
+    max-width: 217px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre;
+    color: #333;
+
+    &:hover{
+      text-decoration: none;
+    }
+    span{
+      font-size: 30px;
+      color: #333;
+
+    }
+    font-size: 40px;
+  }
+.modal-dialog .totum-brand span{
+  font-size: 24px;
+  line-height: 30px;
+}

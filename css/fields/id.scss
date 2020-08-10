@@ -1,0 +1,52 @@
+@import "../vars.scss";
+
+td.id {
+  button {
+    display: none;
+  }
+
+}
+
+.id {
+  .btn{
+    border-color: transparent;
+    background-color: #faf9f8;
+    &:hover {
+      box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.17), 0px 4px 3px 0px rgba(0, 0, 0, 0.08), 0px 0px 6px 0px rgba(0, 0, 0, 0.07);
+    }
+  }
+  .pcTable-filters {
+    padding-right: 2px;
+
+    .btn {
+
+      margin-right: 1px;
+      margin-left: 0;
+
+      &:first-child {
+        margin-right: 0px;
+      }
+    }
+
+    .filter-in-head {
+      padding-left: 0;
+    }
+  }
+
+  .btn-filter {
+
+    .pcTable-table.with-checks & {
+      display: none;
+    }
+  }
+
+  #checkS {
+    display: none;
+
+    .pcTable-table.with-checks & {
+      display: inline-block;
+    }
+
+  }
+
+}

@@ -1,0 +1,75 @@
+@import "../vars";
+
+.pcTable-table {
+  .n {
+    background-color: $rowsBackColor;
+    border-top-color: $rowsBackColor;
+    border-bottom-color: $rowsBackColor;
+    text-align: center;
+
+
+
+
+  }
+
+
+  &.reordered {
+    .n {
+      background-color: lighten($btn-warning-bgcolor, 9%);
+    }
+  }
+
+  &.no-correct-n-filtered .n {
+    background-color: seashell;
+    border-top-color: seashell;
+    border-bottom-color: seashell;
+  }
+
+  th.n {
+    padding-top: 7px;
+    text-align: left;
+    i.roles{
+      font-size: 10px;
+    }
+  }
+
+
+  tbody td.n {
+    font-size: 12px;
+
+    .cell-value button {
+      width: auto;
+      margin-left: 1px;
+    }
+    .btn {
+
+      border-color: transparent;
+      box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+
+      &:hover {
+        box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02)
+      }
+    }
+
+  }
+
+  th.n .pcTable-filters {
+    width: 100%;
+    text-align: center;
+    right: 1px;
+  }
+}
+
+.pcTable-table.with-checks .n .fa-angle-down:before {
+  content: "\f149";
+}
+
+.pcTable-table.with-checks .n .fa-angle-up:before {
+  content: "\f148";
+}
+
+.pcTable-table.n-filtered {
+  #n-expander {
+      background-color: $btn-warning-bgcolor;
+  }
+}

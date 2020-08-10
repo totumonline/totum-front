@@ -1,0 +1,29 @@
+@import "../vars";
+button.tree-button{
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  i{
+    float: left;
+    margin-top: 3px;
+    margin-left: -3px;
+    padding-right: 3px;
+    &.fa-spinner{
+      display: none;
+    }
+  }
+  &:disabled{
+    i.fa-spinner{
+      display: inline-block;
+    }
+    i.fa-tree{
+      display: none;
+    }
+  }
+}
+.jstree-disabled .jstree-checkbox{
+  display: none;
+}
+.tree-search{
+  padding-bottom: 5px;
+}

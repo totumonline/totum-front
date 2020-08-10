@@ -1,0 +1,21 @@
+@import "../vars";
+#selectPanel .field-value .comments{
+  span {
+    display: inline;
+  }
+}
+.pcTable-container td .cell-value{
+  .notViewed{
+    border-bottom: 2px solid $btn-danger-bgcolor;
+  }
+}
+.com_author{
+  font-weight: bold;
+}
+.comments-line{
+  padding-bottom: 14px;
+  white-space: pre-wrap;
+}
+.comments-input{
+  padding-top: 10px;
+}

@@ -1,0 +1,153 @@
+@import "vars.scss";
+
+#pk .CodeMirror * {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 22px;
+}
+.CodeMirror{
+
+}
+
+.CodeMirror-hints {
+  border-radius: 0;
+  padding: 3px;
+
+  li.CodeMirror-hint-active {
+    background-color: $btn-primary-bgcolor;
+  }
+
+  .CodeMirror-hint {
+    font-family: 'JetBrains Mono';
+
+    .descr {
+      color: #000;
+    }
+    .item-string-name {
+      color: darken(#8bbe10, 10%);
+    }
+    .item-db-name {
+      color: #576ce8;
+    }
+    .item-code-var{
+      color: darken(#48a5ec, 40%);
+    }
+
+    .item-fieldParam {
+      color: orange;
+    }
+    .item-reqParam {
+      font-weight: bold;
+    }
+    .item-multiParam {
+      text-decoration: underline;
+    }
+    .item-db_name {
+      color: #576ce8;
+    }
+  }
+}
+
+.CodeMirror-code {
+  .light {
+    background-color: yellow;
+  }
+  span.cm- {
+
+    &start {
+      color: darken(#48a5ec, 20%);
+      &.fixed {
+        color: #1b6cec;
+      }
+      &.cm-dubbled {
+        color: red;
+      }
+    }
+    &spec{
+      color: magenta;
+      background: #ff00ff0f;
+    }
+
+    &var-not-in {
+      font-style: italic;
+    }
+
+    &variable {
+
+      color: #48a5ec;
+    }
+
+    &code-var {
+      color: darken(#48a5ec, 40%);
+    }
+    &inVars {
+      color: darken(#a150ec, 40%);
+    }
+
+    &function {
+
+    }
+
+
+
+    &db_name {
+      color: #576ce8;
+    }
+    &functionParam {
+
+    }
+    &fieldParam {
+      color: orange;
+    }
+    &reqParam {
+      font-weight: bold;
+    }
+    &multiParam {
+      text-decoration: underline;
+    }
+    &operator {
+      color: #ff6600;
+    }
+    &boolean {
+      color: #ff38ec;
+    }
+    &number {
+      color: #ff6600;
+    }
+    &string {
+      color: #8bbe10;
+    }
+    &string-name {
+      color: darken(#8bbe10, 10%);
+    }
+    &dollar-dollar {
+      color: darken(#48a5ec, 20%);
+    }
+
+    &error {
+      color: red !important;
+    }
+    &tmp-error{
+      color: red !important;
+    }
+
+
+    /*sections*/
+
+    &sec-title{
+      color: black;
+    }
+    &sec-param{
+      color: black;
+    }
+    &sec-parts{
+      color: blue;
+    }
+    &sec-num-parts{
+      color: #9a2ac2;
+    }
+    &sec-value{
+      color: darken(#8bbe10, 10%);
+    }
+  }
+}

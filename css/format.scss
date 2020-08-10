@@ -1,0 +1,12 @@
+.format{
+  &.f-glue{
+    th{
+      border-left: 1px dotted yellowgreen;
+    }
+  }
+  &.f-fill{
+    th{
+      border-right: 1px dotted tomato;
+    }
+  }
+}

@@ -1,0 +1,127 @@
+.pcTable-floatBlock {
+  padding-left: $idWidth;
+  padding-right: 20px;
+  white-space: nowrap;
+  position: relative;
+
+  .pcTable-floatInner {
+    display: inline-block;
+    vertical-align: top;
+    white-space: nowrap;
+    margin-top: 5px;
+    position: relative;
+
+    input[type="checkbox"] {
+      margin-top: 7px;
+    }
+
+    > div {
+      box-sizing: border-box;
+      vertical-align: top;
+      margin-left: -1px;
+      margin-top: -1px;
+      overflow: hidden;
+      display: inline-block;
+      border: none;
+      margin-bottom: 10px;
+
+      th {
+        @include pcTable-th();
+        position: relative;
+        display: block;
+        width: 100%;
+        border: none;
+      }
+
+      td {
+        @include pcTable-td();
+        display: block;
+        min-height: 35px;
+        height: 35px;
+        box-sizing: border-box;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border: 1px solid #e4e4e4;
+
+        .cell-value{
+          padding-top: 2px;
+        }
+        .cell-icon, .ibtn, .fa-exclamation-triangle{
+          padding-top: 5px;
+        }
+      }
+
+      &.nonowrap {
+        &[data-field-type="tree"] .cell-value .select-item span {
+          white-space: nowrap;
+          display: block;
+          padding: 0;
+          padding-bottom: 4px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        &[data-field-type="file"] .cell-value span a {
+          white-space: nowrap;
+          display: block;
+          padding: 0;
+          padding-bottom: 4px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          img {
+            padding-right: 5px;
+          }
+        }
+
+        .td-wrapper {
+
+          display: flex;
+          flex-direction: column;
+
+          td {
+            flex: 1 1 100%;
+            overflow: auto;
+          }
+        }
+
+        td {
+
+          white-space: normal;
+          height: fit-content;
+        }
+      }
+    }
+  }
+
+}
+
+.sectionWithPannels {
+  .pcTable-floatBlock {
+    padding-right: 20px;
+  }
+
+  .pcTable-floatInner {
+    position: relative;
+
+    > div {
+      margin-bottom: 10px;
+    }
+
+    border-radius: 6px;
+    border: 1px solid transparent;
+    padding: 9px;
+    padding-bottom: 0;
+    margin: 5px;
+
+    margin-left: 0;
+    margin-right: 10px;
+    background-color: #faf9f8;
+  }
+}
+
+.worker-view {
+  .pcTable-floatBlock .pcTable-floatInner > div th {
+    padding-top: 9px;
+  }
+}

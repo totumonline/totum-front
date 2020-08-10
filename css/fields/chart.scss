@@ -1,0 +1,16 @@
+.ttm-chart{
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+  cursor: default;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
+}
+.dialog-chart-topper{
+  .modal-dialog {
+    width: 1500px;
+    max-width: 99%;
+  }
+}
