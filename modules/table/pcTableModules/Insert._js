@@ -51,7 +51,7 @@ $.extend(App.pcTableMain.prototype, {
                     panel.addClass('onSaving');
 
                     pcTable.__insertRowActions('saveInsertRow', function () {
-                        pcTable._saveInsertRow.call(pcTable, 'close').always(function () {
+                        pcTable._saveInsertRow('close').always(function () {
                             panel.removeClass('onSaving');
                         });
                     });
@@ -101,42 +101,43 @@ $.extend(App.pcTableMain.prototype, {
     _saveInsertRow: function (isNotClean) {
         let pcTable = this;
         let data = {};
-
+        let $d = $.Deferred();
         if (Object.keys(pcTable._insertError).length) {
-            let fieldName=Object.keys(pcTable._insertError)[0];
+            let fieldName = Object.keys(pcTable._insertError)[0];
             let _error = pcTable._insertError[fieldName];
             App.notify(_error, $('<div>Ошибка в поле </div>').append(' в поле ').append($('<span>').text(pcTable.fields[fieldName].title || pcTable.fields[fieldName].name)));
-            return false;
+            $d.reject();
+        } else {
+
+
+            let doIt = function () {
+                $.each(pcTable._insertItem, function (k, v) {
+                    if (k !== 'n') data[k] = v.v;
+                });
+
+                pcTable.model.add(data).then(function (json) {
+                    pcTable.table_modify.call(pcTable, json);
+
+                    pcTable._currentInsertCellIndex = 0;
+                    switch (isNotClean) {
+                        case 'notClean':
+                            break;
+                        case 'close':
+                            pcTable._closeInsertRow();
+                            break;
+                        default:
+                            pcTable._insertItem = null;
+                            pcTable._insertRow.html('<td class="id"></td>');
+                            pcTable._createInsertRow(pcTable._insertRow, 0);
+                    }
+
+
+                }).always(function () {
+                    $d.resolve();
+                });
+            };
+            pcTable.model.doAfterProcesses(doIt);
         }
-        
-        let $d = $.Deferred();
-        let doIt = function () {
-            $.each(pcTable._insertItem, function (k, v) {
-                if (k !== 'n') data[k] = v.v;
-            });
-
-            pcTable.model.add(data).then(function (json) {
-                pcTable.table_modify.call(pcTable, json);
-
-                pcTable._currentInsertCellIndex = 0;
-                switch (isNotClean) {
-                    case 'notClean':
-                        break;
-                    case 'close':
-                        pcTable._closeInsertRow();
-                        break;
-                    default:
-                        pcTable._insertItem = null;
-                        pcTable._insertRow.html('<td class="id"></td>');
-                        pcTable._createInsertRow(pcTable._insertRow, 0);
-                }
-
-
-            }).always(function () {
-                $d.resolve();
-            });
-        };
-        pcTable.model.doAfterProcesses(doIt);
         return $d.promise();
     },
     _addInsertRow: function () {
@@ -432,7 +433,7 @@ $.extend(App.pcTableMain.prototype, {
                 input.removeClass('error');
             } catch (error) {
                 input.addClass('error');
-                pcTable._insertError[field.name]=error;
+                pcTable._insertError[field.name] = error;
                 App.popNotify(error, $input, 'default');
                 return null;
             }

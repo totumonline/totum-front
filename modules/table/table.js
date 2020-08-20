@@ -16,6 +16,7 @@
         "regexpErrorText": {"isOn": false, "Val": ""},
         "required": {"isOn": true, "Val": false},
         "showInWeb": {"isOn": true, "Val": true},
+        "insertable": {"isOn": true, "Val": true},
         "dropdownView": {"isOn": true, "Val": true},
         "addRoles": {"isOn": false, "Val": ["1"]},
         "editable": {"isOn": true, "Val": true},
