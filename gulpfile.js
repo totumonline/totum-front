@@ -6,49 +6,10 @@ let gulp = require('gulp'),
     concat = require('gulp-concat'),
     cssBase64 = require('gulp-css-base64'),
     staticHash = require('gulp-static-hash'),
-    through = require('through2'),
-    browserify = require('browserify'),
-    source = require('vinyl-source-stream'),
-    buffer = require("vinyl-buffer");
+    through = require('through2');
 
-gulp.task('default', ['product:html.html_copy', 'Forms:devJs', 'Forms:devCss'], function () {
+gulp.task('default', ['product:html.html_copy'], function () {
     return gulp.start('product:http_templates_copy');
-});
-gulp.task('Forms:devJs', function () {
-
-
-    process.stdout.write("Setting NODE_ENV to 'production'" + "\n");
-    process.env.NODE_ENV = 'production';
-    if (process.env.NODE_ENV !== 'production') {
-        throw new Error("Failed to set NODE_ENV to production!!!!");
-    } else {
-        process.stdout.write("Successfully set NODE_ENV to production" + "\n");
-    }
-
-    let _browserify = browserify({entries: 'web_dev/Forms/js/App.jsx', extensions: ['.jsx'], debug: true});
-
-    return _browserify.transform('babelify', {
-        presets: ["@babel/preset-env", "@babel/preset-react"],
-        plugins: ["@babel/plugin-transform-runtime", "@babel/plugin-proposal-class-properties"]
-    }).bundle()
-        .on('error', function (err) {
-            console.log(err.toString());
-            this.emit('end');
-        })
-        .pipe(source('forms.js'))
-        .pipe(buffer())
-         .pipe(uglify().on('error', function (e) {
-             console.log(e);
-         }))/**/
-        .pipe(gulp.dest('deploiment/http/js'));
-
-
-});
-gulp.task('Forms:devCss', function () {
-    gulp.src(['bower_components/font-awesome/css/font-awesome.min.css', 'node_modules/react-datetime/css/react-datetime.css', 'web_dev/Forms/css/main.scss'])
-        .pipe(concat('forms.css'))
-        .pipe(sass({outputStyle: ''}).on('error', sass.logError))
-        .pipe(gulp.dest('deploiment/http/css/'));
 });
 
 let urlReplacer = function (options) {
@@ -79,17 +40,17 @@ let urlReplacer = function (options) {
 }
 let path = {
     js: {
-        src: 'web_dev/modules/**/*.js',
-        src_parts: 'web_dev/modules/**/*._js',
-        dest: 'deploiment/http/js/'
+        src: './modules/**/*.js',
+        src_parts: './modules/**/*._js',
+        dest: './http/js/'
     },
     css: {
-        src: 'web_dev/css/main.scss',
-        dest: 'deploiment/http/css/'
+        src: './css/main.scss',
+        dest: './http/css/'
     },
     cssImgs: {
-        src: 'web_dev/**/css-*.*',
-        dest: 'deploiment/http/css/img/'
+        src: './**/css-*.*',
+        dest: './http/css/img/'
     },
     jsLibsMini: {
         src: ['bower_components/jquery/dist/jquery.min.js'
@@ -120,7 +81,7 @@ let path = {
             , 'bower_components/remarkable-bootstrap-notify/bootstrap-notify.min.js'
             , 'bower_components/jquery.nicescroll/jquery.nicescroll.min.js'
         ],
-        dest: 'deploiment/http/js/'
+        dest: './http/js/'
     },
     cssLibs: {
         src: ['bower_components/jquery-ui/themes/base/*.min.css'
@@ -137,19 +98,19 @@ let path = {
             , 'bower_components/jstree/dist/themes/default-with-imgs/style.css'
             , 'bower_components/jstree/dist/themes/dark-with-imgs/style.css'
         ],
-        dest: 'deploiment/http/css/'
+        dest: './http/css/'
     },
     imgsLibs: {
         src: ['bower_components/jquery-ui/themes/base/images/*.*'],
-        dest: 'deploiment/http/css/images/'
+        dest: './http/css/images/'
     },
     imgsLibs2: {
         src: ['bower_components/jsoneditor/dist/img/*.*'],
-        dest: 'deploiment/http/css/img/'
+        dest: './http/css/img/'
     },
     http: {
-        src: ['web_dev/http/*.*', 'web_dev/http/.*', 'web_dev/http/**/*.*', 'web_dev/http/**/.*'],
-        dest: 'deploiment/http/'
+        src: ['./http/*.*', './http/.*', './http/**/*.*', './http/**/.*'],
+        dest: './http/'
     },
     htmlTemplate: {
         src: 'templates_src/*',
@@ -160,12 +121,12 @@ let path = {
 /*product*/
 {
     gulp.task('product:clean', function () {
-        return del(['deploiment/http', 'deploiment/totum/templates'])
+        return del(['./http', './totum/templates'])
     });
 
     gulp.task('product:fonts', function () {
-        return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', 'web_dev/fonts/*.*', 'bower_components/JetBrainsMono/web/woff2/*.*'])
-            .pipe(gulp.dest('deploiment/http/fonts/'));
+        return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', 'bower_components/JetBrainsMono/web/woff2/*.*'])
+            .pipe(gulp.dest('./http/fonts/'));
     });
 
     gulp.task('product:jsLibs', function () {
@@ -202,7 +163,7 @@ let path = {
     });
     gulp.task('product:js', function () {
 
-        gulp.src('web_dev/functions.json')
+        gulp.src('./functions.json')
             .pipe(gulp.dest(path.http.dest + 'js/'));
 
         return gulp.src(path.js.src)
@@ -216,27 +177,27 @@ let path = {
     gulp.task('product:jsChart', function () {
         gulp.src('node_modules/chart.js/dist/Chart.min.js')
             .pipe(concat('chart.js'))
-            .pipe(gulp.dest('deploiment/http/js/lib/'));
+            .pipe(gulp.dest('./http/js/lib/'));
 
     });
 
     gulp.task('product:templatesReplace', ['product:css', 'product:jsChart', 'product:cssImgs', 'product:imgsLibs', 'product:cssLibs', 'product:fonts', 'product:js', 'product:jsLibs'], function () {
         return gulp.src(path.htmlTemplate.src)
             .pipe(staticHash({
-                asset: './deploiment/http',
+                asset: '././http',
                 exts: ['json', 'css', 'js']
             }))
-            .pipe(urlReplacer({replaceFrom: '../deploiment/http/', replaceTo: '/'}))
+            .pipe(urlReplacer({replaceFrom: '.././http/', replaceTo: '/'}))
             .pipe(gulp.dest(path.htmlTemplate.dest));
     });
     gulp.task('product:templatesReplace:simple', function () {
         return gulp.src(path.htmlTemplate.src)
             .pipe(staticHash({
-                asset: './deploiment/http',
+                asset: '././http',
                 exts: ['json', 'css', 'js']
             }))
-            .pipe(urlReplacer({replaceFrom: '../deploiment/http/', replaceTo: '/'}))
-            .pipe(gulp.dest('deploiment/totum/templates'));
+            .pipe(urlReplacer({replaceFrom: '.././http/', replaceTo: '/'}))
+            .pipe(gulp.dest('./totum/templates'));
     });
 
     gulp.task('product:http_files', ['product:templatesReplace'], function () {
@@ -246,11 +207,11 @@ let path = {
     });
     gulp.task('product:http_templates_copy', function () {
         return gulp.src('totum/templates/*.*')
-            .pipe(gulp.dest('deploiment/totum/templates'));
+            .pipe(gulp.dest('./totum/templates'));
     });
     gulp.task('product:html.html_copy', ['product:http_files'], function () {
         return gulp.src('totum/templates/html.html')
-            .pipe(gulp.dest('deploiment/http'));
+            .pipe(gulp.dest('./http'));
     })
 }
 
@@ -262,6 +223,6 @@ gulp.task('all:jstreeImgs', function () {
 
     return gulp.src('bower_components/jstree/dist/themes/default/style.css')
         .pipe(cssBase64({
-            baseDir: "./../../../../../web_dev/http/imgs/"
+            baseDir: "http/imgs/"
         })).pipe(gulp.dest('bower_components/jstree/dist/themes/default-with-imgs/'));
 });

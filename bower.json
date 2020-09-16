@@ -1,9 +1,9 @@
 {
-  "name": "totum",
-  "description": "totum",
+  "name": "totum-front",
+  "description": "totum-front",
   "main": "",
   "authors": [
-    "TatianaPolunina <t.polunina@pricecount.ru>"
+    "TatianaPolunina"
   ],
   "license": "MIT",
   "homepage": "",
