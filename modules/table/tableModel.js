@@ -33,6 +33,9 @@
 
         extraData = extraData || {};
         var obj = {
+            getUri: function () {
+                return this.url;
+            },
             setLoadedTableData: function (data, _offset, _onPage) {
                 dataRows = data;
                 offset = _offset;
@@ -85,9 +88,7 @@
                 let data_tmp = $.extend(true, {}, $data, {tableData: tableData, ajax: true}, extraData, filters);
 
                 if ($data.method === 'checkTableIsChanged' || $data.method === 'checkForNotifications') {
-                    if ($data.method === 'checkForNotifications') {
-                        url = '/Table/0/0/';
-                    } else {
+                    if ($data.method !== 'checkForNotifications') {
                         data_tmp = $.extend({}, $data, {code: tableData.updated.code, ajax: true}, extraData);
                         if (tableData.sess_hash) {
                             data_tmp.tableData = {sess_hash: tableData.sess_hash};
@@ -513,7 +514,7 @@
                 return this.__ajax('post', {method: 'leftEyeGroupSet', index: index});
             },
             reUser: function (userId) {
-                return this.__ajax('post', {method: 'reuser', userId: userId});
+                return this.__ajax('post', {method: 'reuser', userId: userId, location: window.location.pathname});
             },
             printTable: function (settings) {
                 return this.__ajax('post', {method: 'printTable', settings: JSON.stringify(settings)});
@@ -548,8 +549,8 @@
             },
             loadPage: function (pcTable, lastId, count, prevLastId) {
                 let _filters = {};
-                if (pcTable && pcTable.filterDataCrypted) {
-                    _filters.filters = pcTable.filterDataCrypted;
+                if (pcTable && pcTable.filtersString) {
+                    _filters.filters = pcTable.filtersString;
                 }
                 pcTable.PageData.loading = true;
 
@@ -560,7 +561,7 @@
                     prevLastId: prevLastId
                 }, null, null, _filters).then(function (json) {
                     pcTable.loadedPage = json.page;
-                    pcTable.data = json.rows;
+                    pcTable.rows = json.rows;
 
                     let ids;
                     if (json.rows.length) {

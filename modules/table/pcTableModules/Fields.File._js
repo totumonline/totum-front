@@ -1,6 +1,6 @@
 (function () {
     const show_img = function (img, file) {
-        img.attr('data-fileviewpreview', JSON.stringify({'name':file.name, file: file.file}))
+        img.attr('data-fileviewpreview', JSON.stringify({'name': file.name, file: file.file}))
     }
 
 
@@ -77,6 +77,7 @@
         ,
         getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex, editNow) {
             let field = this;
+            let pcTable = this.pcTable;
             let div = $('<div>');
             let dialogBody = $('<div>').css('min-height', 200);
             let buttons, dialog;
@@ -224,12 +225,12 @@
 
                             };
 
-
-                            xhr.open("POST", "/Table/", true);
+                            xhr.open("POST", pcTable.model.getUri(), true);
 
                             let formData = new FormData();
                             formData.append("file", file);
                             formData.append("method", 'tmpFileUpload');
+                            formData.append("ajax", true);
                             xhr.send(formData);
                             deffs.push(deff.promise());
                         }

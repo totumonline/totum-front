@@ -8,8 +8,8 @@ let gulp = require('gulp'),
     staticHash = require('gulp-static-hash'),
     through = require('through2');
 
-gulp.task('default', ['product:html.html_copy'], function () {
-    return gulp.start('product:http_templates_copy');
+gulp.task('default', function () {
+    return gulp.start('product:html.html_copy');
 });
 
 let urlReplacer = function (options) {
@@ -49,7 +49,7 @@ let path = {
         dest: './http/css/'
     },
     cssImgs: {
-        src: './**/css-*.*',
+        src: ['./**/css-*.*'],
         dest: './http/css/img/'
     },
     jsLibsMini: {
@@ -110,18 +110,18 @@ let path = {
     },
     http: {
         src: ['./http/*.*', './http/.*', './http/**/*.*', './http/**/.*'],
-        dest: './http/'
+        dest: '../../http/'
     },
     htmlTemplate: {
-        src: 'templates_src/*',
-        dest: 'totum/templates'
+        src: ['../../../totum/templates/page_template*', 'html.html'],
+        dest: '../../../totum/templates'
     }
 };
 
 /*product*/
 {
     gulp.task('product:clean', function () {
-        return del(['./http', './totum/templates'])
+        return del(['./http'])
     });
 
     gulp.task('product:fonts', function () {
@@ -153,8 +153,8 @@ let path = {
             .pipe(gulp.dest(path.imgsLibs2.dest));
     });
     gulp.task('product:cssImgs', function () {
-        return gulp.src(path.cssImgs.src)
-            .pipe(gulp.dest(path.cssImgs.dest));
+        /*return gulp.src(path.cssImgs.src)
+            .pipe(gulp.dest(path.cssImgs.dest));*/
     });
     gulp.task('product:css', function () {
         return gulp.src(path.css.src)
@@ -162,16 +162,15 @@ let path = {
             .pipe(gulp.dest(path.css.dest));
     });
     gulp.task('product:js', function () {
-
         gulp.src('./functions.json')
             .pipe(gulp.dest(path.http.dest + 'js/'));
 
         return gulp.src(path.js.src)
             .pipe(include())
             .pipe(concat('main.js'))
-          .pipe(uglify().on('error', function (e) {
-                  console.log(e);
-              }))    /* */
+            .pipe(uglify().on('error', function (e) {
+                console.log(e);
+            }))    /* */
             .pipe(gulp.dest(path.js.dest));
     });
     gulp.task('product:jsChart', function () {
@@ -183,21 +182,12 @@ let path = {
 
     gulp.task('product:templatesReplace', ['product:css', 'product:jsChart', 'product:cssImgs', 'product:imgsLibs', 'product:cssLibs', 'product:fonts', 'product:js', 'product:jsLibs'], function () {
         return gulp.src(path.htmlTemplate.src)
+            .pipe(urlReplacer({replaceFrom: '/', replaceTo: '../../http/'}))
             .pipe(staticHash({
-                asset: '././http',
+                asset: '../../http/',
                 exts: ['json', 'css', 'js']
-            }))
-            .pipe(urlReplacer({replaceFrom: '.././http/', replaceTo: '/'}))
-            .pipe(gulp.dest(path.htmlTemplate.dest));
-    });
-    gulp.task('product:templatesReplace:simple', function () {
-        return gulp.src(path.htmlTemplate.src)
-            .pipe(staticHash({
-                asset: '././http',
-                exts: ['json', 'css', 'js']
-            }))
-            .pipe(urlReplacer({replaceFrom: '.././http/', replaceTo: '/'}))
-            .pipe(gulp.dest('./totum/templates'));
+            })).pipe(urlReplacer({replaceFrom: '../../http/', replaceTo: '/'}))
+            .pipe(gulp.dest(path.htmlTemplate.dest))
     });
 
     gulp.task('product:http_files', ['product:templatesReplace'], function () {
@@ -205,10 +195,7 @@ let path = {
             .pipe(gulp.dest(path.http.dest));
 
     });
-    gulp.task('product:http_templates_copy', function () {
-        return gulp.src('totum/templates/*.*')
-            .pipe(gulp.dest('./totum/templates'));
-    });
+
     gulp.task('product:html.html_copy', ['product:http_files'], function () {
         return gulp.src('totum/templates/html.html')
             .pipe(gulp.dest('./http'));
@@ -223,6 +210,6 @@ gulp.task('all:jstreeImgs', function () {
 
     return gulp.src('bower_components/jstree/dist/themes/default/style.css')
         .pipe(cssBase64({
-            baseDir: "http/imgs/"
+            baseDir: "./../../../../../http/imgs/"
         })).pipe(gulp.dest('bower_components/jstree/dist/themes/default-with-imgs/'));
 });

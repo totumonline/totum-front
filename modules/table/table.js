@@ -117,6 +117,8 @@
 
     App.pcTableMain = function (element, config) {
 
+        this.data_params=config.params ||  null;
+
         config = $.extend({},
             {
                 tableRow: {},
@@ -140,7 +142,6 @@
                 },
                 dataSorted: [],
                 data: [],
-                data_params: null,
                 dataSortedVisible: [],
                 mainFieldName: 'id',
 
@@ -221,6 +222,8 @@
         if (App.isTopWindow()) {
             this.beforeSpaceHide = false;
         }
+
+
 
         if (element) {
             this.refreshArraysFieldCategories(true);
@@ -315,7 +318,7 @@
                 this.refreshArraysFieldCategories(false);
                 let data = {};
                 this.__checkedRows = [];
-                this.data.map(function (item) {
+                this.rows.map(function (item) {
                     this.dataSorted.push(item.id);
                     this.dataSortedVisible.push(item.id);
                     data[item.id] = item;
@@ -740,8 +743,8 @@
                 if (this.ScrollClasterized)
                     this.ScrollClasterized.emptyCache();
 
-                if (this.data) {
-                    this.data.map(function (item) {
+                if (this.rows) {
+                    this.rows.map(function (item) {
                         this.dataSorted.push(item.id);
                         this.dataSortedVisible.push(item.id);
                         data[item.id] = item;

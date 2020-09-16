@@ -1,6 +1,6 @@
 {
   "name": "totumonline/totum-front",
   "description": "totum frontend",
-  "type": "dev-project",
+  "type": "package",
   "license": "MIT"
 }

@@ -16,7 +16,7 @@
             if (json) {
                 let row = json.chdata.rows[Object.keys(json.chdata.rows)[0]];
                 const _goToTheTable = function (tree_branch, table_id) {
-                    App.getPcTableById(window.TREE_TABLE_ID).then(function (pcTable) {
+                    App.getPcTableById("tree").then(function (pcTable) {
                         pcTable.model.checkEditRow({id: tree_branch}).then(function (tree) {
                             window.location.href = '/Table/' + tree.row.top.v + '/' + table_id;
                         });
@@ -71,7 +71,7 @@
 
                         let i = $('<i class="fa fa-edit edit-folder-icon"></i>');
                         i.on('click', () => {
-                            (new EditPanel(window.TREE_TABLE_ID, BootstrapDialog.TYPE_DANGER, {id: edit_folder.data('id')})).then(goToTheTable)
+                            (new EditPanel("tree", BootstrapDialog.TYPE_DANGER, {id: edit_folder.data('id')})).then(goToTheTable)
                             return false
                         })
                         edit_folder.find('>i').after(i)
@@ -251,7 +251,7 @@
                             (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {tree_node_id: {v: parentId}})).then(goToTheTable)
                         } else {
                             let parentId = d.node.id.length > 11 ? d.node.id.substring(11) : window.location.pathname.match(/^\/.*\/(\d+)\//)[1];
-                            (new EditPanel(window.TREE_TABLE_ID, BootstrapDialog.TYPE_DANGER, {parent_id: {v: parentId}})).then(function (json) {
+                            (new EditPanel("tree", BootstrapDialog.TYPE_DANGER, {parent_id: {v: parentId}})).then(function (json) {
                                 if (json) window.location.reload(true);
                             })
                         }

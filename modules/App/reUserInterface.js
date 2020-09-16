@@ -9,7 +9,7 @@
         }
 
         const setAuthUser=function (userId) {
-            let model = App.models.table('/Main/', {}, {});
+            let model = App.models.table('/Table/', {}, {});
 
             let pcTable = $('#table').data('pctable') || {isCreatorView: true};
             model.addPcTable(pcTable);

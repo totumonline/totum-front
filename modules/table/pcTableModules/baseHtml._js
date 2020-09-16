@@ -787,7 +787,9 @@
                 let pageSplit = this.tableRow.pagination.split('/');
                 let pageCount = this.isMobile ? pageSplit[1] : pageSplit[0];
                 this.PageData.onPage = parseInt(pageCount);
+
                 this.model.loadPage(this, lastId, pageCount);
+
                 return this.PageData.$block.empty().append('<i class="fa fa-spinner"></i>');
             }
 
@@ -948,7 +950,7 @@
                                 if (self.is('.eraser')) {
                                     href = '?';
                                 } else {
-                                    href = '?' + $.param({'f': pcTable._filtersBlock.data('cryptoFilters') || pcTable.filterDataCrypted});
+                                    href = '?' + $.param({'f': pcTable._filtersBlock.data('cryptoFilters') || pcTable.filtersString});
                                 }
                                 if (pcTable.isMobile) {
                                     href += '#go-buttons';
@@ -1025,7 +1027,7 @@
                     pcTable.filterData[v.name] = $.extend(true, {}, pcTable.data_params[v.name]);
                 });
 
-                pcTable.model.addFiltersData({'filters': pcTable.filterDataCrypted});
+                pcTable.model.addFiltersData({'filters': pcTable.filtersString});
             }
 
             let changed = [];

@@ -15,7 +15,7 @@
         },
         _model;
     setTimeout(() => {
-        _model = App.models.table('/Main/');
+        _model = App.models.table('/Table/');
         _model.addPcTable({model: _model})
     }, 10)
 
@@ -482,7 +482,7 @@
                                     dialog.$modalBody.remove()
                                 }
                                 props.buttons.forEach((btn) => {
-                                    let _btn=dialog.getButton(btn.id);
+                                    let _btn = dialog.getButton(btn.id);
                                     if (btn.background) {
                                         _btn.css('background-color', btn.background);
                                     }
@@ -759,7 +759,7 @@
         }
 
         let src = '/Table/0/' + data.table_id + '?sess_hash=' + data.sess_hash;
-        if (!/^\/Table|Main\//.test(window.location.pathname))
+        if (!/^\/Table\//.test(window.location.pathname))
             src = data.table_id + '?sess_hash=' + data.sess_hash;
 
         let $iframe = $('<iframe style="width: 100%; height: ' + (height || "80vh") + '; border: none;" src="' + src + '">');
@@ -782,7 +782,7 @@
         }
 
         let src = '/Table/0/' + data.table_id + '?sess_hash=' + data.sess_hash;
-        if (!/^\/Table|Main\//.test(window.location.pathname))
+        if (!/^\/Table\//.test(window.location.pathname))
             src = data.table_id + '?sess_hash=' + data.sess_hash;
 
         let $iframe = $('<iframe style="width: 100%; height: ' + (height || "80vh") + '; border: none;" src="' + src + '">');
@@ -799,7 +799,6 @@
                 }
             });
         }
-
         let _dialog = dialog(data['title'], $iframe, data.width, data.refresh, null, model, btns);
         $iframe.on('load', function () {
             let _window = $iframe.get(0).contentWindow;
