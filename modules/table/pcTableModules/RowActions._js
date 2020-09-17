@@ -175,7 +175,7 @@
                 /*if ($tdId.find('button:first').length === 0) {
                     this.row_actions_icons_add($tdId);
                 }
-                $tdId.find('.chbox').html('<i class="fa fa-check"/>');
+                $tdId.find('.chbox').html('<i class="fa fa-check"></i>');
                 if (!$tdId.is(':hover')) {
                     this.row_actions_icons_hide(item.$tr);
                 }*/
@@ -213,7 +213,7 @@
 
 
             if (this.tableRow.panel) {
-                $editButton = $('<button class="btn btn-default edit"><i class="fa fa-th-large"/></button>')
+                $editButton = $('<button class="btn btn-default edit"><i class="fa fa-th-large"></i></button>')
                     .on('mouseleave', function () {
                         $(this).blur();
                         return false;
@@ -224,10 +224,10 @@
 
             if (this.control.editing) {
                 $dropDownButton = $('<button class="btn btn-default btn-xxs dropdown"  tabindex="-1" style=" margin-left: 2px;">' +
-                    '<i class="fa fa-caret-down" style="font-size: 10px; width: 7px;"/></button>');
+                    '<i class="fa fa-caret-down" style="font-size: 10px; width: 7px;"></i></button>');
 
             }
-            let $checkbox = $('<button class="btn btn-default btn-xxs chbox"><i class="fa fa-square-o"/></button>')
+            let $checkbox = $('<button class="btn btn-default btn-xxs chbox"><i class="fa fa-square-o"></i></button>')
 
             let $btngroup = $('<span class="btn-group-xxs">');
             $tdId.append($btngroup)
@@ -254,27 +254,27 @@
             let text = $('<div id="row-mobile-panel"></div>');
 
             if (this.tableRow.panel !== true) {
-                text.append($('<div class="menu-item"><i class="fa fa-th-large"/> Открыть панель</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-th-large"></i> Открыть панель</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_panel"><i class="fa fa-th-large"/> Открыть панель</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_panel"><i class="fa fa-th-large"></i> Открыть панель</div>').attr('data-tr', trId));
             }
 
             if (this.control.duplicating !== true || this.f.blockduplicate || item.f.blockduplicate) {
-                text.append($('<div class="menu-item"><i class="fa fa-clone"/> Дублировать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-clone"></i> Дублировать</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"/> Дублировать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"></i> Дублировать</div>').attr('data-tr', trId));
             }
 
             if (['calcs', 'globcalcs'].indexOf(this.tableRow.type) !== -1) {
-                text.append($('<div class="menu-item"><i class="fa fa-refresh"/> Пересчитать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-refresh"></i> Пересчитать</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"/> Пересчитать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> Пересчитать</div>').attr('data-tr', trId));
             }
 
             if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
-                text.append($('<div class="menu-item"><i class="fa fa-times"/> Удалить</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-times"></i> Удалить</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"/> Удалить</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> Удалить</div>').attr('data-tr', trId));
             }
 
             let dialog = App.mobilePanel(item[this.mainFieldName].v || 'id: ' + trId, text);
@@ -488,26 +488,26 @@
 
 
             if (this.control.duplicating !== true || pcTable.f.blockduplicate || item.f.blockduplicate) {
-                text.append($('<div class="menu-item"><i class="fa fa-clone"/> Дублировать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-clone"></i> Дублировать</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"/> Дублировать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"></i> Дублировать</div>').attr('data-tr', trId));
             }
 
             if (['calcs', 'globcalcs'].indexOf(pcTable.tableRow.type) !== -1) {
-                text.append($('<div class="menu-item"><i class="fa fa-refresh"/> Пересчитать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-refresh"></i> Пересчитать</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"/> Пересчитать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> Пересчитать</div>').attr('data-tr', trId));
             }
 
             if (pcTable.isCreatorView && pcTable.tableRow.type === 'cycles') {
-                text.append($('<div class="menu-item cycle_refresh color-danger"><i class="fa fa-refresh"/> Пересчитать цикл</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item cycle_refresh color-danger"><i class="fa fa-refresh"></i> Пересчитать цикл</div>').attr('data-tr', trId));
             }
 
 
             if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
-                text.append($('<div class="menu-item"><i class="fa fa-times"/> Удалить</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-times"></i> Удалить</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"/> Удалить</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> Удалить</div>').attr('data-tr', trId));
             }
 
             let popoverId = App.popNotify({

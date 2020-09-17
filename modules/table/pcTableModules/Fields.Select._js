@@ -225,7 +225,7 @@ fieldTypes.select = {
 
         setTimeout(function () {
             if (divParent.length && divParent.isAttached() && divParent.find('.mark-loading').length) {
-                divParent.find('.mark-loading').html('<i class="fa fa-spinner"/>');
+                divParent.find('.mark-loading').html('<i class="fa fa-spinner"></i>');
             }
         }, 200);
 

@@ -74,7 +74,7 @@ $.extend(App.pcTableMain.prototype, {
             editedData.checked_ids = pcTable.row_actions_get_checkedIds();
             $td.height($td.height());
             $td.find('.cell-value').hide();
-            let $spinner = $('<div class="text-center"><i class="fa fa-spinner" style="color: #000"/></div>');
+            let $spinner = $('<div class="text-center"><i class="fa fa-spinner" style="color: #000"></i></div>');
             $td.append($spinner);
             pcTable._saving = true;
             pcTable.model.click(editedData)
@@ -238,7 +238,7 @@ $.extend(App.pcTableMain.prototype, {
         td.addClass('editCell');
     },
     _setTdSaving: function ($td) {
-        $td.html('<div class="text-center"><i class="fa fa-spinner"/></div>');
+        $td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>');
     },
     _createEditCell: function (td, editNow, item) {
         let pcTable = this;
@@ -333,7 +333,7 @@ $.extend(App.pcTableMain.prototype, {
                 return;
             }
 
-            td.html('<div class="text-center"><i class="fa fa-spinner"/></div>');
+            td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>');
             let editedData = {};
             editedData[field.name] = editVal;
 
@@ -420,7 +420,7 @@ $.extend(App.pcTableMain.prototype, {
 
 
 //Сохранить
-        var $btn = $('<button class="btn btn-sm btn-default" data-save="true" data-name="Сохранить"><i class="fa fa-save"/></button>')
+        var $btn = $('<button class="btn btn-sm btn-default" data-save="true" data-name="Сохранить"><i class="fa fa-save"></i></button>')
             .data('click', function (event) {
                 onAction = true;
                 saveClbck(input, event, true);
@@ -428,7 +428,7 @@ $.extend(App.pcTableMain.prototype, {
 
         editCellsBlock.append($btn)
         //Отменить
-        var $btn = $('<button class="btn btn-sm btn-default btn-empty-with-icon"><i class="fa fa-times"/></button>')
+        var $btn = $('<button class="btn btn-sm btn-default btn-empty-with-icon"><i class="fa fa-times"></i></button>')
             .data('click', function (event) {
                 onAction = true;
                 let goTo = event.altKey ? 'right' : (event.shiftKey ? 'down' : false);
@@ -440,7 +440,7 @@ $.extend(App.pcTableMain.prototype, {
         if (isGroupSelected && (isMultiGroupSelected ? field.editGroupMultiColumns : field.editGroup)) {
 
 
-            $btn = $('<button class="btn btn-sm btn-warning" data-save="true" data-name="Применить к выделенным"><i class="fa fa-database" title="Применить к выделенным"/></button>');
+            $btn = $('<button class="btn btn-sm btn-warning" data-save="true" data-name="Применить к выделенным"><i class="fa fa-database" title="Применить к выделенным"></i></button>');
 
             let comboSave = function () {
 
@@ -480,7 +480,7 @@ $.extend(App.pcTableMain.prototype, {
 
             if (field.code && !field.codeOnlyInAdd) {
 
-                $btn = $('<button class="btn btn-sm btn-warning" data-name="Фиксировать выделенные"><i class="fa fa-hand-rock-o" title="Фиксировать"/></button>');
+                $btn = $('<button class="btn btn-sm btn-warning" data-name="Фиксировать выделенные"><i class="fa fa-hand-rock-o" title="Фиксировать"></i></button>');
                 $btn.data('click', function () {
                     onAction = true;
                     let selectedTd = pcTable._container.find('td.selected');
@@ -490,7 +490,7 @@ $.extend(App.pcTableMain.prototype, {
                 });
                 editCellsBlock.append($btn);
 
-                $btn = $('<button class="btn btn-sm btn-danger" data-name="Сбросить ручные"><i class="fa fa-eraser" title="Сбросить ручные"/></button>');
+                $btn = $('<button class="btn btn-sm btn-danger" data-name="Сбросить ручные"><i class="fa fa-eraser" title="Сбросить ручные"></i></button>');
                 $btn.data('click', function () {
                     onAction = true;
                     let selectedTd = pcTable._container.find('td.selected');
@@ -504,10 +504,10 @@ $.extend(App.pcTableMain.prototype, {
             }
 
         } else if (item[field.name] && item[field.name].h == true) {
-            $btn = $('<button class="btn btn-sm btn-danger" data-name="Сбросить ручное"><i class="fa fa-eraser" title="Сбросить ручное"/></button>');
+            $btn = $('<button class="btn btn-sm btn-danger" data-name="Сбросить ручное"><i class="fa fa-eraser" title="Сбросить ручное"></i></button>');
             $btn.data('click', function () {
                 onAction = true;
-                td.html('<div class="text-center"><i class="fa fa-spinner"/></div>');
+                td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>');
                 let editedData = {};
                 if (!parseInt(itemId)) itemId = 'params';
                 editedData[itemId] = {};
@@ -518,10 +518,10 @@ $.extend(App.pcTableMain.prototype, {
             });
             editCellsBlock.append($btn)
         } else if (field.code && !field.codeOnlyInAdd) {
-            $btn = $('<button class="btn btn-sm btn-default" data-name="Фиксировать"><i class="fa fa-hand-rock-o" title="Фиксировать"/></button>');
+            $btn = $('<button class="btn btn-sm btn-default" data-name="Фиксировать"><i class="fa fa-hand-rock-o" title="Фиксировать"></i></button>');
             $btn.data('click', function () {
                 onAction = true;
-                td.html('<div class="text-center"><i class="fa fa-spinner"/></div>');
+                td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>');
                 let editedData = {};
                 if (!parseInt(itemId)) itemId = 'params';
                 editedData[itemId] = {};
@@ -594,11 +594,11 @@ $.extend(App.pcTableMain.prototype, {
             };
 
 
-            $btn = $('<button class="btn btn-sm btn-primary"><i class="fa fa-edit" title="Изменить в таблице-источнике"/></button>');
+            $btn = $('<button class="btn btn-sm btn-primary"><i class="fa fa-edit" title="Изменить в таблице-источнике"></i></button>');
             $btn.on('click', sourseBtnClick);
             editCellsBlock.append($btn);
             if (field.changeSelectTable === 2) {
-                $btn = $('<button class="btn btn-sm btn-primary" data-add-button="true"><i class="fa fa-plus" title="Добавить в таблицу-источник"/></button>');
+                $btn = $('<button class="btn btn-sm btn-primary" data-add-button="true"><i class="fa fa-plus" title="Добавить в таблицу-источник"></i></button>');
                 editCellsBlock.append($btn);
                 $btn.on('click', sourseBtnClick);
             }

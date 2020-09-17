@@ -540,7 +540,7 @@
                 $('<button class="btn btn-default btn-xxs field_name copy_me" data-copied-text="Скопировано"/>').text(this.tableRow.name).appendTo(creatorPart);
 
 
-                $('<button class="btn btn-danger btn-xxs" title="Редактировать настройки таблицы"/>').html('<i class="fa fa-pencil-square-o"/>').on('click', function () {
+                $('<button class="btn btn-danger btn-xxs" title="Редактировать настройки таблицы"/>').html('<i class="fa fa-pencil-square-o"></i>').on('click', function () {
                     (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {id: pcTable.tableRow.id})).then(function (json) {
                         if (json) window.location.reload(true);
                     });
@@ -548,14 +548,14 @@
 
 
                 let filters = {'fl_name': [this.tableRow.id]};
-                $('<a href="/Table/' + this.Tables.branchId + '/' + this.Tables.id + '/?' + $.param({f: filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Открыть список таблиц"/>').html('<i class="fa fa-external-link"/>').appendTo(creatorPart);
+                $('<a href="/Table/' + this.Tables.branchId + '/' + this.Tables.id + '/?' + $.param({f: filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Открыть список таблиц"/>').html('<i class="fa fa-external-link"></i>').appendTo(creatorPart);
 
 
                 filters = {'f_table_categories': this.tableRow.category, 'f_table': this.tableRow.id};
                 if (this.tableRow.__version) {
                     filters.fl_version = this.tableRow.__version
                 }
-                $('<a href="/Table/' + this.Tables.branchId + '/' + this.TableFields.id + '/?' + $.param({f: filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Открыть состав таблиц"/>').html('<i class="fa fa-external-link-square"/>').appendTo(creatorPart);
+                $('<a href="/Table/' + this.Tables.branchId + '/' + this.TableFields.id + '/?' + $.param({f: filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Открыть состав таблиц"/>').html('<i class="fa fa-external-link-square"></i>').appendTo(creatorPart);
 
 
                 if (this.tableRow.type === "calcs") {
@@ -572,7 +572,7 @@
 
                 }
                 let type = $('<div class="color-danger creator-table-title">' +
-                    +this.tableRow.sort + ' <i class="' + App.tableTypes[this.tableRow.type].icon + '"/> '
+                    +this.tableRow.sort + ' <i class="' + App.tableTypes[this.tableRow.type].icon + '"></i> '
                     + App.tableTypes[this.tableRow.type].title + '</div>');
                 creatorPart.append(type);
 
@@ -665,7 +665,7 @@
             this._beforeSpace_title.find('.bttns').append(csv);
 
             if (this.tableRow.description) {
-                let btnAdd = $('<a class="btn btn-default btn-sm"><i class="fa fa-info"/></a>');
+                let btnAdd = $('<a class="btn btn-default btn-sm"><i class="fa fa-info"></i></a>');
                 let $description = $('<div class="table-description"/>').html(this.tableRow.description);
                 btnAdd.appendTo(csv);
                 let storageKey = 'table_description_switcher' + this.tableRow.id;
@@ -2217,7 +2217,7 @@
                 pcTable._headCellIdButtonsState();
             });
 
-            panel = $('<div class="pcTable-filters for-selected"><button class="btn btn-default btn-xxs"><i class="fa fa-copy"/></button> <button class="btn btn-default btn-xxs" data-names="true"><i class="fa fa-clone"/></button></div>');
+            panel = $('<div class="pcTable-filters for-selected"><button class="btn btn-default btn-xxs"><i class="fa fa-copy"></i></button> <button class="btn btn-default btn-xxs" data-names="true"><i class="fa fa-clone"></i></button></div>');
             $th.append(panel);
 
             this._refreshCheckedStatus();
@@ -2487,7 +2487,7 @@
                 if (!pcTable.isCreatorView && field.category !== "column") {
                     $th.addClass('worker-with-i');
                 }
-                span_help = $('<span class="btn btn-xxs btn-default cell-help" tabindex="-1" id="field-help-' + field.name + '"><i class="fa fa-info"/></span>');
+                span_help = $('<span class="btn btn-xxs btn-default cell-help" tabindex="-1" id="field-help-' + field.name + '"><i class="fa fa-info"></i></span>');
 
                 if (pcTable.isCreatorView && /^\s*<admin>.*?<\/admin>\s*$/s.test(field.help)) {
                     span_help.addClass('danger-backg');
@@ -2574,7 +2574,7 @@
                 (() => {
                     let $divPopoverArrowDown = $('<div class="cell-header-dropdown">');
                     let btnDropDown = $('<button class="btn btn-default btn-xxs"  tabindex="-1">' +
-                        '<i class="fa fa-caret-down"/></button>');
+                        '<i class="fa fa-caret-down"></i></button>');
 
                     if (!field.pcTable) {
                         btnDropDown.addClass('field_name')
@@ -2590,7 +2590,7 @@
 
                     if (pcTable.isCreatorView) {
                         let btn = $('<div class="menu-item color-danger">');
-                        btn.append('<i class="fa fa-pencil-square-o"/> Изменить');
+                        btn.append('<i class="fa fa-pencil-square-o"></i> Изменить');
                         $divPopoverArrowDown.append(btn);
 
 
@@ -2604,7 +2604,7 @@
 
 
                         btn = $('<div class="menu-item color-danger">');
-                        btn.append('<i class="fa fa-clone"/> Дублировать');
+                        btn.append('<i class="fa fa-clone"></i> Дублировать');
                         $divPopoverArrowDown.append(btn);
                         btn.on('click', function () {
 
@@ -2629,7 +2629,7 @@
                         });
 
                         btn = $('<div class="menu-item color-danger">');
-                        btn.append('<i class="fa fa-plus"/> Вставить после');
+                        btn.append('<i class="fa fa-plus"></i> Вставить после');
                         $divPopoverArrowDown.append(btn);
                         btn.on('click', function () {
                             App.getPcTableById(2, {afterField: field.ord}).then(function (pcTableTable) {
@@ -2647,7 +2647,7 @@
 
                         if (field.category === 'param' || (field.category === 'footer' && field.column == "")) {
                             btn = $('<div class="menu-item color-danger">');
-                            btn.append('<i class="fa fa-hand-scissors-o"/> Секция');
+                            btn.append('<i class="fa fa-hand-scissors-o"></i> Секция');
                             $divPopoverArrowDown.append(btn);
                             btn.on('click', () => {
                                 this.__editSectionTitle(field)
@@ -2656,7 +2656,7 @@
 
 
                         btn = $('<div class="menu-item color-danger">');
-                        btn.append('<i class="fa fa-refresh"/> Изменить NAME');
+                        btn.append('<i class="fa fa-refresh"></i> Изменить NAME');
                         $divPopoverArrowDown.append(btn);
                         btn.on('click', function () {
                             pcTable.model.renameField(field.name);
@@ -2664,7 +2664,7 @@
 
 
                         btn = $('<div class="menu-item color-danger">');
-                        btn.append('<i class="fa fa-times"/> Удалить');
+                        btn.append('<i class="fa fa-times"></i> Удалить');
                         $divPopoverArrowDown.append(btn);
                         btn.on('click', function () {
 
@@ -2708,7 +2708,7 @@
                         //Скрыть
                         if (!pcTable.isMobile) {
                             let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-eye-slash"/> Скрыть');
+                            btn.append('<i class="fa fa-eye-slash"></i> Скрыть');
                             btn.on('click', function () {
                                 btnDropDown.popover('hide');
                                 pcTable.fieldsHiddingHide.call(pcTable, field.name);
@@ -2718,7 +2718,7 @@
 
                             //ширина
                             btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-arrows-h"/> Ширина поля');
+                            btn.append('<i class="fa fa-arrows-h"></i> Ширина поля');
                             btn.on('click', function () {
                                 btnDropDown.popover('hide');
                                 let div = $('<div><input type="number" class="form-control" value="' + field.showMeWidth + '" style="padding-left: 2px;"/></div>');
@@ -2766,7 +2766,7 @@
                         //sort a-z
                         {
                             let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-sort-alpha-asc"/> Сортировать А-Я');
+                            btn.append('<i class="fa fa-sort-alpha-asc"></i> Сортировать А-Я');
                             $divPopoverArrowDown.append(btn)
                             btn.on('click', function () {
                                 pcTable.sort(field, 1);
@@ -2775,7 +2775,7 @@
                         //sort z-a
                         {
                             let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-sort-alpha-desc"/> Сортировать Я-А');
+                            btn.append('<i class="fa fa-sort-alpha-desc"></i> Сортировать Я-А');
                             $divPopoverArrowDown.append(btn);
                             btn.on('click', function () {
                                 pcTable.sort(field, -1);
@@ -2786,7 +2786,7 @@
                         //Математические операции
                         if (field.category === 'column' && field.type === 'number') {
                             let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-diamond"/> Математические операции');
+                            btn.append('<i class="fa fa-diamond"></i> Математические операции');
                             $divPopoverArrowDown.append(btn);
                             btn.on('click', function () {
                                 let $div = $('<div>');
@@ -2872,7 +2872,7 @@
                     if (field.linkToSelectTable) {
                         let table = field.linkToSelectTable;
                         let btn = $('<div class="menu-item color-primary">');
-                        btn.append('<i class="fa fa-external-link"/> ' + table['title']);
+                        btn.append('<i class="fa fa-external-link"></i> ' + table['title']);
                         $divPopoverArrowDown.append(btn);
                         btn.on('click', function () {
                             window.open(table.link, '_blank').focus()
@@ -3218,7 +3218,7 @@
         }
         ,
         _getLoadingSpinner: function () {
-            return $('<div class="text-center"><i class="fa fa-spinner"/></div>');
+            return $('<div class="text-center"><i class="fa fa-spinner"></i></div>');
         }
         ,
         _colorizeElement: function (td, color, repeated) {

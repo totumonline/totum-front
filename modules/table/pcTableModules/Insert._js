@@ -57,7 +57,7 @@ $.extend(App.pcTableMain.prototype, {
                     });
                 }
             };
-        btns[('<i class="fa fa-save"  tabindex="' + (pcTable.fieldCategories.column.length + 1) + '"/>')] =
+        btns[('<i class="fa fa-save"  tabindex="' + (pcTable.fieldCategories.column.length + 1) + '"></i>')] =
             function () {
                 if (!panel.is('.onSaving')) {
                     panel.addClass('onSaving');
@@ -68,7 +68,7 @@ $.extend(App.pcTableMain.prototype, {
                     });
                 }
             };
-        btns[('<i class="fa fa-paste"  tabindex="' + (pcTable.fieldCategories.column.length + 2) + '"/>')] =
+        btns[('<i class="fa fa-paste"  tabindex="' + (pcTable.fieldCategories.column.length + 2) + '"></i>')] =
             function () {
                 if (!panel.is('.onSaving')) {
                     panel.addClass('onSaving');
@@ -79,7 +79,7 @@ $.extend(App.pcTableMain.prototype, {
                     });
                 }
             };
-        btns['<i class="fa fa-times" tabindex="' + (pcTable.fieldCategories.column.length + 3) + '"/>'] = function () {
+        btns['<i class="fa fa-times" tabindex="' + (pcTable.fieldCategories.column.length + 3) + '"></i>'] = function () {
             pcTable._closeInsertRow.call(pcTable, $(this).closest('#' + pcTable_PANNEL_IDS.insert));
 
         };
@@ -188,7 +188,7 @@ $.extend(App.pcTableMain.prototype, {
             .on('click', AddWithRow)
             .appendTo(this._insertButtons);
         if (!pcTable.isMobile && this.tableRow.panel) {
-            $('<button class="btn btn-warning btn-sm"><i class="fa fa-th-large"/></button>')
+            $('<button class="btn btn-warning btn-sm"><i class="fa fa-th-large"></i></button>')
                 .on('click', AddWithPanel).appendTo(this._insertButtons)
                 .css('margin-left', 5);
         }

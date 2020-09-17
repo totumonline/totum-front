@@ -224,11 +224,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     }
                     button.removeClass('btn-warning').addClass('btn-default');
 
-                    button.html('<i class="fa fa-hand-grab-o"/>');
+                    button.html('<i class="fa fa-hand-grab-o"></i>');
                     if (EditPanelFunc.editItem[field.name].h) {
                         button.addClass('btn-warning').removeClass('btn-default');
                         if (Object.keys(EditPanelFunc.editItem[field.name]).indexOf('c') !== -1 && EditPanelFunc.editItem[field.name].c !== EditPanelFunc.editItem[field.name].v) {
-                            button.html('<i class="fa fa-hand-paper-o"/>');
+                            button.html('<i class="fa fa-hand-paper-o"></i>');
                         }
                     }
                 }
