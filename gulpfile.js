@@ -6,7 +6,10 @@ let gulp = require('gulp'),
     concat = require('gulp-concat'),
     cssBase64 = require('gulp-css-base64'),
     staticHash = require('gulp-static-hash'),
-    through = require('through2');
+    through = require('through2'),
+    watch = require('gulp-watch');
+
+let dev = false;
 
 gulp.task('default', function () {
     return gulp.start('product:html.html_copy');
@@ -118,12 +121,26 @@ let path = {
     }
 };
 
+gulp.task('DEVELOP', function () {
+    dev = true;
+
+    gulp.start('product:js');
+    gulp.start('product:css');
+
+    watch([path.js.src, path.js.src_parts, './functions.json'], function (event, cb) {
+        gulp.start('product:js');
+    });
+    watch(['web_dev/css/**/*', 'web_dev/css/*'], function (event, cb) {
+        gulp.start('product:css');
+    });
+});
+gulp.task('QUICK-PROD', function () {
+    gulp.start('product:js');
+    gulp.start('product:css');
+});
+
 /*product*/
 {
-    gulp.task('product:clean', function () {
-        return del(['./http'])
-    });
-
     gulp.task('product:fonts', function () {
         return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', 'bower_components/JetBrainsMono/web/woff2/*.*'])
             .pipe(gulp.dest('./http/fonts/'));
@@ -157,21 +174,25 @@ let path = {
             .pipe(gulp.dest(path.cssImgs.dest));*/
     });
     gulp.task('product:css', function () {
-        return gulp.src(path.css.src)
-            .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))//expanded
-            .pipe(gulp.dest(path.css.dest));
+        let branch = gulp.src(path.css.src);
+
+
+        branch = branch.pipe(sass({outputStyle: dev?'expanded':'compressed'}).on('error', sass.logError))//expanded
+        return branch.pipe(gulp.dest(path.css.dest));
     });
     gulp.task('product:js', function () {
         gulp.src('./functions.json')
             .pipe(gulp.dest(path.http.dest + 'js/'));
 
-        return gulp.src(path.js.src)
+        let branch = gulp.src(path.js.src)
             .pipe(include())
-            .pipe(concat('main.js'))
-            .pipe(uglify().on('error', function (e) {
+            .pipe(concat('main.js'));
+        if (!dev) {
+            branch = branch.pipe(uglify().on('error', function (e) {
                 console.log(e);
-            }))    /* */
-            .pipe(gulp.dest(path.js.dest));
+            }))
+        }
+        return branch.pipe(gulp.dest(path.js.dest));
     });
     gulp.task('product:jsChart', function () {
         gulp.src('node_modules/chart.js/dist/Chart.min.js')
@@ -182,11 +203,11 @@ let path = {
 
     gulp.task('product:templatesReplace', ['product:css', 'product:jsChart', 'product:cssImgs', 'product:imgsLibs', 'product:cssLibs', 'product:fonts', 'product:js', 'product:jsLibs'], function () {
         return gulp.src(path.htmlTemplate.src)
-            .pipe(urlReplacer({replaceFrom: '/', replaceTo: '../../http/'}))
+            .pipe(urlReplacer({replaceFrom: '/', replaceTo: '../../vendor/totumonline/totumfront/http/'}))
             .pipe(staticHash({
                 asset: '../../http/',
                 exts: ['json', 'css', 'js']
-            })).pipe(urlReplacer({replaceFrom: '../../http/', replaceTo: '/'}))
+            })).pipe(urlReplacer({replaceFrom: '../../vendor/totumonline/totumfront/http/', replaceTo: '/'}))
             .pipe(gulp.dest(path.htmlTemplate.dest))
     });
 

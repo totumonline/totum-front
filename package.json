@@ -25,5 +25,11 @@
     "gulp-uglifyes": "^0.1.3",
     "gulp-watch": "^4.1.1",
     "through2": "^4.0.2"
+  },
+  "scripts": {
+    "copy-to-base": "cp http/js/* ../../../http/js/ && cp http/css/* ../../../http/css/",
+    "run-dev-gulp": "gulp DEVELOP",
+    "run-all-prod-gulp": "gulp",
+    "run-quick-prod-gulp": "gulp QUICK-PROD"
   }
 }
