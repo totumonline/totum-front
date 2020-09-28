@@ -31,12 +31,16 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
 
     this.checkRow = function (val, isFirstLoad) {
-        EditPanelFunc.pcTable.model[checkMethod](this.getDataForPost(val), Object.keys(insertChangesCalcsFields)).then(function (json) {
-            if (EditPanelFunc.panelType == 'edit' && isFirstLoad) {
-                firstLoad = $.extend(true, {}, json.row);
-            }
-            EditPanelFunc.editRow.call(EditPanelFunc, json);
-        });
+        let self = this;
+        return new Promise(function (resolve, reject) {
+            EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), Object.keys(insertChangesCalcsFields)).then(function (json) {
+                if (EditPanelFunc.panelType == 'edit' && isFirstLoad) {
+                    firstLoad = $.extend(true, {}, json.row);
+                }
+                EditPanelFunc.editRow.call(EditPanelFunc, json);
+                resolve(EditPanelFunc);
+            }).fail(reject);
+        })
     };
     this.saveRow = function (panel, btn) {
         let postData = this.getDataForPost();
@@ -66,6 +70,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     };
 
     this.editRow = function (json) {
+
         "use strict";
         let isAnyEditableFields = false;
         EditPanelFunc.pcTable.f = json.f || {};
@@ -277,7 +282,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                             title = 'Просмотр настроек таблицы <b> ' + itemName + '</b>';
                         } else {
                             title = 'Редактирование настроек таблицы <b> ' + itemName + '</b>';
-                        };
+                        }
+                        ;
                         break;
                     case 2:
                         if (EditPanelFunc.pcTable.tableRow.main_field && EditPanelFunc.pcTable.fields[EditPanelFunc.pcTable.tableRow.main_field]) {
@@ -293,10 +299,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         }
 
                         if (!EditPanelFunc.pcTable.control.editing || (json.row.f.block && !isAnyEditableFields)) {
-                            title = 'Просмотр поля таблицы '+EditPanelFunc.editItem.table_name.v+'<b> ' + itemName + '</b>';
+                            title = 'Просмотр поля таблицы ' + EditPanelFunc.editItem.table_name.v + '<b> ' + itemName + '</b>';
                         } else {
-                            title = 'Редактирование поля таблицы '+EditPanelFunc.editItem.table_name.v+' <b> ' + itemName + '</b>';
-                        };
+                            title = 'Редактирование поля таблицы ' + EditPanelFunc.editItem.table_name.v + ' <b> ' + itemName + '</b>';
+                        }
+                        ;
                         break;
                     default:
                         if (EditPanelFunc.pcTable.tableRow.main_field && EditPanelFunc.pcTable.fields[EditPanelFunc.pcTable.tableRow.main_field]) {
@@ -315,7 +322,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                             title = 'Просмотр <b> ' + itemName + '</b> таблицы <b>' + EditPanelFunc.pcTable.tableRow.title + '</b>';
                         } else {
                             title = 'Редактирование <b> ' + itemName + '</b> таблицы <b>' + EditPanelFunc.pcTable.tableRow.title + '</b>';
-                        };
+                        }
+                        ;
                 }
 
 
@@ -483,18 +491,25 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
         EditPanelFunc.blockedFields[field.name] = false;
 
-        let getEditVal = function ($input) {
+        let getEditVal = async function ($input) {
             let editVal;
             try {
                 editVal = field.getEditVal($input);
                 cell.removeClass('error');
                 delete EditPanelFunc.error[field.name];
             } catch (error) {
-                EditPanelFunc.error[field.name] = error;
-                cell.addClass('error');
+                if (field.name === 'name' && pcTable === 2) {
+                    delete insertChangesCalcsFields['name'];
+                    let editF = await EditPanelFunc.checkRow();
+                    return editF.editItem['name'].v;
 
-                App.popNotify(error, $input, 'default');
-                return null;
+                } else {
+                    EditPanelFunc.error[field.name] = error;
+                    cell.addClass('error');
+
+                    App.popNotify(error, $input, 'default');
+                    return null;
+                }
             }
             return editVal;
         };
@@ -504,9 +519,9 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         let inFocus = cell.find('input,button').is(':focus');
 
 
-        let saveClbck = function ($input, event, onBlur) {
+        let saveClbck = async function ($input, event, onBlur) {
             onAction = true;
-            let editValResult = getEditVal($input);
+            let editValResult = await getEditVal($input);
             if (editValResult === null) {
                 if (!Object.keys(EditPanelFunc.error).length)
                     EditPanelFunc.FocusIt.call(EditPanelFunc, fieldIndex);
@@ -527,8 +542,12 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     if (field.code && EditPanelFunc.panelType === 'insert') {
                         insertChangesCalcsFields[field.name] = true;
                     }
-                    if (pcTable === 2 && field.name == 'table_id') {
-                        delete insertChangesCalcsFields['version'];
+                    if (pcTable === 2) {
+                        switch (field.name) {
+                            case 'table_id':
+                                delete insertChangesCalcsFields['version'];
+                                break;
+                        }
                     }
                     EditPanelFunc.checkRow(val);
                 }

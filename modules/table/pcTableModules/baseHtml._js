@@ -2615,12 +2615,9 @@
                                     $.each(json.row, function (k, v) {
                                         if (typeof v === 'object') {
                                             ee[k] = v;
-                                            if (k !== 'name') {
-                                                pin[k] = true;
-                                            }
+                                            pin[k] = true;
                                         }
                                     });
-
                                     (new EditPanel(2, BootstrapDialog.TYPE_DANGER, ee, false, pin)).then(funcOnTableChanged);
                                 });
                             })
