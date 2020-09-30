@@ -782,7 +782,7 @@
         }
 
         let src = '/Table/0/' + data.table_id + '?sess_hash=' + data.sess_hash;
-        if (!/^\/Table\//.test(window.location.pathname))
+        if (window.location.pathname!=='/' && !/^\/Table\//.test(window.location.pathname))
             src = data.table_id + '?sess_hash=' + data.sess_hash;
 
         let $iframe = $('<iframe style="width: 100%; height: ' + (height || "80vh") + '; border: none;" src="' + src + '">');

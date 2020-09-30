@@ -11,7 +11,7 @@ let gulp = require('gulp'),
 
 let dev = false;
 
-gulp.task('default', function () {
+gulp.task('ALL_TO_PROD', function () {
     return gulp.start('product:html.html_copy');
 });
 
@@ -116,8 +116,8 @@ let path = {
         dest: '../../http/'
     },
     htmlTemplate: {
-        src: ['../../../totum/templates/page_template*', 'html.html'],
-        dest: '../../../totum/templates'
+        src: ['../../../totum/templates/page_template*', '../../../totum/templates/html.html'],
+        dest: '../../../totum/templates/'
     }
 };
 
@@ -201,25 +201,24 @@ gulp.task('QUICK-PROD', function () {
 
     });
 
-    gulp.task('product:templatesReplace', ['product:css', 'product:jsChart', 'product:cssImgs', 'product:imgsLibs', 'product:cssLibs', 'product:fonts', 'product:js', 'product:jsLibs'], function () {
-        return gulp.src(path.htmlTemplate.src)
-            .pipe(urlReplacer({replaceFrom: '/', replaceTo: '../../vendor/totumonline/totumfront/http/'}))
+    gulp.task('product:templatesReplace', ['product:http_files'], function () {
+        return gulp.src(path.htmlTemplate.src).pipe(urlReplacer({replaceFrom: '/', replaceTo: '../../http/'}))
             .pipe(staticHash({
                 asset: '../../http/',
                 exts: ['json', 'css', 'js']
-            })).pipe(urlReplacer({replaceFrom: '../../vendor/totumonline/totumfront/http/', replaceTo: '/'}))
+            })).pipe(urlReplacer({replaceFrom: '../../http/', replaceTo: '/'}))
             .pipe(gulp.dest(path.htmlTemplate.dest))
     });
 
-    gulp.task('product:http_files', ['product:templatesReplace'], function () {
+    gulp.task('product:http_files', ['product:css', 'product:jsChart', 'product:cssImgs', 'product:imgsLibs', 'product:cssLibs', 'product:fonts', 'product:js', 'product:jsLibs'], function () {
         return gulp.src(path.http.src)
             .pipe(gulp.dest(path.http.dest));
 
     });
 
-    gulp.task('product:html.html_copy', ['product:http_files'], function () {
-        return gulp.src('totum/templates/html.html')
-            .pipe(gulp.dest('./http'));
+    gulp.task('product:html.html_copy', ['product:templatesReplace'], function () {
+        return gulp.src('../../../totum/templates/html.html')
+            .pipe(gulp.dest('../../../http'));
     })
 }
 
