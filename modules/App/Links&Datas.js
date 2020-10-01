@@ -36,15 +36,17 @@
                         notificationManager = null;
                         _model.notificationUpdate(Object.keys(notifications), 'deactivate').then(function () {
                         })
+                        Object.values(notifications).forEach((notifications) => {
+                            notifications.forEach((nf) => {
+                                nf.$modal.remove();
+                            })
+                        })
+                        notifications = [];
                     }).on('remove', () => {
                     if (clocks) {
                         clocks.popover('destroy')
                     }
-                    Object.values(notifications).forEach((notifications) => {
-                        notifications.forEach((nf) => {
-                            nf.simpleClose();
-                        })
-                    })
+
                 })
                 notificationManager.find('button.timer').on('click', function () {
                     if ($(this).is('.active')) return false;
@@ -61,7 +63,12 @@
                         })
                         notificationManager.remove();
                         notificationManager = null;
-
+                        Object.values(notifications).forEach((notifications) => {
+                            notifications.forEach((nf) => {
+                                nf.$modal.remove();
+                            })
+                        })
+                        notifications = [];
                     });
 
 
@@ -544,6 +551,7 @@
                         }
                     });
                     notification.$ele.find('button.close').after('<button class="timer"><i class="fa fa-clock-o"></i></button>');
+                    notification.$ele.css('transition', 'none');
                     notification.$ele.on('click', '.timer:not(.disabled)', function () {
                         let clocks = $(this);
                         clocks.addClass('disabled');
@@ -587,7 +595,8 @@
 
                     });
                     dialogs.push({
-                        $modal: notification.$ele, simpleClose: () => {
+                        $modal: notification.$ele,
+                        simpleClose: () => {
                             notification.$ele.data('deactivated', true)
                             notification.$ele.find('button[data-notify="dismiss"]').click();
                         }, notification: notification
@@ -782,7 +791,7 @@
         }
 
         let src = '/Table/0/' + data.table_id + '?sess_hash=' + data.sess_hash;
-        if (window.location.pathname!=='/' && !/^\/Table\//.test(window.location.pathname))
+        if (window.location.pathname !== '/' && !/^\/Table\//.test(window.location.pathname))
             src = data.table_id + '?sess_hash=' + data.sess_hash;
 
         let $iframe = $('<iframe style="width: 100%; height: ' + (height || "80vh") + '; border: none;" src="' + src + '">');

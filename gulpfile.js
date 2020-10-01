@@ -7,7 +7,8 @@ let gulp = require('gulp'),
     cssBase64 = require('gulp-css-base64'),
     staticHash = require('gulp-static-hash'),
     through = require('through2'),
-    watch = require('gulp-watch');
+    watch = require('gulp-watch'),
+    debug = require('gulp-debug');
 
 let dev = false;
 
@@ -112,8 +113,8 @@ let path = {
         dest: './http/css/img/'
     },
     http: {
-        src: ['./http/*.*', './http/.*', './http/**/*.*', './http/**/.*'],
-        dest: '../../http/'
+        src: ['!./http/*.*', '!./http/.*', './http/**/*.*', './http/**/.*'],
+        dest: '../../../http/'
     },
     htmlTemplate: {
         src: ['../../../totum/templates/page_template*', '../../../totum/templates/html.html'],
@@ -134,9 +135,14 @@ gulp.task('DEVELOP', function () {
         gulp.start('product:css');
     });
 });
-gulp.task('QUICK-PROD', function () {
-    gulp.start('product:js');
-    gulp.start('product:css');
+gulp.task('QUICK-PROD', ['product:js', 'product:css'], function () {
+    return gulp.src('./http/**/main.*')/*.pipe(debug())*/
+        .pipe(gulp.dest(path.http.dest));
+});
+
+gulp.task('QUICK-PROD-DEV', function () {
+    dev = true;
+    return gulp.start('QUICK-PROD');
 });
 
 /*product*/
@@ -177,7 +183,7 @@ gulp.task('QUICK-PROD', function () {
         let branch = gulp.src(path.css.src);
 
 
-        branch = branch.pipe(sass({outputStyle: dev?'expanded':'compressed'}).on('error', sass.logError))//expanded
+        branch = branch.pipe(sass({outputStyle: dev ? 'expanded' : 'compressed'}).on('error', sass.logError))//expanded
         return branch.pipe(gulp.dest(path.css.dest));
     });
     gulp.task('product:js', function () {
@@ -211,7 +217,7 @@ gulp.task('QUICK-PROD', function () {
     });
 
     gulp.task('product:http_files', ['product:css', 'product:jsChart', 'product:cssImgs', 'product:imgsLibs', 'product:cssLibs', 'product:fonts', 'product:js', 'product:jsLibs'], function () {
-        return gulp.src(path.http.src)
+        return gulp.src(path.http.src)/*.pipe(debug())*/
             .pipe(gulp.dest(path.http.dest));
 
     });
