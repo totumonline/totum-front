@@ -117,7 +117,7 @@
 
     App.pcTableMain = function (element, config) {
 
-        this.data_params=config.params ||  null;
+        this.data_params = config.params || null;
 
         config = $.extend({},
             {
@@ -187,25 +187,29 @@
             this.isMobile = true;
         }
 
-        if (this.isCreatorView && $('#isCreator').length === 0) {
-            let checkbox = $('<span id="isCreator" class="btn btn-sm"><i class="fa-user-circle fa"></i></span>');
-            let input = checkbox;
-            if (!this.isMobile && !localStorage.getItem('notCreator')) {
-                input.addClass('btn-danger');
-            } else {
-                this.isCreatorView = false;
-                input.addClass('btn-warning');
-                $('.plus-top-branch').hide();
-            }
-            input.on('click', () => {
-                if (!localStorage.getItem('notCreator')) {
-                    localStorage.setItem('notCreator', true)
+        if (this.isCreatorView) {
+            if ($('#isCreator').length === 0) {
+                let checkbox = $('<span id="isCreator" class="btn btn-sm"><i class="fa-user-circle fa"></i></span>');
+                let input = checkbox;
+                if (!this.isMobile && !localStorage.getItem('notCreator')) {
+                    input.addClass('btn-danger');
                 } else {
-                    localStorage.removeItem('notCreator')
+                    input.addClass('btn-warning');
+                    $('.plus-top-branch').hide();
                 }
-                window.location.reload(true);
-            })
-            $('#docs-link').before(checkbox)
+                input.on('click', () => {
+                    if (!localStorage.getItem('notCreator')) {
+                        localStorage.setItem('notCreator', true)
+                    } else {
+                        localStorage.removeItem('notCreator')
+                    }
+                    window.location.reload(true);
+                })
+                $('#docs-link').before(checkbox)
+            }
+            if (this.isMobile || localStorage.getItem('notCreator')) {
+                this.isCreatorView = false;
+            }
         }
 
         if (!this.isCreatorView) {
@@ -222,7 +226,6 @@
         if (App.isTopWindow()) {
             this.beforeSpaceHide = false;
         }
-
 
 
         if (element) {
