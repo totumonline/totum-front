@@ -432,8 +432,8 @@
                 }
                 if (json.chdata.f) {
                     let newf = json.chdata.f;
-                    ['blockadd', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle'].forEach(function (k) {
-                        if (newf[k] || pcTable.f[k]) {
+                    ['blockadd', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment'].forEach(function (k) {
+                        if (k in newf || k in pcTable.f) {
                             if (typeof newf[k] == "object") {
                                 if (!Object.equals(newf[k], pcTable.f[k])) {
                                     let old = Object.assign({}, pcTable.f[k]);
