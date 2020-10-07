@@ -22,7 +22,6 @@ fieldTypes.date = {
 
         $input.val(this.getViewString(oldValue));
 
-
         let cParent = $('<div>');
         let popoverClass;
         if (this.dateTime && /d/i.test(format)) {

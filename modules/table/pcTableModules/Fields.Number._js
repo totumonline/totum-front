@@ -45,4 +45,7 @@ fieldTypes.number = {
         }
         return val;
     }
+    , addPlaceholder: function (input, placeholder) {
+        input.attr('placeholder', placeholder);
+    }
 };

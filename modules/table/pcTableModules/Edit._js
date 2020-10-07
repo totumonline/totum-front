@@ -407,6 +407,11 @@ $.extend(App.pcTableMain.prototype, {
 
         var input = field.getEditElement(undefined, oldval, item, saveClbck, escClbck, blurClbck, null, editNow);
 
+        if(oldval.f && oldval.f.placeholder && field.addPlaceholder){
+            field.addPlaceholder(input, oldval.f.placeholder)
+        }
+        
+        
         td.html(input);
         td.data('SaveMe', function (event) {
             event = event || {};

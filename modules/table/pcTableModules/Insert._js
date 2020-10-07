@@ -499,7 +499,9 @@ $.extend(App.pcTableMain.prototype, {
 
         let input = field.getEditElement(td.data('input'), pcTable._insertItem[field.name], pcTable._insertItem, saveClbck, escClbck, blurClbck);
 
-
+        if(f && f.placeholder && field.addPlaceholder){
+            field.addPlaceholder(input, f.placeholder)
+        }
         td.on('click focus', 'input,button,select', function (event) {
             pcTable._currentInsertCellIndex = index;
         });

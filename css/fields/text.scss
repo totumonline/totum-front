@@ -1,8 +1,13 @@
-div.jsoneditor-tree{
- min-height: 200px;
+div.jsoneditor-tree {
+  min-height: 200px;
 }
-div[data-field-type="text"].nonowrap{
- .cell-value{
-  white-space: pre-line;
- }
+
+div[data-field-type="text"].nonowrap {
+  .cell-value {
+    white-space: pre-line;
+  }
+}
+
+.CodeMirror pre.CodeMirror-placeholder.CodeMirror-line-like {
+  color: #d0d0d0;
 }

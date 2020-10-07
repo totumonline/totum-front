@@ -231,6 +231,8 @@ fieldTypes.text = {
                 }
 
                 element.data('editor', editor);
+                div.data('editor', editor);
+
             });
 
         };
@@ -432,5 +434,11 @@ fieldTypes.text = {
     },
     getCellTextInPanel: function (fieldValue, td, item) {
         return this.getPanelTextWithLinks(fieldValue);
+    },
+    addPlaceholder(input, placeholder){
+        setTimeout(function (){
+            input.data('editor').setOption('placeholder', placeholder);
+            input.data('editor').refresh();
+        }, 100)
     }
 };

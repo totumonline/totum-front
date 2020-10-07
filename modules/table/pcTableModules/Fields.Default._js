@@ -178,4 +178,5 @@ var defaultField = {
         else if (this.multiple) return 1.5;
         else return 1;
     }
+
 };

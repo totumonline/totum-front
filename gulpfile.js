@@ -79,6 +79,7 @@ let path = {
             , 'bower_components/codemirror/addon/fold/xml-fold.js'
             , 'bower_components/codemirror/addon/mode/simple.js'
             , 'bower_components/codemirror/addon/hint/show-hint.js'
+            , 'bower_components/codemirror/addon/display/placeholder.js'
             , 'bower_components/codemirror/addon/scroll/simplescrollbars.js'
             , 'bower_components/file-saver/FileSaver.min.js'
             , 'bower_components/bootstrap3-dialog/dist/js/bootstrap-dialog.min.js'
@@ -131,7 +132,7 @@ gulp.task('DEVELOP', function () {
     watch([path.js.src, path.js.src_parts, './functions.json'], function (event, cb) {
         gulp.start('product:js');
     });
-    watch(['web_dev/css/**/*', 'web_dev/css/*'], function (event, cb) {
+    watch(['css/**/*', 'css/*'], function (event, cb) {
         gulp.start('product:css');
     });
 });
@@ -188,7 +189,8 @@ gulp.task('QUICK-PROD-DEV', function () {
     });
     gulp.task('product:js', function () {
         gulp.src('./functions.json')
-            .pipe(gulp.dest(path.http.dest + 'js/'));
+            .pipe(gulp.dest('./http/js/'));
+
 
         let branch = gulp.src(path.js.src)
             .pipe(include())
