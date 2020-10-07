@@ -2321,6 +2321,7 @@
 
             if (panelColor !== undefined && panelColor !== '') {
                 $th.css('background-color', panelColor);
+                field.panelColor = panelColor;
             }
             if (field.webRoles && field.webRoles.length === 1 && field.webRoles[0].toString() === "1") {
                 $th.addClass('admin-see');
