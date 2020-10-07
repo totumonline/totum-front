@@ -973,6 +973,7 @@
 
         var map = {name: "autoCloseFunctions"};
         map["'('"] = autoCloseS;
+        map["')'"] = autoCloseS;
         cm.addKeyMap(map);
 
         cm.on('keydown', function (cm, event) {
