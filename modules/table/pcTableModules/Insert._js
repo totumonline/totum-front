@@ -332,7 +332,7 @@ $.extend(App.pcTableMain.prototype, {
                 i.attr('title', f.comment)
                 td.prepend(i);
 
-            } else if (f.icon) {
+            } else if (f.icon && field.type!=='button') {
                 let i = $('<i class="fa fa-' + f.icon + ' pull-right" style="padding: 3px;">');
                 td.prepend(i);
             }

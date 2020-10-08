@@ -18,6 +18,9 @@ fieldTypes.button = {
                 format = $.extend({}, (field.pcTable.f || {}), (item.f || {}), (item[field.name].f || {}));
             } else {
                 format.block = true;
+                if(item[field.name].f && item[field.name].f.icon){
+                    format.icon = item[field.name].f.icon;
+                }
             }
         } else {
             format = $.extend({}, (field.pcTable.f || {}), (item[field.name].f || {}));

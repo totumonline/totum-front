@@ -573,8 +573,9 @@
                 }
                 let type = $('<div class="color-danger creator-table-title">' +
                     +this.tableRow.sort + ' <i class="' + App.tableTypes[this.tableRow.type].icon + '"></i> '
-                    + App.tableTypes[this.tableRow.type].title + '</div>');
+                    + App.tableTypes[this.tableRow.type].title + ' ['+this.tableRow.actual+']</div>');
                 creatorPart.append(type);
+
 
 
                 if (this.tableRow.type === "calcs") {
