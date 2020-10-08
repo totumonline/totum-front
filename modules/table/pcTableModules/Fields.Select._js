@@ -491,7 +491,7 @@ fieldTypes.select = {
                             input.removeData('keyPressed');
                             input.removeData('enterPressed');
                         });
-                        field.focusElement(divParent);
+                        divParent.find('button').click();
                     }
 
                     input.on('hidden.bs.select', function () {

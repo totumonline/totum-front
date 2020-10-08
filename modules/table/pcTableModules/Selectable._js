@@ -213,7 +213,7 @@ App.pcTableMain.prototype._addSelectable = function () {
                         let c = val.c;
                         if (val.c_) {
                             c = val.c_[0];
-                            if (val.c[1]) {
+                            if (val.c_[1]) {
                                 c = $('<span class="deleted_value">').text(c);
                             }
                         }

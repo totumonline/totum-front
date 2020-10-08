@@ -174,12 +174,15 @@ footer {
   }
 }
 
+
+.btn.btn-default{
+  border-color: transparent;
+  background-color: #fafafa;
+
+}
+
 .btn, .btn:active {
   background-image: none;
-
-  &.btn-default {
-    background-color: #fff;
-  }
 
   box-shadow: none;
 
@@ -750,7 +753,7 @@ th {
 }
 
 
-.pcTable-hiddenFieldsTable, .pcTable-filtersTable {
+.pcTable-hiddenFieldsTable{
   margin-top: 10px;
 }
 
@@ -1061,6 +1064,9 @@ th {
   }
 
   margin-bottom: 20px;
+  &:empty{
+    margin: 0;
+  }
 }
 
 .pcTable-beforeSpace, .pcTable-paramsTable, .pcTable-filtersTable, .pcTable-hiddenFieldsTable, .pcTable-footersTable, .pcTable-tableText {
@@ -1544,7 +1550,8 @@ th.id .pcTable-filters.for-selected .btn {
   }
 
   .form-control, [data-field-type="select"] .bootstrap-select button {
-    border-color: #e8e8e8;
+    border-color: transparent;
+    background-color: #FAFAFA;
   }
 
   .btns {
@@ -1614,6 +1621,8 @@ th.id .pcTable-filters.for-selected .btn {
       width: 100%;
       height: 28px;
       background-color: #faf9f8;
+      border-color: transparent;
+
     }
 
     &.with-source-add-button {
@@ -1745,6 +1754,7 @@ ul.CodeMirror-hints {
   overflow: hidden;
   text-overflow: ellipsis;
   background-color: #faf9f8;
+  border-color: transparent;
 
   &.btn-danger {
     color: #333;

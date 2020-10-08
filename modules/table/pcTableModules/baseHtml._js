@@ -578,7 +578,7 @@
 
 
                 if (this.tableRow.type === "calcs") {
-                    type.append(' / Версия ' + this.tableRow.__version + ' / Цикл ' + this.cycle)
+                    type.append(' / Версия ' + this.tableRow.__version + ' / Цикл ' + this.tableRow.cycle_id)
                 }
 
                 let btnHideAdd = $('<button class="btn btn-danger btn-sm" id="hide-hell" disabled><i class="fa fa-times"></i></span></button>')
@@ -2889,7 +2889,7 @@
                     btnDropDown.on('click', function () {
                         let btn = $(this);
 
-                        if (pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
+                        if (field.category==='column' && pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
                             if ($divPopoverArrowDown.find('.column-dropdown').length === 0)
                                 $divPopoverArrowDown.append('<div class="column-dropdown">По текущей странице </div>');
                         } else {
