@@ -21,9 +21,9 @@ $.extend(App.pcTableMain.prototype, {
                     return false;
                 }
 
-                let newcell=cell.clone(true).insertAfter(cell);
+                let newcell = cell.clone(true).insertAfter(cell);
                 cell.hide();
-                newcell.html('<span class="cell-value blocked" style="height: '+newcell.height()+'">Заблокировано</span>');
+                newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">Заблокировано</span>');
                 setTimeout(function () {
                     newcell.remove();
                     cell.show();
@@ -141,11 +141,11 @@ $.extend(App.pcTableMain.prototype, {
                 function (json) {
 
                     pcTable.table_modify.call(pcTable, json, undefined, $editObj);
-                   /* if ($editObj.closest('table').length) {
-                        if ($editObj.is('tr.DataRow')) {
-                            pcTable.refreshRow($editObj);
-                        }
-                    }*/
+                    /* if ($editObj.closest('table').length) {
+                         if ($editObj.is('tr.DataRow')) {
+                             pcTable.refreshRow($editObj);
+                         }
+                     }*/
 
                     if (goTo) {
                         goTo();
@@ -244,7 +244,7 @@ $.extend(App.pcTableMain.prototype, {
 
         let field = this._getFieldBytd(td);
         this._setEditCell(td);
-        let parent=td.parent();
+        let parent = td.parent();
 
 
         let tr = td.closest('tr');
@@ -394,7 +394,7 @@ $.extend(App.pcTableMain.prototype, {
 
             let goTo = event.altKey ? 'right' : (event.shiftKey ? 'down' : false);
 
-            if (!field.isDataModified(editVal, item[field.name].v)) {
+            if (!field.name in item || !field.isDataModified(editVal, item[field.name].v)) {
                 revert(goTo);
             } else {
                 save(editVal, event);
@@ -406,11 +406,11 @@ $.extend(App.pcTableMain.prototype, {
 
         var input = field.getEditElement(undefined, oldval, item, saveClbck, escClbck, blurClbck, null, editNow);
 
-        if(oldval.f && oldval.f.placeholder && field.addPlaceholder){
+        if (oldval.f && oldval.f.placeholder && field.addPlaceholder) {
             field.addPlaceholder(input, oldval.f.placeholder)
         }
-        
-        
+
+
         td.html(input);
         td.data('SaveMe', function (event) {
             event = event || {};

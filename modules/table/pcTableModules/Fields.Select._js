@@ -492,6 +492,16 @@ fieldTypes.select = {
                             input.removeData('enterPressed');
                         });
                         divParent.find('button').click();
+                        setTimeout(function (){
+                            if(input.data('selectpicker').$bsContainer.offset()['top']>divParent.find('button').offset()['top']){
+                                let cdiv = input.closest('td').find('.cdiv')
+                                let popover=cdiv.data('bs.popover');
+
+                                popover.applyPlacement(popover.getCalculatedOffset('top', popover.getPosition(), popover.$tip.width()+8, popover.$tip.height()+33), 'top');
+                                popover.$tip.removeClass('bottom').addClass('top')
+                            }
+
+                        }, 10)
                     }
 
                     input.on('hidden.bs.select', function () {

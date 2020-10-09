@@ -789,6 +789,9 @@ th {
   .cell {
     min-height: 32px;
   }
+  button.btn-default{
+    background-color: transparent;
+  }
 }
 
 @mixin form-control {
@@ -1551,7 +1554,7 @@ th.id .pcTable-filters.for-selected .btn {
 
   .form-control, [data-field-type="select"] .bootstrap-select button {
     border-color: transparent;
-    background-color: #FAFAFA;
+    background-color: #fcfcfc;
   }
 
   .btns {
@@ -1758,6 +1761,7 @@ ul.CodeMirror-hints {
 
   &.btn-danger {
     color: #333;
+    border-color: #ff7f50;
   }
 
 }
