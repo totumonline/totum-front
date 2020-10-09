@@ -344,6 +344,9 @@
                     method: 'duplicate'
                 });
             },
+            dblClick: function (rowId, fieldName){
+                return this.__ajax('post', {field: fieldName, id: rowId, method: 'dblClick'});
+            },
             getFieldLog: function (fieldName, rowId, rowName) {
                 return this.__ajax('post', {field: fieldName, id: rowId, method: 'getFieldLog', rowName: rowName});
             },

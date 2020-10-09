@@ -16,9 +16,8 @@ $.extend(App.pcTableMain.prototype, {
             if (cell.is('.edt')) {
                 pcTable._createEditCell.call(pcTable, cell, true)
             } else {
-                if (tr.is('.DataRow') && pcTable.tableRow.type === 'cycles' && pcTable.tableRow.__firstUserTable) {
-
-                    window.location.href = window.location.pathname + (window.location.pathname.substr(-1) === '/' ? '' : '/') + pcTable._getItemByTr(tr).id + '/' + pcTable.tableRow.__firstUserTable;
+                if (tr.is('.DataRow') && pcTable.tableRow.type === 'cycles') {
+                    pcTable.model.dblClick(pcTable._getItemBytd(cell)['id'], pcTable._getFieldBytd(cell).name);
                     return false;
                 }
 
