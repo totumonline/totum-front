@@ -5,9 +5,16 @@
   font-size: 13px;
   line-height: 22px;
 }
-.CodeMirror{
+#pk .CodeMirror-scroll{
+  height: auto;
 
+  margin-bottom: 0;
+  padding-bottom: 50px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
+
 
 .CodeMirror-hints {
   border-radius: 0;

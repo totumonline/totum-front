@@ -1331,6 +1331,7 @@ th {
 .HTMLEditor .CodeMirror, .codeEditor .CodeMirror {
   border: 1px solid #eee;
   height: auto;
+  //min-height: 200px;
 }
 
 .ui-widget-overlay.ui-front, #ui-datepicker-div.ui-datepicker {

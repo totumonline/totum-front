@@ -14,6 +14,7 @@
     let DbFieldParams = ['where', 'order', 'field', 'sfield', 'bfield', 'tfield', 'preview', 'parent', 'section', 'table', 'filter', 'fieldtitle'];
 
     CodeMirror.defaults.scrollbarStyle = 'overlay';
+
     CodeMirror.defineInitHook(function (mirror) {
         try {
             if (!mirror.options.bigOneDialog && screen.width > window.MOBILE_MAX_WIDTH) {
