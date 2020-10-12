@@ -274,7 +274,7 @@ App.pcTableMain.prototype._addSelectable = function () {
                                         field.pcTable.model.panelButtonsClear(json.panelFormats.hash);
                                     }
 
-                                }, 100)
+                                }, 1000)
                             }
                         }
                     })
