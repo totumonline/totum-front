@@ -1,7 +1,7 @@
 let panelId = 0;
 window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertChangesCalcsFields = {}) {
 
-    if (window.top !== window) return window.top.EditPanel.call(window.top, pcTable, dialogType, inData, insertChangesCalcsFields);
+    if (window.top !== window) return window.top.EditPanel.call(window.top, pcTable, dialogType, inData, isElseItems, insertChangesCalcsFields);
 
     let data = $.extend(true, {}, inData);
 
