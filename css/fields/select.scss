@@ -114,8 +114,8 @@
 #selectPanelBig, #selectPanel{
   .panel-buttons{
     button{
+      width: 100%;
       padding: 3px;
-      min-width: 30%;
       margin-right: 5px;
       &:last-child{
         margin-right: 0;

@@ -222,63 +222,67 @@ App.pcTableMain.prototype._addSelectable = function () {
                         textDiv.append('<div><i class="fa fa-hand-grab-o pull-left"></i> Cовпадает с расчетным</div>');
                 }
 
+                let divForPannelFormats=$('<div><div class="center"><i class="fa fa-spinner fa-spin"></i></div></div>');
 
                 if (field.formatInPanel) {
-                    field.pcTable.model.getPanelFormats(field.name, item.id).then((json) => {
-                        if (json.panelFormats) {
-                            let interv;
-                            json.panelFormats.rows.forEach((frow) => {
-                                switch (frow.type) {
-                                    case 'text':
-                                        textDiv.append($('<div class="panel-text">').text(frow.value));
-                                        break;
-                                    case 'html':
-                                        textDiv.append($('<div class="panel-html">').html(frow.value));
-                                        break;
-                                    case 'img':
-                                        textDiv.append($('<div class="panel-img">').append($('<img>').attr('src', '/fls/' + frow.value + "_thumb.jpg?rand=" + Math.random())));
-                                        break;
-                                    case 'buttons':
-                                        if (frow.value && frow.value.forEach) {
-                                            let $buttons = [];
-                                            frow.value.forEach((b) => {
-                                                let btn = $('<button class="btn btn-default btn-xxs">').text(b.text);
-                                                $buttons.push(btn)
-                                                if (b.color) {
-                                                    btn.css('color', b.color)
-                                                }
-                                                if (b.background) {
-                                                    btn.css('background-color', b.background)
-                                                }
-                                                btn.on('click', function () {
-                                                    field.pcTable.selectedCells.empty();
-                                                    field.pcTable.selectedCells.selectPanelDestroy();
+                    textDiv.append(divForPannelFormats);
+                    divForPannelFormats.data('loadFormats', function () {
+                        field.pcTable.model.getPanelFormats(field.name, item.id).then((json) => {
+                            divForPannelFormats.empty();
+                            if (json.panelFormats) {
+                                let interv;
+                                json.panelFormats.rows.forEach((frow) => {
+                                    switch (frow.type) {
+                                        case 'text':
+                                            divForPannelFormats.append($('<div class="panel-text">').text(frow.value));
+                                            break;
+                                        case 'html':
+                                            divForPannelFormats.append($('<div class="panel-html">').html(frow.value));
+                                            break;
+                                        case 'img':
+                                            divForPannelFormats.append($('<div class="panel-img">').append($('<img>').attr('src', '/fls/' + frow.value + "_thumb.jpg?rand=" + Math.random())));
+                                            break;
+                                        case 'buttons':
+                                            if (frow.value && frow.value.forEach) {
+                                                let $buttons = [];
+                                                frow.value.forEach((b) => {
+                                                    let btn = $('<button class="btn btn-default btn-xxs">').text(b.text);
+                                                    $buttons.push(btn)
+                                                    if (b.color) {
+                                                        btn.css('color', b.color)
+                                                    }
+                                                    if (b.background) {
+                                                        btn.css('background-color', b.background)
+                                                    }
+                                                    btn.on('click', function () {
+                                                        field.pcTable.selectedCells.empty();
+                                                        field.pcTable.selectedCells.selectPanelDestroy();
 
-                                                    field.pcTable.model.panelButtonsClick(json.panelFormats.hash, b.ind).then(function () {
-                                                        if (btn.refresh) {
-                                                            field.pcTable.model.refresh()
-                                                        }
-                                                    });
+                                                        field.pcTable.model.panelButtonsClick(json.panelFormats.hash, b.ind).then(function () {
+                                                            if (btn.refresh) {
+                                                                field.pcTable.model.refresh()
+                                                            }
+                                                        });
+                                                    })
                                                 })
-                                            })
-                                            textDiv.append($('<div class="panel-buttons">').append($buttons));
-                                        }
-                                        break;
-                                }
-
-                            })
-                            if (json.panelFormats.hash) {
-                                interv = setInterval(() => {
-                                    if (!$panel.closest('body').length) {
-                                        clearInterval(interv);
-                                        field.pcTable.model.panelButtonsClear(json.panelFormats.hash);
+                                                divForPannelFormats.append($('<div class="panel-buttons">').append($buttons));
+                                            }
+                                            break;
                                     }
 
-                                }, 1000)
-                            }
-                        }
-                    })
+                                })
+                                if (json.panelFormats.hash) {
+                                    interv = setInterval(() => {
+                                        if (!$panel.closest('body').length) {
+                                            clearInterval(interv);
+                                            field.pcTable.model.panelButtonsClear(json.panelFormats.hash);
+                                        }
 
+                                    }, 1000)
+                                }
+                            }
+                        })
+                    })
                 }
 
 
@@ -452,7 +456,15 @@ App.pcTableMain.prototype._addSelectable = function () {
 
                 if (field.type === 'select') {
                     let _panel = $('<div class="previews">').appendTo(textDiv);
-                    field.loadPreviewPanel(_panel, field.name, item, val['v']);
+                    field.loadPreviewPanel(_panel, field.name, item, val['v']).then(function () {
+                        if(divForPannelFormats.data('loadFormats')){
+                            divForPannelFormats.data('loadFormats')()
+                        }
+                    });
+                }else{
+                    if(divForPannelFormats.data('loadFormats')){
+                        divForPannelFormats.data('loadFormats')()
+                    }
                 }
 
                 if (pcTable.isCreatorView) {
