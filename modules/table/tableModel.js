@@ -321,7 +321,7 @@
 
                 $d.always(function () {
                     setTimeout(cleanProcess, 100);
-                    rzlv();
+                    setTimeout(rzlv, 50);
                 });
 
                 return $d.promise();

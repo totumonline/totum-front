@@ -2,6 +2,7 @@ $.extend(App.pcTableMain.prototype, {
     _insertItem: null,
     _insertRow: null,
     _insertButtons: null,
+    _addButtons: null,
     _insertError: {},
     _currentInsertCellIndex: 0,
     _addInsert: function (addVars) {
@@ -45,7 +46,7 @@ $.extend(App.pcTableMain.prototype, {
         let panel;
 
         let btns = {};
-        btns[('<span id="saveInsertRow" tabindex="' + (pcTable.fieldCategories.column.length) + '">Сохранить</span>')] =
+        btns[('<span id="saveInsertRow">Сохранить</span>')] =
             function () {
                 if (!panel.is('.onSaving')) {
                     panel.addClass('onSaving');
@@ -57,7 +58,7 @@ $.extend(App.pcTableMain.prototype, {
                     });
                 }
             };
-        btns[('<i class="fa fa-save"  tabindex="' + (pcTable.fieldCategories.column.length + 1) + '"></i>')] =
+        btns[('<i class="fa fa-save"></i>')] =
             function () {
                 if (!panel.is('.onSaving')) {
                     panel.addClass('onSaving');
@@ -68,7 +69,7 @@ $.extend(App.pcTableMain.prototype, {
                     });
                 }
             };
-        btns[('<i class="fa fa-paste"  tabindex="' + (pcTable.fieldCategories.column.length + 2) + '"></i>')] =
+        btns[('<i class="fa fa-paste"></i>')] =
             function () {
                 if (!panel.is('.onSaving')) {
                     panel.addClass('onSaving');
@@ -79,12 +80,13 @@ $.extend(App.pcTableMain.prototype, {
                     });
                 }
             };
-        btns['<i class="fa fa-times" tabindex="' + (pcTable.fieldCategories.column.length + 3) + '"></i>'] = function () {
+        btns['<i class="fa fa-times"></i>'] = function () {
             pcTable._closeInsertRow.call(pcTable, $(this).closest('#' + pcTable_PANNEL_IDS.insert));
 
         };
 
         panel = this._addRowPanel(pcTable_PANNEL_IDS.insert, $row, btns);
+        this._addButtons = panel.find('button:not(:last)');
     },
     __insertRowActionsStack: [],
     __insertRowActions: function (actionName, actionFunction) {
@@ -106,6 +108,9 @@ $.extend(App.pcTableMain.prototype, {
             let fieldName = Object.keys(pcTable._insertError)[0];
             let _error = pcTable._insertError[fieldName];
             App.notify(_error, $('<div>Ошибка в поле </div>').append(' в поле ').append($('<span>').text(pcTable.fields[fieldName].title || pcTable.fields[fieldName].name)));
+            pcTable._currentInsertCellIndex=pcTable.fieldCategories.visibleColumns.findIndex(function (field){if (field.name===fieldName) return true });
+            
+            pcTable._insertFocusIt()
             $d.reject();
         } else {
 
@@ -246,7 +251,8 @@ $.extend(App.pcTableMain.prototype, {
         pcTable.model.checkInsertRow(data, Object.keys(this.insertRow.editedFields)).then(function (json) {
 
             item = json.row;
-
+            let errors = false;
+            let tabi=2;
             $.each(pcTable.fieldCategories.column, function (ind, field) {
 
 
@@ -296,7 +302,14 @@ $.extend(App.pcTableMain.prototype, {
                     $row.append(td = pcTable._createInsertCell.call(pcTable, null, field, $row, index, 'td', pcTable._createInsertRow));
                 }
 
+                if (td.data('input')) {
+                    td.data('input').attr('tabindex', tabi++)
+                }
+
             });
+            pcTable._addButtons.each(function (i, btn) {
+                $(btn).attr('tabindex', tabi++)
+            })
             pcTable._insertFocusIt.call(pcTable);
         });
 
@@ -332,7 +345,7 @@ $.extend(App.pcTableMain.prototype, {
                 i.attr('title', f.comment)
                 td.prepend(i);
 
-            } else if (f.icon && field.type!=='button') {
+            } else if (f.icon && field.type !== 'button') {
                 let i = $('<i class="fa fa-' + f.icon + ' pull-right" style="padding: 3px;">');
                 td.prepend(i);
             }
@@ -435,7 +448,7 @@ $.extend(App.pcTableMain.prototype, {
             } catch (error) {
                 input.addClass('error');
                 pcTable._insertError[field.name] = error;
-                App.popNotify(error, $input, 'default');
+                /*App.popNotify(error, $input, 'default');*/
                 return null;
             }
 
@@ -469,11 +482,8 @@ $.extend(App.pcTableMain.prototype, {
                 if (!td.length || !td.closest('tr').length) return false;
 
                 let editValResult = getEditVal($input);
-                if (editValResult === null) {
-                    pcTable._insertFocusIt.call(pcTable)
-                } else {
-
                     if (field.isDataModified(editValResult, pcTable._insertItem[field.name].v)) {
+                        pcTable._currentInsertCellIndex ++;
                         pcTable.insertRow.editedFields[field.name] = true;
 
                         pcTable._insertItem[field.name].v = editValResult;
@@ -482,7 +492,6 @@ $.extend(App.pcTableMain.prototype, {
                         }
                         parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
                     }
-                }
             }, 150)
         };
         var escClbck = function ($input, event) {
@@ -625,7 +634,7 @@ $.extend(App.pcTableMain.prototype, {
                         field.focusElement(pcTable._getTdByColumnIndex($row, index + 1).data('input'));
                     }
                 }
-                isLastCell = false;
+                    isLastCell = false;
                 return false;
             }
         });

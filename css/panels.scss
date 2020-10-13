@@ -213,3 +213,7 @@
     border-color: transparent;
   }
 }
+
+button[data-prop-disabled="true"]{
+  opacity: 0.5;
+}
