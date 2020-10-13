@@ -335,6 +335,7 @@
                         if (App.isEmpty(pcTable.data) && pcTable._content) {
                             pcTable._content.find('.pcTable-noDataRow').remove();
                         }
+                        let reorderRows=[];
                         $.each(addedRows, function (k, v) {
                             v.$visible = true;
 
@@ -347,9 +348,11 @@
                             let nowInsertInsex = insertIndex;
                             let nowInsertVisibleIndex = insertVisibleIndex;
 
-                            if (v.__after && (!$trIdBefore || $trIdBefore.id !== v.__after)) {
+                            if ((v.__after && (!$trIdBefore || $trIdBefore.id !== v.__after))) {
                                 nowInsertInsex = pcTable.dataSorted.indexOf(v.__after) + 1;
                                 nowInsertVisibleIndex = pcTable.dataSortedVisible.indexOf(v.__after) + 1;
+                            } else if ('order' in json.chdata) {
+                                reorderRows.push(v.id)
                             }
 
                             pcTable.dataSorted.splice(nowInsertInsex, 0, v.id);
@@ -359,6 +362,29 @@
                             insertVisibleIndex++;
 
                         });
+
+                        reorderRows.forEach(function (id){
+                            let place = json.chdata.order.indexOf(id);
+                            let newPlace = 0;
+                            let newPlaceVisible = 0;
+                            if(place>0){
+                                let beforeId = json.chdata.order[place - 1];
+                                newPlace = pcTable.dataSorted.indexOf(beforeId) + 1
+                                newPlaceVisible = pcTable.dataSortedVisible.indexOf(beforeId) + 1
+                            }
+                            let oldPlace = pcTable.dataSorted.indexOf(id);
+                            let oldPlaceVisible = pcTable.dataSortedVisible.indexOf(id);
+                            if(oldPlace!==newPlace){
+                                pcTable.dataSorted.splice(newPlace, 0, id);
+                                let oldPlace = pcTable.dataSorted.indexOf(id);
+                                pcTable.dataSorted.splice(oldPlace, 1);
+                            }
+                            if(oldPlaceVisible!==newPlaceVisible){
+                                pcTable.dataSortedVisible.splice(newPlaceVisible, 0, id);
+                                let oldPlaceVisible = pcTable.dataSortedVisible.indexOf(id);
+                                pcTable.dataSortedVisible.splice(oldPlaceVisible, 1);
+                            }
+                        })
 
 
                         if ($trIdBefore && !pcTable.isMobile) {
