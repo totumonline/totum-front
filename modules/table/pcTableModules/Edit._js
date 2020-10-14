@@ -80,16 +80,19 @@ $.extend(App.pcTableMain.prototype, {
                 .then(
                     function (json) {
                         pcTable.table_modify.call(pcTable, json);
+                        let item;
                         if ($td.length && $td.isAttached()) {
                             $spinner.remove();
                             $td.find('.cell-value').show();
 
                         } else {
                             if (field.category === 'column') {
-                                let tr = pcTable._getItemById(id).$tr;
+                                item = pcTable._getItemById(id);
+                                let tr = item.$tr;
                                 $td = pcTable._getTdByFieldName(field.name, tr);
                             } else {
                                 $td = tr.find('[data-field="' + field.name + '"]');
+                                item = pcTable.data_params;
                             }
                         }
                         if (field.uncheckAfterClick) {
@@ -98,7 +101,7 @@ $.extend(App.pcTableMain.prototype, {
                         if (field.closeIframeAfterClick && window.closeMe) {
                             window.closeMe();
                         }
-                        field.btnOK.call(field, $td);
+                        field.btnOK.call(field, $td, item);
                     }
                 ).fail(function () {
                 if ($td.length && $td.isAttached()) {
@@ -165,7 +168,7 @@ $.extend(App.pcTableMain.prototype, {
                     let field = pcTable._getFieldBytd($editObj);
                     let $cell = pcTable._createCell(item, field);
                     if (field.type === 'button') {
-                        field.btnOK.call(field, $cell);
+                        field.btnOK.call(field, $cell, item);
                     }
                     $editObj.replaceWith($cell);
                 })

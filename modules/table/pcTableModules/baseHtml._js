@@ -3,7 +3,11 @@
 
     const slimThs = function (tdNoTitles) {
         tdNoTitles.forEach((f) => {
+            let h = f.th.outerHeight();
             f.th.remove();
+            if(f.tdWrapper.css('height')){
+                f.tdWrapper.css('height', parseInt(f.tdWrapper.css('height'))+parseInt(h));
+            }
         })
     }
 

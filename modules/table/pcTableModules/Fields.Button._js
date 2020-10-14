@@ -18,7 +18,7 @@ fieldTypes.button = {
                 format = $.extend({}, (field.pcTable.f || {}), (item.f || {}), (item[field.name].f || {}));
             } else {
                 format.block = true;
-                if(item[field.name].f && item[field.name].f.icon){
+                if(item[field.name] && item[field.name].f && item[field.name].f.icon){
                     format.icon = item[field.name].f.icon;
                 }
             }
@@ -95,7 +95,7 @@ fieldTypes.button = {
 
         return btn;
     },
-    btnOK: function ($td) {
+    btnOK: function ($td, item) {
         let btn = $td.find('button.button-field');
         let field = this;
         btn.text('Выполнено');
@@ -103,7 +103,6 @@ fieldTypes.button = {
 
         setTimeout(function () {
             $td.removeData('clicked');
-            let item = field.pcTable._getItemBytd.call(field.pcTable, $td);
             btn.replaceWith(field.getCellText.call(field, item[field.name], $td, item));
         }, BUTTONS_TIMEOUT)
     }
