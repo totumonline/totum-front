@@ -72,7 +72,7 @@ $.extend(App.pcTableMain.prototype, {
 
             editedData.checked_ids = pcTable.row_actions_get_checkedIds();
             $td.height($td.height());
-            $td.find('.cell-value').hide();
+            $td.find('.cell-value, .ttm--panel-data').hide();
             let $spinner = $('<div class="text-center"><i class="fa fa-spinner" style="color: #000"></i></div>');
             $td.append($spinner);
             pcTable._saving = true;
@@ -80,10 +80,10 @@ $.extend(App.pcTableMain.prototype, {
                 .then(
                     function (json) {
                         pcTable.table_modify.call(pcTable, json);
-                        let item;
+
                         if ($td.length && $td.isAttached()) {
                             $spinner.remove();
-                            $td.find('.cell-value').show();
+                            $td.find('.cell-value, .ttm--panel-data').show();
 
                         } else {
                             if (field.category === 'column') {
@@ -106,7 +106,7 @@ $.extend(App.pcTableMain.prototype, {
                 ).fail(function () {
                 if ($td.length && $td.isAttached()) {
                     $spinner.remove();
-                    $td.find('.cell-value').show();
+                    $td.find('.cell-value, .ttm--panel-data').show();
                     $td.removeData('clicked');
 
                 }

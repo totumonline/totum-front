@@ -18,7 +18,7 @@ fieldTypes.button = {
                 format = $.extend({}, (field.pcTable.f || {}), (item.f || {}), (item[field.name].f || {}));
             } else {
                 format.block = true;
-                if(item[field.name] && item[field.name].f && item[field.name].f.icon){
+                if (item[field.name] && item[field.name].f && item[field.name].f.icon) {
                     format.icon = item[field.name].f.icon;
                 }
             }
@@ -34,7 +34,7 @@ fieldTypes.button = {
                 if (btnStyle) {
                     btn.css(btnStyle);
                 }
-            } else if (field.pcTable.isMobile && field.category!=='column') {
+            } else if (field.pcTable.isMobile && field.category !== 'column') {
                 let css = {};
                 if (format.background) {
                     css.backgroundColor = format.background;
@@ -102,8 +102,11 @@ fieldTypes.button = {
         $td.data('clicked', true);
 
         setTimeout(function () {
-            $td.removeData('clicked');
-            btn.replaceWith(field.getCellText.call(field, item[field.name], $td, item));
+            if ($td.length)
+                $td.removeData('clicked');
+            if (item) {
+                btn.replaceWith(field.getCellText.call(field, item[field.name], $td, item));
+            }
         }, BUTTONS_TIMEOUT)
     }
 };
