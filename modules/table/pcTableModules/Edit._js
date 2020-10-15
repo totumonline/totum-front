@@ -365,6 +365,7 @@ $.extend(App.pcTableMain.prototype, {
 
 
         let blurClbck = function ($input, event) {
+
             setTimeout(function () {
                 if (onAction) {
                     onAction = false;
@@ -376,6 +377,7 @@ $.extend(App.pcTableMain.prototype, {
         };
 
         let saveClbck = function ($input, event, isFromButton) {
+            if(onAction && !isFromButton) return false;
 
             onAction = true;
 
@@ -543,6 +545,8 @@ $.extend(App.pcTableMain.prototype, {
 
             let sourseBtnClick = function () {
                 onAction = true;
+                sourcePanelOpened = true;
+
                 let ee = {};
                 $.each(item, function (k, v) {
                     if (k.substring(0, 1) !== '$') {
@@ -592,6 +596,7 @@ $.extend(App.pcTableMain.prototype, {
                                 inputOld.replaceWith(input = field.getEditElement(inputOld, item[field.name], item, saveClbck, escClbck, blurClbck));
 
                                 $('body').off('.select-' + field.name);
+                                onAction=false;
                             }
                         };
                         setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть

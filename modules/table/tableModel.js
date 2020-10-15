@@ -499,9 +499,9 @@
                     pcTable.table_modify.call(pcTable, json);
                     pcTable.reloaded.call(pcTable);
                 };
-                this.__ajax('post', {method: 'refresh'}).then(function(){
+                this.__ajax('post', {method: 'refresh'}).then(function(json){
                     try {
-                        func()
+                        func(json)
                     }catch (e){
                         window.location.reload();
                     }
