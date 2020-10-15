@@ -499,7 +499,13 @@
                     pcTable.table_modify.call(pcTable, json);
                     pcTable.reloaded.call(pcTable);
                 };
-                this.__ajax('post', {method: 'refresh'}).then(func)
+                this.__ajax('post', {method: 'refresh'}).then(function(){
+                    try {
+                        func()
+                    }catch (e){
+                        window.location.reload();
+                    }
+                })
             },
             saveOrder: function (ids) {
                 return this.__ajax('post', {method: 'saveOrder', orderedIds: JSON.stringify(ids)});
