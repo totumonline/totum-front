@@ -524,7 +524,7 @@ $.extend(App.pcTableMain.prototype, {
                 pcTable._saveEdited.call(pcTable, td, editedData, false);
             });
             editCellsBlock.append($btn)
-        } else if (field.code && !field.codeOnlyInAdd) {
+        } else if (field.code && !field.codeOnlyInAdd && field.category !== 'filter') {
             $btn = $('<button class="btn btn-sm btn-default" data-name="Фиксировать"><i class="fa fa-hand-rock-o" title="Фиксировать"></i></button>');
             $btn.data('click', function () {
                 onAction = true;
