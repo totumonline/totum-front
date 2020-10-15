@@ -259,11 +259,8 @@ App.pcTableMain.prototype._addSelectable = function () {
                                                         field.pcTable.selectedCells.selectPanelDestroy();
 
                                                         field.pcTable.model.panelButtonsClick(json.panelFormats.hash, b.ind).then(function (json) {
-                                                            if (btn.refresh) {
+                                                            if (b.refresh) {
                                                                 field.pcTable.model.refresh()
-                                                            }else{
-                                                                pcTable.table_modify.call(pcTable, json);
-                                                                pcTable.reloaded.call(pcTable);
                                                             }
                                                         });
                                                     })
