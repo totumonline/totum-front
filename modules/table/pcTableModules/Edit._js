@@ -66,6 +66,7 @@ $.extend(App.pcTableMain.prototype, {
                 editedData.item = id;
                 editedData.fieldName = field.name;
             } else {
+                item = item || pcTable.data_params;
                 editedData.item = 'params';
                 editedData.fieldName = field.name;
             }
