@@ -143,9 +143,9 @@
 
             this.setVisibleColumns();
 
-            $.each(this.data, function (id, v) {
+            /*$.each(this.data, function (id, v) {
                 delete pcTable.data[id].$tr;
-            });
+            });*/
 
             if (this._header) {
 
