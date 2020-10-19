@@ -4,21 +4,19 @@ fieldTypes.number = {
 
         let val = input.val().trim();
 
-        if (this.required && (val === undefined || val === '' || val === null)) {
-            throw 'Поле ' + this.title + ' должно быть заполнено';
-        }
-
-
-        if (this.regexp) {
+        if ((val === undefined || val === '' || val === null)) {
+            if (this.required) {
+                throw 'Поле ' + this.title + ' должно быть заполнено';
+            }
+            return '';
+        }else if (this.regexp) {
             var r = new RegExp(this.regexp);
             if (!r.test(val)) {
                 let notify = this.regexpErrorText || 'regexp не проходит - "' + this.regexp + '"';
-                notify = 'Ошибка заполнения поля "' + this.title + '": ' + notify;
+                notify = 'Ошибка заполнения поля "' + (this.title || this.name) + '": ' + notify;
                 throw notify;
             }
         }
-
-        if (val === '') return '';
 
         let valNew = val.replace(/[^\-()\d/*+.,%:\/]/g, '');
         if (!/^(\+|\*|\%|\/|\:)?(\-?[\d]+((\.|\,)[\d]+)?)%?$/.test(valNew)) {
