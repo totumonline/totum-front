@@ -297,6 +297,9 @@
                 let $block;
 
                 this._rerendParamsblock();
+                if (this.isCreatorView) {
+                    this._refreshHiddenFieldsBlock()
+                }
                 this._rerendFiltersBlock();
                 this._refreshHead();
                 this._rerendBottomFoolers();
