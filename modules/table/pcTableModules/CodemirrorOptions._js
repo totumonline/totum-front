@@ -581,15 +581,23 @@
             },
             options);
     });
+
     let AllTables = [];
     let tablesQueried = false;
+    let lastQuery = null;
+
     const getTables = function () {
+        if (!lastQuery || lastQuery < Math.floor(Date.now() / 1000) - 40) {
+            lastQuery = Math.floor(Date.now() / 1000);
+            AllTables = [];
+        }
         if (AllTables.length === 0 && !tablesQueried) {
             tablesQueried = true;
             let pcTable = $('#table').data('pctable');
             if (pcTable && pcTable.isCreatorView) {
                 pcTable.model.getAllTables().then(function (json) {
                     AllTables = json.tables;
+                    tablesQueried = false;
                 })
             }
         }
@@ -969,7 +977,7 @@
         return result;
     });*/
 
-    let totumAutoCloses=function(cm){
+    let totumAutoCloses = function (cm) {
         getTables();
 
         var map = {name: "autoCloseFunctions"};
@@ -1072,11 +1080,9 @@
     }
 
 
-
     CodeMirror.defineOption("autoCloseFunctions", false, function (cm) {
         if (cm.getOption('mode') === 'totum') totumAutoCloses(cm);
         if (cm.getOption('mode') === 'sections') CodeMirror.sectionsAutoCloses(cm);
-
 
 
     });
