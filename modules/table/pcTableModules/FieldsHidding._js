@@ -72,10 +72,24 @@
             });
 
         },
-        setColumnWidth: function (name, width) {
+        setColumnWidth: function (name, width, fieldId) {
             let visibleFields = hiddingStorage.get(this.tableRow) || {};
             visibleFields[name] = width;
-            this.setVisibleFields(visibleFields);
+            let self = this;
+            if (fieldId) {
+                App.getPcTableById(2).then(function (pcTableTablesFields) {
+                    pcTableTablesFields.model.checkEditRow({id: fieldId}).then(function (json) {
+                        if (json.row) {
+                            json.row.data_src.v.width.Val = parseInt(width);
+                            pcTableTablesFields.model.save({[fieldId]: json.row}).then(function () {
+                                self.setVisibleFields(visibleFields);
+                            })
+                        }
+                    })
+                })
+            } else {
+                this.setVisibleFields(visibleFields);
+            }
         },
         loadVisibleFields: function () {
             let visibleFields = {};

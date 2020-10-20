@@ -5,8 +5,8 @@
         tdNoTitles.forEach((f) => {
             let h = f.th.outerHeight();
             f.th.remove();
-            if(f.tdWrapper.css('height')){
-                f.tdWrapper.css('height', parseInt(f.tdWrapper.css('height'))+parseInt(h));
+            if (f.tdWrapper.css('height')) {
+                f.tdWrapper.css('height', parseInt(f.tdWrapper.css('height')) + parseInt(h));
             }
         })
     }
@@ -577,9 +577,8 @@
                 }
                 let type = $('<div class="color-danger creator-table-title">' +
                     +this.tableRow.sort + ' <i class="' + App.tableTypes[this.tableRow.type].icon + '"></i> '
-                    + App.tableTypes[this.tableRow.type].title + ' ['+this.tableRow.actual+']</div>');
+                    + App.tableTypes[this.tableRow.type].title + ' [' + this.tableRow.actual + ']</div>');
                 creatorPart.append(type);
-
 
 
                 if (this.tableRow.type === "calcs") {
@@ -2725,6 +2724,33 @@
                             btn.on('click', function () {
                                 btnDropDown.popover('hide');
                                 let div = $('<div><input type="number" class="form-control" value="' + field.showMeWidth + '" style="padding-left: 2px;"/></div>');
+                                let btns = [
+                                    {
+                                        label: 'Применить',
+                                        action: function (dialog) {
+                                            let width = parseInt(div.find('input').val());
+                                            dialog.close();
+                                            field.pcTable.setColumnWidth.call(field.pcTable, field.name, width);
+
+                                        }
+                                    },
+                                    {
+                                        label: 'Отмена',
+                                        action: function (dialog) {
+                                            dialog.close()
+                                        }
+                                    }
+                                ];
+                                if (pcTable.isCreatorView) {
+                                    btns.splice(1, 0, {
+                                        label: 'Применить',
+                                        cssClass: 'btn-m btn-danger',
+                                        action: function (dialog) {
+                                            let width = parseInt(div.find('input').val());
+                                            dialog.close();
+                                            field.pcTable.setColumnWidth.call(field.pcTable, field.name, width, field.id);
+                                        }})
+                                }
                                 BootstrapDialog.show({
                                     message: div,
                                     /*cssClass: 'edit-row-panel',*/
@@ -2740,23 +2766,7 @@
                                         });
                                         dialog.$modalDialog.width(500);
                                     },
-                                    buttons: [
-                                        {
-                                            label: 'Применить',
-                                            action: function (dialog) {
-                                                let width = parseInt(div.find('input').val());
-                                                dialog.close();
-                                                field.pcTable.setColumnWidth.call(field.pcTable, field.name, width);
-
-                                            }
-                                        },
-                                        {
-                                            label: 'Отмена',
-                                            action: function (dialog) {
-                                                dialog.close()
-                                            }
-                                        }
-                                    ],
+                                    buttons: btns,
                                     draggable: true
                                 })
 
@@ -2894,7 +2904,7 @@
                     btnDropDown.on('click', function () {
                         let btn = $(this);
 
-                        if (field.category==='column' && pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
+                        if (field.category === 'column' && pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
                             if ($divPopoverArrowDown.find('.column-dropdown').length === 0)
                                 $divPopoverArrowDown.append('<div class="column-dropdown">По текущей странице </div>');
                         } else {
