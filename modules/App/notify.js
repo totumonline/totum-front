@@ -1,7 +1,8 @@
 (function () {
     App.notify = function ($text, $title, $style) {
 
-        BootstrapDialog.show({
+        let def=$.Deferred();
+        window.top.BootstrapDialog.show({
             message: $text,
             type: BootstrapDialog.TYPE_DEFAULT,
             title: $title,
@@ -20,9 +21,11 @@
                 if (!$title) {
                     dialog.$modalHeader.remove();
                 }
+                dialog.$modal.css('z-index', 2000);
+                def.resolve(dialog);
             }
         })
-        /* return App.modal($text, $title, {'Закрыть': 'close'});*/
+       return def;
     };
     App.topNotify = function ($text, $title, $style) {
         $style = 'success';
