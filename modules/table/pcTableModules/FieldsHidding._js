@@ -157,9 +157,6 @@
 
             this.setVisibleColumns();
 
-            /*$.each(this.data, function (id, v) {
-                delete pcTable.data[id].$tr;
-            });*/
 
             if (this._header) {
 
@@ -178,8 +175,13 @@
                     }
                 }
 
-                if (isRowsChanged)
+                if (isRowsChanged) {
+                    /*Удаляем строки с не тем количеством столбцов*/
+                    $.each(this.data, function (id, v) {
+                        delete pcTable.data[id].$tr;
+                    });
                     this.ScrollClasterized.insertToDOM(null, true);
+                }
             }
 
             if (this._insertRow) this._closeInsertRow();

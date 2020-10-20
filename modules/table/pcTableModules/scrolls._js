@@ -184,16 +184,22 @@
                             rows: rows
                         }
                     }
-                    let items_start = Math.max((this.rows_in_block * cluster_num), 0),
-                        items_end = items_start + this.rows_in_cluster + 3 * this.rows_in_block,
-                        top_offset = Math.max(items_start * this.item_height, 0),
-                        bottom_offset = Math.max((rows_len - items_end) * this.item_height, 0),
-                        this_cluster_rows = [];
+                    let items_start,
+                        items_end,
+                        top_offset,
+                        bottom_offset,
+                        this_cluster_rows;
 
+                    do {
+                        items_start = Math.max((this.rows_in_block * cluster_num), 0),
+                            items_end = items_start + this.rows_in_cluster + 3 * this.rows_in_block,
+                            top_offset = Math.max(items_start * this.item_height, 0),
+                            bottom_offset = Math.max((rows_len - items_end) * this.item_height, 0), this_cluster_rows = [];
 
-                    for (let i = items_start; i < items_end; i++) {
-                        rows[i] && this_cluster_rows.push(rows[i]);
-                    }
+                        for (let i = items_start; i < items_end; i++) {
+                            rows[i] && this_cluster_rows.push(rows[i]);
+                        }
+                    } while (cluster_num > 0 && this_cluster_rows.length === 0 && --cluster_num > -1)
 
                     return {
                         top_offset: top_offset,
