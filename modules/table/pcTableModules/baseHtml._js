@@ -2749,7 +2749,8 @@
                                             let width = parseInt(div.find('input').val());
                                             dialog.close();
                                             field.pcTable.setColumnWidth.call(field.pcTable, field.name, width, field.id);
-                                        }})
+                                        }
+                                    })
                                 }
                                 BootstrapDialog.show({
                                     message: div,
@@ -3113,7 +3114,7 @@
 
                 isErrorVal = val.e;
 
-                if (val.h) {
+                if (val.h && (!('showhand' in format) || format.showhand === true)) {
                     if (val.c !== undefined && val.v != val.c) {
                         $hand = $('<i class="fa fa-hand-paper-o pull-right cell-icon" aria-hidden="true"></i>');
                     } else {
