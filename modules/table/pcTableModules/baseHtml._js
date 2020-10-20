@@ -1755,9 +1755,19 @@
                                             } else if (_b === true) {
                                                 style.borderColor = ""
                                                 style.backgroundColor = ""
+                                                if (field.field.type === 'button') {
+                                                    field.fieldCell.removeClass('no-border')
+                                                    style.Button = {};
+                                                    style.Button.backgroundColor = ''
+                                                    style.Button.color = format.color
+                                                    field.td.find('button').css(style.Button);
+                                                }
                                             }
                                             return style;
                                         }
+                                        field.td.css(func_format(field.format))
+                                        field.field.td_style = func_format;
+                                    } else {
                                         field.td.css(func_format(field.format))
                                         field.field.td_style = func_format;
                                     }
