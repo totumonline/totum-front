@@ -799,6 +799,17 @@
 
         }
         ,
+        rowButtonsCalcWidth: function () {
+            if (this.tableWidth < this._innerContainer.width()) {
+                if (this.isMobile) {
+                    this.__$rowsButtons.width(this._table.width());
+                } else {
+                    this.__$rowsButtons.width(this._table.width() - 70);
+                }
+            } else if (!this.isMobile) {
+                this.__$rowsButtons.width(this._innerContainer.width() - 5)
+            }
+        },
         _rowsButtons: function () {
             let pcTable = this;
 

@@ -163,8 +163,12 @@
 
             if (this._header) {
 
-                if (isRowsChanged) {
+
+                if (isOthersChanged)
+                    this.setWidthes();
+                else if (isRowsChanged) {
                     this._refreshHead();
+                    this.rowButtonsCalcWidth();
                     this._refreshContentTable(true);
                     this._rerenderColumnsFooter();
                     this.fieldsHiddingGetButton();
@@ -173,8 +177,6 @@
                         this._refreshHiddenFieldsBlock();
                     }
                 }
-                if (isOthersChanged)
-                    this.setWidthes();
 
                 if (isRowsChanged)
                     this.ScrollClasterized.insertToDOM(null, true);
