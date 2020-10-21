@@ -168,7 +168,6 @@
                     this.rowButtonsCalcWidth();
                     this._refreshContentTable(true);
                     this._rerenderColumnsFooter();
-                    this.fieldsHiddingGetButton();
                     if (this.isCreatorView) {
                         this._hideHell_storage.checkIssetFields.call(pcTable);
                         this._refreshHiddenFieldsBlock();
@@ -184,6 +183,7 @@
                 }
             }
 
+            this.fieldsHiddingGetButton();
             if (this._insertRow) this._closeInsertRow();
 
 
