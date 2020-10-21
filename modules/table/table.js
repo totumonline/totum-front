@@ -149,6 +149,8 @@
                 _container: null,
                 _content: null,
 
+                openedPanels: {},
+
                 extraClastersBottom: null,
                 extraClastersTop: null,
                 dataSortedClasters: {'t': [], 'm': [], 'b': []},
@@ -701,6 +703,10 @@
                 if (item && item.$tr) {
                     item.$tr.remove();
                 }
+                if(this.openedPanels[id]){
+                    this.openedPanels[id].close();
+                }
+
                 ['dataSorted', 'dataSortedVisible', '__checkedRows'].some(function (array) {
                     let ind = this[array].indexOf(id);
                     if (ind !== -1) {

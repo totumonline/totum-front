@@ -88,11 +88,8 @@ $.extend(App.pcTableMain.prototype, {
 
                         } else {
                             if (field.category === 'column') {
-                                item = pcTable._getItemById(id);
-                                let tr = item.$tr;
-                                $td = pcTable._getTdByFieldName(field.name, tr);
+                                item = pcTable._getItemById(id)
                             } else {
-                                $td = tr.find('[data-field="' + field.name + '"]');
                                 item = pcTable.data_params;
                             }
                         }
@@ -378,7 +375,7 @@ $.extend(App.pcTableMain.prototype, {
         };
 
         let saveClbck = function ($input, event, isFromButton) {
-            if(onAction && !isFromButton) return false;
+            if (onAction && !isFromButton) return false;
 
             onAction = true;
 
@@ -597,7 +594,7 @@ $.extend(App.pcTableMain.prototype, {
                                 inputOld.replaceWith(input = field.getEditElement(inputOld, item[field.name], item, saveClbck, escClbck, blurClbck));
 
                                 $('body').off('.select-' + field.name);
-                                onAction=false;
+                                onAction = false;
                             }
                         };
                         setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть

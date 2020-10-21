@@ -9,6 +9,10 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     EditPanelFunc.pcTable = pcTable;
     EditPanelFunc.panelId = 'panel' + (panelId++);
 
+    if (typeof pcTable === 'object' && data.id) {
+        pcTable.openedPanels[data.id] = EditPanelFunc;
+    }
+
 
     let $d = $.Deferred();
 
@@ -380,29 +384,34 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
         if (!isElseItems) {
 
-            buttons.push({
-                action: function (panel) {
+            EditPanel.close=function (){
+                EditPanel.bootstrapPanel.close();
+            }
 
-                    panel.close();
-                },
+            buttons.push({
+                action: EditPanel.close,
                 'label': null,
                 icon: 'fa fa-times',
                 cssClass: 'btn-m btn-default btn-empty-with-icon',
             });
 
+
         } else {
 
-            buttons.push({
-                action: function (panel) {
-                    $d.resolve(undefined, /*next*/true);
-                    EditPanelFunc.resolved = true;
+            EditPanel.close=function (){
+                $d.resolve(undefined, /*next*/true);
+                EditPanelFunc.resolved = true;
+                EditPanel.bootstrapPanel.close();
+            }
 
-                    panel.close();
-                },
+            buttons.push({
+                action: EditPanel.close,
                 'label': null,
                 icon: 'fa fa-' + (isElseItems === true ? 'arrow-right' : 'times'),
                 cssClass: 'btn-m btn-default btn-empty-with-icon',
             });
+
+
         }
 
         EditPanel.bootstrapPanel = BootstrapDialog.show({
@@ -419,6 +428,9 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     $(window.top.document.body).trigger('pctable-closed', {'type': 'panel'});
                 }
                 $(window.top.document.body).off('.' + EditPanelFunc.panelId);
+                if (typeof pcTable === 'object' && pcTable.openedPanels && data.id && pcTable.openedPanels[data.id]) {
+                    delete pcTable.openedPanels[data.id];
+                }
             },
             onshown: function (dialog) {
                 "use strict";
