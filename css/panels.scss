@@ -130,8 +130,17 @@
 .fieldparams-edit-panel {
   .field {
     .bootstrap-select button, input {
-      border: 1px solid #e8e8e8;
+      border: 1px solid #e8e8e8 !important;
+
     }
+  }
+  .fParams-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+  }
+  .form-control{
+    font-size: 14px !important;
   }
 }
 

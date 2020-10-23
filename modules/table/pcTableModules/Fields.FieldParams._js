@@ -4,21 +4,42 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
     isDataModified: function (newVal, oldVal) {
         return !Object.equals(oldVal, newVal);
     },
-    getEditElement: function ($oldInput, oldValueParam, item, enterClbk, escClbk, blurClbk, tabindex, editNow) {
-
+    getEditVal: function (input) {
+        if(input.data('checkVal')){
+            input.data('checkVal')();
+        }
+        return input.data('val');
+    },
+    getEditElement: function ($oldInput, oldValueParam, item, enterClbk, escClbk, blurClbk, tabindex, editNow, cell) {
 
         let field = this;
         let div = $('<div>');
         let dialog = $('<div>').css('min-height', 200);
-        let buttons;
         let form = $('<div class="jsonForm">').appendTo(dialog);
+        if ($oldInput) {
+            div = $oldInput;
+            form = div.find('.jsonForm')
+        }
+        let buttons;
+
         div.data('form', form);
         div.data('field', this);
+
+        let saved = false;
+        let clback = function () {
+        };
+
+        let firstLoad;
+        try {
+            firstLoad = cell.data('firstLoad')['data_src']['v'];
+        } catch (e) {
+        }
+
 
         let formFill = function (oldValueParam) {
 
             let jsonFields = field.jsonFields;
-
+            let left, right;
             field.getValue(oldValueParam, item, !editNow).then(function (json) {
                 let oldValue = json.value;
 
@@ -27,6 +48,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
 
                 let addInput = function (fName, fieldsList, fieldsLevelFuncs) {
+
                     let fieldSettings = jsonFields.fieldSettings[fName];
                     if (!fieldSettings) return false;
 
@@ -84,8 +106,25 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                             form.find('[data-parent="' + fName.toLowerCase() + '"]').hide().find('input[type="checkbox"]').prop('checked', false).trigger('change');
                         }
                     };
-                    let divInput = field.__addInput.call(field, fName, fieldSettings, thisValue, item);
-                    form.append(divInput);
+                    let divInput = field.__addInput.call(field, fName, fieldSettings, thisValue, item, clback);
+
+                    if ((fieldSettings.align ?? 'center') !== 'center') {
+                        if (!left) {
+                            let middle = $('<div class="fParams-grid">');
+                            left = $('<div>').appendTo(middle);
+                            right = $('<div>').appendTo(middle);
+                            form.append(middle)
+                        }
+                        if (fieldSettings.align === 'left') {
+                            left.append(divInput);
+                        } else {
+                            right.append(divInput);
+                        }
+                    } else {
+                        form.append(divInput);
+                        left = right = null;
+                    }
+
                     if (fieldSettings.parent) {
                         divInput.attr('data-parent', fieldSettings.parent.toLowerCase());
                         if (isHidden) {
@@ -190,10 +229,13 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             })
         };
 
-        let saved = false;
 
         const save = function (dialog) {
 
+            /*Чтобы не дергать сохранение, когда открыт диалог*/
+            if (!(dialog && dialog.close) && editNow) {
+                return;
+            }
             var obj = {};
             var fullJSONEditor = form.find('.fullJSONEditor');
             if (fullJSONEditor.length === 1) {
@@ -248,11 +290,16 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 });
             }
             div.data('val', obj);
-
-            enterClbk(div, event);
             saved = true;
-            dialog.close();
+            if (dialog && dialog.close) {
+                enterClbk(div, event);
+                dialog.close();
+            }
         };
+
+        if (!editNow) {
+            div.data('checkVal', save);
+        }
 
         buttons = [
             {
@@ -297,7 +344,8 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     dialog.$modalHeader.css('cursor', 'pointer')
                     dialog.$modalDialog.width(1000);
                     $('body').on(eventName, function (event) {
-                        save(dialog);
+                        setTimeout(()=>{save(dialog)}, 10);
+                        return false;
                     });
                 }
 
@@ -306,7 +354,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
             div.text('Редактирование в форме').addClass('edit-in-form');
         } else {
-            let clicked = false;
+            /*let clicked = false;
             div.on('focus click', 'button', function () {
                 if (clicked) return;
                 clicked = true;
@@ -339,13 +387,17 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             let btn = $('<button class="btn btn-danger btn-sm text-edit-button">').text('Редактировать параметры');
             if (tabindex) btn.attr('tabindex', tabindex);
 
-            div.append(btn);
+            div.append(btn);*/
 
+            formFill(oldValueParam.v)
+            div.append(form)
+            div.addClass('fieldparams-edit-panel')
         }
-        return div.data('val', oldValueParam.v);//.attr('data-category', category).attr('data-category', category);
+
+        return div.data('val', oldValueParam.v).data('input', form);//.attr('data-category', category).attr('data-category', category);
 
     },
-    __addInput: function (fName, f, Val, item) {
+    __addInput: function (fName, f, Val, item, callback) {
         let field = this;
         var f = f || {};
         var type = f.type;
@@ -366,27 +418,36 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             case 'code':
 
                 element = $('<div class="codeEditor">');
-                var el = $('<div>').appendTo(element);
-                var editor = CodeMirror(el.get(0), {
-                    value: (oldValue ? oldValue : (f.default ? f.default : "")),
-                    mode: "totum",
-                    height: '150px',
-                    readOnly: false,
-                    theme: 'eclipse',
-                    lineNumbers: true,
-                    gutter: false,
-                    indentWithTabs: true
-                });
-                editor.getScrollerElement().style.minHeight = '150px';
-                element.data('editor', editor);
-                editor.table = item.table_name && item.table_name.v ? item.table_name.v : null;
+                element.data('editor', true);
+                setTimeout(()=>{
+                    var el = $('<div>').appendTo(element);
+                    var editor = CodeMirror(el.get(0), {
+                        value: (oldValue ? oldValue : (f.default ? f.default : "")),
+                        mode: "totum",
+                        height: '150px',
+                        readOnly: false,
+                        theme: 'eclipse',
+                        lineNumbers: true,
+                        gutter: false,
+                        indentWithTabs: true
+                    });
+                    editor.on('blur', ()=>{
+                        callback()
+                    });
+                    element.data('editor', editor);
+                    editor.getScrollerElement().style.minHeight = '150px';
+
+                    editor.table = item.table_name && item.table_name.v ? item.table_name.v : null;
+                })
+
                 break;
 
             case 'string':
                 element = $('<input>').val(oldValue !== undefined ? oldValue : (f.default ? f.default : ''));
+
                 break;
             case 'json':
-                element = $('<div class="JSONEditor">').height(500);
+                element = $('<div class="JSONEditor">').height(500).on('blur', callback);
                 var editor = new JSONEditor(element.get(0), {});
                 var btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">Вручную</a>').on('click', function () {
                     var div = $('<div>');
@@ -443,7 +504,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 if (fName === 'chartOptions') {
                     let btn2 = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">Заполнить настройками по умолчанию</a>');
                     btn2.on('click', () => {
-                        let vl=$('div[data-name="chartType"] select').val();
+                        let vl = $('div[data-name="chartType"] select').val();
 
                         field.pcTable.chartTypes.some((type) => {
                             if (type.type == vl) {
@@ -475,6 +536,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     indentWithTabs: true,
                     autoCloseTags: true
                 });
+                editor.on('blur', callback);
                 editor.getScrollerElement().style.minHeight = '150px',
 
                     element.data('editor', editor);
@@ -532,9 +594,12 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     element.attr('multiple', 'multiple');
                     element.attr('size', '2');
                 }
+                element.css('visibility', 'hidden');
+                element.outerHeight(34);
                 setTimeout(function () {
                     element.selectpicker();
-                }, 20);
+                    element.css('visibility', 'visible');
+                }, 0);
 
 
                 if (oldValue) element.val(oldValue);
@@ -562,8 +627,10 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
             if (element) {
                 element.data('type', type);
-                if (!element.data('editor'))
+                if (!element.data('editor')) {
                     element.addClass('form-control');
+                    element.on('change', callback)
+                }
                 input.append(element);
             }
 
@@ -586,6 +653,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
         if ($switcher) {
             $switcher.on('change', function () {
+
                 if ($(this).is(':checked')) {
                     if (Val.isOnCheck !== true) {
                         Val.isOnCheck = true;
@@ -599,6 +667,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                         Val.changed();
                     }
                 }
+                callback();
             });
         }
 

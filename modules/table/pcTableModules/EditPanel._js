@@ -34,17 +34,25 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     let firstLoad = {};
 
 
-    this.checkRow = function (val, isFirstLoad) {
+    this.checkRow = async function (val, isFirstLoad) {
         let self = this;
-        return new Promise(function (resolve, reject) {
-            EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), Object.keys(insertChangesCalcsFields)).then(function (json) {
-                if (EditPanelFunc.panelType == 'edit' && isFirstLoad) {
-                    firstLoad = $.extend(true, {}, json.row);
-                }
-                EditPanelFunc.editRow.call(EditPanelFunc, json);
-                resolve(EditPanelFunc);
-            }).fail(reject);
-        })
+        const Check = () => {
+            return new Promise(function (resolve, reject) {
+                EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), Object.keys(insertChangesCalcsFields)).then(function (json) {
+                    if (EditPanelFunc.panelType == 'edit' && isFirstLoad) {
+                        firstLoad = $.extend(true, {}, json.row);
+                    }
+                    EditPanelFunc.editRow.call(EditPanelFunc, json);
+                    resolve(EditPanelFunc);
+                }).fail(reject);
+            })
+        }
+        if (EditPanelFunc.beforeSave) {
+            if (val = await EditPanelFunc.beforeSave(val)) {
+                return Check();
+            }
+        }
+        return Check();
     };
     this.saveRow = function (panel, btn) {
         let postData = this.getDataForPost();
@@ -80,7 +88,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         EditPanelFunc.pcTable.f = json.f || {};
         EditPanelFunc.editItem.f = json.row.f || {};
 
-        let column1 = this.$panel.find('>div:first'), column2 = this.$panel.find('>div:last');
+        let column1 = this.$panel.find('>div:first'), column2 = this.$panel.find('>div:eq(2)'),
+            column3 = this.$panel.find('>div:eq(3)'), columns = [];
         let allKoeffs = 0, nowKoeffs = 0, fCount = 0;
         const getKoeff = function (field) {
             return ['text', 'comments', 'file', 'listRow'].indexOf(field.type) !== -1 || field.multiple ? 1.5 : 1
@@ -94,13 +103,19 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             });
             allKoeffs /= 2;
             column1 = $('<div>').appendTo(this.$panel);
-            if (fCount > 1) {
+            columns['column1'] = column1;
+            if (pcTable === 2) {
                 column2 = $('<div>').appendTo(this.$panel);
-
+                column3 = $('<div>').appendTo(this.$panel);
+                columns['column2'] = column2;
+                columns['column3'] = column3;
+            } else if (fCount > 1) {
+                column2 = $('<div>').appendTo(this.$panel);
+                columns['column2'] = column2;
             } else {
                 this.$panel.css('grid-template-columns', '1fr');
-
             }
+
         }
 
 
@@ -123,7 +138,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (cell.length) {
                 if (cell.data('input') && !format.block) {
-                    if (!Oldval || field.isDataModified(EditPanelFunc.editItem[field.name].v, Oldval.v) || field.codeSelectIndividual || (EditPanelFunc.panelType == 'insert' && field.code && !field.codeOnlyInAdd)) {
+                    if (!Oldval || field.isDataModified(EditPanelFunc.editItem[field.name].v, Oldval.v) || field.codeSelectIndividual || (EditPanelFunc.panelType == 'insert' && field.code && !field.codeOnlyInAdd) || field.type === 'fieldParams') {
 
                         EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format);
                     }
@@ -144,28 +159,44 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 let thisKoeff = getKoeff(field);
                 divWrapper.attr('data-koeff', thisKoeff);
 
-                if (nowKoeffs > 0 && fCount === 2) {
-                    column2.append(divWrapper);
-                } else if (nowKoeffs < allKoeffs && (nowKoeffs + thisKoeff) > allKoeffs) {
-                    column1.append(divWrapper);
-                } else if ((nowKoeffs + thisKoeff) <= allKoeffs) {
-                    column1.append(divWrapper);
+                if (field.type === 'fieldParams') {
+                    this.$panel.append(divWrapper);
+                    divWrapper.width('100%')
+                    divWrapper.attr('data-name', field.name);
+                    divWrapper.css({
+                        'grid-column-start': 1,
+                        'grid-column-end': 4
+                    })
+                    cell = EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format, divWrapper);
                 } else {
-                    column2.append(divWrapper);
-                }
-                nowKoeffs += thisKoeff;
-
-
-                cell = EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format, divWrapper);
-
-                {
-                    let width = (window.innerWidth - 48);
-                    if (fCount === 1) {
-                        width = width < 790 ? width : 790;
+                    if (pcTable === 2) {
+                        let cln = (Math.floor(index / 2) + 1);
+                        if (index === 7)
+                            cln = 3
+                        columns['column' + cln].append(divWrapper);
+                    } else if (nowKoeffs > 0 && fCount === 2) {
+                        column2.append(divWrapper);
+                    } else if (nowKoeffs < allKoeffs && (nowKoeffs + thisKoeff) > allKoeffs) {
+                        column1.append(divWrapper);
+                    } else if ((nowKoeffs + thisKoeff) <= allKoeffs) {
+                        column1.append(divWrapper);
                     } else {
-                        width = width < 390 ? width : 390;
+                        column2.append(divWrapper);
                     }
-                    divWrapper.width(width);
+                    nowKoeffs += thisKoeff;
+                    cell = EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format, divWrapper);
+                    {
+                        let width = (window.innerWidth - 48);
+
+                        if (pcTable === 2) {
+                            width = 'auto';
+                        } else if (fCount === 1) {
+                            width = width < 790 ? width : 790;
+                        } else {
+                            width = width < 390 ? width : 390;
+                        }
+                        divWrapper.width(width);
+                    }
                 }
 
 
@@ -194,7 +225,17 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (EditPanelFunc.panelType === 'edit') {
 
-                if (!Object.equals(firstLoad[field.name].v, EditPanelFunc.editItem[field.name].v) || firstLoad[field.name].h != EditPanelFunc.editItem[field.name].h) {
+                let testEdited = EditPanelFunc.editItem[field.name].v;
+                let eq;
+                if (field.type === 'fieldParams') {
+                    eq = true;
+
+                } else {
+                    eq = Object.equals(firstLoad[field.name].v, testEdited);
+                }
+
+
+                if (!eq || firstLoad[field.name].h != EditPanelFunc.editItem[field.name].h) {
                     if (field.type === 'comments') {
                         if (typeof EditPanelFunc.editItem[field.name].v === 'string' && EditPanelFunc.editItem[field.name].v.length) {
                             cell.parent().addClass('edited');
@@ -202,6 +243,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                             cell.parent().removeClass('edited');
                         }
                     } else {
+
                         cell.parent().addClass('edited');
                     }
                 } else {
@@ -356,27 +398,30 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     this.cleateBootstrapPanel = function (title, type, isEditable) {
         let EditPanel = this;
         let buttons = [];
-
+        let save;
         if (isEditable) {
+            save = function (panel, event) {
+                "use strict";
+                if (Object.keys(EditPanelFunc.error).length) {
+                    let fName = Object.keys(EditPanelFunc.error)[0];
+                    let _error = EditPanelFunc.error[fName];
 
+                    App.notify(_error, $('<div>Ошибка в поле </div>').append(' в поле ').append($('<span>').text(EditPanelFunc.pcTable.fields[fName].title)));
+                    return false;
+                }
+                let btn = panel.$modal.find('.btn-save').prop('disabled', 'disabled');
+                if (EditPanelFunc.beforeSave) {
+                    EditPanelFunc.beforeSave();
+                }
+                setTimeout(function () {
+                    EditPanelFunc.pcTable.model.doAfterProcesses(function () {
+                        EditPanel.saveRow.call(EditPanel, panel, btn);
+
+                    });
+                }, 250)
+            };
             buttons.push({
-                action: function (panel, event) {
-                    "use strict";
-                    if (Object.keys(EditPanelFunc.error).length) {
-                        let fName = Object.keys(EditPanelFunc.error)[0];
-                        let _error = EditPanelFunc.error[fName];
-
-                        App.notify(_error, $('<div>Ошибка в поле </div>').append(' в поле ').append($('<span>').text(EditPanelFunc.pcTable.fields[fName].title)));
-                        return false;
-                    }
-                    let btn = panel.$modal.find('.btn-save').prop('disabled', 'disabled');
-                    setTimeout(function () {
-                        EditPanelFunc.pcTable.model.doAfterProcesses(function () {
-                            EditPanel.saveRow.call(EditPanel, panel, btn);
-
-                        });
-                    }, 250)
-                },
+                action: save,
                 cssClass: 'btn-warning btn-save',
                 label: 'Cохранить'
             });
@@ -384,7 +429,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
         if (!isElseItems) {
 
-            EditPanel.close=function (){
+            EditPanel.close = function () {
                 EditPanel.bootstrapPanel.close();
             }
 
@@ -398,7 +443,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
         } else {
 
-            EditPanel.close=function (){
+            EditPanel.close = function () {
                 $d.resolve(undefined, /*next*/true);
                 EditPanelFunc.resolved = true;
                 EditPanel.bootstrapPanel.close();
@@ -414,15 +459,18 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
         }
 
+        let eventName = 'ctrlS.EditPanel';
+
         EditPanel.bootstrapPanel = BootstrapDialog.show({
             type: type || null,
             size: BootstrapDialog.SIZE_WIDE,
             message: EditPanel.$panel,
-            cssClass: 'edit-row-panel',
+            cssClass: 'edit-row-panel' + (pcTable === 2 ? ' edit-field-panel' : ''),
             title: title,
             buttons: buttons,
             draggable: true,
             onhidden: function () {
+                $('body').off(eventName);
                 $d.resolve();
                 if (!EditPanelFunc.resolved) {
                     $(window.top.document.body).trigger('pctable-closed', {'type': 'panel'});
@@ -434,6 +482,14 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             },
             onshown: function (dialog) {
                 "use strict";
+
+                if (save) {
+                    $('body').on(eventName, function (event) {
+                        if ($('.bootstrap-dialog').length === 1) {
+                            save(dialog)
+                        }
+                    })
+                }
                 dialog.indexedButtons[Object.keys(dialog.indexedButtons)[0]].attr('tabindex', 500);
                 if (Object.keys(dialog.indexedButtons).length === 2) {
                     dialog.indexedButtons[Object.keys(dialog.indexedButtons)[1]].attr('tabindex', 501);
@@ -585,7 +641,23 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         };
 
 
+        cell.data('firstLoad', firstLoad);
         let input = field.getEditElement(cell.data('input'), EditPanelFunc.editItem[field.name], EditPanelFunc.editItem, saveClbck, escClbck, blurClbck, 50 + fieldIndex, false, cell);
+
+        if (pcTable === 2 && field.type === 'fieldParams') {
+            EditPanelFunc.beforeSave = async function (val) {
+                let editValResult = await getEditVal(input);
+                EditPanelFunc.editItem[field.name] = {
+                    v: editValResult
+                };
+                if (val) {
+                    val[field.name] = {
+                        v: editValResult
+                    }
+                    return val;
+                }
+            }
+        }
 
         if (!input.isAttached()) {
             cell.html(input)

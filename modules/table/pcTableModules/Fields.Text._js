@@ -326,6 +326,7 @@ fieldTypes.text = {
                         onshow: function (dialog) {
                             $('body').on(eventName, function (event) {
                                 save(dialog, event);
+                                return false;
                             });
                         }
                     })
@@ -360,6 +361,7 @@ fieldTypes.text = {
 
                             $('body').on(eventName, function (event) {
                                 save(dialog, event);
+                                return false;
                             });
                         }
 
@@ -390,6 +392,7 @@ fieldTypes.text = {
                             formFill();
                             $('body').on(eventName, function (event) {
                                 save(dialog, event);
+                                return false;
                             });
                         }
                     })
@@ -415,6 +418,7 @@ fieldTypes.text = {
                             });
                             $('body').on(eventName, function (event) {
                                 save(dialog, event);
+                                return false;
                             });
                         }
                     })

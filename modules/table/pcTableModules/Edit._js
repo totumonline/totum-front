@@ -296,7 +296,7 @@ $.extend(App.pcTableMain.prototype, {
             if (!td.length || !td.closest('body').length) return false;
             var tdNew = pcTable._removeEditing.call(pcTable, td);
             pcTable._colorizeElement(tdNew, pcTable_COLORS.blured);
-            goToFunc(event.altKey ? 'right' : (event.shiftKey ? 'down' : false))
+            goToFunc(event && event.altKey ? 'right' : (event && event.shiftKey ? 'down' : false))
         };
         let revert = function (goTo) {
             pcTable._removeEditing.call(pcTable, td);
@@ -356,7 +356,7 @@ $.extend(App.pcTableMain.prototype, {
                 });
             } else {
                 pcTable._saveEdited.call(pcTable, td, EdData, function () {
-                    goToFunc(event.altKey ? 'right' : (event.shiftKey ? 'down' : false))
+                    goToFunc(event && event.altKey ? 'right' : (event && event.shiftKey ? 'down' : false))
                 });
             }
         };
@@ -395,7 +395,7 @@ $.extend(App.pcTableMain.prototype, {
 
             let item = pcTable._getItemBytd(td);
 
-            let goTo = event.altKey ? 'right' : (event.shiftKey ? 'down' : false);
+            let goTo = event && event.altKey ? 'right' : (event && event.shiftKey ? 'down' : false);
 
             if (!field.name in item || !field.isDataModified(editVal, item[field.name].v)) {
                 revert(goTo);

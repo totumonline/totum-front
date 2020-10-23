@@ -1682,6 +1682,14 @@ ul.CodeMirror-hints {
     .modal-dialog {
       width: 820px;
     }
+    &.edit-field-panel .modal-dialog{
+      width: 1000px;
+      max-width: 99%;
+      .InsertPanel {
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-gap: 10px;
+      }
+    }
   }
 
   .target-iframe {

@@ -1,5 +1,5 @@
 let gulp = require('gulp'),
-    uglify = require('gulp-uglifyes'),
+    uglify = require('gulp-uglify-es').default,
     sass = require('gulp-sass'),
     include = require('gulp-include'),
     del = require('del'),

@@ -3190,7 +3190,7 @@
 
             span.appendTo(td);
 
-            if (!format.text && field.unitType && !isErrorVal && val.v !== null) {
+            if (!format.text && field.unitType && !isErrorVal && val.v !== null && !'postfix' in field) {
                 span.attr('data-unit-type', ' ' + field.unitType);
             }
 
