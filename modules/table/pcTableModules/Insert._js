@@ -63,7 +63,7 @@ $.extend(App.pcTableMain.prototype, {
                 if (!panel.is('.onSaving')) {
                     panel.addClass('onSaving');
                     pcTable.__insertRowActions('saveInsertRow', function () {
-                        pcTable._saveInsertRow.call(pcTable).then(function () {
+                        pcTable._saveInsertRow.call(pcTable).always(function () {
                             panel.removeClass('onSaving');
                         });
                     });
@@ -74,7 +74,7 @@ $.extend(App.pcTableMain.prototype, {
                 if (!panel.is('.onSaving')) {
                     panel.addClass('onSaving');
                     pcTable.__insertRowActions('saveInsertRow', function () {
-                        pcTable._saveInsertRow.call(pcTable, 'notClean').then(function () {
+                        pcTable._saveInsertRow.call(pcTable, 'notClean').always(function () {
                             panel.removeClass('onSaving');
                         });
                     });
@@ -339,7 +339,7 @@ $.extend(App.pcTableMain.prototype, {
             if (val) val = val.v;
 
 
-            td.empty().append(f.text ? $('<span>').html(f.text) : field.getCellText(val, td, pcTable._insertItem));
+            td.empty().append($('<span class="cell-value">').html(f.text ? f.text : field.getCellText(val, td, pcTable._insertItem)));
             if (f.comment) {
                 let i = $('<i class="fa fa-info pull-right" style="padding: 3px;">');
                 i.attr('title', f.comment)

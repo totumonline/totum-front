@@ -544,6 +544,10 @@ $.extend(App.pcTableMain.prototype, {
             let sourseBtnClick = function () {
                 onAction = true;
                 sourcePanelOpened = true;
+                setTimeout(()=>{
+                    input.click();
+                }, 3)
+
 
                 let ee = {};
                 $.each(item, function (k, v) {
@@ -556,6 +560,7 @@ $.extend(App.pcTableMain.prototype, {
                     ee[field.name] = null;
                 }
                 let opened = 0;
+
                 $(window.top.document.body)
                     .on('pctable-opened.select-' + field.name, function () {
                         opened++;
@@ -600,6 +605,7 @@ $.extend(App.pcTableMain.prototype, {
                         setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть
                     });
                 pcTable.model.selectSourceTableAction(field.name, ee);
+
                 return false;
             };
 

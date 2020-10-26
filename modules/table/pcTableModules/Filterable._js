@@ -149,7 +149,7 @@ App.pcTableMain.prototype.addValueToFilters = function (fieldName, valObj) {
     const pcTable = this;
     if (!pcTable.filters[fieldName]) pcTable.filters[fieldName] = [];
     let field = pcTable.fields[fieldName];
-    pcTable.filters[fieldName].push(field.getFilterDataByValue.call(field, valObj));
+    pcTable.filters[fieldName].push(...field.getFilterDataByValue.call(field, valObj));
     field.$th.find('.btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
     pcTable.__applyFilters.call(pcTable);
 };
@@ -158,7 +158,10 @@ App.pcTableMain.prototype.isValInFilters = function (fieldName, valObj) {
     if (!pcTable.filters[fieldName]) pcTable.filters[fieldName] = [];
     let field = pcTable.fields[fieldName];
     let val = field.getFilterDataByValue.call(field, valObj);
-    return pcTable.filters[fieldName].indexOf(val) !== -1;
+
+    return pcTable.filters[fieldName].some((v)=>{
+        return val.indexOf(v)!==-1;
+    });
 };
 App.pcTableMain.prototype.removeValueFromFilters = function (fieldName, valObj) {
 
@@ -166,10 +169,18 @@ App.pcTableMain.prototype.removeValueFromFilters = function (fieldName, valObj) 
     if (!pcTable.filters[fieldName]) pcTable.filters[fieldName] = [];
     let field = pcTable.fields[fieldName];
 
-    let val = field.getFilterDataByValue.call(field, valObj), ax;
-    while ((ax = pcTable.filters[fieldName].indexOf(val)) !== -1) {
-        pcTable.filters[fieldName].splice(ax, 1);
-    }
+    let val = field.getFilterDataByValue.call(field, valObj);
+    let spliced=0;
+    let newFiled=[...pcTable.filters[fieldName]];
+    pcTable.filters[fieldName].forEach((v, i)=>{
+        if(val.indexOf(v)!==-1){
+            newFiled.splice(i-spliced, 1);
+            spliced++;
+        }
+    })
+
+    pcTable.filters[fieldName] = newFiled;
+
     if (pcTable.filters[fieldName].length === 0) {
         delete pcTable.filters[fieldName];
     }
@@ -210,10 +221,16 @@ App.pcTableMain.prototype.__addFilterable = function () {
 
         const setSelectedFilters = function () {
             popoverDestroy();
+            if (!select.data('add-options')) {
+                vals = select.selectpicker('val');
+            } else {
+                vals = select.data('add-options');
+                select.data('add-options', null);
+            }
             let j1 = JSON.stringify(pcTable.filters[fieldName] || []);
-            let j2 = JSON.stringify(select.selectpicker('val'));
+            let j2 = JSON.stringify(vals);
             if (j1 !== j2) {
-                pcTable.filters[fieldName] = select.selectpicker('val');
+                pcTable.filters[fieldName] = vals;
                 if (pcTable.filters[fieldName].length === 0) delete pcTable.filters[fieldName];
                 if (fieldName === 'id' && !btn.closest('.pcTable-table').is(".pcTable-table:first")) {
                     pcTable._header.find('th.id .btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
@@ -233,6 +250,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
 
         let isDeleteAction = false;
         let objTimeout;
+
         const actionIt = function (actionName) {
             if (objTimeout) clearTimeout(objTimeout);
 
@@ -245,12 +263,13 @@ App.pcTableMain.prototype.__addFilterable = function () {
             if (actionName === 'setInvertFilters') {
                 let selected = Object.values(select.selectpicker('val'));
                 let newSelected = [];
+
                 $.each(select.data('options'), function (k, v) {
                     if (selected.indexOf(v) === -1) {
                         newSelected.push(v);
                     }
                 });
-                select.selectpicker('val', newSelected);
+                select.data('add-options', newSelected)
             }
             objTimeout = setTimeout(function () {
                 setSelectedFilters();
@@ -408,13 +427,13 @@ App.pcTableMain.prototype.__addFilterable = function () {
         }
 
         if (pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
-            if(chousenVisible)
+            if (chousenVisible)
                 selectDiv.height(260)
-                else
+            else
                 selectDiv.height(220)
             $buttons.append('<div class="text-center ttm-paging-danges">Фильтрация по текущей странице</div>');
         } else {
-            if(chousenVisible)
+            if (chousenVisible)
                 selectDiv.height(220)
             else
                 selectDiv.height(200)

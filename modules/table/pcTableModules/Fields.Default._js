@@ -144,7 +144,7 @@ var defaultField = {
     getFilterDataByValue: function (valObj) {
         let filterVals = [];
         this.addDataToFilter(filterVals, valObj);
-        return Object.keys(filterVals)[0];
+        return Object.keys(filterVals);
     },
     addDataToFilter: function (filterVals, valObj) {
         let hash;
