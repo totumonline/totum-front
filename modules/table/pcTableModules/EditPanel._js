@@ -13,6 +13,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         pcTable.openedPanels[data.id] = EditPanelFunc;
     }
 
+    let isEditFieldPanel = pcTable === 2 || (typeof pcTable === 'object' && pcTable.tableRow.id === 2);
 
     let $d = $.Deferred();
 
@@ -58,7 +59,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         let postData = this.getDataForPost();
         EditPanelFunc.pcTable.model[saveMethod](postData)
             .then(function (json) {
-                if (pcTable === 2) {
+                if (isEditFieldPanel) {
                     let mainTable = $('#table').data(pcTable_DATA_KEY);
                     if (mainTable && mainTable.tableRow.id == EditPanelFunc.editItem.table_id.v && postData.data_src.v && postData.data_src.v.width) {
                         mainTable.setColumnWidth(EditPanelFunc.editItem.name.v, postData.data_src.v.width.Val)
@@ -104,7 +105,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             allKoeffs /= 2;
             column1 = $('<div>').appendTo(this.$panel);
             columns['column1'] = column1;
-            if (pcTable === 2) {
+            if (isEditFieldPanel) {
                 column2 = $('<div>').appendTo(this.$panel);
                 column3 = $('<div>').appendTo(this.$panel);
                 columns['column2'] = column2;
@@ -169,7 +170,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     })
                     cell = EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format, divWrapper);
                 } else {
-                    if (pcTable === 2) {
+                    if (isEditFieldPanel) {
                         let cln = (Math.floor(index / 2) + 1);
                         if (index === 7)
                             cln = 3
@@ -188,7 +189,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     {
                         let width = (window.innerWidth - 48);
 
-                        if (pcTable === 2) {
+                        if (isEditFieldPanel) {
                             width = 'auto';
                         } else if (fCount === 1) {
                             width = width < 790 ? width : 790;
@@ -465,7 +466,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             type: type || null,
             size: BootstrapDialog.SIZE_WIDE,
             message: EditPanel.$panel,
-            cssClass: 'edit-row-panel' + (pcTable === 2 ? ' edit-field-panel' : ''),
+            cssClass: 'edit-row-panel' + (isEditFieldPanel ? ' edit-field-panel' : ''),
             title: title,
             buttons: buttons,
             draggable: true,
@@ -566,7 +567,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 cell.removeClass('error');
                 delete EditPanelFunc.error[field.name];
             } catch (error) {
-                if (field.name === 'name' && pcTable === 2) {
+                if (field.name === 'name' && isEditFieldPanel) {
                     delete insertChangesCalcsFields['name'];
                     let editF = await EditPanelFunc.checkRow();
                     return editF.editItem['name'].v;
@@ -610,7 +611,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     if (field.code && EditPanelFunc.panelType === 'insert') {
                         insertChangesCalcsFields[field.name] = true;
                     }
-                    if (pcTable === 2) {
+                    if (isEditFieldPanel) {
                         switch (field.name) {
                             case 'table_id':
                                 delete insertChangesCalcsFields['version'];
@@ -644,7 +645,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         cell.data('firstLoad', firstLoad);
         let input = field.getEditElement(cell.data('input'), EditPanelFunc.editItem[field.name], EditPanelFunc.editItem, saveClbck, escClbck, blurClbck, 50 + fieldIndex, false, cell);
 
-        if (pcTable === 2 && field.type === 'fieldParams') {
+        if (isEditFieldPanel && field.type === 'fieldParams') {
             EditPanelFunc.beforeSave = async function (val) {
                 let editValResult = await getEditVal(input);
                 EditPanelFunc.editItem[field.name] = {

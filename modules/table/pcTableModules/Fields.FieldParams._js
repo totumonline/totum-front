@@ -5,7 +5,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
         return !Object.equals(oldVal, newVal);
     },
     getEditVal: function (input) {
-        if(input.data('checkVal')){
+        if (input.data('checkVal')) {
             input.data('checkVal')();
         }
         return input.data('val');
@@ -344,7 +344,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     dialog.$modalHeader.css('cursor', 'pointer')
                     dialog.$modalDialog.width(1000);
                     $('body').on(eventName, function (event) {
-                        setTimeout(()=>{save(dialog)}, 10);
+                        setTimeout(() => {
+                            save(dialog)
+                        }, 10);
                         return false;
                     });
                 }
@@ -419,7 +421,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
                 element = $('<div class="codeEditor">');
                 element.data('editor', true);
-                setTimeout(()=>{
+                setTimeout(() => {
                     var el = $('<div>').appendTo(element);
                     var editor = CodeMirror(el.get(0), {
                         value: (oldValue ? oldValue : (f.default ? f.default : "")),
@@ -431,7 +433,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                         gutter: false,
                         indentWithTabs: true
                     });
-                    editor.on('blur', ()=>{
+                    editor.on('blur', () => {
                         callback()
                     });
                     element.data('editor', editor);
@@ -525,21 +527,24 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 break;
             case 'html':
                 element = $('<div class="HTMLEditor">')
-                var el = $('<div>').appendTo(element);
-                var editor = CodeMirror(el.get(0), {
-                    value: (oldValue ? oldValue : (f.default ? f.default : "")),
-                    mode: "text/html",
-                    height: '150px',
-                    readOnly: false,
-                    theme: 'eclipse',
-                    lineNumbers: true,
-                    indentWithTabs: true,
-                    autoCloseTags: true
-                });
-                editor.on('blur', callback);
-                editor.getScrollerElement().style.minHeight = '150px',
+                element.data('editor', true);
+                setTimeout(() => {
+                    var el = $('<div>').appendTo(element);
+                    var editor = CodeMirror(el.get(0), {
+                        value: (oldValue ? oldValue : (f.default ? f.default : "")),
+                        mode: "text/html",
+                        height: '150px',
+                        readOnly: false,
+                        theme: 'eclipse',
+                        lineNumbers: true,
+                        indentWithTabs: true,
+                        autoCloseTags: true
+                    });
+                    editor.on('blur', callback);
+                    editor.getScrollerElement().style.minHeight = '150px',
 
-                    element.data('editor', editor);
+                        element.data('editor', editor);
+                });
                 break;
             case 'integer':
                 element = $('<input>').val(oldValue !== undefined ? oldValue : (f.default ? f.default : "")).attr('type', 'number');

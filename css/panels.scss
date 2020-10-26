@@ -21,8 +21,10 @@
 }
 
 .edit-row-panel {
-  input[type=checkbox] {
-    margin-top: 0;
+  .cell-wrapper::not([data-name="data_src"]) {
+    input[type=checkbox] {
+      margin-top: 0;
+    }
   }
 
   .cell-icon {
@@ -134,12 +136,14 @@
 
     }
   }
-  .fParams-grid{
+
+  .fParams-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 10px;
+    grid-gap: 20px;
   }
-  .form-control{
+
+  .form-control {
     font-size: 14px !important;
   }
 }
@@ -223,6 +227,6 @@
   }
 }
 
-button[data-prop-disabled="true"]{
+button[data-prop-disabled="true"] {
   opacity: 0.5;
 }
