@@ -1831,7 +1831,7 @@
             if (scrollWrapper) {
                 $paramsBlock.appendTo(scrollWrapper);
                 return $paramsBlock
-            } else {
+            } else if(this._paramsBlock){
                 this._paramsBlock.replaceWith($paramsBlock);
                 this._paramsBlock = $paramsBlock;
             }

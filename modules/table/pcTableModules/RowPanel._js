@@ -43,7 +43,7 @@ App.pcTableMain.prototype._addRowPanel = function (panelId, row, buttons) {
         let popoverId = row.attr('aria-describedby');
         let popover = $('#' + popoverId).addClass('warning-bg');
         popover.find('.arrow').css('left', '80%');
-        pcTable._positionPanel.call(pcTable, popover, row);
+       pcTable._positionPanel.call(pcTable, popover, row);
         panel.show()
     }, 50);
 
@@ -51,9 +51,15 @@ App.pcTableMain.prototype._addRowPanel = function (panelId, row, buttons) {
 
 };
 App.pcTableMain.prototype._positionPanel = function (panel, row) {
-    var p = row.position();
-    let left = this.tableWidth+10;
+    let p = row.position();
+    let left = this.tableWidth-120;
     if (this._innerContainer.width()>this.tableWidth){
+        panel.css({left: left})
+    }else{
+        panel.css({left: this._innerContainer.width()-120})
+    }
+
+    /*if (this._innerContainer.width()>this.tableWidth){
         return panel.position({
             my: "right top",
             at: "right+2px bottom+"+12+"px",
@@ -65,6 +71,6 @@ App.pcTableMain.prototype._positionPanel = function (panel, row) {
             at: "right+2px top+"+(p.top+47)+"px ",
             of: this._innerContainer
         })
-    }
+    }*/
 
 };

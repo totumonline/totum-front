@@ -159,11 +159,9 @@
 
 
             if (this._header) {
-
-
                 if (isOthersChanged)
                     this.setWidthes();
-                else if (isRowsChanged) {
+                if (isRowsChanged) {
                     this._refreshHead();
                     this.rowButtonsCalcWidth();
                     this._refreshContentTable(true);
@@ -172,14 +170,11 @@
                         this._hideHell_storage.checkIssetFields.call(pcTable);
                         this._refreshHiddenFieldsBlock();
                     }
-                }
-
-                if (isRowsChanged) {
                     /*Удаляем строки с не тем количеством столбцов*/
                     $.each(this.data, function (id, v) {
                         delete pcTable.data[id].$tr;
                     });
-                    this.ScrollClasterized.insertToDOM(null, true);
+                    this.ScrollClasterized.insertToDOM(null, true, true);
                 }
             }
 

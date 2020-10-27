@@ -544,7 +544,7 @@ $.extend(App.pcTableMain.prototype, {
             let sourseBtnClick = function () {
                 onAction = true;
                 sourcePanelOpened = true;
-                setTimeout(()=>{
+                setTimeout(() => {
                     input.click();
                 }, 3)
 
@@ -579,6 +579,7 @@ $.extend(App.pcTableMain.prototype, {
                                 if (isAdded) {
 
                                     if (field.multiple) {
+                                        item[field.name].v = field.getEditVal(input);
                                         item[field.name].v.push(Object.keys(data.json.chdata.rows)[0]);
                                     } else {
                                         item[field.name].v = Object.keys(data.json.chdata.rows)[0];
