@@ -176,15 +176,14 @@ fieldTypes.date = {
     addDataToFilter: function (filterVals, valObj) {
 
         let hash;
-        if (valObj.v === null) {
-            hash = 'null'.hashCode();
+        let val='Пустое'
+        if (valObj.v === null || valObj.v === '') {
+            hash = ''.hashCode();
         } else {
             hash = valObj.v.toString().hashCode();
+            val = typeof valObj.v === "string" ? this.getCellText(valObj.v) : valObj.v;
         }
-        let format = this.dateTime ? App.dateTimeFormats : App.dateFormats;
-
-        filterVals[hash] = typeof valObj.v === "string" ? format.covertFromDb(valObj.v) : valObj.v;
-
+        filterVals[hash] = val
     },
     getFormat: function () {
         let format = this.dateFormat;
