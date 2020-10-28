@@ -40,8 +40,8 @@ fieldTypes.number = {
             const number_format = function (number, decimals, dec_point, thousands_sep) {
                 var n = !isFinite(+number) ? 0 : +number,
                     prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    sep = (typeof thousands_sep === 'undefined') ? ' ' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? ',' : dec_point,
                     toFixedFix = function (n, prec) {
                         // Fix for IE parseFloat(0.55).toFixed(0) = 0;
                         var k = Math.pow(10, prec);
