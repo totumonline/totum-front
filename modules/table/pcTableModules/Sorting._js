@@ -76,8 +76,8 @@ $.extend(App.pcTableMain.prototype, {
         } else {
             pcTable.dataSorted = pcTable.dataSorted.sort(function (a, b) {
                 let a_, b_;
-                a_ = data[a][fieldName].v || '';
-                b_ = data[b][fieldName].v || '';
+                a_ = data[a][fieldName].v + '';
+                b_ = data[b][fieldName].v + '';
                 if (a_ > b_) return sortDirection;
                 else if (a_ == b_) return 0;
                 else return -sortDirection;
