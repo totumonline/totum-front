@@ -492,12 +492,12 @@ fieldTypes.select = {
                             input.removeData('enterPressed');
                         });
                         divParent.find('button').click();
-                        setTimeout(function (){
-                            if(input.data('selectpicker').$bsContainer.offset()['top']>divParent.find('button').offset()['top']){
+                        setTimeout(function () {
+                            if (input.data('selectpicker').$bsContainer.offset()['top'] > divParent.find('button').offset()['top']) {
                                 let cdiv = input.closest('td').find('.cdiv')
-                                let popover=cdiv.data('bs.popover');
+                                let popover = cdiv.data('bs.popover');
 
-                                popover.applyPlacement(popover.getCalculatedOffset('top', popover.getPosition(), popover.$tip.width()+8, popover.$tip.height()+33), 'top');
+                                popover.applyPlacement(popover.getCalculatedOffset('top', popover.getPosition(), popover.$tip.width() + 8, popover.$tip.height() + 33), 'top');
                                 popover.$tip.removeClass('bottom').addClass('top')
                             }
 
@@ -771,31 +771,6 @@ fieldTypes.select = {
 
         return !Object.equals(fromItem, edited);
     },
-    checkIsFiltered: function (fieldVal, filters) {
-        let val, check;
-        if (this.multiple) {
-            val = [];
-            if (fieldVal && fieldVal.v_ && fieldVal.v_.length) {
-                fieldVal.v_.forEach(function (v) {
-                    val.push(v[0].hashCode().toString())
-                })
-            }
-            check = function (v) {
-                if (val.indexOf(v) !== -1) {
-                    return true;
-                }
-            }
-        } else {
-            val = fieldVal.v_[0] === null ? 'null' : fieldVal.v_[0].toString();
-            val = val.hashCode().toString();
-            check = function (v) {
-                if (v === val) {
-                    return true;
-                }
-            }
-        }
-        return filters.some(check);
-    },
     checkEditRegExp: function (val) {
         if (!this.warningEditRegExp) return true;
         try {
@@ -812,19 +787,22 @@ fieldTypes.select = {
         const addFiltersData = function (valObjElem) {
             let hash;
             let str = valObjElem[0];
-            if (str === null) {
-                hash = 'null'.hashCode();
+            let val = "Пустое";
+            if (str === null || str === '') {
+                hash = ''.hashCode();
             } else {
                 hash = str.toString().hashCode();
-                str = str.replace(/"/g, "&quot;");
+                val = str.replace(/"/g, "&quot;");
             }
-            filterVals[hash] = str;
+            filterVals[hash] = val;
         };
         if (this.multiple) {
             if (valObj && valObj.v_.length) {
                 valObj.v_.forEach(function (valObj) {
                     addFiltersData(valObj);
                 })
+            } else {
+                addFiltersData({0: ''});
             }
         } else {
             addFiltersData(valObj.v_)

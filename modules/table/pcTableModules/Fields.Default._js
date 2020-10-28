@@ -148,25 +148,21 @@ var defaultField = {
     },
     addDataToFilter: function (filterVals, valObj) {
         let hash;
-        if (valObj.v === null) {
-            hash = 'null'.hashCode();
+        let val='Пустое'
+        if (valObj.v === null || valObj.v === '') {
+            hash = ''.hashCode();
         } else {
             hash = valObj.v.toString().hashCode();
+            val= typeof valObj.v === "string" ? valObj.v.replace(/"/g, "&quot;") : (valObj.v + ' ')
         }
-        filterVals[hash] = typeof valObj.v === "string" ? valObj.v.replace(/"/g, "&quot;") : valObj.v;
+        filterVals[hash] = val;
     },
     checkIsFiltered: function (fieldVal, filters) {
-        let val = fieldVal.v;
-        var contains = false;
-        filters.forEach(function (v) {
-            var valstr = val == null ? 'null' : val.toString();
-
-            if (v === valstr.hashCode().toString()) {
-                contains = true;
-                return false;
-            }
+        let vals={};
+        this.addDataToFilter(vals, fieldVal);
+        return filters.some(function (v) {
+            return v in vals;
         });
-        return contains;
     },
     getCellTextInPanel: function (fieldValue, td, item) {
         return this.getCellText(fieldValue, td, item);
