@@ -5,8 +5,8 @@
         tdNoTitles.forEach((f) => {
             let h = f.th.outerHeight();
             f.th.remove();
-            if (f.tdWrapper.attr('css') && f.tdWrapper.attr('css').match(/\bheight\b/)) {
-                f.tdWrapper.css('height', parseInt(f.tdWrapper.css('height')) + parseInt(h));
+            if (f.tdWrapper.data('height')) {
+                f.tdWrapper.css('height', f.tdWrapper.data('height') + parseInt(h));
             }
         })
     }
@@ -1468,8 +1468,9 @@
 
                     if (field.format.maxheight) {
                         field.tdWrapper.css('maxHeight', field.format.maxheight - thHeight - 10);
-                    } else if (field.format.height && !field.format.maxheight) {debugger
+                    } else if (field.format.height && !field.format.maxheight) {
                         field.tdWrapper.css('height', field.format.height - thHeight);
+                        field.tdWrapper.data('height', field.format.height - thHeight);
                     }
                     addFieldGap(field, sectionGap)
                 });
