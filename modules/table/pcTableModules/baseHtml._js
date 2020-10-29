@@ -1083,7 +1083,7 @@
             return this._filtersBlock;
         }
         ,
-        __fillFloatBlock: function ($paramsBlock, fields) {
+            __fillFloatBlock: function ($paramsBlock, fields) {
             let pcTable = this;
             let panelColor;
             let sectionTitle = '';
@@ -2950,7 +2950,7 @@
             filterBlock.appendTo($th);
             let filterBlockWidth = filterBlock.find('.btn').length * 20 + 5;
 
-            if (this.isCreatorView && (field.showMeWidth == 0 || field.showMeWidth > 50)) {
+            if (this.isCreatorView && (!field.showMeWidth || field.showMeWidth > 50)) {
                 let pcTableCreatorButtonsBlock = $('<div class="th-left-bottom-buttons">').appendTo($th);
                 if (field.category === 'footer' && field.column && this.fields[field.column] && !pcTable.hidden_fields[field.name]) {
                     width = this.fields[field.column].width;
