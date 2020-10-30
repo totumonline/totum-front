@@ -375,10 +375,8 @@
                                     btn.find('i').attr('class', 'fa fa-square-o')
                                 }
                                 $.cookie('pcTableLogs', JSON.stringify(codes), {path: '/'});
-
                                 pcTable.FullLOGS = [];
                                 pcTable.LOGS = {};
-
                                 btn.popover('destroy');
                             };
                             if (btn.is('[aria-describedby]')) {
@@ -393,14 +391,19 @@
                                 $div.append('<div><input type="checkbox" name="s"/> Селекты</div>');
                                 $div.append('<div><input type="checkbox" name="f"/> Форматирование</div>');
                                 $div.append('<div><input type="checkbox" name="recalcs"/> Пересчеты и селекты</div>');
+                                let $times=$('<div><input type="checkbox" name="flds"/> Время расчета полей </div>');
+                                $div.append($times)
+                                if (pcTable.FieldLOGS && pcTable.FieldLOGS.length){
+                                    pcTable.FieldLOGS.forEach((log)=>{
+                                        let $calcFieldsLogBtn = $('<div style="cursor: pointer"><button class="btn btn-xs"><i class="fa fa-table"></i></button> '+log.name+'</div>').on('click', function () {
+                                            pcTable.model.calcFieldsLog(JSON.stringify(log.data), log.name);
+                                        })
+                                        $times.append($calcFieldsLogBtn);
+                                    })
+                                }
 
-                                let $calcFieldsLogBtn = $('<button class="btn btn-xs"><i class="fa fa-table"></i></button>').on('click', function () {
-                                    if (!pcTable.FieldLOGS) App.notify('Лог расчета полей пуст');
-                                    else {
-                                        pcTable.model.calcFieldsLog(JSON.stringify(pcTable.FieldLOGS), pcTable.FieldLOGSName || "Расчет вывода таблицы");
-                                    }
-                                });
-                                $div.append($('<div><input type="checkbox" name="flds"/> Время расчета полей </div>').append($calcFieldsLogBtn));
+
+
 
 
                                 $div.append('<div style="padding-top: 10px;"><button class="btn btn-sm btn-default">Применить</button></div>');
@@ -454,6 +457,7 @@
                     $('<button class="btn btn-danger btn-sm"><i class="fa fa-eraser" style="width: 13px"></i></button>')
                         .on('click', function () {
                             pcTable.FullLOGS = [];
+                            pcTable.FieldLOGS = [];
                             pcTable.LOGS = {};
                         }).appendTo(LogButtons);
                 }

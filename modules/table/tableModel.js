@@ -124,6 +124,7 @@
                         'checkInsertRow': 'Предварительное добавление',
                         'duplicate': 'Дублирование',
                         'refresh_rows': 'Пересчет строк',
+                        'loadPage': 'Загрузка страницы',
 
                         'getTableData': 'Загрузка информации о таблице',
                         'refresh': 'Обновление данных таблицы',
@@ -154,9 +155,9 @@
                                 App.blink(pcTableObj.LogButton, 8, '#fff');
                             }
                         }
-                        if (json.FieldLogs) {
-                            pcTableObj.FieldLOGSName = methods[data_tmp['method']] || data_tmp['method'];
-                            pcTableObj.FieldLOGS = json.FieldLogs;
+                        if (json.FieldLOGS && Object.keys(json.FieldLOGS).length) {
+                            pcTableObj.FieldLOGS=pcTableObj.FieldLOGS || [];
+                            pcTableObj.FieldLOGS.push({'data':json.FieldLOGS, 'name': (methods[data_tmp['method']] || data_tmp['method'])});
                         }
                         if (data_tmp['method'] !== 'loadPage' && pcTableObj.PageData && json.allCount) {
                             let changed = false;
