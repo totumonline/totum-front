@@ -513,7 +513,10 @@ $.extend(App.pcTableMain.prototype, {
             field.addPlaceholder(input, f.placeholder)
         }
         td.on('click focus', 'input,button,select', function (event) {
-            pcTable._currentInsertCellIndex = index;
+            setTimeout(()=>{
+                pcTable._currentInsertCellIndex = index;
+            }, 200)
+
         });
 
 
