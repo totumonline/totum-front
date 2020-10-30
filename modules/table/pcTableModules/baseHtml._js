@@ -2768,7 +2768,7 @@
                                     }
                                 ];
                                 if (pcTable.isCreatorView) {
-                                    btns.splice(1, 0, {
+                                    btns.splice(0, 0, {
                                         label: 'Применить',
                                         cssClass: 'btn-m btn-danger',
                                         action: function (dialog) {

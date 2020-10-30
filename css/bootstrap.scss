@@ -19,8 +19,11 @@
 .bootstrap-select span.text small.text-muted {
   padding-left: 3px;
 }
-.bootstrap-select .dropdown-toggle:focus {
-  outline: #333 !important;
+.bootstrap-select .dropdown-toggle {
+  &:focus {
+    outline: #333 !important;
+  }
+  border-color: transparent !important;
 }
 
 .bootstrap-select > .dropdown-toggle.bs-placeholder, .bootstrap-select > .dropdown-toggle.bs-placeholder:active, .bootstrap-select > .dropdown-toggle.bs-placeholder:focus, .bootstrap-select > .dropdown-toggle.bs-placeholder:hover {
@@ -134,6 +137,6 @@ label.field-param-lable {
     font-weight: 500;
   }
   &.switcheble{
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
 }

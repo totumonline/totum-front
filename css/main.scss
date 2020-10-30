@@ -608,7 +608,8 @@ th {
 
   .edit-folder-icon {
     font-size: 14px;
-    padding-top: 6px;
+    top: 1px;
+    position: relative;
     padding-right: 5px;
     padding-left: 5px;
     color: $btn-danger-bgcolor;
@@ -795,7 +796,7 @@ th {
 }
 
 @mixin form-control {
-  height: 26px;
+  height: 27px;
   font-size: 12px;
 }
 
