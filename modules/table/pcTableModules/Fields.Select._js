@@ -535,6 +535,13 @@ fieldTypes.select = {
                         if (selectPicker.$menuInner.height() < 100 && selectPicker.$menuInner.find('li').length > 6) {
                             selectPicker.$menuInner.height(300)
                         }
+                        let position = selectPicker.$menu.get(0).getBoundingClientRect();
+                        if(position.right > window.innerWidth - 10){
+                            let diff = position.right - window.innerWidth + 10;
+                            let width = selectPicker.$menuInner.width();
+                            selectPicker.$menuInner.width(width - diff).css('overflow-x', 'scroll');
+                        }
+
 
                         if (!selectPicker.cropped) {
                             selectPicker.cropped = true;
