@@ -114,11 +114,15 @@
 #selectPanelBig, #selectPanel{
   .panel-buttons{
     button{
-      width: 100%;
+      width: calc(100% - 6px);
       padding: 3px;
       margin-right: 5px;
       &:last-child{
         margin-right: 0;
+      }
+      margin-top: 5px;
+      &:first-child{
+        margin-top: 0;
       }
     }
   }
