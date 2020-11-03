@@ -13,8 +13,10 @@
     .ttm-pages{
       padding: 0 5px;
     }
-    &.ttm-pagination-warning *{
-        color: tomato;
+    &.ttm-pagination-warning{
+        .fa-square{
+          color: tomato;
+        }
       /*background-color: seashell;*/
     }
   }
