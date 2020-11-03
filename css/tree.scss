@@ -57,6 +57,9 @@
   .jstree-node {
     background: none;
     margin-bottom: 4px;
+    &:first-child{
+      margin-top: 4px;
+    }
   }
 
   .jstree-icon {
@@ -72,7 +75,7 @@
     box-shadow: none;
   }
 
-  .jstree-selected a, a.jstree-hovered {
+  .jstree-selected > a, a.jstree-hovered {
     color: #000;
     font-weight: 500;
     background: #e8e8e8;
