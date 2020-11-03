@@ -431,7 +431,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
 
 @mixin pcTable-td() {
   border: 1px solid #e4e4e4;
-  height: 33px;
+  height: 35px;
   overflow: hidden;
   padding: 5px;
   white-space: nowrap;
@@ -1728,9 +1728,7 @@ ul.CodeMirror-hints {
 
     td {
       border: 1px solid #e4e4e4;
-      height: 33px;
       overflow: hidden;
-      padding: 5px;
 
       &.input {
         background-color: $btn-danger-bgcolor;
