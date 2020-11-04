@@ -491,7 +491,7 @@ fieldTypes.select = {
                             input.removeData('keyPressed');
                             input.removeData('enterPressed');
                         });
-                        divParent.find('button').click();
+
                         setTimeout(function () {
                             if (input.data('selectpicker').$bsContainer.offset()['top'] > divParent.find('button').offset()['top']) {
                                 let cdiv = input.closest('td').find('.cdiv')
@@ -604,6 +604,10 @@ fieldTypes.select = {
                             .off('keydown.selectContainer.' + input.data('AppUin'))
                             .off('click.selectContainer.' + input.data('AppUin'))
                     })
+
+                    if (input.closest('.InsertRow, .InsertPanel').length === 0) {
+                        divParent.find('button').click();
+                    }
                 }
 
             } else {
