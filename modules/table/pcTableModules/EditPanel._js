@@ -171,10 +171,17 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     cell = EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format, divWrapper);
                 } else {
                     if (isEditFieldPanel) {
-                        let cln = (Math.floor(index / 2) + 1);
-                        if (index === 7)
-                            cln = 3
-                        columns['column' + cln].append(divWrapper);
+                        if (index === 0) {
+                            this.$panel.prepend(divWrapper.css({
+                                'grid-column-start': 1,
+                                'grid-column-end': 4
+                            }));
+                        } else {
+                            let cln = (Math.floor((index  + 1) / 2));
+                            if (index === 7)
+                                cln = 3
+                            columns['column' + cln].append(divWrapper);
+                        }
                     } else if (nowKoeffs > 0 && fCount === 2) {
                         column2.append(divWrapper);
                     } else if (nowKoeffs < allKoeffs && (nowKoeffs + thisKoeff) > allKoeffs) {
