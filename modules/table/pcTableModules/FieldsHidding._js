@@ -91,26 +91,30 @@
                 this.setVisibleFields(visibleFields);
             }
         },
-        loadVisibleFields: function () {
+        loadVisibleFields: function (hideShowForse) {
+
             let visibleFields = {};
             let storageDate = hiddingStorage.getDate(this.tableRow);
+            hideShowForse = hideShowForse || {};
+
             if (!storageDate || (this.tableRow.fields_actuality != '' && this.tableRow.fields_actuality > storageDate)) {
                 //Тут будет табличка про обновление настроек - когда-нибудь
-                console.log('visibleFields updated');
-                this.setVisibleFields(visibleFields, true, moment().format(App.dateTimeFormats.db));
+                this.setVisibleFields(visibleFields, true, moment().format(App.dateTimeFormats.db), hideShowForse);
             } else {
                 visibleFields = hiddingStorage.get(this.tableRow) || {};
-                this.setVisibleFields(visibleFields, true);
+                this.setVisibleFields(visibleFields, true, undefined, hideShowForse);
             }
         },
-        setVisibleFields: function (visibleFields, isFromLoad, updatedDate) {
+        setVisibleFields: function (visibleFields, isFromLoad, updatedDate, hideShowForse) {
             let pcTable = this;
             let isRowsChanged = false, isOthersChanged = false;
+            hideShowForse = hideShowForse || {};
 
             if (visibleFields && Object.keys(visibleFields).length === 0) {
                 visibleFields = {};
                 Object.values(pcTable.fields).forEach(function (field) {
-                    let newVal = field.hidden ? 0 : field.width;
+                    let newVal = (field.hidden && hideShowForse[field.name] !== false) || hideShowForse[field.name] === true ? 0 : field.width;
+
 
                     if (newVal != pcTable.fields[field.name].showMeWidth)
                         if (field.category === 'column' || (field.category === 'footer' && field.column)) {
@@ -131,6 +135,13 @@
                         newVal = parseInt(visibleFields[field.name]);
                     } else {
                         newVal = isFromLoad && !field.hidden ? field.width : 0;
+                    }
+                    if(field.name in hideShowForse){
+                        if(hideShowForse[field.name]===true){
+                            newVal = 0
+                        }else{
+                            newVal = field.width;
+                        }
                     }
 
                     if (newVal != pcTable.fields[field.name].showMeWidth)

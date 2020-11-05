@@ -51,6 +51,12 @@
         }
       }
 
+      &[data-field-type="file"]{
+        img {
+          margin-top: -3px;
+        }
+      }
+
       &.nonowrap {
         &[data-field-type="tree"] .cell-value .select-item span {
           white-space: nowrap;

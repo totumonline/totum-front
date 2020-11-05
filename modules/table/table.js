@@ -532,7 +532,7 @@
             render: function (addVars) {
                 let pcTable = this;
 
-                this.loadVisibleFields();
+                this.loadVisibleFields(this.f && this.f.fieldhide ? this.f.fieldhide : undefined);
 
 
                 this._renderTable();
@@ -703,7 +703,7 @@
                 if (item && item.$tr) {
                     item.$tr.remove();
                 }
-                if(this.openedPanels[id]){
+                if (this.openedPanels[id]) {
                     this.openedPanels[id].close();
                 }
 

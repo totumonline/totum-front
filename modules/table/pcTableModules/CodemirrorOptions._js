@@ -11,7 +11,7 @@
     funcsFromTable.forEach(function (row) {
         TOTUMjsFuncs[row.name.toLowerCase()] = [row.t, 0, row.p, row.n, row.m];
     });
-    let DbFieldParams = ['where', 'order', 'field', 'sfield', 'bfield', 'tfield', 'preview', 'parent', 'section', 'table', 'filter', 'fieldtitle'];
+    let DbFieldParams = ['where', 'order', 'field', 'sfield', 'bfield', 'tfield', 'preview', 'parent', 'section', 'table', 'filter', 'fieldtitle', 'fieldhide'];
 
     CodeMirror.defaults.scrollbarStyle = 'overlay';
 
