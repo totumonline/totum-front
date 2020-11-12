@@ -271,7 +271,6 @@
                         const redraw = function () {
                             $mes.jstree(true).refresh(false, true);
                         }
-
                         let $icon = $(_node).find('>a i:first');
                         if (canEdit) {
                             $icon1 = $('<i class="fa fa-edit edit-tree-icon"></i>');
