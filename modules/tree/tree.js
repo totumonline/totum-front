@@ -60,40 +60,6 @@
             $.jstree.defaults.core.dblclick_toggle = false;
             $.jstree.defaults.core.expand_selected_onload = true;
             $.jstree.defaults.core.force_text = true;
-            $.jstree.link_prefix = prefix;
-
-            if (isCreatorView) {
-                let c = $.jstree.core.prototype.redraw_node;
-                $.jstree.core.prototype.redraw_node = function (node, deep, is_callback, force_render) {
-                    let _node = c.bind(this)(node, deep, is_callback, force_render);
-                    let edit_folder = $(_node).find('>a.edit-folder');
-                    if (edit_folder.length) {
-
-                        let i = $('<i class="fa fa-edit edit-folder-icon"></i>');
-                        i.on('click', () => {
-                            (new EditPanel("tree", BootstrapDialog.TYPE_DANGER, {id: edit_folder.data('id')})).then(goToTheTable)
-                            return false
-                        })
-                        edit_folder.find('>i').after(i)
-                    } else {
-                        let add_calcs = $(_node).find('>a.add_calcs_table');
-                        if (add_calcs.length) {
-                            let i = $('<i class="fa fa-plus edit-folder-icon"></i>');
-                            i.on('click', () => {
-                                (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {
-                                    type: {v: 'calcs'},
-                                    tree_node_id: {v: add_calcs.data('id')}
-                                }, {}, {type: true, tree_node_id: true})).then(goToTheTable)
-                                return false
-                            })
-                            add_calcs.find('>i').after(i)
-                        }
-                    }
-
-                    return _node;
-                };
-            }
-
 
             let treeStorage = localStorage.getItem('tree') || '{}';
             treeStorage = JSON.parse(treeStorage);
@@ -108,7 +74,7 @@
                     data[k].state.opened = true;
                 }
                 if (v.href) {
-                    data[k]["a_attr"] = {"href": $.jstree.link_prefix + v.href}
+                    data[k]["a_attr"] = {"href": prefix + v.href}
                 } else if (v.link) {
                     data[k]["a_attr"] = {"href": v.link}
                 }
@@ -174,6 +140,39 @@
 
 
             let $leftTree = $('#leftTree');
+            if (isCreatorView) {
+                $leftTree.on("init.jstree", function (e, data) {
+                    let c = $.jstree.core.prototype.redraw_node
+                    $leftTree.jstree(true).redraw_node = function (node, deep, is_callback, force_render) {
+                        let _node = c.bind(this)(node, deep, is_callback, force_render);
+                        let edit_folder = $(_node).find('>a.edit-folder');
+                        if (edit_folder.length) {
+
+                            let i = $('<i class="fa fa-edit edit-folder-icon"></i>');
+                            i.on('click', () => {
+                                (new EditPanel("tree", BootstrapDialog.TYPE_DANGER, {id: edit_folder.data('id')})).then(goToTheTable)
+                                return false
+                            })
+                            edit_folder.find('>i').after(i)
+                        } else {
+                            let add_calcs = $(_node).find('>a.add_calcs_table');
+                            if (add_calcs.length) {
+                                let i = $('<i class="fa fa-plus edit-folder-icon"></i>');
+                                i.on('click', () => {
+                                    (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {
+                                        type: {v: 'calcs'},
+                                        tree_node_id: {v: add_calcs.data('id')}
+                                    }, {}, {type: true, tree_node_id: true})).then(goToTheTable)
+                                    return false
+                                })
+                                add_calcs.find('>i').after(i)
+                            }
+                        }
+                        return _node;
+                    };
+                })
+            }
+
             let $scrollTreeBlock = $('#LeftTree');
             let treeScrollPath = () => {
                 return 'tree_scroll_part_' + (window.top_branch || (window.location.pathname.match(/\/Table\/(\d+)/) || {1: 0})[1]);
@@ -210,7 +209,6 @@
                 });
                 niceScrollResize();
             };
-
             $leftTree.on('loaded.jstree after_open.jstree', function (event) {
                 let treeWidth = $leftTree.width();
                 $leftTree.find('a.jstree-anchor').each(function () {
@@ -279,7 +277,7 @@
                         if (!window.location.pathname.match(/^\/Table\//))
                             window.location.href = d.node.original.href;
                         else
-                            window.location.href = d.node.original.link ? d.node.original.link : $.jstree.link_prefix + d.node.original.href;
+                            window.location.href = d.node.original.link ? d.node.original.link : prefix + d.node.original.href;
                 }
                 return false;
             });

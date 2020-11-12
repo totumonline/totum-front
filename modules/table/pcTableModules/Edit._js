@@ -539,7 +539,7 @@ $.extend(App.pcTableMain.prototype, {
             editCellsBlock.append($btn)
         }
 
-        if (field.changeSelectTable) {
+        if (field.changeSelectTable && field.type === 'select') {
 
             let sourseBtnClick = function () {
                 onAction = true;

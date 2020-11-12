@@ -27,3 +27,11 @@ button.tree-button{
 .tree-search{
   padding-bottom: 5px;
 }
+.edit-tree-icon{
+  padding-right: 3px;
+  padding-left: 3px;
+  color: $btn-primary-primary-bgcolor;
+  + .edit-tree-icon{
+    padding-left: 0px;
+  }
+}
