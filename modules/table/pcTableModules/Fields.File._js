@@ -96,10 +96,7 @@
                     ext: file.ext
                 };
                 let regExpName = new RegExp('^' + field.pcTable.tableRow.id + '_' + (item.id ? item.id : ''));
-                if (file.file && !regExpName.test(file.file)) {
-                    addDiv.find('.remove').remove();
-                }
-
+                
                 addDiv.data('file', fl);
                 addDiv.find('.name').text(file.name);
                 addDiv.find('.size').text(field.getSize(file.size));
