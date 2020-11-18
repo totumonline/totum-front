@@ -18,10 +18,10 @@ $.extend(App.pcTableMain.prototype, {
                 let _a1, _b1;
                 let r = 0;
 
-                if (a1===null) {
-                    if (b1===null) r = 0;
+                if (a1 === null) {
+                    if (b1 === null) r = 0;
                     else r = -sortDirection;
-                } else if (b1===null) {
+                } else if (b1 === null) {
                     r = sortDirection;
                 } else {
 
@@ -63,6 +63,7 @@ $.extend(App.pcTableMain.prototype, {
                         a_ = data[a][fieldName].v;
 
                     }
+                    if (a_ === null) a_ = '';
                     return a_;
                 };
 
