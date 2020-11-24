@@ -64,20 +64,35 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
     }
 
 
-    let old = this.dataSortedVisible.slice();
+    let old = [];
+    if (this.isTreeView) {
+        this.dataSortedVisible.forEach((v) => {
+            if (typeof v != 'object') {
+                old.push(v)
+            }
+        })
+    } else {
+        old = this.dataSortedVisible.slice();
+    }
     let new_ = [];
+    let new_check = [];
 
     for (let i = 0; i < this.dataSorted.length; i++) {
-        let id = this.dataSorted[i];
-        let item = this.data[id];
-        this.__applyFiltersToItem(item);
-        if (item.$visible) {
-            new_.push(id);
+        let element = this.dataSorted[i];
+        if (typeof element === 'object') {
+            new_.push(element);
+        } else {
+            let item = this.data[element];
+            this.__applyFiltersToItem(item);
+            if (item.$visible) {
+                new_.push(element);
+                new_check.push(element);
+            }
         }
     }
 
 
-    if (forse || JSON.stringify(old) !== JSON.stringify(new_)) {
+    if (forse || JSON.stringify(old) !== JSON.stringify(new_check)) {
         this.dataSortedVisible = new_;
         this._refreshContentTable(false, true);
         this._headCellIdButtonsState();
@@ -159,8 +174,8 @@ App.pcTableMain.prototype.isValInFilters = function (fieldName, valObj) {
     let field = pcTable.fields[fieldName];
     let val = field.getFilterDataByValue.call(field, valObj);
 
-    return pcTable.filters[fieldName].some((v)=>{
-        return val.indexOf(v)!==-1;
+    return pcTable.filters[fieldName].some((v) => {
+        return val.indexOf(v) !== -1;
     });
 };
 App.pcTableMain.prototype.removeValueFromFilters = function (fieldName, valObj) {
@@ -170,11 +185,11 @@ App.pcTableMain.prototype.removeValueFromFilters = function (fieldName, valObj) 
     let field = pcTable.fields[fieldName];
 
     let val = field.getFilterDataByValue.call(field, valObj);
-    let spliced=0;
-    let newFiled=[...pcTable.filters[fieldName]];
-    pcTable.filters[fieldName].forEach((v, i)=>{
-        if(val.indexOf(v)!==-1){
-            newFiled.splice(i-spliced, 1);
+    let spliced = 0;
+    let newFiled = [...pcTable.filters[fieldName]];
+    pcTable.filters[fieldName].forEach((v, i) => {
+        if (val.indexOf(v) !== -1) {
+            newFiled.splice(i - spliced, 1);
             spliced++;
         }
     })

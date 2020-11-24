@@ -391,19 +391,16 @@
                                 $div.append('<div><input type="checkbox" name="s"/> Селекты</div>');
                                 $div.append('<div><input type="checkbox" name="f"/> Форматирование</div>');
                                 $div.append('<div><input type="checkbox" name="recalcs"/> Пересчеты и селекты</div>');
-                                let $times=$('<div><input type="checkbox" name="flds"/> Время расчета полей </div>');
+                                let $times = $('<div><input type="checkbox" name="flds"/> Время расчета полей </div>');
                                 $div.append($times)
-                                if (pcTable.FieldLOGS && pcTable.FieldLOGS.length){
-                                    pcTable.FieldLOGS.forEach((log)=>{
-                                        let $calcFieldsLogBtn = $('<div style="cursor: pointer"><button class="btn btn-xs"><i class="fa fa-table"></i></button> '+log.name+'</div>').on('click', function () {
+                                if (pcTable.FieldLOGS && pcTable.FieldLOGS.length) {
+                                    pcTable.FieldLOGS.forEach((log) => {
+                                        let $calcFieldsLogBtn = $('<div style="cursor: pointer"><button class="btn btn-xs"><i class="fa fa-table"></i></button> ' + log.name + '</div>').on('click', function () {
                                             pcTable.model.calcFieldsLog(JSON.stringify(log.data), log.name);
                                         })
                                         $times.append($calcFieldsLogBtn);
                                     })
                                 }
-
-
-
 
 
                                 $div.append('<div style="padding-top: 10px;"><button class="btn btn-sm btn-default">Применить</button></div>');
@@ -1088,7 +1085,7 @@
             return this._filtersBlock;
         }
         ,
-            __fillFloatBlock: function ($paramsBlock, fields) {
+        __fillFloatBlock: function ($paramsBlock, fields) {
             let pcTable = this;
             let panelColor;
             let sectionTitle = '';
@@ -1837,7 +1834,7 @@
             if (scrollWrapper) {
                 $paramsBlock.appendTo(scrollWrapper);
                 return $paramsBlock
-            } else if(this._paramsBlock){
+            } else if (this._paramsBlock) {
                 this._paramsBlock.replaceWith($paramsBlock);
                 this._paramsBlock = $paramsBlock;
             }
@@ -2198,7 +2195,10 @@
             let OrderClass = 'btn-warning';
 
             let $btnNHiding = $('<button class="btn btn-default btn-xxs" id="n-expander"><i class="fa fa-sort"></i></button>')
-                .on('click', function () {
+            if (this.isTreeView) {
+                $btnNHiding.prop('disabled', true)
+            } else {
+                $btnNHiding.on('click', function () {
                     if (!pcTable.fieldCategories.visibleColumns.some(function (field) {
                         return field.name === 'n';
                     })) {
@@ -2208,9 +2208,10 @@
                         pcTable.fieldsHiddingHide.call(pcTable, 'n');
                         $btnNHiding.removeClass(OrderClass)
                     }
-
                     pcTable.ScrollClasterized.reloadScrollHead();
-                });
+                })
+            }
+
             if (pcTable.fieldCategories.visibleColumns.some(function (field) {
                 return field.name === 'n';
             })) {
@@ -2239,11 +2240,13 @@
                     pcTable.__checkedRows = [];
                 } else {
                     for (let i = 0; i < pcTable.dataSortedVisible.length; i++) {
-                        let id = pcTable.dataSortedVisible[i];
-                        let item = pcTable._getItemById(id);
-                        pcTable.row_actions_check.call(pcTable, item, true);
+                        let element = pcTable.dataSortedVisible[i];
+                        if (typeof element !== 'object') {
+                            let item = pcTable._getItemById(element);
+                            pcTable.row_actions_check.call(pcTable, item, true);
+                            pcTable.__checkedRows.push(element)
+                        }
                     }
-                    pcTable.__checkedRows = pcTable.dataSortedVisible.slice();
                 }
                 pcTable._headCellIdButtonsState();
             });
@@ -3040,6 +3043,7 @@
                 }
             }
 
+            return item.$tr;
         }
         ,
         refreshRow: function (tr, item, newData) {
@@ -3052,9 +3056,15 @@
                 let chData = [];
                 if (newData) {
                     for (var k in newData) {
+
                         if (newData[k] !== null && typeof newData[k] == 'object') {
                             if (newData[k].changed) {
-                                chData.push(k);
+                                if (this.isTreeView && k === 'tree') {
+                                    this.placeInTree(newData, item[k].v || '')
+
+                                } else {
+                                    chData.push(k);
+                                }
                                 delete newData[k].changed;
                             } else if (!Object.equals(newData[k], item[k])) {
                                 chData.push(k);

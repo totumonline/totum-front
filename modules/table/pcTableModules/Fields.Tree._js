@@ -447,26 +447,35 @@
         },
         getCellText: function (fieldValue, td, item) {
             let field = this;
-            let arrayVals = item[field.name].v_;
-            if (fieldValue) {
-                if (field.multiple) {
-                    if (Array.isArray(fieldValue)) {
-                        if (fieldValue.length === 0) return field.getElementSpan(null);
-                        else if (fieldValue.length === 1) return field.getElementSpan(fieldValue[0], arrayVals[0]);
-                        else {
-                            if (field.multySelectView === "0" && !field.FullView) {
-                                return $('<span class="select-item">' + fieldValue.length + ' эл.<span>')
-                            } else {
-                                let span = $('<span class="select-item">');
-                                fieldValue.forEach((fVal, i) => span.append(field.getElementSpan(fVal, arrayVals[i])));
-                                return span;
+
+            if (field.name === 'tree' && field.treeViewType === 'self') {
+                let row = item.__tree;
+                let span = $('<span class="treeRow">').css('padding-left', row.level * 10).append('<i class="fa fa-folder'+(row.opened?'-open':'')+'"></i>')
+                    .data('treeRow', row);
+                span.append(row.t);
+                return span;
+            } else {
+                let arrayVals = item[field.name].v_;
+                if (fieldValue) {
+                    if (field.multiple) {
+                        if (Array.isArray(fieldValue)) {
+                            if (fieldValue.length === 0) return field.getElementSpan(null);
+                            else if (fieldValue.length === 1) return field.getElementSpan(fieldValue[0], arrayVals[0]);
+                            else {
+                                if (field.multySelectView === "0" && !field.FullView) {
+                                    return $('<span class="select-item">' + fieldValue.length + ' эл.<span>')
+                                } else {
+                                    let span = $('<span class="select-item">');
+                                    fieldValue.forEach((fVal, i) => span.append(field.getElementSpan(fVal, arrayVals[i])));
+                                    return span;
+                                }
                             }
+                        } else {
+                            return field.getElementSpan(fieldValue, [fieldValue, 0]);
                         }
-                    } else {
-                        return field.getElementSpan(fieldValue, [fieldValue, 0]);
-                    }
-                } else return field.getElementSpan(fieldValue, arrayVals);
-            } else return field.getElementString(null);
+                    } else return field.getElementSpan(fieldValue, arrayVals);
+                } else return field.getElementString(null);
+            }
 
         },
         checkIsFiltered: function (fieldVal, filters) {
@@ -518,6 +527,7 @@
         },
         getElementSpan: function (val, arrayVal) {
             let span = $('<span>');
+
             if (val !== null) {
                 span.text(this.getElementString(val, arrayVal));
                 if (arrayVal[1] === 1) {

@@ -55,6 +55,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     if (fieldSettings['categories']) {
                         if (fieldSettings['categories'].indexOf(item['category']['v']) === -1) return false;
                     }
+                    if (fieldSettings['names']) {
+                        if (fieldSettings['names'].indexOf(item['name']['v']) === -1) return false;
+                    }
 
 
                     let thisValue = {};

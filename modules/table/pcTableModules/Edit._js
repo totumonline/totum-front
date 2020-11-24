@@ -5,7 +5,7 @@ $.extend(App.pcTableMain.prototype, {
         let arias = this._container;
 
 
-        arias.on('dblclick', 'td.val:not(.editing), td.edt:not(.editing), .dataRows td:not(.editing,.id,.n)', function (event) {
+        arias.on('dblclick', 'td.val:not(.editing), td.edt:not(.editing), .dataRows tr:not(.treeRow) td:not(.editing,.id,.n)', function (event) {
             let cell = $(this);
 
             let tr = cell.closest('tr');

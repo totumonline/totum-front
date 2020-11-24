@@ -145,6 +145,10 @@
                     scrollFunc.call(pcTable);
                 }, 50);
             });
+            
+            if(pcTable.isTreeView){
+                pcTable._connectTreeView.call(pcTable);
+            }
 
 
             let cache = {
@@ -251,13 +255,17 @@
                         $trs.appendChild(pcTable._createNoDataRow('По условиям фильтрации не выбрана ни одна строка').get(0));
                     } else {
                         for (let i in rows) {
-                            let id = rows[i];
-                            let item = pcTable.data[id];
-                            if (!item.$tr || forceRefreshData) {
-                                pcTable._createRow.call(pcTable, item);
+                            let row = rows[i];
+                            if (typeof row === 'number') {
+                                let item = pcTable.data[row];
+                                if (!item.$tr || forceRefreshData) {
+                                    pcTable._createRow.call(pcTable, item);
+                                }
+                                item.$tr.data('item', item);
+                                $trs.appendChild(item.$tr.get(0));
+                            }else{
+                                $trs.appendChild(pcTable._createTreeFolderRow.call(pcTable, row).get(0));
                             }
-                            item.$tr.data('item', item);
-                            $trs.appendChild(item.$tr.get(0));
                         }
                     }
                     if (bottom) $trs.appendChild($('<tr style="height: ' + bottom + 'px;" class="loading-row"><td colspan="' + (pcTable.fieldCategories.column.length + 1) + '"></td></tr>').get(0));

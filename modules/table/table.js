@@ -130,6 +130,15 @@
                 contanerClass: 'pcTable-container',
                 tableClass: 'pcTable-table',
                 width: null,
+
+                /*TreeView*/
+                isTreeView: false,
+                treeReloadRows: [],
+                tree:[],
+                treeIndex:{},
+                treeSort:[],
+
+
                 checkIsUpdated: 0,
                 _containerId: '',
                 scrollWrapper: null,
@@ -271,6 +280,7 @@
 //=include pcTableModules/Print._js
 //=include pcTableModules/SortingN._js
 //=include pcTableModules/formatFunctions._js
+//=include pcTableModules/TableTreeView._js
 
 
     $.extend(App.pcTableMain.prototype, {
@@ -435,9 +445,8 @@
                     });
                 }
             },
-            refreshArraysFieldCategories: function (forTable) {
+            refreshArraysFieldCategories: function () {
                 "use strict";
-                forTable = forTable || false;
 
                 let pcTable = this;
                 pcTable.hidden_fields = pcTable.hidden_fields || {};
@@ -451,7 +460,7 @@
 
                 pcTable.fieldCategories = {};
 
-                ['param', 'column', 'filter', 'footer'].forEach(function (category) {
+                ['param', 'column', 'filter', 'footer', 'panel_fields'].forEach(function (category) {
                     pcTable.fieldCategories[category] = [];
                 });
 
@@ -494,21 +503,32 @@
                     pcTable.fields[name] = field;
 
                     if (field.showInWeb) {
-                        pcTable.fieldCategories[field.category].push(field);
+                        if (field.category === 'column') {
+                            if (field.name !== 'n') {
+                                pcTable.fieldCategories['panel_fields'].push(field);
+                            }
+                            if ((field.name === 'tree' && field.category === 'column')) {
+                                pcTable.isTreeView = true;
+                                if(pcTable.isCreatorView){
+                                    pcTable.fieldCategories[field.category].unshift(field);
+                                }
+                            }else{
+                                pcTable.fieldCategories[field.category].push(field);
+                            }
+                        } else {
+                            pcTable.fieldCategories[field.category].push(field);
+                        }
                     } else if (field.name) {
                         pcTable.hidden_fields[field.name] = field;
                     }
                 };
 
-                if (forTable) {
-                    let n = {type: "n"};
-                    initField('n', n);
-                    let _fields = $.extend({}, this.fields);
-                    delete _fields.n;
-                    $.each(_fields, initField);
-                } else {
-                    $.each(this.fields, initField);
-                }
+                let n = {type: "n"};
+                initField('n', n);
+                let _fields = $.extend({}, this.fields);
+                delete _fields.n;
+                $.each(_fields, initField);
+
 
                 if (reorderedFields) {
                     ['param', 'column', 'filter', 'footer'].forEach(function (category) {
@@ -572,7 +592,8 @@
                         pcTable._addInsert(addVars);
                 }
 
-            },
+            }
+            ,
             _addSave: function () {
                 $('body').on('keyup', function (event) {
                     if (event.ctrlKey || event.metaKey) {
@@ -582,7 +603,8 @@
                     }
                 });
 
-            },
+            }
+            ,
 
             reloaded: function () {
 
@@ -591,7 +613,8 @@
                     notify.closest('.alert').remove();
                     this.checkTableIsChanged(parseInt(this.checkIsUpdated) * 2000);
                 }
-            },
+            }
+            ,
             checkTableIsChanged: function (timeout) {
                 let pcTable = this;
 
@@ -648,18 +671,22 @@
                     }
                 });
                 return fieldName;
-            },
+            }
+            ,
             _getFieldbyName: function (fieldName) {
                 return this.fields[fieldName];
-            },
+            }
+            ,
             _getColumnIndexByTd: function (td, tr) {
                 var tr = tr || td.closest('tr');
                 return tr.find('td').index(td);
-            },
+            }
+            ,
             _fieldByTd: function (td, tr) {
                 let cIndex = this._getColumnIndexByTd(td, tr);
                 return this.fieldCategories.visibleColumns[cIndex - 1];
-            },
+            }
+            ,
             _getRowIndexById: function (id) {
                 var index = null;
                 let p = this;
@@ -670,7 +697,8 @@
                     }
                 }
                 return null;
-            },
+            }
+            ,
             _getFieldBytd: function (td) {
                 if (!td.closest('tr').is('.DataRow')) {
                     return this.fields[td.data('field')]
@@ -678,26 +706,32 @@
                     return this.fieldCategories.visibleColumns[td.closest('tr').find(td.prop('tagName')).index(td) - 1]
                 }
 
-            },
+            }
+            ,
             _isParamsArea: function ($obj) {
                 return $obj.closest('table').is('.pcTable-paramsTable')
-            },
+            }
+            ,
             _isFootersArea: function ($obj) {
                 return $obj.closest('tbody').is('.pcTable-footers')
-            },
+            }
+            ,
             _getItemBytd: function (td) {
                 let tr = td.closest('tr');
                 return this._getItemByTr(tr);
-            },
+            }
+            ,
             _getItemByTr: function (tr) {
                 if (!tr.is('.DataRow')) {
                     return this.data_params;
                 }
                 return this.data[tr.data(pcTable_ROW_ItemId_KEY)];
-            },
+            }
+            ,
             _getItemById: function (id) {
                 return this.data[id];
-            },
+            }
+            ,
             _deleteItemById: function (id) {
                 let item = this._getItemById(id);
                 if (item && item.$tr) {
@@ -714,7 +748,8 @@
                     }
                 }, this);
                 delete this.data[id];
-            },
+            }
+            ,
             _getTdByFieldName: function (fieldName, tr) {
                 let fieldIndex = 0;
                 this.fieldCategories.visibleColumns.every(function (field, index) {
@@ -725,10 +760,12 @@
                     return true;
                 });
                 return this._getTdByColumnIndex(tr, fieldIndex + 1);
-            },
+            }
+            ,
             _getTdByColumnIndex: function (tr, index) {
                 return tr.find('td:eq(' + index + ')');
-            },
+            }
+            ,
             refresh: function () {
                 this._refreshTitle();
                 this._refreshParamsBlock();
@@ -737,29 +774,49 @@
 
                 this._refreshContentTable();
 
-            },
+            }
+            ,
 
-            initRowsData() {
-                let data = {};
+            initRowsData: function() {
+
                 this.__checkedRows = [];
                 this.dataSorted = [];
                 this.dataSortedVisible = [];
                 if (this.ScrollClasterized)
                     this.ScrollClasterized.emptyCache();
 
-                if (this.rows) {
-                    this.rows.map(function (item) {
-                        this.dataSorted.push(item.id);
-                        this.dataSortedVisible.push(item.id);
-                        data[item.id] = item;
-                        data[item.id].$checked = -1 !== this.__checkedRows.indexOf(item.id) ? true : false;
-                    }, this);
+                if (this.isTreeView) {
+
+                    this.tree.forEach((tv, i) => {
+                        this.getTreeBranch(tv, i);
+                    })
+
+                    if (this.rows) {
+                        this._treeApplyRows(this.rows);
+                    }
+
+                    setTimeout(()=>{
+                        this.treeApply();
+                    })
+                    this.model.setLoadedTableData(this.data);
+
+                } else {
+                    let data = {};
+                    if (this.rows) {
+                        this.rows.map(function (item) {
+                            this.dataSorted.push(item.id);
+                            this.dataSortedVisible.push(item.id);
+                            data[item.id] = item;
+                            data[item.id].$checked = -1 !== this.__checkedRows.indexOf(item.id) ? true : false;
+                        }, this);
+                    }
+                    this.data = data;
+                    this.model.setLoadedTableData(this.data, this.PageData ? this.PageData.offset : undefined, this.PageData ? this.PageData.onPage : undefined);
                 }
-                this.data = data;
-                this.model.setLoadedTableData(this.data, this.PageData ? this.PageData.offset : undefined, this.PageData ? this.PageData.onPage : undefined);
             }
         }
     );
 
 
-})(window, jQuery);
+})
+(window, jQuery);

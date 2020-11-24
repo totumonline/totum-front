@@ -97,7 +97,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         };
 
         if (!column1.length) {
-            EditPanelFunc.pcTable.fieldCategories.column.forEach(function (field, index) {
+            EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (field, index) {
                 if (field.name === 'n') return;
                 allKoeffs += getKoeff(field);
                 fCount++
@@ -120,9 +120,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         }
 
 
-        EditPanelFunc.pcTable.fieldCategories.column.forEach(function (field, index) {
-
-            if (field.name === 'n') return;
+        EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (field, index) {
 
             let cell = EditPanelFunc.$panel.find('div.cell[data-field-name="' + field.name + '"]');
 
@@ -759,8 +757,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         if (EditPanelFunc.editItem.id) {
             data.id = EditPanelFunc.editItem.id;
         }
-        EditPanelFunc.pcTable.fieldCategories.column.forEach(function (f) {
-            if (f.name === 'n') return;
+        EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (f) {
             let editItem = val[f.name] || EditPanelFunc.editItem[f.name];
 
             if (f.type == 'comments') {
@@ -815,9 +812,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (!EditPanelFunc.$panel || !EditPanelFunc.$panel.length) return false;
 
-            EditPanelFunc.pcTable.fieldCategories.column.forEach(function (field, index) {
-                if (field.name === 'n') return;
-
+            EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (field, index) {
                 if (focusIndex === index) {
                     if (!EditPanelFunc.isEditable(field)) {
                         ++focusIndex;
