@@ -63,11 +63,14 @@
 
     &start {
       color: darken(#48a5ec, 20%);
-      &.fixed {
+      &.cm-fixed {
         color: #1b6cec;
       }
       &.cm-dubbled {
         color: red;
+      }
+      &.cm-exec{
+        color: #b32ab3;
       }
     }
     &spec{

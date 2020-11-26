@@ -164,7 +164,8 @@
                 try {
                     stream.lineOracle.doc.cm.getValue().split("\n").forEach(function (line) {
                         if (line.trim().length === 0 || line.indexOf('//') === 0) return '';
-                        return state.lineNames.push(line.replace(/^\s*~?\s*([a-zA-Z_0-9=]+)\s*:.*/, '$1'));
+                        if (!line.match(/\s*[a-zA-Z_0-9]+\s*:/)) return '';
+                        return state.lineNames.push(line.replace(/^\s*~?\s*([a-zA-Z_0-9]+)\s*:.*/, '$1'));
                     });
                 } catch (e) {
 
@@ -191,7 +192,10 @@
                             classes += " fixed";
                             state.lineName = state.lineName.substring(1);
                         }
-                        if (!/^[a-z0-9_]+\s*$/i.test(state.lineName) && state.lineName !== '=' && !/^[fp][0-9]+\s*=\s*$/i.test(state.lineName)) {
+                        if(/^\d*=|[a-z]{1,2}\d+=$/i.test(state.lineName)){
+                            classes += ' exec'
+                        }
+                        else if (!/^[a-z0-9_]+$/i.test(state.lineName)) {
                             return error();
                         }
                         stream.next();
@@ -807,6 +811,8 @@
                     {text: "$#nci", title: 'Cycle расчетной таблицы', render: renderHint, type: 'item-code-var'},
                     {text: "$#nf", title: 'NAME поля', render: renderHint, type: 'item-code-var'},
                     {text: "$#nl", title: 'Новая строка', render: renderHint, type: 'item-code-var'},
+                    {text: "$#tb", title: 'Табуляция', render: renderHint, type: 'item-code-var'},
+                    {text: "$#tpa", title: 'Тип экшена код действия', render: renderHint, type: 'item-code-var'},
                     {text: "$#ids", title: 'id отмеченных галочками полей', render: renderHint, type: 'item-code-var'},
                     {
                         text: "$#nfv",
