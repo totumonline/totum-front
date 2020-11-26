@@ -296,11 +296,13 @@ App.pcTableMain.prototype.__addFilterable = function () {
         select.data('container', selectDiv);
 
         var vals = {};
-        $.each(pcTable.data, function (_id, v) {
-            if (fieldName === 'id') {
-                vals[_id.toString()] = _id.toString();
-            } else {
-                pcTable.fields[fieldName].addDataToFilter(vals, v[fieldName]);
+        Object.values(pcTable.dataSortedVisible).forEach(function (_id) {
+            if (typeof _id !== 'object') {
+                if (fieldName === 'id') {
+                    vals[_id.toString()] = _id.toString();
+                } else {
+                    pcTable.fields[fieldName].addDataToFilter(vals, pcTable.data[_id][fieldName]);
+                }
             }
         });
 

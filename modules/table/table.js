@@ -134,9 +134,9 @@
                 /*TreeView*/
                 isTreeView: false,
                 treeReloadRows: [],
-                tree:[],
-                treeIndex:{},
-                treeSort:[],
+                tree: [],
+                treeIndex: {},
+                treeSort: [],
 
 
                 checkIsUpdated: 0,
@@ -507,12 +507,12 @@
                             if (field.name !== 'n') {
                                 pcTable.fieldCategories['panel_fields'].push(field);
                             }
-                            if ((field.name === 'tree' && field.category === 'column')) {
+                            if ((field.name === 'tree' && field.category === 'column' && field.treeViewType)) {
                                 pcTable.isTreeView = true;
-                                if(pcTable.isCreatorView){
+                                if (pcTable.isCreatorView) {
                                     pcTable.fieldCategories[field.category].unshift(field);
                                 }
-                            }else{
+                            } else {
                                 pcTable.fieldCategories[field.category].push(field);
                             }
                         } else {
@@ -777,7 +777,7 @@
             }
             ,
 
-            initRowsData: function() {
+            initRowsData: function () {
 
                 this.__checkedRows = [];
                 this.dataSorted = [];
@@ -795,7 +795,7 @@
                         this._treeApplyRows(this.rows);
                     }
 
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         this.treeApply();
                     })
                     this.model.setLoadedTableData(this.data);

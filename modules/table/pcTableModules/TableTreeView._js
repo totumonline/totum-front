@@ -5,28 +5,20 @@
         let timeout;
 
         this._content.on('click', '.treeRow', function () {
-            if (timeout) {
-                clearTimeout(timeout)
-                timeout = null;
-                pcTable._expandTreeFolderRow.call(pcTable, this, true)
-                return;
-            }
-            if (pcTable.fields.tree.treeViewType === 'self') {
-                pcTable._expandTreeFolderRow.call(pcTable, this)
+            let node = $(this);
+            if (node.is('.dbl')) {
+                pcTable._actionTreeFolderRow.call(pcTable, node, true)
             } else {
-                timeout = setTimeout(() => {
-                    timeout = null;
-                    pcTable._expandTreeFolderRow.call(pcTable, this)
-                }, 300)
+                pcTable._actionTreeFolderRow.call(pcTable, node)
             }
         })
 
-
-        this.model.loadTreeBranches = function (branchIds, withParents) {
+        this.model.loadTreeBranches = function (branchIds, withParents, recurcive) {
             return this.__ajax('post', {
                 method: 'loadTreeBranches',
                 branchIds: branchIds,
-                withParents: withParents
+                withParents: withParents,
+                recurcive: recurcive
             }, null, null, this.filtersString || {})
         }
     }
@@ -38,11 +30,15 @@
             let tr = $tr || this._createRow(row.row);
             return row.tr = tr;
         } else {
-            let tr = $tr || $('<tr class="treeRow"></tr>');
-            tr.html('<td colspan="' + this.fieldCategories.column.length + '" style="padding-left: ' + (row.level * 10) + 'px">' +
-                (!row.opened ? '<i class="fa fa-folder"></i>' : '<i class="fa fa-folder-open"></i>')
-                + ' ' + row.t + '</td>')
-            tr.data('treeRow', row);
+            let tr = $tr || $('<tr></tr>');
+            let span = $('<span>').css('padding-left', row.level * 10).append('<i class="fa fa-folder' + (row.opened ? '-open' : '') + '"></i>')
+                .append($('<button class="btn btn-default btn-xxs treeRow"><i class="fa fa-hand-pointer-o"></i></button>').data('treeRow', row.v));
+
+            span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
+            let td = $('<td colspan="' + (this.fieldCategories.column.length) + '" class="tree-view-td" style="padding-left: ' + (56 + row.level * 10) + 'px"></td>');
+            td.append(span)
+            td.append(row.t)
+            tr.append(td)
             return row.tr = tr;
         }
 
@@ -71,79 +67,80 @@
             this.ScrollClasterized.insertToDOM(null, true, true);
         }
     }
-    App.pcTableMain.prototype._expandTreeFolderRow = function (node, treeRowRecurcive, recursiveCounter) {
-        let treeRow = typeof treeRowRecurcive === 'object' ? treeRowRecurcive : $(node).data('treeRow');
 
-        if (node) {
-            $(node).find('td:first').html('Загрузка');
-        }
-
-
-        if (treeRow.opened) {
-            treeRow.opened = false;
-            if (treeRowRecurcive) {
-                this.treeIndex[treeRow.v].trees.forEach((row) => {
-                    this._expandTreeFolderRow(false, this.treeIndex[row], {})
-                })
-                if (!recursiveCounter) {
-                    treeRow.opened = true;
-                    this.treeApply();
-                }
-            } else {
+    App.pcTableMain.prototype._closeTreeFolderRow = function (treeRow, treeRowRecurcive, level) {
+        treeRow.opened = false;
+        level = level || 0
+        if (treeRowRecurcive) {
+            this.treeIndex[treeRow.v].trees.forEach((row) => {
+                this._closeTreeFolderRow(this.treeIndex[row], true, level + 1)
+            })
+            if (!level) {
                 this.treeApply();
             }
         } else {
-            const expandRecursive = () => {
-                if (treeRowRecurcive) {
-                    if (!recursiveCounter) {
-                        recursiveCounter = {counter: 0};
+            this.treeApply();
+        }
+    }
+    App.pcTableMain.prototype._actionTreeFolderRow = function (node, treeRowRecurcive) {
+        let treeRow = this.treeIndex[$(node).data('treeRow')];
+        if (node) {
+            $(node).closest('td').html('Загрузка');
+        }
+        if (!treeRow.opened) {
+            this._expandTreeFolderRow(treeRow, treeRowRecurcive)
+        } else {
+            this._closeTreeFolderRow(treeRow, treeRowRecurcive)
+        }
 
-                        const checkCounter = () => {
-                            if (recursiveCounter.counter > 0) {
-                                setTimeout(checkCounter, 50)
-                            } else {
-                                this.treeApply();
-                            }
-                        }
-                        let timeOut = setTimeout(checkCounter, 50)
-                    } else {
-                        recursiveCounter.counter--;
-                    }
-                    this.treeIndex[treeRow.v].trees.forEach((row) => {
-                        recursiveCounter.counter++;
-                        this._expandTreeFolderRow(false, this.treeIndex[row], recursiveCounter)
-                    })
-                }
-            }
+    }
+    App.pcTableMain.prototype._expandTreeFolderRow = function (treeRow, treeRowRecurcive, recursiveCounter) {
+        let inPointer = false;
+        if (!recursiveCounter) {
+            inPointer = true;
+            recursiveCounter = {counter: 0};
+        }
 
 
-            if (treeRow.l) {
-                treeRow.opened = true;
+        const expandRecursive = () => {
+            this.treeIndex[treeRow.v].trees.forEach((id) => {
+                recursiveCounter.counter++;
+                this._expandTreeFolderRow(this.treeIndex[id], true, recursiveCounter)
+            })
+        }
 
+
+        if (treeRow.l) {
+            treeRow.opened = true;
+            if (treeRowRecurcive) {
                 expandRecursive();
-                if (!treeRowRecurcive) {
+
+                if (recursiveCounter.counter < 1)
                     this.treeApply();
-                }
+                else recursiveCounter.counter--;
+
 
             } else {
-                this.model.loadTreeBranches([treeRow.v]).then((json) => {
-                    treeRow.opened = true;
-                    treeRow.l = true;
-                    if (json.tree) {
-                        json.tree.forEach((tv, i) => {
-                            let row = this.getTreeBranch(tv, i);
-                        })
-                        expandRecursive()
-                    }
-                    if (json.rows) {
-                        this._treeApplyRows(json.rows);
-                    }
-                    if (!treeRowRecurcive) {
-                        this.treeApply();
-                    }
-
-                })
+                this.treeApply();
             }
+
+
+        } else {
+            this.model.loadTreeBranches([treeRow.v], null, !!treeRowRecurcive).then((json) => {
+                treeRow.opened = true;
+                treeRow.l = true;
+                if (json.tree) {
+                    json.tree.forEach((tv, i) => {
+                        let row = this.getTreeBranch(tv, i);
+                    })
+                }
+                if (json.rows) {
+                    this._treeApplyRows(json.rows);
+                }
+                if (!treeRowRecurcive || (recursiveCounter.counter-- < 1)) {
+                    this.treeApply();
+                }
+            })
         }
 
     }
@@ -218,12 +215,16 @@
     App.pcTableMain.prototype.getTreeBranch = function (tv) {
         if (tv.v === null)
             tv.v = "";
+        else {
+            tv.v = tv.v.toString();
+        }
         if (!this.treeIndex[tv.v]) {
 
             this.treeIndex[tv.v] = {...tv};
             this.treeIndex[tv.v].sorted = this.treeIndex[tv.v].sorted || [];
             this.treeIndex[tv.v].trees = this.treeIndex[tv.v].trees || [];
         }
+
         this.treeIndex[tv.v].l = 'l' in tv ? tv.l : 'l' in this.treeIndex[tv.v] ? this.treeIndex[tv.v].l : tv.v === "";
         this.treeIndex[tv.v].opened = 'opened' in tv ? tv.opened : 'opened' in this.treeIndex[tv.v] ? this.treeIndex[tv.v].opened : tv.v === "";
 

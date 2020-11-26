@@ -450,8 +450,9 @@
 
             if (field.name === 'tree' && field.treeViewType === 'self') {
                 let row = item.__tree;
-                let span = $('<span class="treeRow">').css('padding-left', row.level * 10).append('<i class="fa fa-folder'+(row.opened?'-open':'')+'"></i>')
-                    .data('treeRow', row);
+                let span = $('<span>').css('padding-left', row.level * 10).append('<i class="fa fa-folder'+(row.opened?'-open':'')+'"></i>')
+                    .append($('<button class="btn btn-default btn-xxs treeRow"><i class="fa fa-hand-pointer-o"></i></button>').data('treeRow', row.v))
+                    .append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
                 span.append(row.t);
                 return span;
             } else {

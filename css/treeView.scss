@@ -1,2 +1,15 @@
-.treeRow td{
+.pcTable-table tbody td.tree-view-td{
+  background-color: #faf9f8;
+  border-top-color: #faf9f8;
+  border-right-color: #faf9f8;
+  border-left-color: #faf9f8;
+}
+.btn.treeRow{
+  border-color: #ededed;
+  width: 20px;
+  margin-left: 4px;
+  margin-right: 4px;
+  & + .btn.treeRow{
+    margin-left: 0;
+  }
 }
