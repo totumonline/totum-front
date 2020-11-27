@@ -30,12 +30,15 @@
             let tr = $tr || this._createRow(row.row);
             return row.tr = tr;
         } else {
-            let tr = $tr || $('<tr></tr>');
-            let span = $('<span>').css('padding-left', row.level * 10).append('<i class="fa fa-folder' + (row.opened ? '-open' : '') + '"></i>')
+            let tr = $tr || $('<tr><td class="id"></td></tr>');
+
+            let folder=$('<i class="fa fa-folder' + (row.opened ? '-open' : '') + ' treeRow"></i>').data('treeRow', row.v);
+
+            let span = $('<span>').append(folder)
                 .append($('<button class="btn btn-default btn-xxs treeRow"><i class="fa fa-hand-pointer-o"></i></button>').data('treeRow', row.v));
 
             span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
-            let td = $('<td colspan="' + (this.fieldCategories.column.length) + '" class="tree-view-td" style="padding-left: ' + (56 + row.level * 10) + 'px"></td>');
+            let td = $('<td colspan="' + (this.fieldCategories.column.length-1) + '" class="tree-view-td" style="padding-left: ' + (7 + row.level * 10) + 'px"></td>');
             td.append(span)
             td.append(row.t)
             tr.append(td)
