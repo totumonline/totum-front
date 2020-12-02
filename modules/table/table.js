@@ -747,6 +747,10 @@
                         this[array].splice(ind, 1);
                     }
                 }, this);
+
+                if(this.isTreeView){
+                    this.treeDeletingRow(id)
+                }
                 delete this.data[id];
             }
             ,

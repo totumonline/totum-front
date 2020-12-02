@@ -57,7 +57,7 @@
                 $('table.pcTable-table').removeClass('with-checks');
             }
 
-            if (this.dataSortedVisible.length !== this.__checkedRows.length) {
+            if (this.dataSortedVisible.filter((v)=> typeof v!=='object' || v.row).length !== this.__checkedRows.length) {
                 pcTable._idCheckButton.html('<span class="fa fa-square-o"></span>');
             } else {
                 pcTable._idCheckButton.html('<span class="fa fa-check"></span>');
@@ -100,7 +100,7 @@
         ,
         _refreshCheckedStatus: function () {
             this._checkStatusBar.find('[data-name="count_checked_rows"]:first').text(this.__checkedRows.length);
-            this._checkStatusBar.find('[data-name="count_visible_rows"]:first').text(this.dataSortedVisible.length);
+            this._checkStatusBar.find('[data-name="count_visible_rows"]:first').text(this.dataSortedVisible.filter((v)=> typeof v!=='object' || v.row).length);
         }
         ,
 
@@ -345,7 +345,7 @@
                             pcTable.data[v.id] = v;
 
                             if (pcTable.isTreeView) {
-                                pcTable.placeInTree(v)
+                                pcTable.placeInTree(v, null, true)
                                 this.treeRefresh = true;
 
                             } else {
@@ -403,9 +403,7 @@
 
                         }
                     }
-                    if (this.treeRefresh) {
-                        this.treeApply();
-                    }
+
                 }
 
 
@@ -489,6 +487,10 @@
                 }
                 if (App.isEmpty(pcTable.data) && pcTable._content) {
                     pcTable._content.empty().append(this._createNoDataRow());
+                }
+
+                if (this.treeRefresh) {
+                    this.treeApply();
                 }
             }
             if (json.updated) {

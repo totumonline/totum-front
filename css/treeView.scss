@@ -3,19 +3,16 @@
   border-top-color: #faf9f8;
   border-right-color: #faf9f8;
   border-left-color: #faf9f8;
-  .fa-folder, .fa-folder-open{
-    opacity: 0.7;
-    padding-top: 2px;
-  }
 }
 .tree-view{
   .fa-folder, .fa-folder-open{
     opacity: 0.7;
     padding-top: 2px;
+    padding-right: 10px;
   }
 }
 .btn.treeRow{
-  border-color: #ededed;
+  border-color: transparent;
   width: 20px;
   margin-left: 4px;
   margin-right: 4px;

@@ -256,7 +256,7 @@
                     } else {
                         for (let i in rows) {
                             let row = rows[i];
-                            if (typeof row === 'number') {
+                            if (typeof row !== 'object') {
                                 let item = pcTable.data[row];
                                 if (!item.$tr || forceRefreshData) {
                                     pcTable._createRow.call(pcTable, item);

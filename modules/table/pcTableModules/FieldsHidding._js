@@ -136,10 +136,10 @@
                     } else {
                         newVal = isFromLoad && !field.hidden ? field.width : 0;
                     }
-                    if(field.name in hideShowForse){
-                        if(hideShowForse[field.name]===true){
+                    if (field.name in hideShowForse) {
+                        if (hideShowForse[field.name] === true) {
                             newVal = 0
-                        }else{
+                        } else {
                             newVal = field.width;
                         }
                     }
@@ -182,8 +182,8 @@
                         this._refreshHiddenFieldsBlock();
                     }
                     /*Удаляем строки с не тем количеством столбцов*/
-                    $.each(this.data, function (id, v) {
-                        delete pcTable.data[id].$tr;
+                    Object.keys(this.data).forEach((id) => {
+                        delete this.data[id].$tr;
                     });
                     this.ScrollClasterized.insertToDOM(null, true, true);
                 }

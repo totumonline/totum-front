@@ -2241,11 +2241,12 @@
                 } else {
                     for (let i = 0; i < pcTable.dataSortedVisible.length; i++) {
                         let element = pcTable.dataSortedVisible[i];
-                        if (typeof element !== 'object') {
-                            let item = pcTable._getItemById(element);
+                        let item = typeof element !== 'object' ? pcTable._getItemById(element) : element.row;
+                        if (item && !item.$checked) {
                             pcTable.row_actions_check.call(pcTable, item, true);
-                            pcTable.__checkedRows.push(element)
+                            pcTable.__checkedRows.push(item.id)
                         }
+
                     }
                 }
                 pcTable._headCellIdButtonsState();
@@ -3055,27 +3056,35 @@
 
                 let chData = [];
                 if (newData) {
+                    let changed = false, oldData;
+                    if (this.isTreeView) {
+                        oldData = {
+                            id: item.id,
+                            tree: {v: item.tree.v},
+                            tree_category: {v: item.tree_category ? item.tree_category.v : null}
+                        };
+                    }
                     for (var k in newData) {
-
                         if (newData[k] !== null && typeof newData[k] == 'object') {
                             if (newData[k].changed) {
-                                if (this.isTreeView && k === 'tree') {
-                                    this.placeInTree(newData, item[k].v || '')
-
-                                } else {
-                                    chData.push(k);
-                                }
+                                chData.push(k);
                                 delete newData[k].changed;
                             } else if (!Object.equals(newData[k], item[k])) {
                                 chData.push(k);
                             }
+                            changed = true;
                         } else if (newData[k] != item[k]) {
                             chData.push(k);
+                            changed = true;
                         }
                         item[k] = newData[k];
                     }
-
-                    $.extend(item, newData);
+                    if (changed) {
+                        $.extend(item, newData);
+                        if (this.isTreeView) {
+                            this.placeInTree(item, oldData, true)
+                        }
+                    }
                 }
 
                 if (tr) this._createRow(item, chData);
@@ -3181,7 +3190,7 @@
                     }
                 }
 
-                if (format.text && field.type != "button") {
+                if (format.text && field.type != "button" && !(pcTable.isTreeView && field.name !== 'tree')) {
                     span.text(format.text);
                 } else if (!(val.e && field.errorText)) {
                     var cellInner = isHeighter
