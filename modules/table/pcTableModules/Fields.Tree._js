@@ -455,8 +455,6 @@
                     .append($('<button class="btn btn-default btn-xxs treeRow"><i class="fa fa-hand-pointer-o"></i></button>').data('treeRow', row.v))
                     .append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
                 span.append(item.tree.f && item.tree.f.text !== undefined ? item.tree.f.text: row.t);
-
-
                 return span;
             } else {
                 let arrayVals = item[field.name].v_;

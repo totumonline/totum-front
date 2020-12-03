@@ -3190,7 +3190,7 @@
                     }
                 }
 
-                if (format.text && field.type != "button" && !(pcTable.isTreeView && field.name !== 'tree')) {
+                if (format.text && field.type != "button" && !(pcTable.isTreeView && field.name === 'tree')) {
                     span.text(format.text);
                 } else if (!(val.e && field.errorText)) {
                     var cellInner = isHeighter
