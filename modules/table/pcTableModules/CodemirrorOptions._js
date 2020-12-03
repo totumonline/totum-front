@@ -192,10 +192,9 @@
                             classes += " fixed";
                             state.lineName = state.lineName.substring(1);
                         }
-                        if(/^\d*=|[a-z]{1,2}\d+=$/i.test(state.lineName)){
+                        if (/^=|[a-z]{1,2}\d+=$/i.test(state.lineName)) {
                             classes += ' exec'
-                        }
-                        else if (!/^[a-z0-9_]+$/i.test(state.lineName)) {
+                        } else if (!/^[a-z0-9_]+$/i.test(state.lineName)) {
                             return error();
                         }
                         stream.next();
@@ -1062,18 +1061,21 @@
 
             if (name) {
                 let regTest = new RegExp('^\s*~?\s*' + name + '\s*:');
-                if (regTest.test(wrapper.find('.cm-start.light').text())) {
-                    wrapper.find('.cm-variable').removeClass('light');
-                    wrapper.find('.cm-start').removeClass('light');
-                } else {
 
-                    wrapper.find('.cm-variable').removeClass('light').each(function () {
+                if (regTest.test(wrapper.find('.cm-start.light').text())) {
+                    wrapper.find('.light').removeClass('light');
+                } else {
+                    wrapper.find('.light').removeClass('light');
+                    let reg = new RegExp("\\$" + name + '\\b');
+
+
+                    wrapper.find('.cm-variable,.cm-inVars').each(function () {
                         let cmVar = $(this);
-                        if (cmVar.text() === '$' + name) {
+                        if (cmVar.text().match(reg)) {
                             cmVar.addClass('light');
                         }
                     });
-                    wrapper.find('.cm-start').removeClass('light').each(function () {
+                    wrapper.find('.cm-start').each(function () {
                         let cmVar = $(this);
                         if (cmVar.text().trim().replace('~', '').replace(':', '') === name) {
                             cmVar.addClass('light');
