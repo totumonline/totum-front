@@ -181,7 +181,7 @@
         if (this.fields.tree.treeViewType === 'self') {
             arr = 'trees';
         }
-        if (oldItem !== undefined) {
+        if (oldItem) {
             if(newData){
                 if(!newData.tree || newData.tree.v===oldItem.tree.v){
                     if(!newData.tree_category || newData.tree_category.v===oldItem.tree_category.v){
