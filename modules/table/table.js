@@ -509,9 +509,7 @@
                             }
                             if ((field.name === 'tree' && field.category === 'column' && field.treeViewType)) {
                                 pcTable.isTreeView = true;
-                                if (pcTable.isCreatorView) {
-                                    pcTable.fieldCategories[field.category].unshift(field);
-                                }
+                                pcTable.fieldCategories[field.category].unshift(field);
                             } else {
                                 pcTable.fieldCategories[field.category].push(field);
                             }
@@ -748,7 +746,7 @@
                     }
                 }, this);
 
-                if(this.isTreeView){
+                if (this.isTreeView) {
                     this.treeDeletingRow(id)
                 }
                 delete this.data[id];
