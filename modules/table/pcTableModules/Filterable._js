@@ -296,7 +296,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
         select.data('container', selectDiv);
 
         var vals = {};
-        Object.values(pcTable.dataSortedVisible).forEach(function (_id) {
+        Object.values(pcTable.dataSorted).forEach(function (_id) {
             if (typeof _id !== 'object') {
                 if (fieldName === 'id') {
                     vals[_id.toString()] = _id.toString();
