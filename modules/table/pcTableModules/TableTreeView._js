@@ -28,7 +28,8 @@
             delete tree.row;
             row.row.__tree = tree;
             let tr = $tr || this._createRow(row.row);
-            return row.tr = tr;
+            this.data[row.row.id].__tree = tree;
+            return row.tr = this.data[row.row.id].$tr = tr;
         } else {
             let tr = $tr || $('<tr><td class="id"></td></tr>');
 

@@ -864,7 +864,7 @@ App.pcTableMain.prototype._addSelectable = function () {
         return false;
     });
     this._container.on('click', '.DataRow td:not(.editing,.id,.n), td.val:not(.editing)', function (event) {
-
+        
         if (event.target.className === 'file-image-preview') {
             let file = JSON.parse(event.target.getAttribute('data-fileviewpreview'));
             window.top.BootstrapDialog.show({
