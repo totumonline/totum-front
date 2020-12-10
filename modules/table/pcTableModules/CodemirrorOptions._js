@@ -642,7 +642,19 @@
             }
         };
 
-        let match;
+        let match, $math={
+            text: 'math``',
+            textVis: 'math``'
+            , title: '',
+            render: renderHint, type: '', curPos: token.start + 5, hint: hintFunc,
+            tab: true
+        }, $json={
+            text: 'json``',
+            textVis: 'json``'
+            , title: '',
+            render: renderHint, type: '', curPos: token.start + 5, hint: hintFunc,
+            tab: true
+        };
 
         keywords = keywords.slice();
         if (token.state.isStart || cur.ch === 0) {
@@ -925,6 +937,8 @@
                         keywords = ActiveFuncNames.slice();
                         keywords.push('true');
                         keywords.push('false')
+                        keywords.push($math)
+                        keywords.push($json)
                     }
                 }
             } else if (token.state.func && (token.type === 'error fieldParam' || /(\(|;\s*)$/.test(editor.getLine(cur.line).slice(0, token.start)))) {
@@ -1069,7 +1083,7 @@
                     let reg = new RegExp("\\$" + name + '\\b');
 
 
-                    wrapper.find('.cm-variable,.cm-inVars').each(function () {
+                    wrapper.find('.cm-variable,.cm-inVars,.cm-spec').each(function () {
                         let cmVar = $(this);
                         if (cmVar.text().match(reg)) {
                             cmVar.addClass('light');

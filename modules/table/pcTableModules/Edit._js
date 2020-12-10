@@ -16,18 +16,34 @@ $.extend(App.pcTableMain.prototype, {
             if (cell.is('.edt')) {
                 pcTable._createEditCell.call(pcTable, cell, true)
             } else {
-                if (tr.is('.DataRow') && pcTable.tableRow.type === 'cycles') {
-                    pcTable.model.dblClick(pcTable._getItemBytd(cell)['id'], pcTable._getFieldBytd(cell).name);
-                    return false;
-                }
 
-                let newcell = cell.clone(true).insertAfter(cell);
-                cell.hide();
-                newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">Заблокировано</span>');
-                setTimeout(function () {
-                    newcell.remove();
-                    cell.show();
-                }, 500);
+                let field = pcTable._getFieldBytd.call(pcTable, cell);
+                if (field.CodeActionOnClick) {
+                    let newcell = cell.clone(true).insertAfter(cell);
+                    cell.hide();
+                    newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">Выполняется</span>');
+
+                    let item = cell.closest('.DataRow').length ? pcTable._getItemBytd.call(pcTable, cell) : {};
+
+                    pcTable.model.dblClick(item.id, field.name).always((json) => {
+                        newcell.remove();
+                        cell.show();
+                    })
+                } else {
+
+                    if (tr.is('.DataRow') && pcTable.tableRow.type === 'cycles') {
+                        pcTable.model.dblClick(pcTable._getItemBytd(cell)['id'], pcTable._getFieldBytd(cell).name);
+                        return false;
+                    }
+
+                    let newcell = cell.clone(true).insertAfter(cell);
+                    cell.hide();
+                    newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">Заблокировано</span>');
+                    setTimeout(function () {
+                        newcell.remove();
+                        cell.show();
+                    }, 500);
+                }
             }
 
         }).on('click', '.editCellsBlock .btn, td.edt .ttm-edit, td .ttm-panel', function (event) {

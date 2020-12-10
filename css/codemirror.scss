@@ -57,10 +57,12 @@
 
 .CodeMirror-code {
   .light {
-    background-color: yellow;
+    background-color: yellow !important;
     padding: 3px 0;
   }
   span.cm- {
+
+
 
     &start {
       color: darken(#48a5ec, 20%);
