@@ -50,7 +50,8 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
         if (pcTable.tableRow['type'] !== "tmp") {
             this.sessionStorageFilters.setFilters(this.filters);
         }
-        this.selectedCells.empty();
+        if (this.selectedCells)
+            this.selectedCells.empty();
 
         if (Object.equals(this.filters, {})) {
             this.filtersClearButton.addClass('btn-default').removeClass('btn-warning').attr('disabled', true)

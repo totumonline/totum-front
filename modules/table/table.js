@@ -281,6 +281,7 @@
 //=include pcTableModules/SortingN._js
 //=include pcTableModules/formatFunctions._js
 //=include pcTableModules/TableTreeView._js
+//=include pcTableModules/TablePanelView._js
 
 
     $.extend(App.pcTableMain.prototype, {
@@ -553,9 +554,10 @@
                 this.loadVisibleFields(this.f && this.f.fieldhide ? this.f.fieldhide : undefined);
 
 
+                if(this.viewType==='panels')
+                    this._renderTablePanelView();
+
                 this._renderTable();
-
-
                 if (this._sorting.addSortable) {
                     this._sorting.addSortable(this);
                 }

@@ -556,6 +556,14 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 cell.on('click', function () {
                     EditPanelFunc.pcTable._buttonClick.call(EditPanelFunc.pcTable, cell, field, item);
                 });
+            }else{
+                if(field.CodeActionOnClick){
+                    cell.on('dblclick', ()=>{
+
+                        EditPanelFunc.pcTable.model.dblClick(item.id, field.name).then((json)=>{
+                        })
+                    })
+                }
             }
 
             cell.html(span).data('input', null);

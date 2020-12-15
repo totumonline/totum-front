@@ -370,7 +370,7 @@
 
                         });
 
-                        reorderRows.forEach(function (id) {
+                        /*reorderRows.forEach(function (id) {
                             let place = json.chdata.order.indexOf(id);
                             let newPlace = 0;
                             let newPlaceVisible = 0;
@@ -391,7 +391,7 @@
                                 let oldPlaceVisible = pcTable.dataSortedVisible.indexOf(id);
                                 pcTable.dataSortedVisible.splice(oldPlaceVisible, 1);
                             }
-                        })
+                        })*/
 
 
                         if ($trIdBefore && !pcTable.isMobile) {
@@ -405,7 +405,6 @@
                     }
 
                 }
-
 
                 if (deleted.length) {
                     $.each(deleted, function (k, v) {
@@ -434,8 +433,18 @@
                         }
                     }
 
+                    this._refreshContentTable(0, false, true);
+                    //this.ScrollClasterized.insertToDOM(undefined, true);
+                }
 
-                    this.ScrollClasterized.insertToDOM(undefined, true);
+                if(json.chdata.order){
+                    this.dataSorted=json.chdata.order;
+                    pcTable.dataSortedVisible = [];
+                    pcTable.dataSorted.forEach((id) => {
+                        if (this.data[id].$visible)
+                            pcTable.dataSortedVisible.push(id)
+                    })
+                    this._refreshContentTable(0, false, true);
                 }
 
                 let paramsChanges = {};

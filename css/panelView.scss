@@ -1,0 +1,39 @@
+.innerContainer.panelsView {
+  overflow: visible;
+  padding-bottom: 50px;
+  .pcTable-floatBlock {
+    padding: 0;
+    white-space: inherit;
+
+    .panelsView-card {
+      cursor: pointer;
+      border: 1px solid sandybrown;
+      padding: 10px;
+      overflow: hidden;
+
+      > div {
+        width: 100%;
+        display: block;
+
+        td {
+          width: 100%;
+        }
+      }
+
+      &.mouse-on {
+        position: absolute;
+        background-color: lightblue;
+      }
+    }
+
+  }
+  .kanbanWrapper{
+    display: grid;
+    grid-gap: 20px;
+    .kanban-title{
+      background-color: brown;
+      padding: 20px;
+      font-size: 20px;
+    }
+  }
+}
