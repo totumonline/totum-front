@@ -12,7 +12,17 @@
         div.data('id', id);
         let panelFields = this.tableRow.panels_view.fields;
         panelFields.forEach((field) => {
-            let fData = $('<div>').append($('<td>').html(this.fields[field.field].getCellText(data[field.field].v, div, data)));
+            let td = $('<td>').html(this.fields[field.field].getCellText(data[field.field].v, div, data));
+            td.height(field.height)
+            if (!field.border) {
+                td.css('border-color', 'transparent')
+                td.css('background-color', 'transparent')
+            }
+
+            let fData = $('<div>').append(td);
+            if (field.title) {
+                fData.prepend($('<th>').text(this.fields[field.field].title));
+            }
             div.append(fData)
         })
 
