@@ -522,7 +522,6 @@ fieldTypes.select = {
                         input.data('changed', false);
                     });
                     input.on('show.bs.select', function () {
-
                         addValues(val);
                     });
                     input.on('shown.bs.select', function () {
@@ -540,6 +539,8 @@ fieldTypes.select = {
                             let diff = position.right - window.innerWidth + 20;
                             let width = selectPicker.$menuInner.width();
                             selectPicker.$menuInner.width(width - diff).css('overflow-x', 'scroll');
+                        }else{
+                            selectPicker.$menuInner.width('auto')
                         }
 
 
