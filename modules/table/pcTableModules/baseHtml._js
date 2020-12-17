@@ -2640,8 +2640,7 @@
 
 
             if (field.category === 'column') {
-
-                if (field.filterable && field.showMeWidth > 0) {
+                if (!pcTable.isTreeView && field.filterable && field.showMeWidth > 0) {
                     $th.addClass('with-filter2');
                     this.__getFilterButton(field.name).appendTo(filterBlock);
                 }

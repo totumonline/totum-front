@@ -91,12 +91,12 @@ $.extend(App.pcTableMain.prototype, {
 
             if (fieldName !== 'tree' && pcTable.fields.tree.treeViewType !== 'self') {
                 let list = [];
-                let old = [...pcTable.dataSortedVisible]
-                pcTable.dataSortedVisible = [];
+                let old = [...pcTable.dataSorted]
+                pcTable.dataSorted = [];
                 const sortList = () => {
                     if (list.length) {
                         list = list.sort(sortFunc)
-                        pcTable.dataSortedVisible.push(...list)
+                        pcTable.dataSorted.push(...list)
                         list = [];
                     }
                 }
@@ -104,7 +104,7 @@ $.extend(App.pcTableMain.prototype, {
                 old.forEach((v) => {
                     if (typeof v === 'object') {
                         sortList();
-                        pcTable.dataSortedVisible.push(v)
+                        pcTable.dataSorted.push(v)
                     } else {
                         list.push(v)
                     }
@@ -135,8 +135,23 @@ $.extend(App.pcTableMain.prototype, {
             }
 
         } else {
-            pcTable.dataSortedVisible = pcTable.dataSortedVisible.sort(sortFunc)
+            pcTable.dataSorted = pcTable.dataSorted.sort(sortFunc)
         }
+
+        pcTable.dataSortedVisible=[]
+        for (let i = 0; i < this.dataSorted.length; i++) {
+            let element = this.dataSorted[i];
+            if (typeof element === 'object') {
+                pcTable.dataSortedVisible.push(element);
+            } else {
+                let item = this.data[element];
+                this.__applyFiltersToItem(item);
+                if (item.$visible) {
+                    pcTable.dataSortedVisible.push(element);
+                }
+            }
+        }
+
         pcTable._refreshContentTable();
     }
 });
