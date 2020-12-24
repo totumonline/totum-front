@@ -399,6 +399,18 @@ input:not([type="checkbox"]):focus {
     color: #555;
 
   }
+  ul{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    &::-webkit-scrollbar {
+      height: 5px;
+      margin-bottom: -5px;
+    }
+  }
 }
 
 

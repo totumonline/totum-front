@@ -377,18 +377,7 @@
       a {
         max-width: 100px;
       }
-      ul{
-        display: flex;
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
-        &::-webkit-scrollbar {
-          height: 5px;
-          margin-bottom: -5px;
-        }
-      }
+
     }
 
     .pcTable-rowsTitle {

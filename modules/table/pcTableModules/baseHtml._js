@@ -815,7 +815,7 @@
 
             if (allPages > 1) {
                 $block.addClass('ttm-pagination-warning');
-                $block.append(' <i class="fa fa-square"></i>');
+                onpaging.append(' <i class="fa fa-square"></i>');
             }
 
             return $block;

@@ -57,7 +57,7 @@
                 $('table.pcTable-table').removeClass('with-checks');
             }
 
-            if (this.dataSortedVisible.filter((v)=> typeof v!=='object' || v.row).length !== this.__checkedRows.length) {
+            if (this.dataSortedVisible.filter((v) => typeof v !== 'object' || v.row).length !== this.__checkedRows.length) {
                 pcTable._idCheckButton.html('<span class="fa fa-square-o"></span>');
             } else {
                 pcTable._idCheckButton.html('<span class="fa fa-check"></span>');
@@ -100,7 +100,7 @@
         ,
         _refreshCheckedStatus: function () {
             this._checkStatusBar.find('[data-name="count_checked_rows"]:first').text(this.__checkedRows.length);
-            this._checkStatusBar.find('[data-name="count_visible_rows"]:first').text(this.dataSortedVisible.filter((v)=> typeof v!=='object' || v.row).length);
+            this._checkStatusBar.find('[data-name="count_visible_rows"]:first').text(this.dataSortedVisible.filter((v) => typeof v !== 'object' || v.row).length);
         }
         ,
 
@@ -437,8 +437,8 @@
                     //this.ScrollClasterized.insertToDOM(undefined, true);
                 }
 
-                if(json.chdata.order){
-                    this.dataSorted=json.chdata.order;
+                if (json.chdata.order) {
+                    this.dataSorted = json.chdata.order;
                     pcTable.dataSortedVisible = [];
                     pcTable.dataSorted.forEach((id) => {
                         if (this.data[id].$visible)
@@ -621,6 +621,17 @@
             }
             return checkedRows;
 
+        },
+        getRowTitle(item) {
+            if (this.mainFieldName !== 'id') {
+                if (item[this.mainFieldName]._v) {
+                    return item[this.mainFieldName]._v;
+                } else {
+                    return item[this.mainFieldName].v;
+                }
+
+            }
+            return item.id;
         }
         ,
         row_refresh: function (trId) {
