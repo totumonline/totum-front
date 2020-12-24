@@ -208,7 +208,7 @@ App.pcTableMain.prototype._addSelectable = function () {
 
                 }
 
-                if (val.h) {
+                if (val.h && val.f.showhand !== false) {
                     if (val.c !== undefined) {
                         let c = val.c;
                         if (val.c_) {
@@ -222,7 +222,7 @@ App.pcTableMain.prototype._addSelectable = function () {
                         textDiv.append('<div><i class="fa fa-hand-grab-o pull-left"></i> Cовпадает с расчетным</div>');
                 }
 
-                let divForPannelFormats=$('<div><div class="center"><i class="fa fa-spinner fa-spin"></i></div></div>');
+                let divForPannelFormats = $('<div><div class="center"><i class="fa fa-spinner fa-spin"></i></div></div>');
 
                 if (field.formatInPanel) {
                     textDiv.append(divForPannelFormats);
@@ -457,12 +457,12 @@ App.pcTableMain.prototype._addSelectable = function () {
                 if (field.type === 'select') {
                     let _panel = $('<div class="previews">').appendTo(textDiv);
                     field.loadPreviewPanel(_panel, field.name, item, val['v']).then(function () {
-                        if(divForPannelFormats.data('loadFormats')){
+                        if (divForPannelFormats.data('loadFormats')) {
                             divForPannelFormats.data('loadFormats')()
                         }
                     });
-                }else{
-                    if(divForPannelFormats.data('loadFormats')){
+                } else {
+                    if (divForPannelFormats.data('loadFormats')) {
                         divForPannelFormats.data('loadFormats')()
                     }
                 }
@@ -864,7 +864,7 @@ App.pcTableMain.prototype._addSelectable = function () {
         return false;
     });
     this._container.on('click', '.DataRow td:not(.editing,.id,.n), td.val:not(.editing)', function (event) {
-        
+
         if (event.target.className === 'file-image-preview') {
             let file = JSON.parse(event.target.getAttribute('data-fileviewpreview'));
             window.top.BootstrapDialog.show({
