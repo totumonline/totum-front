@@ -2191,6 +2191,12 @@
             let $row = $("<tr>");
 
 
+            if (!this.fieldCategories.visibleColumns.length) {
+                pcTable._container.addClass('withNoColumns')
+            } else {
+                pcTable._container.removeClass('withNoColumns')
+            }
+
             pcTable._createHeadCellId().appendTo($row);
             let $width = $row.find('.id').width();
 

@@ -1951,6 +1951,10 @@ input{
   z-index: 1000;
 }
 
+.pcTable-container.withNoColumns .pcTable-rowsWrapper{
+  display: none;
+}
+
 @import "fields/file.scss";
 @import "fields/No.scss";
 @import "fields/text.scss";
