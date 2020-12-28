@@ -35,8 +35,7 @@
 
             let folder = $('<i class="fa fa-folder' + (row.opened ? '-open' : '') + ' treeRow"></i>').data('treeRow', row.v);
 
-            let span = $('<span class="tree-view">').append(folder)
-                .append($('<button class="btn btn-default btn-xxs treeRow"><i class="fa fa-hand-pointer-o"></i></button>').data('treeRow', row.v));
+            let span = $('<span class="tree-view">').append(folder);
 
             span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
             let td = $('<td colspan="' + (this.fieldCategories.column.length - 1) + '" class="tree-view-td" style="padding-left: ' + (7 + row.level * 10) + 'px"></td>');
@@ -165,7 +164,14 @@
             })
         }
         this.dataSorted = [];
-        expandTree(this.treeSort)
+
+        let treeSortCopy=[...this.treeSort];
+        if(treeSortCopy[0]=="" && this.treeIndex[""].sorted.length===0){
+            delete treeSortCopy[0];
+        }
+
+
+        expandTree(treeSortCopy)
     }
     App.pcTableMain.prototype._treeApplyRows = function (rows) {
         rows.map((item) => {

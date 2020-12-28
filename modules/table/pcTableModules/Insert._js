@@ -196,10 +196,12 @@ $.extend(App.pcTableMain.prototype, {
                 .on('click', AddWithPanel)
                 .appendTo(this._insertButtons);
         } else {
-            $('<button data-action="add" class="btn btn-sm btn-warning">Добавить</button>')
-                .width(80)
-                .on('click', AddWithRow)
-                .appendTo(this._insertButtons);
+            if (this.tableRow.id !== 2) {
+                $('<button data-action="add" class="btn btn-sm btn-warning">Добавить</button>')
+                    .width(80)
+                    .on('click', AddWithRow)
+                    .appendTo(this._insertButtons);
+            }
 
             if (!pcTable.isMobile && this.tableRow.panel) {
                 $('<button class="btn btn-warning btn-sm"><i class="fa fa-th-large"></i></button>')

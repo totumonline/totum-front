@@ -3299,11 +3299,8 @@
             if (format.italic) td.css('font-style', 'italic');
 
 
-            if (field.type !== "button") {
-
-                if (format.icon) {
-                    td.prepend('<i class="cell-icon fa fa-' + format.icon + '"></i>');
-                }
+            if (format.icon && field.type !== "button" && !(field.type==='tree' && cellInner.is('.tree-view'))) {
+                td.prepend('<i class="cell-icon fa fa-' + format.icon + '"></i>');
             }
 
             if (format.progress && format.progresscolor) {

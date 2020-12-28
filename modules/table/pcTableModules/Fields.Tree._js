@@ -448,11 +448,10 @@
 
             if (field.name === 'tree' && item.__tree && (field.treeViewType === 'self' || (item.tree_category && item.tree_category.v))) {
                 let row = item.__tree;
-
-                let folder = $('<i class="fa fa-folder' + (row.opened ? '-open' : '') + ' treeRow"></i>').data('treeRow', row.v);
+                let icon = item.tree.f.icon || (row.opened?'folder-open':'folder');
+                let folder = $('<i class="fa fa-'+icon + ' treeRow"></i>').data('treeRow', row.v);
 
                 let span = $('<span class="tree-view">').css('padding-left', row.level * 10).append(folder)
-                    .append($('<button class="btn btn-default btn-xxs treeRow"><i class="fa fa-hand-pointer-o"></i></button>').data('treeRow', row.v))
                     .append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
                 span.append(item.tree.f && item.tree.f.text !== undefined ? item.tree.f.text: row.t);
                 return span;

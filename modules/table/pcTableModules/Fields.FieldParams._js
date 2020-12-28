@@ -604,14 +604,15 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 }
                 element.css('visibility', 'hidden');
                 element.outerHeight(34);
+
+                let val = oldValue === undefined && f.default ? f.default : oldValue;
+
                 setTimeout(function () {
                     element.selectpicker();
                     element.css('visibility', 'visible');
-                }, 0);
+                }, 10);
 
-
-                if (oldValue) element.val(oldValue);
-                else if (oldValue === undefined && f.default) element.val(f.default);
+                element.val(val);
                 break;
 
         }

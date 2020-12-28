@@ -2,7 +2,6 @@ let panelId = 0;
 window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertChangesCalcsFields = {}) {
 
     if (window.top !== window) return window.top.EditPanel.call(window.top, pcTable, dialogType, inData, isElseItems, insertChangesCalcsFields);
-
     let data = $.extend(true, {}, inData);
 
     let EditPanelFunc = this;
@@ -48,7 +47,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 }).fail(reject);
             })
         }
-        if (EditPanelFunc.beforeSave) {
+        if (EditPanelFunc.beforeSave && !isFirstLoad) {
             if (val = await EditPanelFunc.beforeSave(val)) {
                 return Check();
             }
