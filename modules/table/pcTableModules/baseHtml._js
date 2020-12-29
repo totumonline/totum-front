@@ -3206,6 +3206,7 @@
             }
             let isErrorVal;
             let $hand;
+            let $error;
             if (val) {
 
                 isErrorVal = val.e;
@@ -3230,13 +3231,13 @@
                     if (field.errorText) {
                         span.text(field.errorText);
                     } else {
-                        let e = $('<i class="fa fa-exclamation-triangle pull-right" aria-hidden="true"></i>');
+                        $error = $('<i class="fa fa-exclamation-triangle pull-right" aria-hidden="true"></i>');
                         if (pcTable.isMobile) {
-                            e.addClass('ttm-panel');
+                            $error.addClass('ttm-panel');
                         } else {
-                            e.attr('title', val.e)
+                            $error.attr('title', val.e)
                         }
-                        td.append(e);
+                        td.append($error);
                     }
                 }
 
@@ -3299,7 +3300,12 @@
             if (format.italic) td.css('font-style', 'italic');
 
 
-            if (format.icon && field.type !== "button" && !(field.type==='tree' && cellInner.is('.tree-view'))) {
+            if((field.type==='tree' && cellInner.is('.tree-view'))){
+                if($error){
+                    $error.remove();
+                }
+            }
+            else if (format.icon && field.type !== "button") {
                 td.prepend('<i class="cell-icon fa fa-' + format.icon + '"></i>');
             }
 
