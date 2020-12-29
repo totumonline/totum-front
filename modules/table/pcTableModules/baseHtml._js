@@ -3438,7 +3438,7 @@
                                 v: {
                                     ...data_src,
                                     tableBreakBefore: {isOn: false},
-                                    sectionTitle: {isOn: false, Val: data_src.sectionTitle},
+                                    sectionTitle: {isOn: false, Val: data_src.sectionTitle.Val},
                                 }
                             },
                             id: sectionField.id
