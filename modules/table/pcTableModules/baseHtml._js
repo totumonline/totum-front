@@ -3300,7 +3300,7 @@
             if (format.italic) td.css('font-style', 'italic');
 
 
-            if((field.type==='tree' && cellInner.is('.tree-view'))){
+            if((field.type==='tree' && cellInner && cellInner.is('.tree-view'))){
                 if($error){
                     $error.remove();
                 }
