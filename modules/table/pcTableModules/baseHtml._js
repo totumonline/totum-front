@@ -61,6 +61,11 @@
             this._popovers = $('<div class="popovers">');
 
 
+            if(pcTable.isTreeView){
+                pcTable._connectTreeView.call(pcTable);
+            }
+
+
             if (this.fieldCategories.column.length === 1) {
                 pcTable._container.addClass('no-fields');
             }
@@ -874,15 +879,17 @@
                     buttons.append(insButtons);
                 }
 
-                let btnAdd = $('<button class="btn btn-default btn-sm" style="margin-left: 5px;" disabled>Сбросить <span class="fa fa-filter"></span></button>').width(82)
-                    .on('click', function () {
-                        setTimeout(function () {
-                            pcTable.filtersEmpty.call(pcTable)
-                        }, 50)
+                if (!this.isTreeView) {
+                    let btnAdd = $('<button class="btn btn-default btn-sm" style="margin-left: 5px;" disabled>Сбросить <span class="fa fa-filter"></span></button>').width(82)
+                        .on('click', function () {
+                            setTimeout(function () {
+                                pcTable.filtersEmpty.call(pcTable)
+                            }, 50)
 
-                    });
-                buttons.append(btnAdd);
-                this.filtersClearButton = btnAdd;
+                        });
+                    buttons.append(btnAdd);
+                    this.filtersClearButton = btnAdd;
+                }
             }
 
             if (this.f.tablecomment) {
@@ -2791,11 +2798,19 @@
                         //Скрыть
                         if (!pcTable.isMobile) {
                             let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-eye-slash"></i> Скрыть');
-                            btn.on('click', function () {
-                                btnDropDown.popover('hide');
-                                pcTable.fieldsHiddingHide.call(pcTable, field.name);
-                            });
+                            if (field.showMeWidth) {
+                                btn.append('<i class="fa fa-eye-slash"></i> Скрыть');
+                                btn.on('click', function () {
+                                    btnDropDown.popover('hide');
+                                    pcTable.fieldsHiddingHide.call(pcTable, field.name);
+                                });
+                            } else {
+                                btn.append('<i class="fa fa-eye-slash"></i> Показать');
+                                btn.on('click', function () {
+                                    btnDropDown.popover('hide');
+                                    pcTable.setColumnWidth.call(pcTable, field.name, field.width, field.id);
+                                });
+                            }
                             btn.appendTo($divPopoverArrowDown);
 
 
@@ -2824,7 +2839,7 @@
                                 ];
                                 if (pcTable.isCreatorView) {
                                     btns.splice(0, 0, {
-                                        label: 'Применить',
+                                        label: 'По умолчанию',
                                         cssClass: 'btn-m btn-danger',
                                         action: function (dialog) {
                                             let width = parseInt(div.find('input').val());
@@ -2857,7 +2872,7 @@
                         }
 
                     }
-                    if (field.showMeWidth > 0 && field.category === 'column') {
+                    if (field.showMeWidth > 0 && field.category === 'column' && !pcTable.isTreeView) {
                         //sort a-z
                         {
                             let btn = $('<div class="menu-item">');
@@ -3244,9 +3259,7 @@
                 if (format.text && field.type != "button" && !(pcTable.isTreeView && field.name === 'tree' && item.__tree && (field.treeViewType === 'self' || (item.tree_category && item.tree_category.v)))) {
                     span.text(format.text);
                 } else if (!(val.e && field.errorText)) {
-                    var cellInner = isHeighter
-                        ? (field.getHighCelltext ? field.getHighCelltext(val.v, td, item) : (field.getPanelText ? field.getPanelText(val.v, td, item) : field.getCellText(val.v, td, item)))
-                        : field.getCellText(val.v, td, item);
+                    var cellInner = isHeighter ? field.getHighCelltext(val.v, td, item) : field.getCellText(val.v, td, item);
                     if (typeof cellInner === 'object') {
                         span.html(cellInner)
                     } else span.text(cellInner);
@@ -3277,15 +3290,13 @@
                 td.addClass('selected');
             }
 
-            if (!field.isNoTitles || field.type !== "button") {
-                if (!(field.type === "button" && field.pcTable.isMobile && field.category !== 'column')) {
-                    if (format.background) {
-                        td.css('background-color', format.background);
-                    } else if (field.panelColor) {
-                        td.css('background-color', field.panelColor);
-                    }
-                    if (format.color) td.css('color', format.color);
+            if (!(field.type === "button" && field.pcTable.isMobile && field.category !== 'column')) {
+                if (format.background) {
+                    td.css('background-color', format.background);
+                } else if (field.panelColor) {
+                    td.css('background-color', field.panelColor);
                 }
+                if (format.color) td.css('color', format.color);
             }
 
             if (format.bold) td.css('font-weight', 'bold');
@@ -3300,12 +3311,11 @@
             if (format.italic) td.css('font-style', 'italic');
 
 
-            if((field.type==='tree' && cellInner && cellInner.is('.tree-view'))){
-                if($error){
+            if ((field.type === 'tree' && cellInner && typeof cellInner === 'object' && cellInner.is('.tree-view'))) {
+                if ($error) {
                     $error.remove();
                 }
-            }
-            else if (format.icon && field.type !== "button") {
+            } else if (format.icon && field.type !== "button") {
                 td.prepend('<i class="cell-icon fa fa-' + format.icon + '"></i>');
             }
 

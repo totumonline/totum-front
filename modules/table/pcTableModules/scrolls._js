@@ -146,11 +146,6 @@
                 }, 50);
             });
             
-            if(pcTable.isTreeView){
-                pcTable._connectTreeView.call(pcTable);
-            }
-
-
             let cache = {
                 top_offset: 0,
                 bottom_offset: 0,

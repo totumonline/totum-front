@@ -12,12 +12,127 @@
         div.data('id', id);
         let panelFields = this.tableRow.panels_view.fields;
         panelFields.forEach((field) => {
-            let td = $('<td>').html(this.fields[field.field].getCellText(data[field.field].v, div, data));
-            td.height(field.height)
+            let td = $('<td>');
+            let css = {};
+
+            css['height'] = field.height;
+
+            td.data('name', field.field);
+
             if (!field.border) {
-                td.css('border-color', 'transparent')
-                td.css('background-color', 'transparent')
+                css['border-color'] = 'transparent';
+                css['background-color'] = 'transparent';
             }
+
+            let format, Field = this.fields[field.field];
+            try {
+                format = $.extend({}, (this.f || {}), (data.f || {}), (data[field.field].f ? data[field.field].f || {} : {}));
+            } catch (e) {
+                console.log(e, data, field.field);
+                format = {};
+            }
+            if (Field.type != "button") {
+
+
+                if (format.color) {
+                    css['font-color'] = format.color;
+                }
+                if (format.background) {
+                    css['background-color'] = format.background;
+                }
+                if (format.text) {
+                    td.text(format.text)
+                } else {
+                    let val = this.fields[field.field].getHighCelltext(data[field.field].v, td, data);
+                    if (val !==null && typeof val === 'object') {
+                        if (val.then && typeof val.then === "function") {
+                            td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>')
+                            val.then((val) => {
+                                if (typeof val === 'object') {
+                                    td.html(val)
+                                } else {
+                                    td.text(val)
+                                }
+
+                            })
+                        } else {
+                            td.html(val)
+                        }
+                    } else {
+                        td.text(val)
+                    }
+
+                }
+
+                if (format.comment) {
+                    td.prepend($('<i class="fa fa-help">').attr('title', format.comment))
+                } else if (format.icon) {
+                    td.prepend($('<i class="fa">').addClass('fa-' + format.icon))
+                }
+
+                td.attr('data-field-type', Field.type).addClass('nonowrap');
+
+                if (format.showhand !== false && data[field.field].h) {
+                    let val = data[field.field], $hand;
+                    if (val.c !== undefined && val.v != val.c) {
+                        $hand = $('<i class="fa fa-hand-paper-o pull-right cell-icon" aria-hidden="true"></i>');
+                    } else {
+                        $hand = $('<i class="fa fa-hand-rock-o pull-right cell-icon" aria-hidden="true"></i>');
+                    }
+                    td.append($hand)
+                }
+
+            } else {
+                data.__td_style = function () {
+                    let style = {td: {}, Button: {}};
+                    if (format.background) {
+                        style.Button.backgroundColor = format.background
+                    }
+                    if (format.color) {
+                        style.Button.color = format.color
+                    }
+                    style.td.backgroundColor = 'transparent';
+                    return style;
+                }
+                td.html(this.fields[field.field].getCellText(data[field.field].v, td, data))
+
+                let btn = td.find('button');
+                btn.on('click', () => {
+                    this._buttonClick(td, Field, data);
+                })
+            }
+
+
+            if (format.bold) {
+                css['font-weight'] = 'bold';
+            }
+            if (format.italic) {
+                css['font-style'] = 'italic';
+            }
+
+
+            if (format.decoration) {
+                css['text-decoration'] = format.decoration;
+            }
+            if (format.align) {
+                css['text-align'] = format.align;
+            }
+            if (format.tab) {
+                css['padding-left'] = format.tab;
+            }
+            if (format.progress && format.progresscolor) {
+                let addProgress = function () {
+                    if (!td.isAttached()) {
+                        setTimeout(addProgress, 50);
+                    } else {
+                        let progress = Math.round(td.width() * parseInt(format.progress) / 100);
+                        td.css('box-shadow', 'inset ' + progress.toString() + 'px 0px 0 0 ' + format.progresscolor);
+                    }
+                };
+                addProgress();
+            }
+
+            td.css(css)
 
             let fData = $('<div>').append(td);
             if (field.title) {
@@ -39,10 +154,9 @@
                     let nowBeforeId = $item.prev().data('id');
                     App.fullScreenProcesses.show('sorting');
 
-
                     let kanban = this.data[itemId][this.tableRow.panels_view.kanban];
                     if (this.data[itemId][this.tableRow.panels_view.kanban] != $item.parent().data('value')) {
-                        kanban = $item.parent().data('value');
+                        kanban = $item.closest('.kanban').data('value');
                         this.model.save({[itemId]: {[this.tableRow.panels_view.kanban]: kanban}}).then((json) => {
                             this.table_modify(json, undefined);
                         });
@@ -51,6 +165,7 @@
                     $item.parent().find('.panelsView-card').each((i, div) => {
                         order.push($(div).data('id'))
                     })
+                    this._container.getNiceScroll().resize();
 
                     if (order.length > 1) {
                         this.model.saveOrder(order).then((json) => {
@@ -69,7 +184,8 @@
                     let $item = $(ui.item);
                     let itemId = $item.data('id');
                     let nowBeforeId = $item.prev().data('id');
-                    App.fullScreenProcesses.show('sorting');
+
+                    let old = [...this.dataSorted];
                     this.dataSorted.splice(this.dataSorted.indexOf(itemId), 1);
                     if (nowBeforeId) {
                         this.dataSorted.splice(this.dataSorted.indexOf(nowBeforeId) + 1, 0, itemId);
@@ -80,42 +196,60 @@
                     this.dataSorted.forEach((id) => {
                         if (this.data[id].$visible) this.dataSortedVisible.push(id);
                     });
-                    this.model.saveOrder(this.dataSorted).then((json) => {
-                        this.table_modify(json);
-                    }).always(() => {
-                        App.fullScreenProcesses.hide('sorting');
-                    });
+                    if (!Object.equals(old, this.dataSorted)) {
+                        App.fullScreenProcesses.show('sorting');
+                        this.model.saveOrder(this.dataSorted).then((json) => {
+                            this.table_modify(json);
+                        }).always(() => {
+                            App.fullScreenProcesses.hide('sorting');
+                        });
+                    }
 
                 }
             })
     }
     const createPanelsContent = function () {
         let $div = this._content || $('<div class="pcTable-floatBlock">').each((i, d) => {
-            if (this.tableRow.with_order_field) {
+            if (this.tableRow.with_order_field && this.control.editing && !(this.f.blockorder || this.f.blockedit)) {
                 setTimeout(() => {
                     addSortable.call(this, d)
                 }, 1)
             }
         });
+
         $div.empty();
         this.__applyFilters();
 
         if (this.kanban) {
+            this._innerContainer.addClass('kanbanInnerContainer');
             $div.addClass('kanbanWrapper')
-            $div.css('grid-template-columns', "1fr ".repeat(this.kanban.length))
+
+            $div.css('grid-template-columns', "1fr ".repeat(this.kanban.length));
+            let width = 0;
             this.kanban.forEach((v) => {
-                v.$div = $('<div class="kanban"></div>').data('value', v[0]);
-                v.$div.append($('<div class="kanban-title">').text(v[1]))
+                let divWidth = (this.tableRow.panels_view.panels_in_kanban || 1) * (parseInt(this.tableRow.panels_view.width) + 10) - 10;
+
+                v.$div = $('<div class="kanban"></div>').data('value', v[0]).width(divWidth);
+
+                if (width)
+                    width += 20;
+                width += divWidth
+                v.$div.append($('<div class="kanban-title">').text(v[1]).attr('data-value', v[0]))
+                let $cards = $('<div class="kanban-cards">');
+                v.$div.append($cards);
                 let kId = v[0];
                 $div.append(v.$div);
 
                 this.dataSortedVisible.forEach((id) => {
                     if (this.data[id][this.tableRow.panels_view.kanban].v == kId) {
-
-                        v.$div.append(this._getRowCard(id));
+                        $cards.append(this._getRowCard(id));
                     }
                 })
             })
+            $div.width(width);
+            this.tableWidth = width;
+
+
         } else {
             this.dataSortedVisible.forEach((id) => {
                 $div.append(this._getRowCard(id));
@@ -186,6 +320,31 @@
                 }
             });
         });
+        this._content.on('contextmenu', '.panelsView-card td', function () {
+            let td = $(this);
+            let item = pcTable.data[td.closest('.panelsView-card').data('id')];
+            let field = td.data('name');
+            if (td.data('panel') && td.data('panel').isAttached() && pcTable.selectedCells.selectPanel === td.data('panel')) {
+                pcTable.selectedCells.selectPanelDestroy();
+                td.data('panel', null);
+            } else {
+                td.data('panel', pcTable.selectedCells.selectPanel = pcTable.getSelectPanel.call(pcTable, pcTable.fields[field], item, td));
+            }
+        });
+
+        let selected;
+
+        this._content.on('click', '.panelsView-card', function () {
+            let td = $(this);
+            if (selected && selected.get(0) === this) {
+                td.removeClass('selected');
+                selected = null
+            } else {
+                if (selected)
+                    selected.removeClass('selected');
+                selected = td.addClass('selected');
+            }
+        });
 
         if (this.isCreatorView) {
             this._hideHell_storage.checkIssetFields.call(this)
@@ -202,24 +361,50 @@
 
     App.pcTableMain.prototype._renderTablePanelView = function () {
 
+        this.loadFilters();
+
         this._renderTable = render.bind(this);
         this._getRowCard = getRowCard.bind(this);
 
         this._refreshHead = () => {
         }
-        this.__addFilterable = () => {
-        }
+
         this.Scroll = () => {
             return {
                 reloadScrollHead: () => {
+                },
+                insertToDOM: () => {
+                    this._refreshContentTable();
                 }
             };
         }
-        this.rowButtonsCalcWidth = () => {
+        if (this.kanban) {
+            this.rowButtonsCalcWidth = function () {
+                if (this.tableWidth < this._innerContainer.width()) {
+                    this.__$rowsButtons.width(this.tableWidth)
+                } else if (!this.isMobile) {
+                    this.__$rowsButtons.width(this._innerContainer.width())
+                }
+            }
+        } else {
+            this.rowButtonsCalcWidth = function () {
+            }
         }
         this.refreshRow = refreshRow.bind(this);
 
         this._refreshContentTable = createPanelsContent.bind(this);
+
+        this._getItemBytd = function (td) {
+            return this.data[td.closest('.panelsView-card').data('id')];
+        }
+        this._getFieldBytd = function (td) {
+            if (td.closest('.panelsView-card').length === 0) {
+                return this.fields[td.data('field')]
+            } else {
+                return this.fields[td.data('name')]
+            }
+        }
+
     }
 
 })();

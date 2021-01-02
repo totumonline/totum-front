@@ -173,6 +173,10 @@ var defaultField = {
         else if (['text', 'comments', 'file', 'listRow'].indexOf(this.type) !== -1) return 1.5;
         else if (this.multiple) return 1.5;
         else return 1;
+    },
+    getHighCelltext: function (v, td, item){
+        return (this.getPanelText ? this.getPanelText(v, td, item) : this.getCellText(v, td, item));
     }
+
 
 };

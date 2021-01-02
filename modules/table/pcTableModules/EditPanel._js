@@ -557,11 +557,10 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 });
             }else{
                 if(field.CodeActionOnClick){
-                    cell.on('dblclick', ()=>{
-
+                    divWrapper.append($('<button class="btn btn-sm btn-default" style="width: 100%"><i class="fa fa-hand-pointer-o"></i></button>').on('click', ()=>{
                         EditPanelFunc.pcTable.model.dblClick(item.id, field.name).then((json)=>{
                         })
-                    })
+                    }))
                 }
             }
 

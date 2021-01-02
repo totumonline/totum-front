@@ -34,6 +34,14 @@ fieldTypes.button = {
                 if (btnStyle) {
                     btn.css(btnStyle);
                 }
+            } else if (item.__td_style && typeof item.__td_style === 'function') {
+                let style = item.__td_style(format);
+                if (style.Button) {
+                    btn.css(style.Button);
+                }
+                if (style.td) {
+                    td.css(style.td);
+                }
             } else if (field.pcTable.isMobile && field.category !== 'column') {
                 let css = {};
                 if (format.background) {

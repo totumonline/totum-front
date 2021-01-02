@@ -7,6 +7,9 @@ div[data-field-type="text"].nonowrap {
     white-space: pre-line;
   }
 }
+.panelsView-card td[data-field-type="text"].nonowrap {
+    white-space: pre-line;
+}
 
 .CodeMirror pre.CodeMirror-placeholder.CodeMirror-line-like {
   color: #d0d0d0;

@@ -40,3 +40,6 @@ button.tree-button{
     padding-left: 0px;
   }
 }
+.panelsView-card td[data-field-type="select"].nonowrap {
+  white-space: pre-line;
+}

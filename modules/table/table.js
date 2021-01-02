@@ -557,6 +557,8 @@
                 if(this.viewType==='panels')
                     this._renderTablePanelView();
 
+                this.ScrollClasterized = this.Scroll();
+
                 this._renderTable();
                 if (this._sorting.addSortable) {
                     this._sorting.addSortable(this);
@@ -572,7 +574,7 @@
                 this._refreshHead();
 
 
-                this.ScrollClasterized = this.Scroll();
+
 
                 if (pcTable.checkIsUpdated > 0) {
                     let timeout = parseInt(pcTable.checkIsUpdated) * 2000;
