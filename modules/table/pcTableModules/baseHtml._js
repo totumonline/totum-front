@@ -1348,7 +1348,7 @@
                             return false;
                         }).appendTo($title)
                     }
-                    pcTable.___createClosedSection(sDv, $('<div class="pcTable-sectionTitle"></div>').html($title).appendTo(sDv), 'p');
+                    pcTable.___createClosedSection(sDv, $('<div class="pcTable-sectionTitle"></div>').html($title).appendTo(sDv), fields[0].category==='param'?'p':'f');
                 }
                 let floatBlock = $('<div class="pcTable-floatBlock">').appendTo(sDv);
 
@@ -2111,6 +2111,7 @@
             const pcTable = this;
             let sectionId = sectionDiv.parent().find('>div').index(sectionDiv) + 2;
             let storageKey = pcTable.tableRow.id + '/' + (pcTable.tableRow.__version || 0) + '/' + placement + '/' + sectionId;
+
             pcTable.__sectionsCloses = pcTable.__sectionsCloses || JSON.parse(localStorage.getItem('sectionCloses') || '{}');
 
             if (pcTable.__sectionsCloses[storageKey]) sectionDiv.addClass('closed');
