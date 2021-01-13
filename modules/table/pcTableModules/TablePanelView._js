@@ -44,7 +44,7 @@
                     td.text(format.text)
                 } else {
                     let val = this.fields[field.field].getHighCelltext(data[field.field].v, td, data);
-                    if (val !==null && typeof val === 'object') {
+                    if (val !== null && typeof val === 'object') {
                         if (val.then && typeof val.then === "function") {
                             td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>')
                             val.then((val) => {
@@ -138,19 +138,19 @@
             let pcTable = this;
 
             if (field.title) {
-                let title=$('<th>').text(this.fields[field.field].title);
+                let title = $('<th>').text(this.fields[field.field].title);
 
-                if(Field.help){
-                    if(!Field.helpFunc){
+                if (Field.help) {
+                    if (!Field.helpFunc) {
                         pcTable.addThHelpCloser();
 
-                        Field.helpFunc=function(event){
+                        Field.helpFunc = function (event) {
                             let btn = $(this);
                             let closeLimit;
                             if (!btn.data('bs.popover')) {
                                 if (event.type !== "close") {
                                     pcTable._container.trigger('click');
-                                    setTimeout(()=>{
+                                    setTimeout(() => {
                                         let i_content = $('<div class="i-inner-div">').html(Field.help).width(230);
                                         btn.popover(
                                             {
@@ -183,39 +183,50 @@
                             return false;
                         }
                     }
-                    title.prepend($('<button class="btn btn-default btn-xxs cell-help" id="field-help-'+Field.name+'-'+id+'"><i class="fa fa-info"></i></button>').on('click open close', Field.helpFunc));
+                    title.prepend($('<button class="btn btn-default btn-xxs cell-help" id="field-help-' + Field.name + '-' + id + '"><i class="fa fa-info"></i></button>').on('click open close', Field.helpFunc));
                 }
                 fData.prepend(title);
             }
             div.append(fData)
         })
 
-        if(this.tableRow.panels_view.controls){
+        if (this.tableRow.panels_view.controls) {
 
-            if(!this.pcTableControllsEvents){
-                this.pcTableControllsEvents=true;
+            if (!this.pcTableControllsEvents) {
+                this.pcTableControllsEvents = true;
                 let pcTable = this;
-                this._innerContainer.on('click', '.panel-controls button', function (){
+                this._innerContainer.on('click', '.panel-controls button', function () {
                     let btn = $(this);
                     let trId = btn.closest('.panelsView-card').data('id')
-                    switch (btn.data('action')){
+                    switch (btn.data('action')) {
                         case 'duplicate':
-                            pcTable.row_duplicate(trId); break;
+                            pcTable.row_duplicate(trId);
+                            break;
                         case 'delete':
-                            pcTable.rows_delete(trId); break;
+                            pcTable.rows_delete(trId);
+                            break;
                         case 'recalculate':
-                            pcTable.row_refresh(trId); break;
+                            pcTable.row_refresh(trId);
+                            break;
+                        case 'panel':
+                            pcTable._row_edit([trId]);
+                            break;
                     }
+                    return false;
                 })
             }
 
-            let controls=$('<div class="panel-controls">');
-            controls.append('<span class="panle-id">id '+id+'</span>');
+            let controls = $('<div class="panel-controls">');
+            controls.append('<span class="panle-id">id ' + id + '</span>');
 
-            if(this.control.duplicating && !this.f.blockduplicate && !data.f.blockduplicate){
+            if (this.tableRow.panel) {
+                controls.append('<button class="btn btn-default btn-xxs" data-action="panel"><i class="fa fa-th-large"></i></span>');
+            }
+
+            if (this.control.duplicating && !this.f.blockduplicate && !data.f.blockduplicate) {
                 controls.append('<button class="btn btn-default btn-xxs" data-action="duplicate"><i class="fa fa-clone"></i></span>');
             }
-            if(this.control.deleting && !this.f.blockdelete && !data.f.blockdelete){
+            if (this.control.deleting && !this.f.blockdelete && !data.f.blockdelete) {
                 controls.append('<button class="btn btn-default btn-xxs" data-action="delete"><i class="fa fa-times"></i></span>');
             }
             controls.append('<button class="btn btn-default btn-xs" data-action="recalculate"><i class="fa fa-refresh"></i></span>');
@@ -229,7 +240,7 @@
         if (this.kanban) {
             $(div).find('.kanban').sortable({
                 items: '.panelsView-card',
-                connectWith: this.fields[this.tableRow.panels_view.kanban].editable?'.kanban':undefined,
+                connectWith: this.fields[this.tableRow.panels_view.kanban].editable ? '.kanban' : undefined,
                 stop: (event, ui) => {
                     let $item = $(ui.item);
                     let itemId = $item.data('id');
@@ -381,7 +392,7 @@
 
         this._footersBlock = $();
         this._content = this._refreshContentTable().appendTo(this._innerContainer);
-        if(this.tableRow.panels_view.css){
+        if (this.tableRow.panels_view.css) {
             this._container.prepend($('<style>').text(this.tableRow.panels_view.css))
         }
 
@@ -399,14 +410,12 @@
         this._seeSelectPreview();
         this._clickstoCopyMe();
 
-        this._content.on('dblclick', '.panelsView-card', function () {
-            let id = $(this).data('id');
-            new EditPanel(pcTable, null, {id: id}).then(function (json) {
-                if (json) {
-                    pcTable.table_modify.call(pcTable, json);
-                }
+        if (pcTable.tableRow.type == 'cycle') {
+            this._content.on('dblclick', '.panelsView-card', function () {
+                let id = $(this).data('id');
+                pcTable.model.dblClick(id)
             });
-        });
+        }
         this._content.on('contextmenu', '.panelsView-card td', function () {
             let td = $(this);
             let item = pcTable.data[td.closest('.panelsView-card').data('id')];
