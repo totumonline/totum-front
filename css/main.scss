@@ -1959,6 +1959,9 @@ input{
 .pcTable-container.withNoColumns .pcTable-rowsWrapper{
   display: none;
 }
+.cell-help{
+  opacity: 0.25;
+}
 
 @import "fields/string.scss";
 @import "fields/file.scss";

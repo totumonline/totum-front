@@ -2,6 +2,9 @@
   &:not(.kanbanInnerContainer){
     overflow: visible;
   }
+  .cell-help{
+    float: right;
+  }
   padding-bottom: 50px;
   .pcTable-floatBlock {
     padding: 0;
@@ -64,6 +67,18 @@
     .kanban-cards{
       margin-left: -5px;
       margin-right: -5px;
+    }
+  }
+  .panel-controls{
+
+    text-align: center;
+    margin-top: 15px;
+    span{
+      opacity: 0.5;
+    }
+    button{
+      margin-top: -2px;
+      margin-left: 10px;
     }
   }
 }

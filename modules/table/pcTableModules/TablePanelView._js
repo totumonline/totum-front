@@ -135,11 +135,93 @@
             td.css(css)
 
             let fData = $('<div>').append(td);
+            let pcTable = this;
+
             if (field.title) {
-                fData.prepend($('<th>').text(this.fields[field.field].title));
+                let title=$('<th>').text(this.fields[field.field].title);
+
+                if(Field.help){
+                    if(!Field.helpFunc){
+                        pcTable.addThHelpCloser();
+
+                        Field.helpFunc=function(event){
+                            let btn = $(this);
+                            let closeLimit;
+                            if (!btn.data('bs.popover')) {
+                                if (event.type !== "close") {
+                                    pcTable._container.trigger('click');
+                                    setTimeout(()=>{
+                                        let i_content = $('<div class="i-inner-div">').html(Field.help).width(230);
+                                        btn.popover(
+                                            {
+                                                trigger: "manual",
+                                                content: i_content,
+                                                html: true,
+                                                placement: () => {
+                                                    let placement = 'bottom';
+                                                    let height = 300;
+                                                    let container = pcTable._container;
+                                                    let heightOffset = btn.offset().top - container.offset().top;
+                                                    i_content.css('max-height', height);
+                                                    return placement;
+                                                },
+                                                container: pcTable.scrollWrapper
+                                            }
+                                        );
+                                        btn.popover('show');
+                                    }, 150)
+
+                                }
+                            } else if (event.type !== "open") {
+                                if (closeLimit) clearTimeout(closeLimit);
+                                closeLimit = setTimeout(() => {
+                                    if (btn.attr('aria-describedby') && $('#' + btn.attr('aria-describedby').length)) {
+                                        btn.popover('destroy')
+                                    }
+                                }, 120);
+                            }
+                            return false;
+                        }
+                    }
+                    title.prepend($('<button class="btn btn-default btn-xxs cell-help" id="field-help-'+Field.name+'-'+id+'"><i class="fa fa-info"></i></button>').on('click open close', Field.helpFunc));
+                }
+                fData.prepend(title);
             }
             div.append(fData)
         })
+
+        if(this.tableRow.panels_view.controls){
+
+            if(!this.pcTableControllsEvents){
+                this.pcTableControllsEvents=true;
+                let pcTable = this;
+                this._innerContainer.on('click', '.panel-controls button', function (){
+                    let btn = $(this);
+                    let trId = btn.closest('.panelsView-card').data('id')
+                    switch (btn.data('action')){
+                        case 'duplicate':
+                            pcTable.row_duplicate(trId); break;
+                        case 'delete':
+                            pcTable.rows_delete(trId); break;
+                        case 'recalculate':
+                            pcTable.row_refresh(trId); break;
+                    }
+                })
+            }
+
+            let controls=$('<div class="panel-controls">');
+            controls.append('<span class="panle-id">id '+id+'</span>');
+
+            if(this.control.duplicating && !this.f.blockduplicate && !data.f.blockduplicate){
+                controls.append('<button class="btn btn-default btn-xxs" data-action="duplicate"><i class="fa fa-clone"></i></span>');
+            }
+            if(this.control.deleting && !this.f.blockdelete && !data.f.blockdelete){
+                controls.append('<button class="btn btn-default btn-xxs" data-action="delete"><i class="fa fa-times"></i></span>');
+            }
+            controls.append('<button class="btn btn-default btn-xs" data-action="recalculate"><i class="fa fa-refresh"></i></span>');
+
+            div.append(controls);
+        }
 
         return div;
     }
@@ -147,7 +229,7 @@
         if (this.kanban) {
             $(div).find('.kanban').sortable({
                 items: '.panelsView-card',
-                connectWith: '.kanban',
+                connectWith: this.fields[this.tableRow.panels_view.kanban].editable?'.kanban':undefined,
                 stop: (event, ui) => {
                     let $item = $(ui.item);
                     let itemId = $item.data('id');
@@ -287,6 +369,7 @@
         }
         this._paramsBlock = this._createParamsBlock(scrollWrapper);
 
+
         let rowsParent = $('<div class="pcTable-rowsWrapper">').appendTo(scrollWrapper);
 
 
@@ -298,6 +381,10 @@
 
         this._footersBlock = $();
         this._content = this._refreshContentTable().appendTo(this._innerContainer);
+        if(this.tableRow.panels_view.css){
+            this._container.prepend($('<style>').text(this.tableRow.panels_view.css))
+        }
+
         this._innerContainer.addClass('panelsView');
 
         this._footersSubTable = this._createFootersSubtable(scrollWrapper);

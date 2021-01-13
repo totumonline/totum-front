@@ -554,7 +554,7 @@
                 this.loadVisibleFields(this.f && this.f.fieldhide ? this.f.fieldhide : undefined);
 
 
-                if(this.viewType==='panels')
+                if(this.viewType==='panels' && !this.isMobile)
                     this._renderTablePanelView();
 
                 this.ScrollClasterized = this.Scroll();

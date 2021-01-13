@@ -1,6 +1,4 @@
 (function () {
-    let pcTableContainerFieldHelpEvent = false;
-
     const slimThs = function (tdNoTitles) {
         tdNoTitles.forEach((f) => {
             let h = f.th.outerHeight();
@@ -61,7 +59,7 @@
             this._popovers = $('<div class="popovers">');
 
 
-            if(pcTable.isTreeView){
+            if (pcTable.isTreeView) {
                 pcTable._connectTreeView.call(pcTable);
             }
 
@@ -2637,17 +2635,7 @@
                     });
 
 
-                if (!pcTableContainerFieldHelpEvent) {
-                    pcTableContainerFieldHelpEvent = true;
-                    pcTable._container.on('click escPressed', function (event) {
-                        pcTable._container.find('[id^="field-help"][aria-describedby^="popover"]').each(function () {
-                            if ($(this).attr('id') !== event.target.id && !$(event.target).closest('#' + $(this).attr('id')).length) {
-                                $(this).trigger('close');
-                            }
-                        });
-
-                    });
-                }
+                pcTable.addThHelpCloser();
 
             }
 
@@ -3112,6 +3100,20 @@
             return item.$tr;
         }
         ,
+        addThHelpCloser: function () {
+            if (!this.pcTableContainerFieldHelpEvent) {
+                let pcTable = this;
+                this.pcTableContainerFieldHelpEvent = true;
+                this._container.on('click escPressed', function (event) {
+                    pcTable._container.find('[id^="field-help"][aria-describedby^="popover"]').each(function () {
+                        if ($(this).attr('id') !== event.target.id && !$(event.target).closest('#' + $(this).attr('id')).length) {
+                            $(this).trigger('close');
+                        }
+                    });
+
+                });
+            }
+        },
         refreshRow: function (tr, item, newData) {
             if ((tr && tr.is('.DataRow')) || item) {
 
