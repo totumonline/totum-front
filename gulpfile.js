@@ -129,7 +129,7 @@ gulp.task('DEVELOP', function () {
     gulp.start('product:js');
     gulp.start('product:css');
 
-    watch([path.js.src, path.js.src_parts, './functions.json'], function (event, cb) {
+    watch([path.js.src, path.js.src_parts, './functions.js'], function (event, cb) {
         gulp.start('product:js');
     });
     watch(['css/**/*', 'css/*'], function (event, cb) {
@@ -188,7 +188,7 @@ gulp.task('QUICK-PROD-DEV', function () {
         return branch.pipe(gulp.dest(path.css.dest));
     });
     gulp.task('product:js', function () {
-        gulp.src('./functions.json')
+        gulp.src('./functions.js')
             .pipe(gulp.dest('./http/js/'));
 
 
