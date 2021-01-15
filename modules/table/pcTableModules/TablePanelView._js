@@ -117,6 +117,9 @@
             if (format.align) {
                 css['text-align'] = format.align;
             }
+            if (format.color) {
+                css['color'] = format.color;
+            }
             if (format.tab) {
                 css['padding-left'] = format.tab;
             }
@@ -271,38 +274,44 @@
                     }
                 }
             })
-        } else
-            $(div).sortable({
-                stop: (event, ui) => {
-                    let $item = $(ui.item);
-                    let itemId = $item.data('id');
-                    let nowBeforeId = $item.prev().data('id');
+        } else {
+            if (!$(div).data('sortableAdded')) {
+                $(div).data('sortableAdded', 1);
+                $(div).sortable({
+                    stop: (event, ui) => {
+                        let $item = $(ui.item);
+                        let itemId = $item.data('id');
+                        let nowBeforeId = $item.prev().data('id');
 
-                    let old = [...this.dataSorted];
-                    this.dataSorted.splice(this.dataSorted.indexOf(itemId), 1);
-                    if (nowBeforeId) {
-                        this.dataSorted.splice(this.dataSorted.indexOf(nowBeforeId) + 1, 0, itemId);
-                    } else {
-                        this.dataSorted.splice(0, 0, itemId);
-                    }
-                    this.dataSortedVisible = [];
-                    this.dataSorted.forEach((id) => {
-                        if (this.data[id].$visible) this.dataSortedVisible.push(id);
-                    });
-                    if (!Object.equals(old, this.dataSorted)) {
-                        App.fullScreenProcesses.show('sorting');
-                        this.model.saveOrder(this.dataSorted).then((json) => {
-                            this.table_modify(json);
-                        }).always(() => {
-                            App.fullScreenProcesses.hide('sorting');
+                        let old = [...this.dataSorted];
+                        this.dataSorted.splice(this.dataSorted.indexOf(itemId), 1);
+                        if (nowBeforeId) {
+                            this.dataSorted.splice(this.dataSorted.indexOf(nowBeforeId) + 1, 0, itemId);
+                        } else {
+                            this.dataSorted.splice(0, 0, itemId);
+                        }
+                        this.dataSortedVisible = [];
+                        this.dataSorted.forEach((id) => {
+                            if (this.data[id].$visible) this.dataSortedVisible.push(id);
                         });
-                    }
+                        if (!Object.equals(old, this.dataSorted)) {
+                            App.fullScreenProcesses.show('sorting');
+                            this.model.saveOrder(this.dataSorted).then((json) => {
+                                this.table_modify(json);
+                            }).always(() => {
+                                App.fullScreenProcesses.hide('sorting');
+                            });
+                        }
 
-                }
-            })
+                    }
+                })
+            }
+        }
     }
     const createPanelsContent = function () {
-        let $div = this._content || $('<div class="pcTable-floatBlock">').each((i, d) => {
+        let $div = this._content || $('<div class="pcTable-floatBlock">');
+
+        $div.each((i, d) => {
             if (this.tableRow.with_order_field && this.control.editing && !(this.f.blockorder || this.f.blockedit)) {
                 setTimeout(() => {
                     addSortable.call(this, d)
@@ -334,7 +343,8 @@
                 $div.append(v.$div);
 
                 this.dataSortedVisible.forEach((id) => {
-                    if (this.data[id][this.tableRow.panels_view.kanban].v == kId) {
+                    let val = this.data[id][this.tableRow.panels_view.kanban].v || "";
+                    if (val == kId) {
                         $cards.append(this._getRowCard(id));
                     }
                 })
