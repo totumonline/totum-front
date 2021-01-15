@@ -164,12 +164,13 @@
                 try {
                     stream.lineOracle.doc.cm.getValue().split("\n").forEach(function (line) {
                         if (line.trim().length === 0 || line.indexOf('//') === 0) return '';
-                        if (!line.match(/\s*[a-zA-Z_0-9]+\s*:/)) return '';
-                        return state.lineNames.push(line.replace(/^\s*~?\s*([a-zA-Z_0-9]+)\s*:.*/, '$1'));
+                        if (!line.match(/\s*[a-zA-Z_0-9=]+\s*:/)) return '';
+                        return state.lineNames.push(line.replace(/^\s*~?\s*([a-zA-Z_0-9=]+)\s*:.*/, '$1'));
                     });
                 } catch (e) {
 
                 }
+
 
                 if (stream.pos === 0 || state.isStart === true) {
                     if (stream.string.match('^[\t\s]*\/\/')) {
