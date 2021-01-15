@@ -4,6 +4,22 @@ $.extend(App.pcTableMain.prototype, {
 
         let arias = this._container;
 
+        pcTable.actionOnClick = function (cell, field) {
+            let newcell = cell.clone(true).insertAfter(cell);
+            cell.hide();
+
+            field = field || this._getFieldBytd(cell);
+            newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">Выполняется</span>');
+
+            let item = cell.closest('.DataRow').length ? this._getItemBytd(cell) : {};
+
+            this.model.dblClick(item.id, field.name).always((json) => {
+                newcell.remove();
+                cell.show();
+                this.table_modify(json);
+            })
+            return false;
+        };
 
         arias.on('dblclick', 'td.val:not(.editing), td.edt:not(.editing), .dataRows tr:not(.treeRow) td:not(.editing,.id,.n)', function (event) {
             let cell = $(this);
@@ -19,16 +35,7 @@ $.extend(App.pcTableMain.prototype, {
 
                 let field = pcTable._getFieldBytd.call(pcTable, cell);
                 if (field.CodeActionOnClick) {
-                    let newcell = cell.clone(true).insertAfter(cell);
-                    cell.hide();
-                    newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">Выполняется</span>');
-
-                    let item = cell.closest('.DataRow').length ? pcTable._getItemBytd.call(pcTable, cell) : {};
-
-                    pcTable.model.dblClick(item.id, field.name).always((json) => {
-                        newcell.remove();
-                        cell.show();
-                    })
+                    pcTable.actionOnClick(cell, field);
                 } else {
 
                     if (tr.is('.DataRow') && pcTable.tableRow.type === 'cycles') {

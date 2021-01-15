@@ -3268,6 +3268,10 @@
                     } else span.text(cellInner);
                 }
 
+                if (field.CodeActionOnClickAsUrl) {
+                    span.addClass('asUrl')
+                }
+
             }
 
             if (format.comment && field.type != "button") {

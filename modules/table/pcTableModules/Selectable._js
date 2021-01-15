@@ -723,6 +723,11 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     return false;
                 }
 
+                if (event.originalEvent.path[0] && $(event.originalEvent.path[0]).is('.asUrl')) {
+                    pcTable.actionOnClick(td);
+                    return false;
+                }
+
 
                 DoIt.call(this);
 
