@@ -30,12 +30,14 @@ $.extend(App.pcTableMain.prototype, {
     },
     _insertButtonsChangeStatuses: function () {
         if (this._insertRow) {
-            this._insertButtons.find('[data-action="add"]').removeClass('btn-warning').addClass('btn-default').attr('disabled', 'disabled');
+            if (this._insertButtons)
+                this._insertButtons.find('[data-action="add"]').removeClass('btn-warning').addClass('btn-default').attr('disabled', 'disabled');
             if (this.dataSortedVisible.length === 0) {
                 this._table.find('.pcTable-noDataRow button').removeClass('btn-warning').addClass('btn-default').attr('disabled', 'disabled');
             }
         } else {
-            this._insertButtons.find('[data-action="add"]').addClass('btn-warning').removeClass('btn-default').removeAttr('disabled')
+            if (this._insertButtons)
+                this._insertButtons.find('[data-action="add"]').addClass('btn-warning').removeClass('btn-default').removeAttr('disabled')
             if (this.dataSortedVisible.length === 0) {
                 this._table.find('.pcTable-noDataRow button').addClass('btn-warning').removeClass('btn-default').removeAttr('disabled');
             }
