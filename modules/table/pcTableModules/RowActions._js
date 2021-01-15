@@ -510,6 +510,8 @@
                 pcTable._refreshFiltersBlock.call(pcTable, json)
             }
             pcTable._headCellIdButtonsState();
+
+            pcTable.ScrollClasterized.insertToDOM(null, true);
         }
         ,
         rows_edit: function ($tr) {
