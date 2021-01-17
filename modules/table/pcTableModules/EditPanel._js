@@ -8,10 +8,6 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     EditPanelFunc.pcTable = pcTable;
     EditPanelFunc.panelId = 'panel' + (panelId++);
 
-    if (typeof pcTable === 'object' && data.id) {
-        pcTable.openedPanels[data.id] = EditPanelFunc;
-    }
-
     let isEditFieldPanel = pcTable === 2 || (typeof pcTable === 'object' && pcTable.tableRow.id === 2);
 
     let $d = $.Deferred();
@@ -481,9 +477,6 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     $(window.top.document.body).trigger('pctable-closed', {'type': 'panel'});
                 }
                 $(window.top.document.body).off('.' + EditPanelFunc.panelId);
-                if (typeof pcTable === 'object' && pcTable.openedPanels && data.id && pcTable.openedPanels[data.id]) {
-                    delete pcTable.openedPanels[data.id];
-                }
             },
             onshown: function (dialog) {
                 "use strict";

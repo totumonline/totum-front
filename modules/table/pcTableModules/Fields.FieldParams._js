@@ -111,7 +111,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     };
                     let divInput = field.__addInput.call(field, fName, fieldSettings, thisValue, item, clback);
 
-                    if ((fieldSettings.align ?? 'center') !== 'center') {
+                    if ((fieldSettings.align || 'center') !== 'center') {
                         if (!left) {
                             let middle = $('<div class="fParams-grid">');
                             left = $('<div>').appendTo(middle);

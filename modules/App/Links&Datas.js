@@ -638,15 +638,16 @@
         const showPanel = function () {
             let panel = panels.shift();
 
-            let data = {};
+            let data = {}, fixed= {};
             if (panel.id) {
                 data.id = panel.id;
             } else if (panel.field) {
                 data = panel.field;
+                fixed = data;
             }
 
             const show = function (pcTable) {
-                (new EditPanel(pcTable.tableRow.id, null, data, panels.length > 0)).then(function (json, isNext) {
+                (new EditPanel(pcTable.tableRow.id, null, data, panels.length > 0, fixed)).then(function (json, isNext) {
                     if (json && panel.refresh) {
                         let pcTable = $('#table').data('pctable');
                         pcTable.model.refresh()
