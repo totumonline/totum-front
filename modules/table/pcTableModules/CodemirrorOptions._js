@@ -461,7 +461,7 @@
                     }
                     return "number";
                 }
-                if (/[+-\/*!<>=]/.test(stream.peek())) {
+                if (/[\^+-\/*!<>=]/.test(stream.peek())) {
                     stream.next();
                     return "operator";
                 }

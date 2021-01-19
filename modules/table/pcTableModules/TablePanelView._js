@@ -420,13 +420,19 @@
         this._seeSelectPreview();
         this._clickstoCopyMe();
 
-        if (pcTable.tableRow.type == 'cycle') {
+        if (pcTable.tableRow.type == 'cycles') {
             this._content.on('dblclick', '.panelsView-card', function () {
                 let id = $(this).data('id');
                 pcTable.model.dblClick(id)
             });
         }
+
+
+        let selectedDiv;
         this._content.on('contextmenu', '.panelsView-card td', function () {
+            if(selectedDiv){
+                selectedDiv.removeClass('selected')
+            }
             let td = $(this);
             let item = pcTable.data[td.closest('.panelsView-card').data('id')];
             let field = td.data('name');
@@ -435,20 +441,23 @@
                 td.data('panel', null);
             } else {
                 td.data('panel', pcTable.selectedCells.selectPanel = pcTable.getSelectPanel.call(pcTable, pcTable.fields[field], item, td));
+                selectedDiv = td.addClass('selected')
             }
         });
 
         let selected;
 
-        this._content.on('click', '.panelsView-card', function () {
-            let td = $(this);
-            if (selected && selected.get(0) === this) {
-                td.removeClass('selected');
-                selected = null
-            } else {
-                if (selected)
-                    selected.removeClass('selected');
-                selected = td.addClass('selected');
+        this._content.on('click', '.panelsView-card', function (event) {
+            if (event.originalEvent && event.originalEvent.path && !$(event.originalEvent.path[0]).is('button, .fa')) {
+                let td = $(this);
+                    if (selected && selected.get(0) === td.get(0)) {
+                        td.removeClass('selected');
+                        selected = null
+                    } else {
+                        if (selected)
+                            selected.removeClass('selected');
+                        selected = td.addClass('selected');
+                    }
             }
         });
 
@@ -501,7 +510,7 @@
         this._refreshContentTable = createPanelsContent.bind(this);
 
         this._getItemBytd = function (td) {
-            return this.data[td.closest('.panelsView-card').data('id')];
+            return this.data[td.closest('.panelsView-card').data('id')] || this.data_params;
         }
         this._getFieldBytd = function (td) {
             if (td.closest('.panelsView-card').length === 0) {

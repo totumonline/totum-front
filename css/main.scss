@@ -447,7 +447,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
 }
 
 @mixin pcTable-td() {
-  border: 1px solid #e4e4e4;
+  border: 1px solid #f1f1f1;
   height: 35px;
   overflow: hidden;
   padding: 5px;
@@ -570,7 +570,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
 @mixin pcTable-th() {
   color: #000000;
   background-color: inherit;
-  border: 1px solid #e4e4e4;
+  border: 1px solid #f1f1f1;
   .btn {
     &:hover {
       box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.17), 0px 4px 3px 0px rgba(0, 0, 0, 0.08), 0px 0px 6px 0px rgba(0, 0, 0, 0.07);
@@ -1075,7 +1075,7 @@ th {
 }
 
 .pcTable-filtersTable {
-  border-bottom: 1px solid #e4e4e4;
+  border-bottom: 1px solid #f1f1f1;
 
 }
 
@@ -1119,12 +1119,14 @@ th {
 .pcTable-tableComment {
   float: left;
   padding-top: 5px;
+  padding-bottom: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
   height: 35px;
   white-space: nowrap;
   cursor: pointer;
+  line-height: 25px;
 }
 
 .pcTable-buttons {
@@ -1605,7 +1607,7 @@ th.id .pcTable-filters.for-selected .btn {
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-bottom: 10px;
-    font-weight: 500;
+    font-weight: 400;
     font-size: 14px;
   }
 
@@ -1751,7 +1753,7 @@ ul.CodeMirror-hints {
     }
 
     td {
-      border: 1px solid #e4e4e4;
+      border: 1px solid #f1f1f1;
       overflow: hidden;
 
       &.input {
@@ -1817,7 +1819,7 @@ input{
 
 .i-show-table {
   border-collapse: collapse;
-  border: 1px solid #e4e4e4;
+  border: 1px solid #f1f1f1;
   table-layout: fixed;
 
   td {
