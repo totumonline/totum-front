@@ -430,7 +430,7 @@
 
         let selectedDiv;
         this._content.on('contextmenu', '.panelsView-card td', function () {
-            if(selectedDiv){
+            if (selectedDiv) {
                 selectedDiv.removeClass('selected')
             }
             let td = $(this);
@@ -450,14 +450,14 @@
         this._content.on('click', '.panelsView-card', function (event) {
             if (event.originalEvent && event.originalEvent.path && !$(event.originalEvent.path[0]).is('button, .fa')) {
                 let td = $(this);
-                    if (selected && selected.get(0) === td.get(0)) {
-                        td.removeClass('selected');
-                        selected = null
-                    } else {
-                        if (selected)
-                            selected.removeClass('selected');
-                        selected = td.addClass('selected');
-                    }
+                if (selected && selected.get(0) === td.get(0)) {
+                    td.removeClass('selected');
+                    selected = null
+                } else {
+                    if (selected)
+                        selected.removeClass('selected');
+                    selected = td.addClass('selected');
+                }
             }
         });
 
@@ -494,6 +494,44 @@
             };
         }
         if (this.kanban) {
+
+            let scrollable = this._container;
+            let scroll_debounce;
+            let wrapper, cln, attached = false;
+            const scrollFunc = () => {
+                wrapper = wrapper || this._container.find('.kanbanWrapper.pcTable-floatBlock');
+                let offset = wrapper.offset();
+                if (offset.top < 0) {
+                    if (!cln) {
+                        let css={
+                            'left': offset.left,
+                            'grid-template-columns': wrapper.css('grid-template-columns'),
+                            'width': wrapper.width()
+                        }
+                        cln = $('<div class="kanbanWrapper pcTable-floatBlock cln">').css(css);
+                        $('.kanban').each(function () {
+                            let exs = $(this);
+                            let knb = $("<div class='kanban'>").width(exs.width()).append(exs.find('.kanban-title').clone())
+                            cln.append(knb)
+                        })
+                    }
+                    if(!attached){
+                        attached=true;
+                        this._innerContainer.append(cln)
+                    }
+                }
+                else if(attached){
+                    attached = false;
+                    cln.detach();
+                }
+            };
+            scrollable.on('scroll', () => {
+                clearTimeout(scroll_debounce);
+                scroll_debounce = setTimeout(() => {
+                    scrollFunc();
+                }, 50);
+            });
+
             this.rowButtonsCalcWidth = function () {
                 if (this.tableWidth < this._innerContainer.width()) {
                     this.__$rowsButtons.width(this.tableWidth)
