@@ -839,6 +839,9 @@ th {
     i, span {
       cursor: pointer
     }
+    &.lowOpacity{
+      opacity: 0.5;
+    }
 
     span.danger {
       color: $btn-danger-bgcolor;
@@ -1031,6 +1034,7 @@ th {
     font-size: 14px;
     padding-bottom: 0;
     padding-left: 49px;
+
   }
 
   td, td.with-code {

@@ -1201,6 +1201,7 @@
                     panelColor = field.panelColor;
                 } else field.panelColor = panelColor;
 
+                let lableLowOpacity = false;
                 if (field.sectionTitle !== undefined) {
                     sectionWithTitles = {_ALL: true}
                     sectionTitle = field.sectionTitle.trim();
@@ -1276,7 +1277,7 @@
                         }
                     } else {
                         sectionTitle = sectionTitle.replace(/(\*\*.*)/, '')
-
+                        lableLowOpacity = sectionParams.lable === false || sectionTitle === ''
                     }
                 }
 
@@ -1284,6 +1285,7 @@
                     sectionDiv = [];
                     sections.push({
                         title: sectionTitle,
+                        lableLowOpacity: lableLowOpacity,
                         fields: sectionDiv,
                         withTitles: sectionWithTitles,
                         sectionGap: sectionGap,
@@ -1349,6 +1351,9 @@
                         }).appendTo($title)
                     }
                     pcTable.___createClosedSection(sDv, $('<div class="pcTable-sectionTitle"></div>').html($title).appendTo(sDv), fields[0].category === 'param' ? 'p' : 'f');
+                    if (sec.lableLowOpacity) {
+                        sDv.find('.pcTable-sectionTitle').addClass('lowOpacity')
+                    }
                 }
                 let floatBlock = $('<div class="pcTable-floatBlock">').appendTo(sDv);
 
@@ -2509,7 +2514,7 @@
                     }
                     star.attr('title', title);
                 }
-                if (field.code) {
+                if (field.code && !field.linkFieldName) {
                     if (field.codeOnlyInAdd) {
                         creatorIcons.append('<i class="fa fa-cog-o roles"></i>');
                     } else {
@@ -3216,7 +3221,7 @@
             var span = $('<span class="cell-value">')
             var val = item[field.name];
 
-            if (field.code && !field.codeOnlyInAdd) {
+            if (!field.linkFieldName && field.code && !field.codeOnlyInAdd) {
                 td.addClass('with-code');
             }
 
