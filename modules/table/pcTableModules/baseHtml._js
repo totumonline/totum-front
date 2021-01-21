@@ -1348,7 +1348,7 @@
                             return false;
                         }).appendTo($title)
                     }
-                    pcTable.___createClosedSection(sDv, $('<div class="pcTable-sectionTitle"></div>').html($title).appendTo(sDv), fields[0].category==='param'?'p':'f');
+                    pcTable.___createClosedSection(sDv, $('<div class="pcTable-sectionTitle"></div>').html($title).appendTo(sDv), fields[0].category === 'param' ? 'p' : 'f');
                 }
                 let floatBlock = $('<div class="pcTable-floatBlock">').appendTo(sDv);
 
@@ -3137,10 +3137,11 @@
                             if (newData[k].changed) {
                                 chData.push(k);
                                 delete newData[k].changed;
+                                changed = true;
                             } else if (!Object.equals(newData[k], item[k])) {
                                 chData.push(k);
+                                changed = true;
                             }
-                            changed = true;
                         } else if (newData[k] != item[k]) {
                             chData.push(k);
                             changed = true;

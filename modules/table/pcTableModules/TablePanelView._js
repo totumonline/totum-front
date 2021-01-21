@@ -43,7 +43,7 @@
                 if (format.text) {
                     td.text(format.text)
                 } else {
-                    let val = this.fields[field.field].getHighCelltext(data[field.field].v, td, data);
+                    let val = Field.getHighCelltext(data[field.field].v, td, data);
                     if (val !== null && typeof val === 'object') {
                         if (val.then && typeof val.then === "function") {
                             td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>')
@@ -51,7 +51,7 @@
                                 if (typeof val === 'object') {
                                     td.html(val)
                                 } else {
-                                    td.text(val)
+                                    td.text(val);
                                 }
 
                             })
@@ -61,7 +61,9 @@
                     } else {
                         td.text(val)
                     }
-
+                    if (Field.unitType && val!=='') {
+                        td.append(' ' + Field.unitType);
+                    }
                 }
 
                 if (format.comment) {
@@ -94,7 +96,8 @@
                     style.td.backgroundColor = 'transparent';
                     return style;
                 }
-                td.html(this.fields[field.field].getCellText(data[field.field].v, td, data))
+
+                td.html(Field.getCellText(data[field.field].v, td, data))
 
                 let btn = td.find('button');
                 btn.on('click', () => {
@@ -142,6 +145,7 @@
 
             if (field.title) {
                 let title = $('<th>').text(this.fields[field.field].title);
+
 
                 if (Field.help) {
                     if (!Field.helpFunc) {
@@ -241,6 +245,30 @@
     }
     const addSortable = function (div) {
         if (this.kanban) {
+
+            const saveOrder = ($item) => {
+                let $d = $.Deferred();
+
+                let order = [];
+                $item.parent().find('.panelsView-card').each((i, div) => {
+                    order.push($(div).data('id'))
+                })
+
+                if (order.length > 1) {
+                    order.forEach((v) => {
+                        this.dataSorted.splice(this.dataSorted.indexOf(v), 1);
+                    })
+                    this.dataSorted.push(...order);
+
+                    return this.model.saveOrder(order).then((json) => {
+                        this.table_modify(json);
+                    });
+                } else {
+                    $d.resolve();
+                }
+                return $d.promise();
+            }
+
             $(div).find('.kanban').sortable({
                 items: '.panelsView-card',
                 connectWith: this.fields[this.tableRow.panels_view.kanban].editable ? '.kanban' : undefined,
@@ -254,23 +282,23 @@
                     if (this.data[itemId][this.tableRow.panels_view.kanban] != $item.parent().data('value')) {
                         kanban = $item.closest('.kanban').data('value');
                         this.model.save({[itemId]: {[this.tableRow.panels_view.kanban]: kanban}}).then((json) => {
-                            this.table_modify(json, undefined);
-                        });
-                    }
-                    let order = [];
-                    $item.parent().find('.panelsView-card').each((i, div) => {
-                        order.push($(div).data('id'))
-                    })
-                    this._container.getNiceScroll().resize();
-
-                    if (order.length > 1) {
-                        this.model.saveOrder(order).then((json) => {
-                            this.table_modify(json);
-                        }).always(() => {
-                            App.fullScreenProcesses.hide('sorting');
+                            if (this.tableRow.with_order_field) {
+                                saveOrder($item).always(() => {
+                                    this._container.getNiceScroll().resize();
+                                    App.fullScreenProcesses.hide('sorting');
+                                })
+                            } else {
+                                this.table_modify(json);
+                                this._container.getNiceScroll().resize();
+                                App.fullScreenProcesses.hide('sorting');
+                            }
                         });
                     } else {
-                        App.fullScreenProcesses.hide('sorting');
+                        if (this.tableRow.with_order_field) {
+                            saveOrder($item).always(() => {
+                                App.fullScreenProcesses.hide('sorting');
+                            })
+                        }
                     }
                 }
             })
@@ -312,7 +340,7 @@
         let $div = this._content || $('<div class="pcTable-floatBlock">');
 
         $div.each((i, d) => {
-            if (this.tableRow.with_order_field && this.control.editing && !(this.f.blockorder || this.f.blockedit)) {
+            if ((this.tableRow.with_order_field || this.kanban) && this.control.editing && !(this.f.blockorder || this.f.blockedit)) {
                 setTimeout(() => {
                     addSortable.call(this, d)
                 }, 1)
@@ -324,7 +352,7 @@
 
         if (this.kanban) {
             this._innerContainer.addClass('kanbanInnerContainer');
-            $div.addClass('kanbanWrapper')
+            $div.addClass('kanbanWrapper').empty()
 
             $div.css('grid-template-columns', "1fr ".repeat(this.kanban.length));
             let width = 0;
@@ -354,8 +382,10 @@
 
 
         } else {
+
             this.dataSortedVisible.forEach((id) => {
-                $div.append(this._getRowCard(id));
+                let card=this._getRowCard(id);
+                $div.append(card);
             })
         }
 
@@ -503,10 +533,10 @@
                 let offset = wrapper.offset();
                 if (offset.top < 0) {
                     if (!cln) {
-                        let css={
-                            'left': offset.left,
+                        let css = {
+                            left: offset.left,
                             'grid-template-columns': wrapper.css('grid-template-columns'),
-                            'width': wrapper.width()
+                            width: wrapper.width()
                         }
                         cln = $('<div class="kanbanWrapper pcTable-floatBlock cln">').css(css);
                         $('.kanban').each(function () {
@@ -515,12 +545,11 @@
                             cln.append(knb)
                         })
                     }
-                    if(!attached){
-                        attached=true;
+                    if (!attached) {
+                        attached = true;
                         this._innerContainer.append(cln)
                     }
-                }
-                else if(attached){
+                } else if (attached) {
                     attached = false;
                     cln.detach();
                 }
@@ -541,6 +570,20 @@
             }
         } else {
             this.rowButtonsCalcWidth = function () {
+                this.tableWidth=0;
+                this._innerContainer.find('.panelsView-card').toArray().some((v) =>{
+                    let $v = $(v);
+                    let left=$v.offset().left + $v.width();
+                    if(left > this.tableWidth){
+                        this.tableWidth = left;
+                    }else{
+                        return true;
+                    }
+                });
+                this.tableWidth -= this._innerContainer.offset().left + 50;
+                if (!this.isMobile) {
+                    this.__$rowsButtons.width(this.tableWidth)
+                }
             }
         }
         this.refreshRow = refreshRow.bind(this);
