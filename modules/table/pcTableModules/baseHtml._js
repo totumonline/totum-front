@@ -61,7 +61,7 @@
 
             if (pcTable.isTreeView) {
                 pcTable._connectTreeView.call(pcTable);
-            }else{
+            } else {
                 this.addReOrderRowBind();
             }
 
@@ -547,41 +547,18 @@
             if (this.tableRow.panels_view) {
                 if (this.tableRow.panels_view.state === 'both') {
                     let btn;
-                    const getCookie = function () {
-                        return JSON.parse($.cookie('panels') || '{}');
-                    };
-                    const setCookie = function (val) {
-                        $.cookie('panels', JSON.stringify(val), {expires: 366});
-                    };
                     if (this.viewType !== 'panels') {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
-                            let coockie_val = getCookie();
-                            if (this.tableRow.panels_view.panels_view_first) {
-                                coockie_val.t = coockie_val.t || [];
-                                if (coockie_val.t.indexOf(this.tableRow.id) !== -1) {
-                                    coockie_val.t.splice(coockie_val.t.indexOf(this.tableRow.id), 1)
-                                }
-                            } else {
-                                coockie_val.p = coockie_val.p || [];
-                                coockie_val.p.push(this.tableRow.id)
-                            }
-                            setCookie(coockie_val)
-                            window.location.reload()
+                            this.model.panelsView(true).then(()=>{
+                                window.location.reload();
+                            })
+
                         });
                     } else {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-table"></i></button>').on('click', () => {
-                            let coockie_val = getCookie();
-                            if (this.tableRow.panels_view.panels_view_first) {
-                                coockie_val.t = coockie_val.t || [];
-                                coockie_val.t.push(this.tableRow.id)
-                            } else {
-                                coockie_val.t = coockie_val.p || [];
-                                if (coockie_val.p.indexOf(this.tableRow.id) !== -1) {
-                                    coockie_val.p.splice(coockie_val.p.indexOf(this.tableRow.id), 1)
-                                }
-                            }
-                            setCookie(coockie_val)
-                            window.location.reload()
+                            this.model.panelsView(false).then(()=>{
+                                window.location.reload();
+                            })
                         });
                     }
 
@@ -2140,6 +2117,13 @@
                                 break;
                         }
                         pcTable.scrollWrapper.parent().scrollTop(scroll);
+                    } else {
+                        sectionDiv.find('td').each(function() {
+                            let self = $(this);
+                            if (self.data('addProgress')) {
+                                self.data('addProgress')();
+                            }
+                        })
                     }
                 } else {
                     sectionDiv.addClass('closed');
@@ -3343,6 +3327,12 @@
                         span.css('box-shadow', 'inset ' + progress.toString() + 'px 0px 0 0 ' + format.progresscolor);
                     }
                 };
+                if (pcTable.isMobile) {
+                    td.data('addProgress', function(){
+                        let span = td.find('.cell-value');
+                        span.css('box-shadow', 'inset ' + (Math.round(span.width() * parseInt(format.progress) / 100)).toString() + 'px 0px 0 0 ' + format.progresscolor);
+                    });
+                }
                 addProgress();
             }
 

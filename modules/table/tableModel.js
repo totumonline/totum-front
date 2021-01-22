@@ -497,6 +497,9 @@
             getTableData: function (sess_hash) {
                 return this.__ajax('post', {method: 'getTableData', tableData: {sess_hash: sess_hash}});
             },
+            panelsView: function (switcher) {
+                return this.__ajax('post', {method: 'panelsViewCookie', switcher: switcher ? 1 : 0});
+            },
             refresh: function (func) {
 
                 func = func || function (json) {
