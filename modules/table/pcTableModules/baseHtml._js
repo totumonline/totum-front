@@ -61,6 +61,8 @@
 
             if (pcTable.isTreeView) {
                 pcTable._connectTreeView.call(pcTable);
+            }else{
+                this.addReOrderRowBind();
             }
 
 

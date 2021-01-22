@@ -431,8 +431,6 @@
 
                 this._container.append(this._innerContainer);
 
-                this.addReOrderRowBind();
-
                 this.initRowsData()
 
 

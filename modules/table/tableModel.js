@@ -156,8 +156,11 @@
                             }
                         }
                         if (json.FieldLOGS && Object.keys(json.FieldLOGS).length) {
-                            pcTableObj.FieldLOGS=pcTableObj.FieldLOGS || [];
-                            pcTableObj.FieldLOGS.push({'data':json.FieldLOGS, 'name': (methods[data_tmp['method']] || data_tmp['method'])});
+                            pcTableObj.FieldLOGS = pcTableObj.FieldLOGS || [];
+                            pcTableObj.FieldLOGS.push({
+                                'data': json.FieldLOGS,
+                                'name': (methods[data_tmp['method']] || data_tmp['method'])
+                            });
                         }
                         if (data_tmp['method'] !== 'loadPage' && pcTableObj.PageData && json.allCount) {
                             let changed = false;
@@ -345,7 +348,7 @@
                     method: 'duplicate'
                 });
             },
-            dblClick: function (rowId, fieldName){
+            dblClick: function (rowId, fieldName) {
                 return this.__ajax('post', {field: fieldName, id: rowId, method: 'dblClick'});
             },
             getFieldLog: function (fieldName, rowId, rowName) {
@@ -500,10 +503,18 @@
                     pcTable.table_modify.call(pcTable, json);
                     pcTable.reloaded.call(pcTable);
                 };
-                this.__ajax('post', {method: 'refresh'}).then(function(json){
+                let tree;
+                if (pcTable.treeIndex) {
+                    tree = {};
+                    Object.keys(pcTable.treeIndex).forEach((k) => {
+                        tree[k] = pcTable.treeIndex[k].l ? 1 : 0;
+                    })
+                    tree = JSON.stringify(tree);
+                }
+                this.__ajax('post', {method: 'refresh', tree: tree}).then(function (json) {
                     try {
                         func(json)
-                    }catch (e){
+                    } catch (e) {
                         window.location.reload();
                     }
                 })

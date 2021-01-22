@@ -322,6 +322,12 @@
                         });
                     }
 
+                    if (json.chdata.tree) {
+                        json.chdata.tree.forEach((tv, i) => {
+                            this.getTreeBranch(tv, i);
+                        })
+                    }
+
 
                     $.each(json.chdata.rows, function (k, v) {
                         let item = pcTable._getItemById(v.id);

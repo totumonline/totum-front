@@ -12,7 +12,8 @@
                 pcTable._actionTreeFolderRow.call(pcTable, node)
             }
         })
-
+       
+       
         this.model.loadTreeBranches = function (branchIds, withParents, recurcive) {
             return this.__ajax('post', {
                 method: 'loadTreeBranches',
@@ -165,8 +166,8 @@
         }
         this.dataSorted = [];
 
-        let treeSortCopy=[...this.treeSort];
-        if(treeSortCopy[0]=="" && this.treeIndex[""].sorted.length===0){
+        let treeSortCopy = [...this.treeSort];
+        if (treeSortCopy[0] == "" && this.treeIndex[""].sorted.length === 0) {
             delete treeSortCopy[0];
         }
 
@@ -189,10 +190,10 @@
             arr = 'trees';
         }
         if (oldItem) {
-            if(newData){
-                if(!newData.tree || newData.tree.v===oldItem.tree.v){
-                    if(!newData.tree_category || newData.tree_category.v===oldItem.tree_category.v){
-                        return ;
+            if (newData) {
+                if (!newData.tree || newData.tree.v === oldItem.tree.v) {
+                    if (!newData.tree_category || newData.tree_category.v === oldItem.tree_category.v) {
+                        return;
                     }
                 }
             }
@@ -227,18 +228,18 @@
                 let newTreeBranch = newData.tree.v || '';
 
                 if (this.fields.tree.treeViewType === 'self') {
-                    if(newData.id in this.treeIndex){
+                    if (newData.id in this.treeIndex) {
                         this.treeIndex[newData.id].row = newData
-                    }else{
+                    } else {
                         arr = 'sorted'
                     }
                 }
-                if ( newTreeBranch in this.treeIndex && this.treeIndex[newTreeBranch].l) {
+                if (newTreeBranch in this.treeIndex && this.treeIndex[newTreeBranch].l) {
                     if (this.treeIndex[newTreeBranch][arr].indexOf(newData.id.toString()) === -1) {
                         this.treeIndex[newTreeBranch][arr].push(newData.id.toString());
                     }
 
-                    if(openIt){
+                    if (openIt) {
                         this.openTreeWithParent(this.treeIndex[newTreeBranch]);
                     }
                 } else {
@@ -251,9 +252,9 @@
         }
 
     }
-    App.pcTableMain.prototype.openTreeWithParent = function (treeRow){
-        treeRow.opened=true;
-        if(treeRow.p && this.treeIndex[treeRow.p]){
+    App.pcTableMain.prototype.openTreeWithParent = function (treeRow) {
+        treeRow.opened = true;
+        if (treeRow.p && this.treeIndex[treeRow.p]) {
             this.openTreeWithParent(this.treeIndex[treeRow.p]);
         }
     }
