@@ -763,7 +763,7 @@
                     this.model.loadPage(this, null, this.PageData.onPage, -1);
                     return false;
                 })
-            } else {
+            } else {debugger
                 after = $('<button class="btn btn-default btn-sm" disabled><i class="fa fa-hand-o-right"></i></button>')
                 last = $('<button class="btn btn-default btn-sm" disabled><i class="fa fa-long-arrow-right"></i></button>')
             }
@@ -781,7 +781,7 @@
             selector.val(onPage)
 
             selector.on('change', () => {
-                this.PageData.onPage = selector.val();
+                this.PageData.onPage = parseInt(selector.val());
                 this.model.loadPage(this, 0, selector.val());
             });
 
