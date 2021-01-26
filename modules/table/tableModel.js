@@ -64,7 +64,7 @@
                 App.showLInks(json.links, pcTable.model);
                 delete json.links;
             }, shoInterfaceDatas: function (json) {
-                App.showDatas.call(pcTable.model, json.interfaceDatas);
+                App.showDatas.call(pcTable.model, json.interfaceDatas, null, window);
                 delete json.interfaceDatas;
             }, showPanels: function (json) {
                 App.showPanels(json.panels);

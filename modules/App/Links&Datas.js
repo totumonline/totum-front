@@ -393,7 +393,7 @@
 
         });
     };
-    App.showDatas = function (datas, notificationId) {
+    App.showDatas = function (datas, notificationId, wnd) {
         let dialogs = [];
         let model = this;
         let props;
@@ -419,7 +419,10 @@
 
                     let save = function () {
                         model.inputClick(data[1].hash, input.val()).then(function () {
-                            if (data[1].refresh) {
+                            if(data[1].close && wnd && wnd.closeMe){
+                                window.closeMe();
+                            }
+                            else if (data[1].refresh) {
                                 model.refresh()
                             }
                             Dialog.close();
@@ -464,7 +467,10 @@
                                 label: btn.text,
                                 action: function (dialog) {
                                     model.buttonsClick(data[1].hash, i).then(function () {
-                                        if (data[1].buttons[i].refresh) {
+                                        if(data[1].close && wnd && wnd.closeMe){
+                                            window.closeMe();
+                                        }
+                                        else if (data[1].buttons[i].refresh) {
                                             model.refresh()
                                         }
                                         dialog.close();
