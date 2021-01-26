@@ -643,11 +643,10 @@ fieldTypes.select = {
         if (!field.multiple && item[field['name']].v_) {
             listVals = [item[field['name']].v_];
         }
-
         if (listVals) {
             $.each(listVals, function (k, val) {
                 "use strict";
-                let d = $('<div>').text(val[0]);
+                let d = $('<div>').text(val[0]+(field.multiple && field.unitType?' '+field.unitType:''));
 
                 if (val[1]) {
                     d.addClass('deleted_value')
@@ -823,17 +822,25 @@ fieldTypes.select = {
     },
     getElementString: function (val, arrayVal) {
         "use strict";
+        let r;
         if (val === null || val === undefined) {
-            if (!arrayVal || !arrayVal[0]) return this.withEmptyVal || '';
+            if (!arrayVal || !arrayVal[0]) r = this.withEmptyVal || '';
         }
 
         if (arrayVal[0] === null || arrayVal[0] === '') {
 
-            return '[' + (this.withEmptyVal || '') + ']';
+            r = '[' + (this.withEmptyVal || '') + ']';
         }
 
+        if (r === undefined) {
+            r = arrayVal[0];
+        }
 
-        return arrayVal[0];
+        if (this.multiple && this.unitType) {
+            r += ' ' + this.unitType;
+        }
+
+        return r;
     }, sourceButtonClick: function (item, isAdd) {
         let $d = $.Deferred();
         let ee = {}, field = this, pcTable = this.pcTable;

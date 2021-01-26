@@ -69,7 +69,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         allTextData.append(textDiv).appendTo($panel);
 
         let textInner = textDiv.find('.copytext');
-        if (field.unitType && (val.v) !== null) {
+        if (field.unitType && (val.v) !== null && !(field.type==='select' && field.multiple)) {
             textInner.attr('data-unit', field.unitType);
         }
 
