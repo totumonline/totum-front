@@ -61,7 +61,7 @@
                     } else {
                         td.text(val)
                     }
-                    if (Field.unitType && val!=='') {
+                    if (Field.unitType && val !== '') {
                         td.append(' ' + Field.unitType);
                     }
                 }
@@ -350,43 +350,47 @@
         $div.empty();
         this.__applyFilters();
 
-        if (this.kanban) {
-            this._innerContainer.addClass('kanbanInnerContainer');
-            $div.addClass('kanbanWrapper').empty()
 
-            $div.css('grid-template-columns', "1fr ".repeat(this.kanban.length));
-            let width = 0;
-            this.kanban.forEach((v) => {
-                let divWidth = (this.tableRow.panels_view.panels_in_kanban || 1) * (parseInt(this.tableRow.panels_view.width) + 10) - 10;
+        if (this.dataSortedVisible.length) {
+            if (this.kanban) {
+                this._innerContainer.addClass('kanbanInnerContainer');
+                $div.addClass('kanbanWrapper').empty()
 
-                v.$div = $('<div class="kanban"></div>').data('value', v[0]).width(divWidth);
+                $div.css('grid-template-columns', "1fr ".repeat(this.kanban.length));
+                let width = 0;
+                this.kanban.forEach((v) => {
+                    let divWidth = (this.tableRow.panels_view.panels_in_kanban || 1) * (parseInt(this.tableRow.panels_view.width) + 10) - 10;
 
-                if (width)
-                    width += 20;
-                width += divWidth
-                v.$div.append($('<div class="kanban-title">').text(v[1]).attr('data-value', v[0]))
-                let $cards = $('<div class="kanban-cards">');
-                v.$div.append($cards);
-                let kId = v[0];
-                $div.append(v.$div);
+                    v.$div = $('<div class="kanban"></div>').data('value', v[0]).width(divWidth);
+
+                    if (width)
+                        width += 20;
+                    width += divWidth
+                    v.$div.append($('<div class="kanban-title">').text(v[1]).attr('data-value', v[0]))
+                    let $cards = $('<div class="kanban-cards">');
+                    v.$div.append($cards);
+                    let kId = v[0];
+                    $div.append(v.$div);
+
+                    this.dataSortedVisible.forEach((id) => {
+                        let val = this.data[id][this.tableRow.panels_view.kanban].v || "";
+                        if (val == kId) {
+                            $cards.append(this._getRowCard(id));
+                        }
+                    })
+                })
+                $div.width(width);
+                this.tableWidth = width;
+            } else {
 
                 this.dataSortedVisible.forEach((id) => {
-                    let val = this.data[id][this.tableRow.panels_view.kanban].v || "";
-                    if (val == kId) {
-                        $cards.append(this._getRowCard(id));
-                    }
+                    let card = this._getRowCard(id);
+                    $div.append(card);
                 })
-            })
-            $div.width(width);
-            this.tableWidth = width;
-
+            }
 
         } else {
-
-            this.dataSortedVisible.forEach((id) => {
-                let card=this._getRowCard(id);
-                $div.append(card);
-            })
+            $div.append('<div class="no-panels">Нет данных</div>');
         }
 
 
@@ -570,13 +574,13 @@
             }
         } else {
             this.rowButtonsCalcWidth = function () {
-                this.tableWidth=0;
-                this._innerContainer.find('.panelsView-card').toArray().some((v) =>{
+                this.tableWidth = 0;
+                this._innerContainer.find('.panelsView-card').toArray().some((v) => {
                     let $v = $(v);
-                    let left=$v.offset().left + $v.width();
-                    if(left > this.tableWidth){
+                    let left = $v.offset().left + $v.width();
+                    if (left > this.tableWidth) {
                         this.tableWidth = left;
-                    }else{
+                    } else {
                         return true;
                     }
                 });
