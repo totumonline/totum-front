@@ -484,7 +484,7 @@
                     ['blockadd', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment'].forEach(function (k) {
                         if (k in newf || k in pcTable.f) {
                             if (typeof newf[k] == "object") {
-                                if (!Object.equals(newf[k], pcTable.f[k])) {debugger
+                                if (!Object.equals(newf[k], pcTable.f[k])) {
                                     let old = Object.assign({}, pcTable.f[k]);
                                     pcTable.f[k] = newf[k];
                                     if (pcTable.__formatFunctions[k]) {

@@ -564,83 +564,57 @@ $.extend(App.pcTableMain.prototype, {
 
         if (field.changeSelectTable && field.type === 'select') {
 
-            let sourseBtnClick = function () {
+            let sourceBtnClick = function () {
                 onAction = true;
                 sourcePanelOpened = true;
                 setTimeout(() => {
                     input.click();
                 }, 3)
 
-
-                let ee = {};
-                $.each(item, function (k, v) {
-                    if (k.substring(0, 1) !== '$') {
-                        ee[k] = v;
-                    }
-                });
                 let isAdd = $(this).data('add-button');
-                if (isAdd) {
-                    ee[field.name] = null;
-                }
-                let opened = 0;
 
-                $(window.top.document.body)
-                    .on('pctable-opened.select-' + field.name, function () {
-                        opened++;
-                    })
-                    .on('pctable-closed.select-' + field.name, function (event, data) {
-                        opened--;
-                        let isAdded = (data /*&& data.tableId === field.selectTableId*/ && data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
-                        const refreshInputAndPage = function () {
-                            if (opened === 0 || isAdded) {
-                                let inputOld = input;
-                                delete field.list;
-                                if (inputOld.data('input').data('LISTs')) {
-                                    inputOld.data('input').data('LISTs').isListForLoad = true;
-                                }
-                                item = $.extend(true, {}, item);
-                                if (isAdded) {
+                field.sourceButtonClick(item, isAdd).then((data) => {
+                    let isAdded = (data && data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
+                    let inputOld = input;
+                    delete field.list;
+                    if (inputOld.data('input').data('LISTs')) {
+                        inputOld.data('input').data('LISTs').isListForLoad = true;
+                    }
+                    item = $.extend(true, {}, item);
+                    if (isAdded) {
 
-                                    if (field.multiple) {
-                                        item[field.name].v = field.getEditVal(input);
-                                        item[field.name].v.push(Object.keys(data.json.chdata.rows)[0]);
-                                    } else {
-                                        item[field.name].v = Object.keys(data.json.chdata.rows)[0];
-                                    }
+                        if (field.multiple) {
+                            item[field.name].v = field.getEditVal(input);
+                            item[field.name].v.push(Object.keys(data.json.chdata.rows)[0]);
+                        } else {
+                            item[field.name].v = Object.keys(data.json.chdata.rows)[0];
+                        }
 
-                                }
+                    }
 
-                                if (!isAdded && field.category === 'column') {
-                                    pcTable.model.refresh(function (json) {
-                                        pcTable.table_modify.call(pcTable, json);
-                                    });
-                                }
-                                item[field.name].replaceViewValue = function (viewArray) {
-                                    if (field.category != 'column') {
-                                        pcTable.data_params[field.name].v_ = viewArray;
-                                    }
-                                };
-                                inputOld.replaceWith(input = field.getEditElement(inputOld, item[field.name], item, saveClbck, escClbck, blurClbck));
-
-                                $('body').off('.select-' + field.name);
-                                onAction = false;
-                            }
-                        };
-                        setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть
-                    });
-                pcTable.model.selectSourceTableAction(field.name, ee);
-
+                    if (!isAdded && field.category === 'column') {
+                        pcTable.model.refresh(function (json) {
+                            pcTable.table_modify.call(pcTable, json);
+                        });
+                    }
+                    item[field.name].replaceViewValue = function (viewArray) {
+                        if (field.category != 'column') {
+                            pcTable.data_params[field.name].v_ = viewArray;
+                        }
+                    };
+                    inputOld.replaceWith(input = field.getEditElement(inputOld, item[field.name], item, saveClbck, escClbck, blurClbck));
+                    onAction = false;
+                })
                 return false;
             };
 
-
             $btn = $('<button class="btn btn-sm btn-primary"><i class="fa fa-edit" title="Изменить в таблице-источнике"></i></button>');
-            $btn.on('click', sourseBtnClick);
+            $btn.on('click', sourceBtnClick);
             editCellsBlock.append($btn);
             if (field.changeSelectTable === 2) {
                 $btn = $('<button class="btn btn-sm btn-primary" data-add-button="true"><i class="fa fa-plus" title="Добавить в таблицу-источник"></i></button>');
                 editCellsBlock.append($btn);
-                $btn.on('click', sourseBtnClick);
+                $btn.on('click', sourceBtnClick);
             }
         }
         let btnCount = editCellsBlock.find('button').length;

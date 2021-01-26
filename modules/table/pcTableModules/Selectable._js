@@ -159,6 +159,31 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             })
         }
 
+        if (field.selectTable) {
+
+            if (field.changeSelectTable) {
+                let divForPanneSelect = $('<div><div class="center"></div></div>');
+                
+                if (field.multi) {
+                    if (val.v && val.v.length) {
+                        let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Редактировать").on('click', () => {
+                            field.sourceButtonClick(item);
+                        });
+                        divForPanneSelect.append($('<div class="panel-buttons">').append(btn)).appendTo(textDiv);
+                    }
+                } else if (val.v) {
+                    let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Редактировать").on('click', () => {
+                        field.sourceButtonClick(item).then((data)=>{
+                            if(data.json && data.json.updated){
+                                pcTable.model.refresh();
+                            }
+                        });
+                    });
+                    divForPanneSelect.append($('<div class="panel-buttons">').append(btn)).appendTo(textDiv);
+                }
+            }
+        }
+
 
         let btnCopy;
         let btns = $('<div class="buttons"></div>');

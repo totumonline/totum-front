@@ -170,7 +170,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                                 'grid-column-end': 4
                             }));
                         } else {
-                            let cln = (Math.floor((index  + 1) / 2));
+                            let cln = (Math.floor((index + 1) / 2));
                             if (index === 7)
                                 cln = 3
                             columns['column' + cln].append(divWrapper);
@@ -446,6 +446,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             EditPanel.close = function () {
                 $d.resolve(undefined, /*next*/true);
+                $(window.top.document.body).trigger('pctable-closed', {'type': 'panel'});
                 EditPanelFunc.resolved = true;
                 EditPanel.bootstrapPanel.close();
             }
@@ -548,10 +549,10 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 cell.on('click', function () {
                     EditPanelFunc.pcTable._buttonClick.call(EditPanelFunc.pcTable, cell, field, item);
                 });
-            }else{
-                if(field.CodeActionOnClick && !divWrapper.find('.edit-btn').length){
-                    divWrapper.append($('<button class="btn btn-sm btn-default edit-btn" style="width: 100%"><i class="fa fa-hand-pointer-o"></i></button>').on('click', ()=>{
-                        EditPanelFunc.pcTable.model.dblClick(item.id, field.name).then((json)=>{
+            } else {
+                if (field.CodeActionOnClick && !divWrapper.find('.edit-btn').length) {
+                    divWrapper.append($('<button class="btn btn-sm btn-default edit-btn" style="width: 100%"><i class="fa fa-hand-pointer-o"></i></button>').on('click', () => {
+                        EditPanelFunc.pcTable.model.dblClick(item.id, field.name).then((json) => {
                         })
                     }))
                 }
@@ -837,11 +838,14 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     if (typeof EditPanelFunc.pcTable !== 'object') {
         App.getPcTableById(EditPanelFunc.pcTable).then(function (pcTable) {
             EditPanelFunc.pcTable = pcTable;
+
             EditPanelFunc.checkRow({}, true);
         });
     } else if (EditPanelFunc.pcTable[0]) {
         App.getPcTableById(EditPanelFunc.pcTable[0], {sess_hash: EditPanelFunc.pcTable[1]}).then(function (pcTable) {
-            pcTable.model.setLoadedTableData(EditPanelFunc.pcTable[2]);
+            if (EditPanelFunc.pcTable[2]) {
+                pcTable.model.setLoadedTableData(EditPanelFunc.pcTable[2]);
+            }
             EditPanelFunc.pcTable = pcTable;
             EditPanelFunc.checkRow({}, true);
         });

@@ -763,7 +763,7 @@
                     this.model.loadPage(this, null, this.PageData.onPage, -1);
                     return false;
                 })
-            } else {debugger
+            } else {
                 after = $('<button class="btn btn-default btn-sm" disabled><i class="fa fa-hand-o-right"></i></button>')
                 last = $('<button class="btn btn-default btn-sm" disabled><i class="fa fa-long-arrow-right"></i></button>')
             }

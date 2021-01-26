@@ -535,11 +535,11 @@ fieldTypes.select = {
                             selectPicker.$menuInner.height(300)
                         }
                         let position = selectPicker.$menu.get(0).getBoundingClientRect();
-                        if(position.right > window.innerWidth - 20){
+                        if (position.right > window.innerWidth - 20) {
                             let diff = position.right - window.innerWidth + 20;
                             let width = selectPicker.$menuInner.width();
                             selectPicker.$menuInner.width(width - diff).css('overflow-x', 'scroll');
-                        }else{
+                        } else {
                             selectPicker.$menuInner.width('auto')
                         }
 
@@ -834,5 +834,43 @@ fieldTypes.select = {
 
 
         return arrayVal[0];
+    }, sourceButtonClick: function (item, isAdd) {
+        let $d = $.Deferred();
+        let ee = {}, field = this, pcTable = this.pcTable;
+
+        $.each(item, function (k, v) {
+            if (k.substring(0, 1) !== '$') {
+                ee[k] = v;
+            }
+        });
+        if (isAdd) {
+            ee[field.name] = null;
+        }
+        let opened = 0;
+
+        let LastData;
+
+        $(window.top.document.body)
+            .on('pctable-opened.select-' + field.name, function () {
+                opened++;
+            })
+            .on('pctable-closed.select-' + field.name, function (event, data) {
+                opened--;
+                if (data && data.json) {
+                    LastData = data;
+                }
+                let isAdded = (data /*&& data.tableId === field.selectTableId*/ && data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
+                const refreshInputAndPage = function () {
+                    if (opened === 0 || isAdded) {
+                        $('body').off('.select-' + field.name);
+                        $d.resolve(LastData);
+                    }
+                };
+                setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть
+            });
+
+        pcTable.model.selectSourceTableAction(field.name, ee);
+
+        return $d;
     }
 };
