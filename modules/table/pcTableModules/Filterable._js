@@ -204,7 +204,9 @@ App.pcTableMain.prototype.removeValueFromFilters = function (fieldName, valObj) 
     }
 
 
-    field.$th.find('.btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
+    if(field.$th){
+        field.$th.find('.btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
+    }
     pcTable.__applyFilters.call(pcTable);
 
 };

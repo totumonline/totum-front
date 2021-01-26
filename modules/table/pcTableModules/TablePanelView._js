@@ -392,7 +392,9 @@
         } else {
             $div.append('<div class="no-panels">Нет данных</div>');
         }
-
+        setTimeout(()=>{
+            this._container.getNiceScroll().resize();
+        })
 
         return $div;
     };
