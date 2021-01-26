@@ -853,7 +853,7 @@
                     setTimeout(function () {
                         def.resolve();
 
-                    }, 3000)
+                    }, 2000)
                 }
             };
 
