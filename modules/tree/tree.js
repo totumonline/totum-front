@@ -145,6 +145,13 @@
                     let c = $.jstree.core.prototype.redraw_node
                     $leftTree.jstree(true).redraw_node = function (node, deep, is_callback, force_render) {
                         let _node = c.bind(this)(node, deep, is_callback, force_render);
+                        if(node.match(/^tree/)){
+                            let tmp=$leftTree.jstree(true).get_node(node)
+                            if(tmp.data.type=='folder'){
+                                $(_node).addClass('tree-folder')
+                            }
+                        }
+
                         let edit_folder = $(_node).find('>a.edit-folder');
                         if (edit_folder.length) {
 
@@ -170,6 +177,20 @@
                         }
                         return _node;
                     };
+                })
+            }else{
+                $leftTree.on("init.jstree", function (e, data) {
+                    let c = $.jstree.core.prototype.redraw_node
+                    $leftTree.jstree(true).redraw_node = function (node, deep, is_callback, force_render) {
+                        let _node = c.bind(this)(node, deep, is_callback, force_render);
+                        if (node.match(/^tree/)) {
+                            let tmp = $leftTree.jstree(true).get_node(node)
+                            if (tmp.data.type == 'folder') {
+                                $(_node).addClass('tree-folder')
+                            }
+                        }
+                        return _node;
+                    }
                 })
             }
 
