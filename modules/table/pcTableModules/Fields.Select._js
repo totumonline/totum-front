@@ -827,7 +827,7 @@ fieldTypes.select = {
             if (!arrayVal || !arrayVal[0]) r = this.withEmptyVal || '';
         }
 
-        if (arrayVal[0] === null || arrayVal[0] === '') {
+        if (r === undefined && (arrayVal[0] === null || arrayVal[0] === '')) {
 
             r = '[' + (this.withEmptyVal || '') + ']';
         }
