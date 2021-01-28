@@ -21,7 +21,7 @@ fieldTypes.password = {
             if($input){
                 $input.removeAttr('readonly');
             }
-        }, 2000);
+        }, 500);
 
         $input.on('save-me', function (event) {
             enterClbk($(this), event);

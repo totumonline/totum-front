@@ -570,6 +570,10 @@
             },
             getPanelFormats: function (fName, id) {
                 return this.__ajax('post', {method: 'getPanelFormats', field: fName, id: id})
+            }, loadUserButtons: function () {
+                return this.__ajax('post', {method: 'loadUserButtons'})
+            }, userButtonsClick: function (hash, index) {
+                return this.__ajax('post', {method: 'userButtonsClick', hash: hash, index: index})
             },
             loadPage: function (pcTable, lastId, count, prevLastId) {
                 let _filters = {};

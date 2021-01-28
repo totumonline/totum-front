@@ -406,6 +406,12 @@
                         input = html.find('#ttmInput');
                     } else {
                         input = $('<input type="text" class="form-control" id="ttmInput">');
+                        if (data[1].type){
+                            input.attr('type', data[1].type)
+                            if(data[1].type==='password'){
+                                input.attr('autocomplete', "off")
+                            }
+                        }
                         if (data[1].value)
                             input.val(data[1].value)
                         html.append(input);
