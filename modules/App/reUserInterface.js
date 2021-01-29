@@ -22,7 +22,7 @@
             let selectDiv = $('<div class="tech-table" style="width: 200px;"></div>');
             let select;
             if (UserTables.length) {
-                selectDiv.height(250)
+                selectDiv.height(125)
                 let buttons = $('<div class="panel-buttons">');
                 selectDiv.prepend(buttons)
                 UserTables.forEach((t) => {
@@ -34,7 +34,7 @@
                 })
             } else if (!isCreatorView) {
 
-                selectDiv.height(120)
+                selectDiv.height(60)
 
                 let divForPannelFormats = $('<div>');
                 selectDiv.prepend(divForPannelFormats);
@@ -85,7 +85,7 @@
 
             if (Object.keys(users).length) {
                 let sBtn = $('<div class="select-btn"></div>').appendTo(selectDiv);
-                select = $('<select data-size="6" class="open" title="Выберите пользователя" data-style="btn-sm btn-default" data-live-search="true" data-width="100%">');
+                select = $('<select data-size="' + (UserTables.length ? 13 - UserTables.length - 1 : (isCreatorView?13:11)) + '" class="open" title="Выберите пользователя" data-style="btn-sm btn-default" data-live-search="true" data-width="100%">');
 
                 Object.keys(users).forEach(function (uId) {
                     select.append($('<option>').text(uId).data('content', users[uId]));
@@ -115,8 +115,8 @@
                     return false;
                 });
                 setTimeout(function () {
-                    select.selectpicker('render');
                     UserFio.popover('show');
+                    select.selectpicker('render');
                     let popover = $('#' + UserFio.attr('aria-describedby'));
                     popover.css('top', '45px');
                     select.data('selectpicker').$searchbox.focus();

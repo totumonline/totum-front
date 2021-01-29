@@ -74,7 +74,7 @@
                     data[k].state.opened = true;
                 }
                 if (v.href) {
-                    data[k]["a_attr"] = {"href": prefix + v.href}
+                    data[k]["a_attr"] = {"href": (v.href.toString().match(/\/Table\//) ? '' : prefix) + v.href}
                 } else if (v.link) {
                     data[k]["a_attr"] = {"href": v.link}
                 }
