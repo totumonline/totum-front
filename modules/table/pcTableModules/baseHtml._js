@@ -1176,9 +1176,9 @@
             $.each(fields, function (k, field) {
 
 
-                if (field.panelColor !== undefined) {
+                /*if (field.panelColor !== undefined) {
                     panelColor = field.panelColor;
-                } else field.panelColor = panelColor;
+                } else field.panelColor = panelColor;*/
 
                 let lableLowOpacity = false;
                 if (field.sectionTitle !== undefined) {
@@ -1878,14 +1878,13 @@
                 $paramsBlock.addClass('pcTable-paramsTables');
                 if (pcTable.isMobile) {
                     let $table, $thead, $tbody;
-                    let panelColor;
                     let sectionTitle = '';
                     let isNoTitles = false;
 
                     let sectionDiv;
                     let sections = [];
                     $.each(pcTable.fieldCategories.param, function (k, field) {
-
+                        let panelColor;
                             if (field.panelColor !== undefined) {
                                 panelColor = field.panelColor;
                             }
@@ -1975,10 +1974,11 @@
             if (pcTable.isMobile) {
                 let width = 0, $table, $thead, $tbody;
                 let ContainerWidth = this._container.width() - 100;
-                let panelColor;
+
                 let sectionTitle = '';
                 let sectionDiv, isNoTitles;
                 $.each(pcTable.notTableFooterFields, function (k, field) {
+                    let panelColor;
                     if (field.panelColor !== undefined) {
                         panelColor = field.panelColor;
                     }
@@ -2197,9 +2197,10 @@
             pcTable._createHeadCellId().appendTo($row);
             let $width = $row.find('.id').width();
 
-            let panelColor;
+
             pcTable._table.removeClass('n-filtered');
             $.each(this.fieldCategories.visibleColumns, function (index, field) {
+                let panelColor;
                 if (field.panelColor !== undefined) {
                     panelColor = field.panelColor;
                 }
