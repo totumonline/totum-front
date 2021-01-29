@@ -186,6 +186,8 @@ fieldTypes.select = {
                 if (!/^\$/.test(k)) {
                     if (k === 'id') {
                         itemTmp[k] = item[k];
+                    } else if (k === field.name) {
+                        itemTmp[k] = val
                     } else {
                         if (item[k] !== null && typeof item[k] === 'object' && Object.keys(item[k]).indexOf('v') !== -1) {
                             itemTmp[k] = item[k]['v'];
@@ -646,7 +648,7 @@ fieldTypes.select = {
         if (listVals) {
             $.each(listVals, function (k, val) {
                 "use strict";
-                let d = $('<div>').text(val[0]+(field.multiple && field.unitType?' '+field.unitType:''));
+                let d = $('<div>').text(val[0] + (field.multiple && field.unitType ? ' ' + field.unitType : ''));
 
                 if (val[1]) {
                     d.addClass('deleted_value')
