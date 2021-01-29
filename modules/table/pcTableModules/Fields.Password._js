@@ -15,11 +15,11 @@ fieldTypes.password = {
         return '**PASSWORD**';
     },
     getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
-        var $input = $('<input type="password" name="cell_edit" class="form-control" readonly autocomplete="off" autocorrect="off" placeholder="'+(oldValue?'Поменять пароль':'Новый пароль')+'"/>');
+        var $input = $('<input type="password" name="cell_edit" class="form-control"  autocomplete="new-password" autocorrect="off" placeholder="'+(oldValue?'Поменять пароль':'Новый пароль')+'"/>');
 
         setTimeout(function () {
             if($input){
-                $input.removeAttr('readonly');
+                $input.removeAttr('autocomplete');
             }
         }, 500);
 
