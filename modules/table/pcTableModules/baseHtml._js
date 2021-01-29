@@ -2419,6 +2419,15 @@
             let spanTitle = $('<span class="cell-title">')
                 .text(title)
                 .attr('title', title).appendTo($th);
+           /* $th.popover({
+                content: title,
+                html: false,
+                container: pcTable._container,
+                trigger: "hover",
+                placement: "top",
+                template: '<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>'
+            })*/
+
 
             if (pcTable.isCreatorView) {
                 let creatorIcons = $('<span class="creator-icons">').prependTo(spanTitle);
