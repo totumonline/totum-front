@@ -15,13 +15,7 @@ fieldTypes.password = {
         return '**PASSWORD**';
     },
     getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
-        var $input = $('<input type="password" name="cell_edit" class="form-control"  autocomplete="new-password" autocorrect="off" placeholder="'+(oldValue?'Поменять пароль':'Новый пароль')+'"/>');
-
-        setTimeout(function () {
-            if($input){
-                $input.removeAttr('autocomplete');
-            }
-        }, 500);
+        var $input = $('<input type="password" name="cell_edit" class="form-control"  autocomplete="new-password" autocorrect="off" placeholder="'+(oldValue && oldValue.v?'Поменять пароль':'Новый пароль')+'"/>');
 
         $input.on('save-me', function (event) {
             enterClbk($(this), event);
