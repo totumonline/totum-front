@@ -253,7 +253,7 @@ fieldTypes.select = {
                     const createOption = function (val, text, deleted, subtext) {
                         subtext = subtext ? $('<small class="text-muted">').text(subtext) : '';
 
-                        let option = $('<option>').text(val);
+                        let option = $('<option>').attr("value", val);
                         let content = $('<div>').text((text === null || text === '' ? '[' + val + ']' : text));
                         if (subtext) {
                             content.append(subtext);
