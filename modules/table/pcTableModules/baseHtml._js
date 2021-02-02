@@ -549,14 +549,14 @@
                     let btn;
                     if (this.viewType !== 'panels') {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
-                            this.model.panelsView(true).then(()=>{
+                            this.model.panelsView(true).then(() => {
                                 window.location.reload();
                             })
 
                         });
                     } else {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-table"></i></button>').on('click', () => {
-                            this.model.panelsView(false).then(()=>{
+                            this.model.panelsView(false).then(() => {
                                 window.location.reload();
                             })
                         });
@@ -924,7 +924,11 @@
         }
         ,
         _createTableText: function () {
-            this.tableText = $('<div class="pcTable-tableText"></div>').text(this.f.tabletext);
+            this.tableText = $('<div class="pcTable-tableText"></div>').html(this.f.tabletext);
+            if (this.f.tablehtml) {
+                this.tableText.append(this.f.tablehtml);
+            }
+
             return this.tableText;
         }
         ,
@@ -1884,7 +1888,7 @@
                     let sectionDiv;
                     let sections = [];
                     $.each(pcTable.fieldCategories.param, function (k, field) {
-                        let panelColor;
+                            let panelColor;
                             if (field.panelColor !== undefined) {
                                 panelColor = field.panelColor;
                             }
@@ -2118,7 +2122,7 @@
                         }
                         pcTable.scrollWrapper.parent().scrollTop(scroll);
                     } else {
-                        sectionDiv.find('td').each(function() {
+                        sectionDiv.find('td').each(function () {
                             let self = $(this);
                             if (self.data('addProgress')) {
                                 self.data('addProgress')();
@@ -2420,14 +2424,14 @@
             let spanTitle = $('<span class="cell-title">')
                 .text(title)
                 .attr('title', title).appendTo($th);
-           /* $th.popover({
-                content: title,
-                html: false,
-                container: pcTable._container,
-                trigger: "hover",
-                placement: "top",
-                template: '<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>'
-            })*/
+            /* $th.popover({
+                 content: title,
+                 html: false,
+                 container: pcTable._container,
+                 trigger: "hover",
+                 placement: "top",
+                 template: '<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>'
+             })*/
 
 
             if (pcTable.isCreatorView) {
@@ -3139,7 +3143,7 @@
                                 chData.push(k);
                                 delete newData[k].changed;
                                 changed = true;
-                            } else if (!Object.equals(newData[k], item[k]) && this.fields[k].type!=="listRow") {
+                            } else if (!Object.equals(newData[k], item[k]) && this.fields[k].type !== "listRow") {
                                 chData.push(k);
                                 changed = true;
                             }
@@ -3288,7 +3292,7 @@
 
             span.appendTo(td);
 
-            if (!format.text && field.unitType && !isErrorVal && val.v !== null && !('postfix' in field) && !(field.type==='select' && field.multiple)) {
+            if (!format.text && field.unitType && !isErrorVal && val.v !== null && !('postfix' in field) && !(field.type === 'select' && field.multiple)) {
                 span.attr('data-unit-type', ' ' + field.unitType);
             }
 
@@ -3338,7 +3342,7 @@
                     }
                 };
                 if (pcTable.isMobile) {
-                    td.data('addProgress', function(){
+                    td.data('addProgress', function () {
                         let span = td.find('.cell-value');
                         span.css('box-shadow', 'inset ' + (Math.round(span.width() * parseInt(format.progress) / 100)).toString() + 'px 0px 0 0 ' + format.progresscolor);
                     });
