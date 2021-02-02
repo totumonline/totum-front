@@ -94,6 +94,10 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         if (!column1.length) {
             EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (field, index) {
                 if (field.name === 'n') return;
+                let format = $.extend({}, (EditPanelFunc.pcTable.f || {}), (EditPanelFunc.editItem.f || {}), (json.row[field.name].f || {}));
+                if (format.hide && format.hide.extpanel) {
+                    return;
+                }
                 allKoeffs += getKoeff(field);
                 fCount++
             });
