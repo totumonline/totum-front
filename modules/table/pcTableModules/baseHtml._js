@@ -3554,9 +3554,9 @@
                         },
                         onshown: function (_dialog) {
                             _dialog.$modalContent.position({
-                                of: $('body'),
+                                of: $(window.top.document.body),
                                 my: 'top+50px',
-                                at: 'top'
+                                at: 'center top'
                             });
 
                             editor = CodeMirror(dialog.get(0), {
