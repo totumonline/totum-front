@@ -810,7 +810,6 @@
                     this.PageData = {$block: $('<div class="ttm-pagination"></div>')}
                 }
 
-                let lastId = null;
                 if (this.data) {
                     let keys = Object.keys(this.data);
                     if (keys.length > 0) {
@@ -819,6 +818,7 @@
                 }
                 let pageSplit = this.tableRow.pagination.split('/');
                 let pageCount = this.isMobile ? pageSplit[1] : pageSplit[0];
+                let lastId = pageSplit[2] || null;
                 this.PageData.onPage = parseInt(pageCount);
 
                 this.model.loadPage(this, lastId, pageCount);
