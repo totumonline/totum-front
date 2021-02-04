@@ -851,7 +851,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             pcTable._refreshContentTable = _refreshContentTable;
             EditPanelFunc.checkRow({}, true);
 
-            if ([EditPanelFunc.editItem.id]) {
+            if (EditPanelFunc.editItem.id) {
                 pcTable.model.setLoadedTableData({[EditPanelFunc.editItem.id]: {}});
             }
         });

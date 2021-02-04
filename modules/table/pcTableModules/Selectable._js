@@ -174,7 +174,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 } else if (val.v) {
                     let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Редактировать").on('click', () => {
                         field.sourceButtonClick(item).then((data)=>{
-                            if(data.json && data.json.updated){
+                            if(data && data.json && data.json.updated){
                                 pcTable.model.refresh();
                             }
                         });
