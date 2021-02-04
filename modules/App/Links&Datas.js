@@ -815,7 +815,7 @@
                 'label': "В новой вкладке",
                 cssClass: 'btn-m btn-danger',
                 'action': function (dialog) {
-                    let wnd = window.open(src, '_blank');
+                    let wnd = window.open($iframe.get(0).contentWindow.location, '_blank');
                     dialog.close();
                     return;
                 }
