@@ -21,7 +21,11 @@
                 if (['png', 'jpg'].indexOf(file.ext) !== -1) {
                     img = $('<img src="/fls/' + file.file + '_thumb.jpg" style="z-index: 200; max-height: 24px; padding-right: 4px;" class="file-image-preview" data-filename="' + file.file + '"/>');
                     show_img(img, file);
-                } else {
+                }
+                else if(file.ext === 'pdf'){
+                    img = '<img src="/imgs/file_ico_pdf.png" style="max-height: 24px;  padding-right: 4px;" class="file-pdf-preview" data-filename="/fls/' + file.file + '"/>';
+                }
+                else {
                     img = '<img src="/imgs/file_ico.png" style="max-height: 24px;  padding-right: 4px;"/>';
                 }
                 let a = $('<a href="/fls/' + file.file + '"  class="file-sell-text" download="' + $('<div>').text(file.name).html() + '" style="padding-right: 5px"></a>');

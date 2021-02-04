@@ -913,7 +913,12 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     type: null,
                     draggable: true
                 })
-            } else {
+            }
+            else if (event.target.className === 'file-pdf-preview') {
+                window.open(event.target.getAttribute('data-filename'))
+                return false;
+            }
+            else {
                 let element = $(this);
 
                 if (element.is('.cell-button') && !element.find('button.button-field').is(':disabled')) {
