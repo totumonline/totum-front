@@ -301,6 +301,11 @@
             let insertVisibleIndex = 0;
             let editFieldName = editedObj ? editedObj.data('field') : undefined;
 
+
+            if (pcTable.isPanel) {
+                delete json.chdata.params;
+            }
+
             if ($trIdBefore) {
                 insertIndex = pcTable.dataSorted.indexOf($trIdBefore) + 1;
                 insertVisibleIndex = pcTable.dataSortedVisible.indexOf($trIdBefore) + 1;
@@ -457,7 +462,7 @@
                 if (json.chdata.params) {
                     $.each(json.chdata.params, function (k, v) {
                         ['v', 'v_', 'f', 'e', 'h', 'c', 'ch'].forEach(function (part) {
-                            if (v[part] !== undefined || pcTable.data_params[k][part]) {
+                            if (pcTable.data_params[k] && (v[part] !== undefined || pcTable.data_params[k][part])) {
                                 if (!Object.equals(pcTable.data_params[k][part], v[part]) || k === editFieldName) {
                                     paramsChanges[k] = true;
                                     pcTable.data_params[k][part] = v[part];
@@ -508,16 +513,20 @@
                     this.treeApply();
                 }
             }
+
+
             if (json.updated) {
-                pcTable.model.tableData.updated = JSON.parse(json.updated)
+                pcTable.model.tableData.updated = JSON.parse(json.updated);
                 pcTable._refreshTitle();
             }
-            if (json.filtersString) {
-                pcTable._refreshFiltersBlock.call(pcTable, json)
-            }
-            pcTable._headCellIdButtonsState();
+            if (!pcTable.isPanel) {
+                if (json.filtersString) {
+                    pcTable._refreshFiltersBlock.call(pcTable, json)
+                }
+                pcTable._headCellIdButtonsState();
 
-            pcTable.ScrollClasterized.insertToDOM(null, true);
+                pcTable.ScrollClasterized.insertToDOM(null, true);
+            }
         }
         ,
         rows_edit: function ($tr) {

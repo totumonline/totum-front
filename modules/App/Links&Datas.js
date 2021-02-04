@@ -182,13 +182,7 @@
                                     'label': "Вкладка",
                                     cssClass: 'btn-m btn-default',
                                     'action': function (dialog) {
-                                        try {
-                                            if ($iframe.get(0).contentWindow.sessionStorage.linkObject)
-                                                linkObject = JSON.parse($iframe.get(0).contentWindow.sessionStorage.linkObject);
-                                        } catch (e) {
-
-                                        }
-                                        openLinkLocation('blank');
+                                        window.open($iframe.get(0).contentWindow.location, '_blank');
                                         dialog.close();
                                     }
                                 },
@@ -347,14 +341,7 @@
                                         'label': "Вкладка",
                                         cssClass: 'btn-m btn-default',
                                         'action': function (dialog) {
-
-                                            try {
-                                                if ($iframe.get(0).contentWindow.sessionStorage.linkObject)
-                                                    linkObject = JSON.parse($iframe.get(0).contentWindow.sessionStorage.linkObject);
-                                            } catch (e) {
-
-                                            }
-                                            openLinkLocation('blank');
+                                            window.open($iframe.get(0).contentWindow.location, '_blank');
                                             dialog.close();
                                         }
                                     },

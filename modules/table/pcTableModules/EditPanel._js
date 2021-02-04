@@ -839,11 +839,21 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     };
 
 
+    const _refreshContentTable = () => {
+
+    };
+
     if (typeof EditPanelFunc.pcTable !== 'object') {
         App.getPcTableById(EditPanelFunc.pcTable).then(function (pcTable) {
             EditPanelFunc.pcTable = pcTable;
 
+            pcTable.isPanel = true;
+            pcTable._refreshContentTable = _refreshContentTable;
             EditPanelFunc.checkRow({}, true);
+
+            if ([EditPanelFunc.editItem.id]) {
+                pcTable.model.setLoadedTableData({[EditPanelFunc.editItem.id]: {}});
+            }
         });
     } else if (EditPanelFunc.pcTable[0]) {
         App.getPcTableById(EditPanelFunc.pcTable[0], {sess_hash: EditPanelFunc.pcTable[1]}).then(function (pcTable) {
@@ -851,11 +861,14 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 pcTable.model.setLoadedTableData(EditPanelFunc.pcTable[2]);
             }
             EditPanelFunc.pcTable = pcTable;
+            pcTable.isPanel = true;
+            pcTable._refreshContentTable = _refreshContentTable;
             EditPanelFunc.checkRow({}, true);
         });
     } else {
         EditPanelFunc.checkRow({}, true);
     }
+
 
     return $d.promise();
 };
