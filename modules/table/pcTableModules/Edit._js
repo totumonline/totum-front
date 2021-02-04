@@ -162,7 +162,7 @@ $.extend(App.pcTableMain.prototype, {
 
         this.model.save(editedData)
             .then(
-                function (json) {
+                (json) => {
 
                     pcTable.table_modify.call(pcTable, json, undefined, $editObj);
                     /* if ($editObj.closest('table').length) {
@@ -175,11 +175,11 @@ $.extend(App.pcTableMain.prototype, {
                         goTo();
                     }
                 }
-            ).always(function () {
+            ).always(() => {
 
             pcTable._saving = false;
 
-            if ($editObj.is('tr.DataRow') && $editObj.closest('table').length === 1 && $editObj.find('.editing').length) $editObj.each(function () {
+            if ($editObj.is('tr.DataRow') && $editObj.closest('table').length === 1 && $editObj.find('.editing').length) $editObj.each(() => {
                 pcTable.refreshRow($(this))
             });
             else if ($editObj.is('td') && $editObj.find('.fa-spinner').length && $editObj.closest('body').length > 0) {
