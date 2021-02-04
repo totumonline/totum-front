@@ -647,14 +647,15 @@
 
             const show = function (pcTable) {
                 (new EditPanel(pcTable.tableRow.id, null, data, panels.length > 0, fixed)).then(function (json, isNext) {
-                    if (json && panel.refresh) {
-                        let pcTable = $('#table').data('pctable');
-                        pcTable.model.refresh()
-                    } else if (json || isNext) {
+                    if (json || isNext) {
                         if (panels.length) {
                             showPanel();
                             return;
                         }
+                    }
+                    if (panel.refresh) {
+                        let pcTable = $('#table').data('pctable');
+                        pcTable.model.refresh()
                     }
                     def.resolve();
                 });

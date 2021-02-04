@@ -421,7 +421,6 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 setTimeout(function () {
                     EditPanelFunc.pcTable.model.doAfterProcesses(function () {
                         EditPanel.saveRow.call(EditPanel, panel, btn);
-
                     });
                 }, 250)
             };
@@ -832,6 +831,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 }
             });
             if (isLastCell) {
+
                 let buttonSave = EditPanelFunc.bootstrapPanel.indexedButtons[Object.keys(EditPanelFunc.bootstrapPanel.indexedButtons)[0]];
                 buttonSave.focus();
             }
