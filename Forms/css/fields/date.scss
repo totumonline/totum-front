@@ -1,0 +1,13 @@
+&.ttm-dateDialog {
+  .MuiPickerDTToolbar-toolbar .MuiButton-label, .MuiButton-label *, .MuiTypography-h3 {
+        font-size: 25px;
+  }
+}
+div[data-field-type="date"]{
+  .MuiOutlinedInput-input{
+    padding-top: 10.5px;
+    padding-bottom: 10.5px;
+  }
+}
+
+

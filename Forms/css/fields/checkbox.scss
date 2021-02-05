@@ -1,0 +1,19 @@
+.MuiCheckbox-root {
+  padding: 8px;
+  margin-left: 5px;
+}
+
+[data-field-type="checkbox"] {
+  .MuiFormControlLabel-root {
+    width: 100%;
+    .MuiTypography-body1{
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  &[data-field-viewtype="switch"] {
+    .ttm-cellValueWrapper{
+      padding-left: 15px;
+    }
+  }
+}

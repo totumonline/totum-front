@@ -1,0 +1,400 @@
+.ttm-form {
+  @import "fonts";
+  @import "../../css/fonts.scss";
+  @import "simpleElements";
+
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  overflow: auto;
+
+  .ttm-section + .ttm-section {
+    margin-top: 10px;
+  }
+
+  .ttm-section + .ttm-rowsWrapper {
+    margin-top: 10px;
+  }
+
+  .ttm-rowsWrapper + .ttm-section {
+    margin-top: 20px;
+  }
+
+  .ttm-rowsWrapper {
+    background-color: #faf9f8;
+  }
+
+  .ttm-sectionTitle {
+    padding-left: 22px;
+    font-size: 22px;
+    padding-top: 15px;
+    padding-bottom: 20px;
+  }
+
+  .ttm-section:not(.ttm-sectionWithPannels) {
+    .ttm-sectionTitle {
+      padding-bottom: 0px;
+    }
+  }
+
+  .closed-section {
+    .ttm-sectionTitle {
+      color: gray
+    }
+  }
+
+  .ttm-floatInner {
+    display: inline-block;
+    vertical-align: top;
+    white-space: nowrap;
+    margin-top: 5px;
+    position: relative;
+
+    &.ttm-block-no-plate {
+      background-color: transparent !important;
+    }
+  }
+
+  .ttm-floatBlock {
+    padding-left: 10px;
+    padding-right: 20px;
+    white-space: nowrap;
+    position: relative;
+
+    > br:first-child {
+      display: none;
+    }
+  }
+
+  .ttm-sectionWithPannels {
+
+    .ttm-floatBlock {
+      padding-right: 20px;
+    }
+
+    &.ttm-secNoTitles .ttm-floatInner {
+
+      margin: 4px;
+      margin-left: -1px;
+      margin-right: 9px;
+    }
+
+    .ttm-floatInner {
+      border: 1px solid transparent;
+      position: relative;
+      border-radius: 6px;
+      padding: 10px;
+      padding-bottom: 0;
+      margin: 5px;
+      margin-left: 0;
+      margin-right: 10px;
+      background-color: #faf9f8;
+
+      > br:first-child {
+        display: none;
+      }
+    }
+
+  }
+
+  .ttm-fieldCell {
+    box-sizing: border-box;
+    vertical-align: top;
+    margin-left: -1px;
+    margin-top: -1px;
+    overflow: hidden;
+    display: inline-block;
+    border: none;
+    margin-bottom: 20px;
+
+    .ttm-fieldTitle {
+      color: #000000;
+      background-color: inherit;
+      font-weight: normal;
+      height: 50px;
+      overflow: hidden;
+      padding: 5px;
+      text-overflow: ellipsis;
+      position: relative;
+      vertical-align: top;
+      display: block;
+      width: calc(100% - 10px);
+      border: none;
+      padding-top: 15px;
+      padding-left: 15px;
+      box-sizing: border-box;
+
+      .ttm-fieldTitleInner {
+        font-weight: 300;
+        white-space: nowrap;
+        font-size: 20px;
+      }
+    }
+  }
+
+  .ttm-cellValueWrapper {
+    //display: flex;
+    align-items: center;
+    //height: 33px;
+    overflow: hidden;
+    padding: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+    box-sizing: border-box;
+    min-height: 52px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+
+    > i {
+      padding-right: 3px;
+    }
+
+    &::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    &::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: darkgrey;
+      outline: 1px solid slategrey;
+    }
+  }
+
+  .ttm-tableText {
+    margin-bottom: 20px;
+    padding: 10px;
+    margin-right: 20px;
+    margin-top: 15px;
+    margin-left: 10px;
+    font-size: 14px;
+  }
+
+  .ttm-tableTitle {
+    font-size: 30px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    padding-bottom: 4px;
+    padding-top: 10px;
+    padding-left: 22px;
+    color: #000000;
+  }
+
+  /*columns*/
+  .ttm-columnsTitle {
+    padding-left: 52px;
+    padding-top: 10px;
+    font-size: 18px;
+  }
+
+  .ttm-help, .ttm-format-text {
+    white-space: pre-line;
+    padding-left: 15px;
+    padding-right: 5px;
+    padding-top: 20px;
+    font-size: 14px;
+    color: #4c4c4c;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    * {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .ttm-format-text {
+    padding-top: 20px;
+
+    i {
+      vertical-align: bottom;
+      padding-right: 5px;
+      line-height: 15px;
+    }
+  }
+
+  .field-comment-tooltip {
+    font-size: 14px
+  }
+
+  .cell-comment {
+    i {
+      padding-right: 5px;
+    }
+
+    font-size: 14px;
+    white-space: normal;
+    padding-bottom: 5px;
+    padding-left: 10px;
+  }
+
+  .ttm-fieldValue {
+    padding: 5px;
+
+  }
+
+  .ttm-trobber-wrapper {
+    position: fixed;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+    z-index: 1000;
+
+    .ttm-trobber {
+      opacity: 0.3
+    }
+  }
+
+  @import "fields/button";
+  @import "fields/string";
+  @import "fields/checkbox";
+  @import "fields/select";
+  @import "fields/number";
+  @import "fields/text";
+  @import "fields/file";
+  @import "fields/date";
+  @import "tabls";
+  @import "media"; /*.page_content {
+    width: 1000px;
+    margin: 10px auto;
+    box-sizing: border-box;
+  }
+
+
+  .totum-title {
+    font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+  }
+
+  td, th {
+    padding: 5px;
+
+    > span {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .rows-section {
+
+    table {
+
+      border: 1px solid #ddd;
+      table-layout: fixed;
+      border-collapse: collapse;
+      border-spacing: 0;
+
+      td {
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        border: 1px solid #ddd;
+      }
+    }
+
+    .insert-row td {
+      background-color: #fff74b;
+    }
+  }
+
+  .totum-section {
+    padding-top: 20px;
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    .sectionTitle {
+      padding-bottom: 10px;
+
+    }
+
+    .section-field {
+      display: inline-block;
+      vertical-align: top;
+      padding: 3px;
+
+      .changed, .changed input {
+        background-color: #ffc8cc;
+      }
+
+      input, .input-inline {
+
+        width: calc(100% - 2px);
+      }
+
+      .input-inline {
+        display: inline-block;
+      }
+
+      .with-code {
+        > input, > .input-inline {
+          width: calc(100% - 30px);
+        }
+
+        .with-icon {
+          > input, > .input-inline {
+            width: calc(100% - 50px);
+          }
+        }
+      }
+
+      i {
+        padding-right: 4px;
+      }
+
+      .with-icon {
+        > input, > .input-inline {
+          width: calc(100% - 20px);
+        }
+      }
+
+      &.required {
+        label:after {
+          content: '*';
+          color: red;
+        }
+      }
+
+      label {
+        display: block;
+      }
+    }
+
+    &.rows-section .section-field {
+      display: table-cell;
+    }
+
+    .field-error {
+      display: block;
+    }
+
+    .active-hand {
+      background-color: wheat;
+    }
+  }*/
+
+  &.ttm-linkto .MuiDialog-paperWidthSm {
+    width: 90vw;
+    max-width: 800px;
+
+    .MuiDialogContent-root *{
+      color: #0000bf;
+    }
+  }
+  &.ttm-errorException{
+    .MuiDialogContent-root *{
+      color: #0000bf;
+    }
+  }
+}
+

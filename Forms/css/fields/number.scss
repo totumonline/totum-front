@@ -1,0 +1,20 @@
+.ttm-floatInner div.ttm-fieldCell[data-field-type="number"][data-field-viewtype="slider"]{
+  .ttm-cellValueWrapper{
+    padding: 15px;
+    padding-left: 0;
+    padding-bottom: 0;
+    padding-top: 0px;
+  }
+  .MuiSlider-root{
+    width: calc(100% - 40px);
+    margin-left: 20px;
+    margin-top: 40px;
+    margin-bottom: 10px;
+  }
+  .cell-comment{
+    padding-bottom: 15px;
+  }
+  .ttm-fieldValue{
+    padding-bottom: 10px;
+  }
+}

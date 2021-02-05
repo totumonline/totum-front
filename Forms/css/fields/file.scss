@@ -1,0 +1,107 @@
+&.ttm-fileDropDialog {
+  .MuiDialogContent-root {
+    > div:first-child {
+      min-height: 80px;
+      margin-bottom: 70px;
+
+      .MuiTypography-h5 {
+        font-size: 18px;
+        margin-top: 15px;
+        margin-bottom: 0px;
+      }
+      .MuiSvgIcon-root{
+        width: 40px;
+      }
+    }
+
+    .MuiGrid-root {
+      img, svg {
+        width: 130px;
+        margin: 0;
+      }
+
+      >svg {
+        padding: 20px;
+      }
+
+      p {
+        white-space: normal;
+        word-break: break-all;
+        text-align: left;
+        font-size: 14px;
+        padding: 5px;
+        color: #3f51b5;
+      }
+      &.MuiGrid-spacing-xs-8 > .MuiGrid-item{
+        padding-top: 0px;
+      }
+    }
+  }
+  .MuiBackdrop-root{
+    opacity: 0.1 !important;
+  }
+  .MuiFab-root{
+    right: 15px;
+    top: -15px;
+  }
+}
+
+.ttm-previews-grid {
+  padding-bottom: 10px;
+}
+
+.ttm-preview-wrapper {
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.12) 0 1px 6px, rgba(0, 0, 0, 0.12) 0 1px 4px;
+  padding: 5px;
+}
+
+.ttm-preview, .ttm-preview-file {
+  height: 100px;
+  width: initial;
+  max-width: 100%;
+  transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.ttm-preview-file {
+  background-image: none;
+  text-align: center;
+  svg{
+    height: 100px;
+  }
+}
+
+.ttm-preview-file-label {
+  font-size: 12px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: normal;
+  margin-top: 10px;
+  color: #3f51b5;
+}
+
+.ttm-file-image {
+  height: 100%;
+  width: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.ttm-add-file {
+  margin-top: 10px;
+}
+
+div[data-field-type="file"] {
+  /*&:not([data-field-viewtype])*/
+  .ttm-cellValueWrapper {
+    overflow-x: hidden;
+  }
+
+}
+.ttm-file-image-wrapper{
+  overflow: auto;
+}
