@@ -500,7 +500,7 @@
             panelsView: function (switcher) {
                 return this.__ajax('post', {method: 'panelsViewCookie', switcher: switcher ? 1 : 0});
             },
-            refresh: function (func) {
+            refresh: function (func, refreshType) {
 
                 func = func || function (json) {
                     pcTable.table_modify.call(pcTable, json);
@@ -514,7 +514,11 @@
                     })
                     tree = JSON.stringify(tree);
                 }
-                this.__ajax('post', {method: 'refresh', tree: tree}).then(function (json) {
+                this.__ajax('post', {
+                    method: 'refresh',
+                    tree: tree,
+                    recalculate: refreshType === 'recalculate' ? true : null
+                }).then(function (json) {
                     try {
                         func(json)
                     } catch (e) {

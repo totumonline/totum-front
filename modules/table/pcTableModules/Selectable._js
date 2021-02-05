@@ -134,7 +134,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                                                 field.pcTable.model.panelButtonsClick(json.panelFormats.hash, b.ind).then(function (json) {
                                                     if (b.refresh) {
-                                                        field.pcTable.model.refresh()
+                                                        field.pcTable.model.refresh(null, b.refresh)
                                                     }
                                                 });
                                             })

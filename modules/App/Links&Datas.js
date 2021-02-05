@@ -138,7 +138,7 @@
                             onhidden: function () {
                                 if (linkObject.refresh) {
                                     let pcTable = $('#table').data('pctable');
-                                    model.refresh()
+                                    model.refresh(null, linkObject.refresh)
                                     //window.location.reload();
                                 }
                             },
@@ -290,7 +290,7 @@
                                 cssClass: 'target-iframe',
                                 onhidden: function () {
                                     if (linkObject.refresh) {
-                                        model.refresh()
+                                        model.refresh(null, linkObject.refresh)
                                     }
                                     dialogOffset--;
                                 },
@@ -416,7 +416,7 @@
                                 window.closeMe();
                             }
                             else if (data[1].refresh) {
-                                model.refresh()
+                                model.refresh(null, data[1].refresh)
                             }
                             Dialog.close();
                         });
@@ -464,7 +464,7 @@
                                             window.closeMe();
                                         }
                                         else if (data[1].buttons[i].refresh) {
-                                            model.refresh()
+                                            model.refresh(null, data[1].buttons[i].refresh)
                                         }
                                         dialog.close();
                                     });
@@ -655,7 +655,7 @@
                     }
                     if (panel.refresh) {
                         let pcTable = $('#table').data('pctable');
-                        pcTable.model.refresh()
+                        pcTable.model.refresh(null, panel.refresh)
                     }
                     def.resolve();
                 });
@@ -690,7 +690,7 @@
             onhidden: function () {
                 if (refresh) {
                     let pcTable = $('#table').data('pctable');
-                    pcTable.model.refresh()
+                    pcTable.model.refresh(null, refresh)
                 }
             },
             onshown: function (dialog) {
@@ -737,7 +737,7 @@
                     if (refresh === 'strong') {
                         window.location.reload()
                     } else {
-                        model.refresh()
+                        model.refresh(null, refresh)
                     }
                 }
                 dialogOffset--;

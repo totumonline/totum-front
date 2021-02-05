@@ -67,7 +67,7 @@
                                             btn.on('click', function () {
                                                 model.userButtonsClick(json.panelFormats.hash, b.ind).then(function (json) {
                                                     if (b.refresh) {
-                                                        model.refresh()
+                                                        model.refresh(null, b.refresh)
                                                     }
                                                 });
                                             })
