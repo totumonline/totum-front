@@ -49,12 +49,12 @@ class TotumModel {
             return null;
         }
         if (json.error) {
-
             if (this.setChangesToForm)
                 this.setChangesToForm({
                     errorNotification: json.error
                 })
             else console.error(json.error)
+            return null;
         }
         return json;
     }
@@ -78,9 +78,11 @@ class TotumModel {
         })
     }
 
-    click(change, ids) {
-        change.checked_ids = ids || [];
-        return this.__connect('click', change)
+    click(item, fieldName) {
+        return this.__connect('click', {
+            item: item,
+            fieldName: fieldName
+        })
     }
 
     checkInsert(row) {

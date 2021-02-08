@@ -9,6 +9,7 @@ let gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     watch = require('gulp-watch'),
     sass = require('gulp-sass'),
+    concat = require('gulp-concat'),
     buffer = require("vinyl-buffer");
 
 let path = {

@@ -130,6 +130,11 @@ export class TotumForm extends React.Component {
                 })
 
             }
+            if (json.links) {
+                this.setState((state) => {
+                    return {links: [...json.links]}
+                })
+            }
             if (json.chdata)
                 changes = {data_params: json.chdata.params, format: json.chdata.f, data: json.chdata.rows}
         }
@@ -296,8 +301,8 @@ export class TotumForm extends React.Component {
             $errorNotification = <AlertModal content={errorNotification}
                                              className="ttm-form ttm-errorException"
                                              handleClose={() => {
-                this.setState({errorNotification: null})
-            }} BackdropProps={{style: {opacity: 0.3}}}/>
+                                                 this.setState({errorNotification: null})
+                                             }} BackdropProps={{style: {opacity: 0.3}}}/>
         }
         if (this.state.interfaceDatas && this.state.interfaceDatas.length) {
             this.state.interfaceDatas.some((row, i) => {
@@ -329,8 +334,39 @@ export class TotumForm extends React.Component {
 
 
                     return true;
+                } else {
+                    $interfaceData =
+                        <AlertModal content={"Отображение типа " + row[0] + " в формах недоступно"} title={"Ошибка"}
+                                    handleClose={() => {
+                                        this.setState((state) => {
+                                            let new_state = [...state.interfaceDatas];
+                                            new_state.splice(i, 1);
+                                            return {interfaceDatas: new_state};
+                                        })
+                                        if (row[1].refresh) {
+                                            this.props.model.refresh();
+                                        }
+                                    }} BackdropProps={{style: {opacity: 0.3}}}
+                                    className="ttm-form ttm-linkto"
+
+                                    buttons={buttons}
+                        />
+
+
+                    return true;
                 }
             })
+        }
+        if (this.state.links && this.state.links.length) {
+            $interfaceData =
+                <AlertModal content={"Отображение  links в формах недоступно"} title={"Ошибка"} handleClose={() => {
+                    this.setState((state) => {
+                        return {links: []};
+                    })
+                }}
+                            BackdropProps={{style: {opacity: 0.3}}}
+                            className="ttm-form ttm-linkto"
+                />
         }
 
 

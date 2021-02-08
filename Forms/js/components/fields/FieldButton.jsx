@@ -31,7 +31,7 @@ export class FieldButton extends React.Component {
                 clicked: "click"
             });
             let {field} = this.props;
-            return this.props.model.click({[this.props.item]: {[field.name]: null}}).then((json) => {
+            return this.props.model.click(this.props.item, field.name).then((json) => {
 
                 this.props.model.setChangesToForm(null, json);
                 this.setState({
