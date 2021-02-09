@@ -6,6 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
+import PageviewIcon from "@material-ui/icons/Pageview";
 
 export class FieldSelectGrid extends FieldSelectCheckbox {
     render() {
@@ -58,7 +59,7 @@ export class FieldSelectGrid extends FieldSelectCheckbox {
                                 style.width = settings.picture_width
                         }
 
-                        val = list[2].map((file, i) => <Avatar {...params} style={style} key={i} src={file}></Avatar>);
+                        val = list[2].map((file, i) => <Avatar {...params} style={style} key={i} src={file}><PageviewIcon/></Avatar>);
                     }
                     this.props.format.viewdata.previews_settings[list[0]] = this.props.format.viewdata.previews_settings[list[0]] || {};
                     if (this.props.format.viewdata && this.props.format.viewdata.previews_settings && this.props.format.viewdata.previews_settings[list[0]] && this.props.format.viewdata.previews_settings[list[0]].title===false) {
