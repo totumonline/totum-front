@@ -45,7 +45,7 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
         console.log(error);
         ReactDom.render(<div className="error">{error.toString()}</div>, div);
     }
-    model.load().then((json) => {
+    model.load(post, get, input).then((json) => {
         if (json.error) {
             renderError(json.error)
         } else {

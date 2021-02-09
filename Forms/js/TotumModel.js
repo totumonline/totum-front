@@ -12,8 +12,12 @@ class TotumModel {
         this.sess_hash = sess_hash;
     }
 
-    async load() {
-        return this.__connect('getTableData')
+    async load(post, get, input) {
+        return this.__connect('getTableData', {
+            post: post,
+            get: get,
+            input: input,
+        })
     }
 
     async saveField(name, value) {
@@ -42,6 +46,7 @@ class TotumModel {
             throw Error("Ошибка коннекта с сервером");
         }
         let json;
+
         try {
             json = JSON.parse(text);
         } catch (e) {
@@ -54,7 +59,7 @@ class TotumModel {
                     errorNotification: json.error
                 })
             else console.error(json.error)
-            return null;
+            return json;
         }
         return json;
     }
