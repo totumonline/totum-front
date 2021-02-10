@@ -2407,7 +2407,10 @@
                 pcTable.fields[field.name].$th = $th;
             }
 
-            if (panelColor !== undefined && panelColor !== '') {
+            if(field.panelColor ){
+                $th.css('background-color', field.panelColor);
+            }
+            else if (panelColor !== undefined && panelColor !== '') {
                 $th.css('background-color', panelColor);
                 field.panelColor = panelColor;
             }
