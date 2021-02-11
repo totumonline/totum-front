@@ -52,6 +52,16 @@ fieldTypes.button = {
                 }
                 btn.css(css)
             }
+            else if (td.is('.button-wrapper')) {
+                let css = {};
+                if (format.background) {
+                    css.backgroundColor = format.background;
+                }
+                if (format.color) {
+                    css.color = format.color;
+                }
+                btn.css(css)
+            }
         };
 
 

@@ -483,10 +483,17 @@
                 if (json.chdata.params || json.chdata.fields) {
                     pcTable._refreshParamsBlock(paramsChanges, true);
                     pcTable._refreshFootersBlock(paramsChanges, true);
+
+                    if (pcTable.f && pcTable.f.buttons && pcTable.f.buttons.some) {
+                        pcTable.f.buttons.some((name) => {
+                            pcTable._rowsButtons();
+                            return true;
+                        })
+                    }
                 }
                 if (json.chdata.f) {
                     let newf = json.chdata.f;
-                    ['blockadd', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment'].forEach(function (k) {
+                    ['blockadd', 'buttons', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment'].forEach(function (k) {
                         if (k in newf || k in pcTable.f) {
                             if (typeof newf[k] == "object") {
                                 if (!Object.equals(newf[k], pcTable.f[k])) {

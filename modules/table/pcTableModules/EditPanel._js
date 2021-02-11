@@ -555,6 +555,9 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             } else {
                 if (field.CodeActionOnClick && !divWrapper.find('.edit-btn').length) {
                     divWrapper.append($('<button class="btn btn-sm btn-default edit-btn" style="width: 100%"><i class="fa fa-hand-pointer-o"></i></button>').on('click', () => {
+                        EditPanelFunc.pcTable.model.refresh = ()=>{
+                            window.location.reload();
+                        }
                         EditPanelFunc.pcTable.model.dblClick(item.id, field.name).then((json) => {
                         })
                     }))

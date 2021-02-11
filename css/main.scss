@@ -28,6 +28,18 @@ input.error {
   padding-bottom: 10px;
 }
 
+.creator-hidden {
+  .creator-hidden-block {
+    display: none;
+  }
+
+  &:hover {
+    .creator-hidden-block {
+      display: inline;
+    }
+  }
+}
+
 [data-target='#notify-texh'] {
   i:last-child {
     display: none;
@@ -72,6 +84,7 @@ input.error {
     display: block;
   }
 }
+
 @media (min-width: 1120px) {
   .page_content:not(.tree-minifyed) .pcTable-topButtons #TOTUM_FOOTER {
     display: block;
@@ -180,7 +193,7 @@ footer {
 }
 
 
-.btn.btn-default{
+.btn.btn-default {
   border-color: transparent;
   background-color: #fafafa;
 
@@ -404,13 +417,15 @@ input:not([type="checkbox"]):focus {
     color: #555;
 
   }
-  ul{
+
+  ul {
     display: flex;
     flex-wrap: nowrap;
     justify-content: flex-start;
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
+
     &::-webkit-scrollbar {
       height: 5px;
       margin-bottom: -5px;
@@ -474,10 +489,11 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
       padding-left: 4px;
     }
 
-    &.asUrl{
+    &.asUrl {
       cursor: pointer;
       color: #337ab7;
-      &:hover{
+
+      &:hover {
         text-decoration: underline;
       }
     }
@@ -494,7 +510,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     padding: 5px;
 
   }
-   input:not([type="checkbox"]){
+  input:not([type="checkbox"]) {
     border: 0 !important;
     outline: 0 !important;
   }
@@ -531,10 +547,10 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     float: left;
     opacity: 0.4;
   }
-  .ttm-edit{
+  .ttm-edit {
     opacity: 0.4;
   }
-  .fa-exclamation-triangle{
+  .fa-exclamation-triangle {
     opacity: 0.4;
   }
 
@@ -779,7 +795,7 @@ th {
 }
 
 
-.pcTable-hiddenFieldsTable{
+.pcTable-hiddenFieldsTable {
   margin-top: 10px;
 }
 
@@ -815,7 +831,8 @@ th {
   .cell {
     min-height: 32px;
   }
-  button.btn-default{
+
+  button.btn-default {
     background-color: transparent;
   }
 }
@@ -840,7 +857,8 @@ th {
     i, span {
       cursor: pointer
     }
-    &.lowOpacity{
+
+    &.lowOpacity {
       opacity: 0.5;
     }
 
@@ -1097,7 +1115,8 @@ th {
   }
 
   margin-bottom: 20px;
-  &:empty{
+
+  &:empty {
     margin: 0;
   }
 }
@@ -1110,6 +1129,7 @@ th {
   &:empty {
     display: none;
   }
+
   font-size: 14px;
   font-family: 'Open Sans';
   line-height: 21px;
@@ -1141,7 +1161,19 @@ th {
   padding-bottom: 5px;
   text-align: right;
   margin-right: 10px;
+  overflow-y: hidden;
   background-color: transparent;
+  .button-wrapper.cell-button{
+    padding: 0 !important;
+    display: inline-block;
+    button.button-field{
+      font-size: 12px;
+      line-height: 1.5;
+      border-radius: 3px;
+      padding: 3px 7px;
+      height: 26px;
+    }
+  }
 
   .pcTable-container.no-fields & {
     display: none;
@@ -1557,7 +1589,7 @@ th.id .pcTable-filters.for-selected .btn {
   border-radius: 3px;
 }
 
-.InsertPanel .cell-wrapper{
+.InsertPanel .cell-wrapper {
   padding-right: 10px;
   padding-left: 10px;
   padding-bottom: 15px;
@@ -1715,9 +1747,11 @@ ul.CodeMirror-hints {
     .modal-dialog {
       width: 820px;
     }
-    &.edit-field-panel .modal-dialog{
+
+    &.edit-field-panel .modal-dialog {
       width: 1000px;
       max-width: 99%;
+
       .InsertPanel {
         grid-template-columns: 1fr 1fr 1fr;
         grid-gap: 10px;
@@ -1753,6 +1787,7 @@ ul.CodeMirror-hints {
   .simpleTable {
     font-size: 13px;
     width: 100%;
+
     thead td {
       font-weight: 500;
     }
@@ -1809,7 +1844,8 @@ ul.CodeMirror-hints {
 .hidding-form input[type=checkbox] {
   margin-right: 7px;
 }
-input{
+
+input {
   box-shadow: none !important;
 }
 
@@ -1970,10 +2006,11 @@ input{
   z-index: 1000;
 }
 
-.pcTable-container.withNoColumns .pcTable-rowsWrapper{
+.pcTable-container.withNoColumns .pcTable-rowsWrapper {
   display: none;
 }
-.cell-help{
+
+.cell-help {
   opacity: 0.25;
 }
 

@@ -903,7 +903,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
             return false;
         });
-        this._container.on('click', '.DataRow td:not(.editing,.id,.n), td.val:not(.editing)', function (event) {
+        this._container.on('click', '.DataRow td:not(.editing,.id,.n), td.val:not(.editing), .pcTable-buttons .cell-button', function (event) {
 
             if (event.target.className === 'file-image-preview') {
                 let file = JSON.parse(event.target.getAttribute('data-fileviewpreview'));

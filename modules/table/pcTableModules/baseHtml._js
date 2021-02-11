@@ -867,6 +867,18 @@
                     buttons.append(btnAdd);
                     this.filtersClearButton = btnAdd;
                 }
+
+                if (!pcTable.isCreatorView && !pcTable.isMobile && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length){
+                    pcTable.f.buttons.forEach((name)=>{
+                        if(pcTable.isReplacedToRowsButtonsField(name)){
+                            let $td = $('<span class="button-wrapper">').width(pcTable.fields[name].showMeWidth).data('field', name);
+                            let button = pcTable.fields[name].getCellText(null, $td, pcTable.data_params);
+                            $td.append(button).prependTo(buttons)
+                            button.wrap('<span class="cell-value">')
+                        }
+                    })
+                }
+
             }
 
             if (this.f.tablecomment) {
@@ -1179,6 +1191,8 @@
 
             $.each(fields, function (k, field) {
 
+                if (!pcTable.isCreatorView && !pcTable.isMobile && pcTable.isReplacedToRowsButtonsField(field.name))
+                    return;
 
                 /*if (field.panelColor !== undefined) {
                     panelColor = field.panelColor;
@@ -2384,6 +2398,11 @@
             return Object.getPath(this.f, ['fieldtitle', field.name], field.title)
         }
         ,
+
+        isReplacedToRowsButtonsField(fieldName){
+            let pcTable = this;
+          return pcTable.fields[fieldName] && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length && pcTable.f.buttons.indexOf(fieldName) !== -1;
+        },
         _createHeadCell: function (index, field, panelColor) {
             let pcTable = this;
 
@@ -2407,10 +2426,9 @@
                 pcTable.fields[field.name].$th = $th;
             }
 
-            if(field.panelColor ){
+            if (field.panelColor) {
                 $th.css('background-color', field.panelColor);
-            }
-            else if (panelColor !== undefined && panelColor !== '') {
+            } else if (panelColor !== undefined && panelColor !== '') {
                 $th.css('background-color', panelColor);
                 field.panelColor = panelColor;
             }

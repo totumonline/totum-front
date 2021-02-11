@@ -6,6 +6,10 @@ App.pcTableMain.prototype.__formatFunctions = {
     tablecomment: function () {
         this._rowsButtons();
     },
+    buttons: function () {
+        this._rerendParamsblock();
+        this._rowsButtons();
+    },
     blockorder: function () {
         this._refreshHead();
     },
