@@ -176,6 +176,7 @@
                     this._refreshHead();
                     this.rowButtonsCalcWidth();
                     this._refreshContentTable(true);
+                    this._rowsButtons();
                     this._rerenderColumnsFooter();
                     if (this.isCreatorView) {
                         this._hideHell_storage.checkIssetFields.call(pcTable);

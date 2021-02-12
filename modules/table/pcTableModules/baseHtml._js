@@ -554,7 +554,7 @@
                             })
 
                         });
-                    } else {
+                    } else if(!pcTable.isMobile) {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-table"></i></button>').on('click', () => {
                             this.model.panelsView(false).then(() => {
                                 window.location.reload();
@@ -856,6 +856,20 @@
                     buttons.append(insButtons);
                 }
 
+
+
+                if (!pcTable.isCreatorView && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length) {
+                    pcTable.f.buttons.forEach((name) => {
+                        if (pcTable.isReplacedToRowsButtonsField(name)) {
+                            let $td = $('<span class="button-wrapper">').data('field', name);
+                            let button = pcTable.fields[name].getCellText(null, $td, pcTable.data_params);
+
+                            $td.append(button).appendTo(buttons)
+                            button.wrap('<span class="cell-value">')
+                        }
+                    })
+                }
+
                 if (!this.isTreeView) {
                     let btnAdd = $('<button class="btn btn-default btn-sm" style="margin-left: 5px;" disabled>Сбросить <span class="fa fa-filter"></span></button>').width(82)
                         .on('click', function () {
@@ -866,17 +880,6 @@
                         });
                     buttons.append(btnAdd);
                     this.filtersClearButton = btnAdd;
-                }
-
-                if (!pcTable.isCreatorView && !pcTable.isMobile && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length){
-                    pcTable.f.buttons.forEach((name)=>{
-                        if(pcTable.isReplacedToRowsButtonsField(name)){
-                            let $td = $('<span class="button-wrapper">').width(pcTable.fields[name].showMeWidth).data('field', name);
-                            let button = pcTable.fields[name].getCellText(null, $td, pcTable.data_params);
-                            $td.append(button).prependTo(buttons)
-                            button.wrap('<span class="cell-value">')
-                        }
-                    })
                 }
 
             }
@@ -1191,7 +1194,7 @@
 
             $.each(fields, function (k, field) {
 
-                if (!pcTable.isCreatorView && !pcTable.isMobile && pcTable.isReplacedToRowsButtonsField(field.name))
+                if (!pcTable.isCreatorView && pcTable.isReplacedToRowsButtonsField(field.name))
                     return;
 
                 /*if (field.panelColor !== undefined) {
@@ -1902,6 +1905,9 @@
                     let sectionDiv;
                     let sections = [];
                     $.each(pcTable.fieldCategories.param, function (k, field) {
+                            if (pcTable.isReplacedToRowsButtonsField(field.name))
+                                return;
+
                             let panelColor;
                             if (field.panelColor !== undefined) {
                                 panelColor = field.panelColor;
@@ -2399,9 +2405,9 @@
         }
         ,
 
-        isReplacedToRowsButtonsField(fieldName){
+        isReplacedToRowsButtonsField(fieldName) {
             let pcTable = this;
-          return pcTable.fields[fieldName] && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length && pcTable.f.buttons.indexOf(fieldName) !== -1;
+            return pcTable.fields[fieldName] && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length && pcTable.f.buttons.indexOf(fieldName) !== -1;
         },
         _createHeadCell: function (index, field, panelColor) {
             let pcTable = this;

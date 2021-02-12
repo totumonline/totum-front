@@ -634,10 +634,10 @@
                                 } else {
 
                                     $.notify({
-                                        message: '<div id="refresh-notify"><button class="btn btn-warning btn-sm" style="margin-right: 20px;">' +
-                                            'Обновить</button> <span>Таблица была изменена пользователем <b>' +
+                                        message: '<div id="refresh-notify"><span>Таблица была изменена пользователем <b>' +
                                             json.username + '</b> в <b>' + App.dateFormats.covert(json.dt, 'YY-MM-DD HH:mm', 'HH:mm DD.MM')
-                                            + '</b> </span></div>'
+                                            + '</b> </span><button class="btn btn-warning btn-sm" style="margin-right: 20px;">' +
+                                            'Обновить</button></div>'
                                     }, {
                                         type: 'warning',
                                         allow_dismiss: false,

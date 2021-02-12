@@ -1163,15 +1163,18 @@ th {
   margin-right: 10px;
   overflow-y: hidden;
   background-color: transparent;
+
   .button-wrapper.cell-button{
     padding: 0 !important;
     display: inline-block;
+    margin-left: 5px;
     button.button-field{
       font-size: 12px;
       line-height: 1.5;
       border-radius: 3px;
       padding: 3px 7px;
       height: 26px;
+      box-sizing: border-box;
     }
   }
 
@@ -1206,7 +1209,10 @@ th {
 .pcTable-rowsWrapper {
   background-color: $rowsBackColor;
 }
-
+#refresh-notify{
+  display:grid;
+  grid-template-columns: 1fr 95px;
+}
 .pcTable-beforeSpace {
 
   position: relative;
