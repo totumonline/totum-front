@@ -293,7 +293,7 @@
 
                             if (stream.peek() === '#') {
                                 stream.next();
-                                while (/[a-z0-9_\-\[\]\$\#"]/i.test(stream.peek()) && stream.next()) {
+                                while (/[a-zA-Z0-9_\-\[\]\$\#"]/i.test(stream.peek()) && stream.next()) {
                                 }
                                 return 'code-var'
                             } else {
@@ -1084,7 +1084,7 @@
                     let reg = new RegExp("\\$" + name + '\\b');
 
 
-                    wrapper.find('.cm-variable,.cm-inVars,.cm-spec').each(function () {
+                    wrapper.find('.cm-variable,.cm-inVars,.cm-spec,.cm-db_name').each(function () {
                         let cmVar = $(this);
                         if (cmVar.text().match(reg)) {
                             cmVar.addClass('light');
