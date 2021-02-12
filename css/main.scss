@@ -1751,13 +1751,14 @@ ul.CodeMirror-hints {
 
   .edit-row-panel {
     .modal-dialog {
-      width: 820px;
-    }
-
-    &.edit-field-panel .modal-dialog {
+      //width: 820px;
       width: 1000px;
       max-width: 99%;
+    }
 
+
+
+    &.edit-field-panel .modal-dialog {
       .InsertPanel {
         grid-template-columns: 1fr 1fr 1fr;
         grid-gap: 10px;

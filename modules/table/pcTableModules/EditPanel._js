@@ -198,7 +198,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         } else if (fCount === 1) {
                             width = width < 790 ? width : 790;
                         } else {
-                            width = width < 390 ? width : 390;
+                            width = width < 480 ? width : 480;
                         }
                         divWrapper.width(width);
                     }
