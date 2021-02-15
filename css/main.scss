@@ -1802,6 +1802,8 @@ ul.CodeMirror-hints {
     td {
       border: 1px solid #f1f1f1;
       overflow: hidden;
+      height: 35px;
+      padding: 5px;
 
       &.input {
         background-color: $btn-danger-bgcolor;
@@ -1812,10 +1814,8 @@ ul.CodeMirror-hints {
 
         input {
           width: 100%;
-          margin: -2px;
           padding: 2px;
           border: none;
-
         }
       }
     }
