@@ -273,6 +273,7 @@
 //=include pcTableModules/RowActions._js
 //=include pcTableModules/Insert._js
 //=include pcTableModules/baseHtml._js
+//=include pcTableModules/FloatBlocks._js
 //=include pcTableModules/HorizontalDraggable._js
 //=include pcTableModules/RowPanel._js
 //=include pcTableModules/Csv._js
@@ -555,6 +556,7 @@
                 if(this.viewType==='panels' && !this.isMobile)
                     this._renderTablePanelView();
 
+                debugger
                 this.ScrollClasterized = this.Scroll();
 
                 this._renderTable();
