@@ -556,7 +556,6 @@
                 if(this.viewType==='panels' && !this.isMobile)
                     this._renderTablePanelView();
 
-                debugger
                 this.ScrollClasterized = this.Scroll();
 
                 this._renderTable();
