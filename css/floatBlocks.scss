@@ -14,6 +14,23 @@
     input[type="checkbox"] {
       margin-top: 7px;
     }
+    .blocktitle{
+      position: absolute;
+      z-index: 100;
+      background-color: inherit;
+      color: inherit;
+      padding: 2px 5px;
+      font-size: 10px;
+      right: -1px;
+      top: -8px;
+      border-radius: 3px;
+      max-width: calc(100% - 20px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      >span{
+        opacity: 0.7;
+      }
+    }
 
     > div {
       box-sizing: border-box;

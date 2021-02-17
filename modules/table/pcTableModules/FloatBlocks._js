@@ -52,7 +52,7 @@
 
             param['_ALL'] = splitVal(splitted[1])
 
-        }else {
+        } else {
             param = splitVal(splitted[1])
         }
         return param;
@@ -87,9 +87,10 @@
         let border = false;
         let platemh = false;
         let plateh = false;
-        let formatsFromSection ={};
+        let formatsFromSection = {};
         let sections = [];
         let sectionField;
+        let blocktitle = {};
 
 
         $.each(fields, function (k, field) {
@@ -111,7 +112,7 @@
                 border = false;
                 platemh = false;
                 sectionField = field;
-
+                blocktitle = {};
 
 
 
@@ -132,11 +133,16 @@
                                 case 'glue':
                                 case 'fill':
                                 case 'breakwidth':
+                                case 'titleleft':
+                                case 'titleright':
                                     formatsFromSection[split[0]] = addSectionParam(formatsFromSection[split[0]], split, ((str) => str === false ? null : str), false);
                                     break;
 
                                 case 'outline':
                                     outline = addSectionParam(outline, split, ((str) => str === true ? "#e4e4e4" : str), true)
+                                    break;
+                                case 'blocktitle':
+                                    blocktitle = addSectionParam(blocktitle, split, ((str) => str === false ? "" : str), false)
                                     break;
                                 case 'title':
                                     sectionParams.title = sectionParams.title || {_ALL: true};
@@ -198,6 +204,7 @@
             if (!sectionDiv || (field.tableBreakBefore && field.sectionTitle)) {
                 sectionDiv = [];
 
+
                 sections.push({
                     title: sectionTitle,
                     lableLowOpacity: lableLowOpacity,
@@ -208,6 +215,7 @@
                     plate: plate,
                     sectionField: sectionField,
                     outline: outline,
+                    blocktitle: blocktitle,
                     border: border,
                     plateh: plateh,
                     platemh: platemh
@@ -303,10 +311,10 @@
 
                 field.format = pcTable.data_params[field.field.name].f || {};
 
-                Object.keys(sec.formatsFromSection).forEach((k)=>{
-                    let val=getSectionOrFormatParam(k, field.field.name, sec.formatsFromSection, field.format);
-                    if(val!==null){
-                        field.format[k]=val
+                Object.keys(sec.formatsFromSection).forEach((k) => {
+                    let val = getSectionOrFormatParam(k, field.field.name, sec.formatsFromSection, field.format);
+                    if (val !== null) {
+                        field.format[k] = val
                     }
                 })
 
@@ -316,8 +324,10 @@
                 }
                 if (FloatInners.length === 0 || FloatInners[FloatInners.length - 1].num != blockNum || (field.field.tableBreakBefore && ind !== 0)) {
                     floatInner = $('<div class="pcTable-floatInner">').appendTo(floatBlock);
-                    if (blockNum && pcTable.isCreatorView) {
-                        floatInner.append('<div data-type="blocknum" style="position:absolute;z-index: 100; color: #ff8585; background-color: #fff; padding: 3px; font-size: 10px; right: 4px; top: 4px;">' + blockNum + '</div>')
+                    if (blockNum) {
+                        if(pcTable.isCreatorView){
+                            floatInner.append('<div data-type="blocknum" style="position:absolute;z-index: 100; color: #ff8585; background-color: #fff; padding: 3px; font-size: 10px; right: 4px; top: 4px;">' + blockNum + '</div>')
+                        }
                     }
                     if (sec.outline) {
                         if (blockNum in sec.outline)
@@ -333,6 +343,15 @@
                             floatInner.data('plate', sec.plate)
                         }
                     }
+                    if(blockNum && sec.blocktitle[blockNum]){
+                        let blocktitle = $('<div class="blocktitle"></div>').append($('<span>').text(sec.blocktitle[blockNum]))
+                        floatInner.prepend(blocktitle)
+
+                    }
+
+
+
+
                     if (sec.plateh) {
                         if (blockNum in sec.plateh)
                             floatInner.data('plateh', sec.plateh[blockNum])
@@ -389,6 +408,22 @@
 
                 let th = pcTable._createHeadCell(null, field.field, field.panelColor).appendTo(fieldCell);
                 let tdWrapper = $('<div class="td-wrapper">').appendTo(fieldCell);
+
+                if (field.format.titleleft || field.format.titleright) {
+                    fieldCell.css('display', 'grid');
+                    if (pcTable.isCreatorView){
+                        tdWrapper.css('margin-top', '18px')
+                    }
+
+                    if (field.format.titleleft) {
+                        fieldCell.css('grid-template-columns', field.format.titleleft + ' 1fr')
+                    } else {
+                        tdWrapper.prependTo(fieldCell)
+                        fieldCell.css('grid-template-columns', '1fr ' + field.format.titleright)
+                    }
+                }
+
+
                 let td = pcTable._createCell(pcTable.data_params, field.field).appendTo(tdWrapper);
 
 
