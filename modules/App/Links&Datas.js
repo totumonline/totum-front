@@ -791,9 +791,9 @@
             }
         }
 
-        let src = '/Table/0/' + data.table_id + '?sess_hash=' + data.sess_hash;
+        let src = '/Table/0/' + data.table_id + '?sess_hash=' + data.sess_hash+'&iframe=1';
         if (window.location.pathname !== '/' && !/^\/Table\//.test(window.location.pathname))
-            src = data.table_id + '?sess_hash=' + data.sess_hash;
+            src = data.table_id + '?sess_hash=' + data.sess_hash+'&iframe=1';
 
         let $iframe = $('<iframe style="width: 100%; height: ' + (height || "80vh") + '; border: none;" src="' + src + '">');
         $('body').append($iframe);

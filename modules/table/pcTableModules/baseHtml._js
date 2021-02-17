@@ -535,7 +535,7 @@
                 csv.append(this._getFavoriteStar());
 
             if (this.tableRow.panels_view) {
-                if (this.tableRow.panels_view.state === 'both') {
+                if (this.tableRow.panels_view.state === 'both' && !pcTable.isMobile && window===window.top) {
                     let btn;
                     if (this.viewType !== 'panels') {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
@@ -544,14 +544,13 @@
                             })
 
                         });
-                    } else if(!pcTable.isMobile) {
+                    } else {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-table"></i></button>').on('click', () => {
                             this.model.panelsView(false).then(() => {
                                 window.location.reload();
                             })
                         });
                     }
-
                     csv.append(btn);
                 }
             }
