@@ -38,11 +38,17 @@
                 this._table.addClass('no-correct-n-filtered')
             }
 
-            this._table.append(this._createHead())
-                .append(this._createFirstBody())
-                .append(this._createBody())
-                .append(this._createAfterBody())
 
+            if (this.isRotatedView) {
+                this._innerContainer.addClass('rotatedPcTable')
+                this._table.append(this._createHead())
+                    .append(this._createBody())
+            } else {
+                this._table.append(this._createHead())
+                    .append(this._createFirstBody())
+                    .append(this._createBody())
+                    .append(this._createAfterBody())
+            }
 
             this._footersBlock = this._createFootersTableBlock();
             this._table.append(this._footersBlock);
@@ -535,7 +541,7 @@
                 csv.append(this._getFavoriteStar());
 
             if (this.tableRow.panels_view) {
-                if (this.tableRow.panels_view.state === 'both' && !pcTable.isMobile && window===window.top) {
+                if (this.tableRow.panels_view.state === 'both' && !pcTable.isMobile && window === window.top) {
                     let btn;
                     if (this.viewType !== 'panels') {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
@@ -844,7 +850,6 @@
                     let insButtons = pcTable._getInsertButtons();
                     buttons.append(insButtons);
                 }
-
 
 
                 if (!pcTable.isCreatorView && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length) {
@@ -1330,6 +1335,10 @@
 
                             } else {
                                 td = pcTable._createHeadCell(k, columnsFooters[field.name][footerVarNum], columnsFooters[field.name][footerVarNum].panelColor).addClass('footer-name');
+
+                                if(pcTable.isRotatedView){
+                                    td.width('auto')
+                                }
                                 trHead.append(td);
                             }
 
@@ -1343,6 +1352,11 @@
                         }
 
                     });
+
+                    let width = this.rotated_view + 50
+                    trHead.width(width / 2)
+                    trVal.width(width / 2)
+
                     NewFooters = NewFooters.add(trHead);
                     NewFooters = NewFooters.add(trVal);
 
@@ -1479,7 +1493,8 @@
 
             this.tableWidth = $width;
 
-            this._table.width(this.tableWidth);
+            if (!this.isRotatedView)
+                this._table.width(this.tableWidth);
 
             return $row;
         }
@@ -1650,21 +1665,25 @@
         _createHeadCell: function (index, field, panelColor) {
             let pcTable = this;
 
-            let width = field.showMeWidth || field.width || 100;
-            if (field.category !== 'column' && width && pcTable.isMobile) {
-                width = 100;
-            }
-
             let $th = $('<th>')
                 .data('field', field.name);
-            if (pcTable.isMobile) {
-                if (field.category === 'column' && field.editable) {
+
+            let width = field.showMeWidth || field.width || 100;
+            if (!this.isRotatedView || !(field.category === 'column')) {
+
+                if (field.category !== 'column' && width && pcTable.isMobile) {
+                    width = 100;
+                }
+
+                if (pcTable.isMobile) {
+                    if (field.category === 'column' && field.editable) {
+                        width += 20;
+                    }
                     width += 20;
                 }
-                width += 20;
+                if (width)
+                    $th.width(width);
             }
-            if (width)
-                $th.width(width);
 
             if (pcTable.fields[field.name]) {
                 pcTable.fields[field.name].$th = $th;
@@ -1689,17 +1708,8 @@
             let spanTitle = $('<span class="cell-title">')
                 .text(title)
                 .attr('title', title).appendTo($th);
-            /* $th.popover({
-                 content: title,
-                 html: false,
-                 container: pcTable._container,
-                 trigger: "hover",
-                 placement: "top",
-                 template: '<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>'
-             })*/
 
-
-            if (pcTable.isCreatorView) {
+            if (pcTable.isCreatorView && !this.isRotatedView) {
                 let creatorIcons = $('<span class="creator-icons">').prependTo(spanTitle);
 
 
@@ -1851,6 +1861,7 @@
                     $th.addClass('worker-with-i');
                 }
                 span_help = $('<span class="btn btn-xxs btn-default cell-help" tabindex="-1" id="field-help-' + field.name + '"><i class="fa fa-info"></i></span>');
+                $th.addClass('with-help');
 
                 if (pcTable.isCreatorView && /^\s*<admin>.*?<\/admin>\s*$/s.test(field.help)) {
                     span_help.addClass('danger-backg');
@@ -2284,7 +2295,7 @@
             filterBlock.appendTo($th);
             let filterBlockWidth = filterBlock.find('.btn').length * 20 + 5;
 
-            if (this.isCreatorView && (!field.showMeWidth || field.showMeWidth > 50)) {
+            if (this.isCreatorView && !this.isRotatedView && (!field.showMeWidth || field.showMeWidth > 50)) {
                 let pcTableCreatorButtonsBlock = $('<div class="th-left-bottom-buttons">').appendTo($th);
                 if (field.category === 'footer' && field.column && this.fields[field.column] && !pcTable.hidden_fields[field.name]) {
                     width = this.fields[field.column].width;
@@ -2330,7 +2341,12 @@
 
             if (!item.$tr) {
                 item.$tr = $("<tr>");
-                item.$tr.height(pcTABLE_ROW_HEIGHT);
+
+                if (!pcTable.isRotatedView) {
+                    item.$tr.height(pcTABLE_ROW_HEIGHT);
+                } else {
+                    item.$tr.width(pcTable.rotated_view);
+                }
                 /* перенос в css сглючивает прокрутку*/
                 item.$tr.data('item', item);
             }

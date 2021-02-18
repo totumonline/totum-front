@@ -192,7 +192,7 @@ $.extend(App.pcTableMain.prototype, {
             }
         }
         this._insertButtons = $('<span>');
-        if (this.viewType === 'panels') {
+        if (this.viewType === 'panels' || this.isRotatedView) {
             $('<button data-action="add" class="btn btn-sm btn-warning">Добавить</button>')
                 .width(80)
                 .on('click', AddWithPanel)

@@ -130,6 +130,8 @@
                 contanerClass: 'pcTable-container',
                 tableClass: 'pcTable-table',
                 width: null,
+                /*TODO заменить на  null*/
+                rotated_view: 200,
 
                 /*TreeView*/
                 isTreeView: false,
@@ -283,6 +285,7 @@
 //=include pcTableModules/formatFunctions._js
 //=include pcTableModules/TableTreeView._js
 //=include pcTableModules/TablePanelView._js
+//=include pcTableModules/TableRotatedView._js
 
 
     $.extend(App.pcTableMain.prototype, {
@@ -553,8 +556,11 @@
                 this.loadVisibleFields(this.f && this.f.fieldhide ? this.f.fieldhide : undefined);
 
 
-                if(this.viewType==='panels' && !this.isMobile)
+                if (this.viewType === 'panels' && !this.isMobile)
                     this._renderTablePanelView();
+                else if (!this.isTreeView && this.rotated_view) {
+                    this._renderRotatedView();
+                }
 
                 this.ScrollClasterized = this.Scroll();
 
@@ -571,8 +577,6 @@
 
                 this.__addFilterable();
                 this._refreshHead();
-
-
 
 
                 if (pcTable.checkIsUpdated > 0) {
