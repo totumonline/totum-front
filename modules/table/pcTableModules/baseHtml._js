@@ -1353,7 +1353,7 @@
 
                     });
 
-                    let width = this.rotated_view + 50
+                    let width = this.tableRow['rotated_view'] + 50
                     trHead.width(width / 2)
                     trVal.width(width / 2)
 
@@ -2345,7 +2345,7 @@
                 if (!pcTable.isRotatedView) {
                     item.$tr.height(pcTABLE_ROW_HEIGHT);
                 } else {
-                    item.$tr.width(pcTable.rotated_view);
+                    item.$tr.width(pcTable.tableRow.rotated_view);
                 }
                 /* перенос в css сглючивает прокрутку*/
                 item.$tr.data('item', item);

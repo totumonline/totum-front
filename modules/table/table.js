@@ -130,8 +130,6 @@
                 contanerClass: 'pcTable-container',
                 tableClass: 'pcTable-table',
                 width: null,
-                /*TODO заменить на  null*/
-                rotated_view: 200,
 
                 /*TreeView*/
                 isTreeView: false,
@@ -558,7 +556,7 @@
 
                 if (this.viewType === 'panels' && !this.isMobile)
                     this._renderTablePanelView();
-                else if (!this.isTreeView && this.rotated_view) {
+                else if (!this.isTreeView && this.tableRow.rotated_view) {
                     this._renderRotatedView();
                 }
 
