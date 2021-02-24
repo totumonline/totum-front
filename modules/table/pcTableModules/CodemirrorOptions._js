@@ -157,7 +157,28 @@
                 function error() {
                     "use strict";
                     stream.skipToEnd();
+
                     return 'error';
+                }
+
+                function subFunc(){
+                    while(stream.peek()==='[' && stream.next()){
+                        if(stream.peek()==='"' || stream.peek()==="'"){
+                            let quote = stream.peek();
+                            stream.next()
+                            while ((stream.peek()!==quote) && stream.next()) {
+                            }
+                            stream.next()
+                        }else{
+                            while (/[a-z0-9_$#@.]/.test(stream.peek()) && stream.next()) {
+                            }
+                        }
+                        if(stream.peek()!==']'){
+                            return false;
+                        }
+                        stream.next()
+                    }
+                    return true;
                 }
 
                 state.lineNames = [];
@@ -222,7 +243,6 @@
 
                 if (stream.match(/(math|json)`[^`]*`/)) {
                     return "spec";
-
                 } else {
 
                     switch (stream.peek()) {
@@ -255,8 +275,12 @@
                             stream.next();
                             let classes = 'db_name';
 
-                            while (/[a-z0-9_А-Яа-я\-\[\]\$\#".]/.test(stream.peek()) && stream.next()) {
+                            while (/[a-z0-9_]/.test(stream.peek()) && stream.next()) {
                             }
+
+                            if(!subFunc()) return error();
+
+
                             let varName = stream.string.substring(stream.start + 1, stream.pos);
 
                             if (/[^0-9a-z._]/.test(varName.replace(/\[.*/g, '').slice(1))) {
@@ -266,7 +290,6 @@
                             if (varName === "") return error();
 
                             if (varName[0] === '$') {
-
                                 varName = varName.replace(/\[.*/g, '').slice(1).trim();
 
                                 if (state.lineNames.indexOf(varName) === -1) {
@@ -277,12 +300,14 @@
                             break;
                         case '@':
                             stream.next();
-                            let string = stream.peek();
                             let nS;
-                            while (/[a-z0-9_.\[\$\#"A-Z\]]/.test(nS = stream.peek()) && stream.next()) {
-                                string += nS;
+                            while (/[a-z0-9_.]/.test(nS = stream.peek()) && stream.next()) {
                             }
-                            if (/^[a-z0-9_]{3,}\.[a-z0-9_]{2,}(\[[a-zA-Z0-9_\$\#"]+\])*$/i.test(string)) {
+                            if(!subFunc()) return error();
+
+                            let string = stream.string.substring(stream.start + 1, stream.pos)
+
+                            if (/^[a-z0-9_]{3,}\.[a-z0-9_]{2,}(\[([a-zA-Z0-9_\$\#]+|"[^"]+"|'[^']+')\])*$/i.test(string)) {
                                 return "db_name";
                             }
 
@@ -293,13 +318,15 @@
 
                             if (stream.peek() === '#') {
                                 stream.next();
-                                while (/[a-zA-Z0-9_\-\[\]\$\#"]/i.test(stream.peek()) && stream.next()) {
+                                while (/[a-z0-9_]/.test(stream.peek()) && stream.next()) {
                                 }
+                                if(!subFunc()) return error();
                                 return 'code-var'
                             } else {
-
-                                while (/[a-zA-Z0-9_\[\]\$\#"]/i.test(stream.peek()) && stream.next()) {
+                                while (/[a-zA-Z0-9_"]/i.test(stream.peek()) && stream.next()) {
                                 }
+                                if(!subFunc()) return error();
+
                                 let variableName = stream.string.substring(stream.start, stream.pos);
                                 variableName = variableName.replace(/\[.*/g, '');
                                 let classes = 'variable';
