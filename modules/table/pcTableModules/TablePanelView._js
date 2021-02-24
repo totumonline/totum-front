@@ -568,7 +568,11 @@
             });
 
             this.rowButtonsCalcWidth = function () {
-                if (this.tableWidth < this._innerContainer.width()) {
+
+                if(this.tableWidth < this.tableRow.panels_view.width){
+                    this.__$rowsButtons.width(this.tableRow.panels_view.width)
+                }
+                else if (this.tableWidth < this._innerContainer.width()) {
                     this.__$rowsButtons.width(this.tableWidth)
                 } else if (!this.isMobile) {
                     this.__$rowsButtons.width(this._innerContainer.width())
@@ -576,6 +580,8 @@
             }
         } else {
             this.rowButtonsCalcWidth = function () {
+                this.__$rowsButtons.css('minWidth', this.tableRow.panels_view.width)
+
                 this.tableWidth = 0;
                 this._innerContainer.find('.panelsView-card').toArray().some((v) => {
                     let $v = $(v);
@@ -588,7 +594,11 @@
                 });
                 this.tableWidth -= this._innerContainer.offset().left + 50;
                 if (!this.isMobile) {
-                    this.__$rowsButtons.width(this.tableWidth)
+                    if(this.tableWidth < this.tableRow.panels_view.width){
+                        this.__$rowsButtons.width(this.tableRow.panels_view.width)
+                    } else{
+                        this.__$rowsButtons.width(this.tableWidth)
+                    }
                 }
             }
         }

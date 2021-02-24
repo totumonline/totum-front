@@ -124,6 +124,9 @@ App.pcTableMain.prototype.__applyFiltersToItem = function (item, notAttachIt) {
                     let field = pcTable._getFieldbyName(fieldName);
                     if (!field.checkIsFiltered(item[fieldName], filterVals)) {
                         visible = false;
+                    }else{
+                        debugger
+                        field.checkIsFiltered(item[fieldName], filterVals)
                     }
                     break;
                 case "h":

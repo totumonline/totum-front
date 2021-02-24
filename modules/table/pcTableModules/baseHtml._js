@@ -2323,8 +2323,8 @@
                 text = 'Подождите, таблица загружается';
             } else if (this.control.adding && !this.f.blockadd) {
                 $addBtn = $('<button class="btn btn-warning btn-xxs">Добавить строку</button>').width(120)
-                    .on('click', function () {
-                        pcTable._addInsertRow()
+                    .on('click',  () =>{
+                        this.__$rowsButtons.find('[data-action="add"]:first').click();
                     });
             }
 

@@ -196,7 +196,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         if (isEditFieldPanel) {
                             width = 'auto';
                         } else if (fCount === 1) {
-                            width = width < 790 ? width : 790;
+                            width = width < 970 ? width : 970;
                         } else {
                             width = width < 480 ? width : 480;
                         }

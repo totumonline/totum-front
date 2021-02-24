@@ -21,10 +21,13 @@
                     let span = $('<span class="rowName"></span>').appendTo($tdId);
                     if(this.mainFieldName && this.mainFieldName!=='id' && item[this.mainFieldName] && item[this.mainFieldName].v){
                             span.text(item[this.mainFieldName].v);
+                        $('<span class="rowId">' + item['id'] + '</span>').appendTo($tdId);
+                    }else{
+                        span.text(item['id']);
                     }
-                    $('<span class="rowId">' + item['id'] + '</span>').appendTo($tdId);
 
                     $tdId.appendTo($row);
+
                     this.row_actions_icons_add($tdId);
 
 
