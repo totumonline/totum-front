@@ -170,7 +170,7 @@
                             }
                             stream.next()
                         }else{
-                            while (/[a-z0-9_$#@.]/.test(stream.peek()) && stream.next()) {
+                            while (/[a-z0-9_A-Z$#@.]/.test(stream.peek()) && stream.next()) {
                             }
                         }
                         if(stream.peek()!==']'){
