@@ -2417,7 +2417,7 @@
                             tree: {v: item.tree.v},
                             tree_category: {v: item.tree_category ? item.tree_category.v : null}
                         };
-                        if (this.fields.tree.treeBfield) {
+                        if (this.fields.tree.treeBfield && oldData[this.fields.tree.treeBfield]) {
                             oldData[this.fields.tree.treeBfield] = {...item[this.fields.tree.treeBfield]}
                         }
                     }

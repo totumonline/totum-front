@@ -215,7 +215,7 @@
             }
             if (oldVal in this.treeIndex) {
                 let bOldVal = oldItem.id;
-                if (this.fields.tree.treeBfield)
+                if (this.fields.tree.treeBfield && oldItem[this.fields.tree.treeBfield])
                     bOldVal = oldItem[this.fields.tree.treeBfield].v;
 
                 let oldIndex = this.treeIndex[oldVal][arr].indexOf(bOldVal.toString());
@@ -234,7 +234,7 @@
                 let newTreeBranch = newData.tree.v || '';
 
                 let bVal = newData.id;
-                if (this.fields.tree.treeBfield)
+                if (this.fields.tree.treeBfield && newData[this.fields.tree.treeBfield])
                     bVal = newData[this.fields.tree.treeBfield].v;
 
                 if (this.fields.tree.treeViewType === 'self') {
