@@ -424,7 +424,6 @@
                     if (App.isEmpty(pcTable.data) && pcTable._content && pcTable._content.find('.' + this.noDataRowClass).length === 0) {
                         pcTable._content.append(pcTable._createNoDataRow());
                     }
-
                 }
 
                 if (deleted.length || addedRows.length || (json.chdata.nsorted_ids && pcTable.nSorted && !Object.equals(json.chdata.nsorted_ids, pcTable.dataSorted))) {

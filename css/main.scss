@@ -1298,6 +1298,9 @@ th {
     background-color: $tdDataRowMainColor;
 
     .InsertRow {
+      .text-edit-button{
+        width: 100%;
+      }
 
       td {
         background-color: $btn-warning-bgcolor;

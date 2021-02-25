@@ -186,6 +186,13 @@
     App.pcTableMain.prototype.placeInTree = function (newData, oldItem, openIt) {
         let arr = 'sorted';
 
+        const getBval = (newData) => {
+            let bVal = newData.id;
+            if (this.fields.tree.treeBfield && newData[this.fields.tree.treeBfield])
+                bVal = newData[this.fields.tree.treeBfield].v
+            return bVal;
+        }
+
         if (this.fields.tree.treeViewType === 'self') {
             arr = 'trees';
         }
@@ -214,15 +221,21 @@
                 }
             }
             if (oldVal in this.treeIndex) {
-                let bOldVal = oldItem.id;
-                if (this.fields.tree.treeBfield && oldItem[this.fields.tree.treeBfield])
-                    bOldVal = oldItem[this.fields.tree.treeBfield].v;
+                let bOldVal = getBval(oldItem);
 
                 let oldIndex = this.treeIndex[oldVal][arr].indexOf(bOldVal.toString());
                 if (oldIndex !== -1) {
                     this.treeIndex[oldVal][arr].splice(oldIndex, 1);
                 }
+            } else {
+                if (this.fields.tree.treeViewType === 'self' && (!newData || this.treeIndex[getBval(newData)].p != this.treeIndex[getBval(oldItem)].p)) {
+                    let sortIndex = this.treeSort.indexOf(getBval(oldItem).toString());
+                    if (sortIndex !== -1) {
+                        this.treeSort.splice(sortIndex, 1);
+                    }
+                }
             }
+
             this.treeRefresh = true;
         }
 
@@ -233,9 +246,7 @@
             } else {
                 let newTreeBranch = newData.tree.v || '';
 
-                let bVal = newData.id;
-                if (this.fields.tree.treeBfield && newData[this.fields.tree.treeBfield])
-                    bVal = newData[this.fields.tree.treeBfield].v;
+                let bVal = getBval(newData);
 
                 if (this.fields.tree.treeViewType === 'self') {
                     if (bVal in this.treeIndex) {
@@ -301,6 +312,10 @@
             let parent = this.getTreeBranch({v: tv.p});
             if (parent.trees.indexOf(tv.v) === -1) {
                 parent.trees.push(tv.v)
+            }
+            let SortIndex = this.treeSort.indexOf(tv.v);
+            if (SortIndex !== -1) {
+                this.treeSort.splice(SortIndex, 1)
             }
         } else if (tv.t && this.treeSort.indexOf(tv.v) === -1) {
             this.treeSort.push(tv.v)
