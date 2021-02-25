@@ -1336,7 +1336,7 @@
                             } else {
                                 td = pcTable._createHeadCell(k, columnsFooters[field.name][footerVarNum], columnsFooters[field.name][footerVarNum].panelColor).addClass('footer-name');
 
-                                if(pcTable.isRotatedView){
+                                if (pcTable.isRotatedView) {
                                     td.width('auto')
                                 }
                                 trHead.append(td);
@@ -2303,7 +2303,7 @@
                 let btn = $('<div class="btn  btn-xxs field_name copy_me"  tabindex="-1" data-copied-text="Скопировано">')
                     .text(field.name).appendTo(pcTableCreatorButtonsBlock).css('max-width', width - filterBlockWidth);
             }
-            if (pcTable.isMobile) {
+            if (!pcTable.isRotatedView && pcTable.isMobile) {
                 spanTitle.css('max-width', width - filterBlockWidth - 5)
             }
 
@@ -2323,7 +2323,7 @@
                 text = 'Подождите, таблица загружается';
             } else if (this.control.adding && !this.f.blockadd) {
                 $addBtn = $('<button class="btn btn-warning btn-xxs">Добавить строку</button>').width(120)
-                    .on('click',  () =>{
+                    .on('click', () => {
                         this.__$rowsButtons.find('[data-action="add"]:first').click();
                     });
             }
@@ -2417,6 +2417,9 @@
                             tree: {v: item.tree.v},
                             tree_category: {v: item.tree_category ? item.tree_category.v : null}
                         };
+                        if (this.fields.tree.treeBfield) {
+                            oldData[this.fields.tree.treeBfield] = {...item[this.fields.tree.treeBfield]}
+                        }
                     }
                     for (var k in newData) {
                         if (newData[k] !== null && typeof newData[k] == 'object') {

@@ -12,8 +12,8 @@
                 pcTable._actionTreeFolderRow.call(pcTable, node)
             }
         })
-       
-       
+
+
         this.model.loadTreeBranches = function (branchIds, withParents, recurcive) {
             return this.__ajax('post', {
                 method: 'loadTreeBranches',
@@ -203,6 +203,8 @@
             if (oldVal === null) {
                 oldVal = ""
             }
+
+
             if (this.fields.tree.treeViewType === 'other') {
                 if (oldItem.tree_category && oldItem.tree_category.v
                     && this.treeIndex[oldItem.tree_category.v]
@@ -212,7 +214,11 @@
                 }
             }
             if (oldVal in this.treeIndex) {
-                let oldIndex = this.treeIndex[oldVal][arr].indexOf(oldItem.id.toString());
+                let bOldVal = oldItem.id;
+                if (this.fields.tree.treeBfield)
+                    bOldVal = oldItem[this.fields.tree.treeBfield].v;
+
+                let oldIndex = this.treeIndex[oldVal][arr].indexOf(bOldVal.toString());
                 if (oldIndex !== -1) {
                     this.treeIndex[oldVal][arr].splice(oldIndex, 1);
                 }
@@ -227,16 +233,20 @@
             } else {
                 let newTreeBranch = newData.tree.v || '';
 
+                let bVal = newData.id;
+                if (this.fields.tree.treeBfield)
+                    bVal = newData[this.fields.tree.treeBfield].v;
+
                 if (this.fields.tree.treeViewType === 'self') {
-                    if (newData.id in this.treeIndex) {
-                        this.treeIndex[newData.id].row = newData
+                    if (bVal in this.treeIndex) {
+                        this.treeIndex[bVal].row = newData
                     } else {
                         arr = 'sorted'
                     }
                 }
                 if (newTreeBranch in this.treeIndex && this.treeIndex[newTreeBranch].l) {
-                    if (this.treeIndex[newTreeBranch][arr].indexOf(newData.id.toString()) === -1) {
-                        this.treeIndex[newTreeBranch][arr].push(newData.id.toString());
+                    if (this.treeIndex[newTreeBranch][arr].indexOf(bVal.toString()) === -1) {
+                        this.treeIndex[newTreeBranch][arr].push(bVal.toString());
                     }
 
                     if (openIt) {

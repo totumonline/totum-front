@@ -86,7 +86,7 @@
         .cell-value{
           padding-top: 2px;
         }
-        .cell-icon, .ibtn, .fa-exclamation-triangle{
+        >.cell-icon, >.ibtn, >.fa-exclamation-triangle{
           padding-top: 5px;
         }
 
@@ -95,4 +95,44 @@
     }
   }
 
+}
+
+@media (max-device-width: 1199px){
+  #table .innerContainer.rotatedPcTable {
+    table {
+      thead th, tbody td {
+        height: 46px;
+        max-height: 46px;
+        padding-top: 5px;
+
+
+        >.cell-icon, >.ibtn, >.fa-exclamation-triangle{
+          padding-top: 12px;
+        }
+        .cell-value{
+          padding-top: 0;
+        }
+      }
+
+      thead th {
+        padding-top: 15px;
+        .cell-title{
+          width: 100%;
+        }
+
+        &.with-filter2{
+          padding-right: 45px;
+
+          &.with-help{
+            padding-right: 65px;
+          }
+        }
+
+        .pcTable-filters {
+          bottom: 13px;
+          top: auto;
+        }
+      }
+    }
+  }
 }
