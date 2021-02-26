@@ -20,15 +20,20 @@ let path = {
 gulp.task('product:js', function () {
     process.env.NODE_ENV = 'production';
 
-    let _browserify = browserify({entries: 'Forms/js/App.jsx', extensions: ['.jsx'], debug: true});
+    let _browserify = browserify({entries: 'Forms/js/App.jsx', extensions: ['.jsx'], debug: false});
 
-    return _browserify.transform('babelify', {presets: ["@babel/preset-env", "@babel/preset-react"], plugins: ["@babel/plugin-transform-runtime", "@babel/plugin-proposal-class-properties"]}).bundle()
+    return _browserify
+        .transform('babelify', {
+            presets: ["@babel/preset-env", "@babel/preset-react"],
+            plugins: ["@babel/plugin-transform-runtime", "@babel/plugin-proposal-class-properties"]
+        }).bundle()
         .on('error', function (err) {
             console.log(err.toString());
             this.emit('end');
         })
         .pipe(source('forms.js'))
         .pipe(buffer())
+
         .pipe(uglify().on('error', function (e) {
             console.log(e);
         }))
@@ -42,7 +47,6 @@ gulp.task('product:css', function () {
 });
 
 
-
 gulp.task('QUICK-PROD', ['product:js', 'product:css'], function () {
 });
 
@@ -50,7 +54,7 @@ gulp.task('default', function () {
     gulp.start('Forms:devJs');
     gulp.start('Forms:devCss');
 
-    watch(['Forms/js/*','Forms/js/*/*/*', 'Forms/js/*/*'], function (event, cb) {
+    watch(['Forms/js/*', 'Forms/js/*/*/*', 'Forms/js/*/*'], function (event, cb) {
         gulp.start('Forms:devJs');
     });
     watch(['Forms/css/*', 'Forms/css/*/*'], function (event, cb) {
@@ -61,11 +65,15 @@ gulp.task('default', function () {
 {
 
     gulp.task('Forms:devJs', function () {
+
         // process.env.NODE_ENV = 'production';
 
         let _browserify = browserify({entries: 'Forms/js/App.jsx', extensions: ['.jsx'], debug: true});
 
-        return _browserify.transform('babelify', {presets: ["@babel/preset-env", "@babel/preset-react"], plugins: ["@babel/plugin-transform-runtime", "@babel/plugin-proposal-class-properties"]}).bundle()
+        return _browserify.transform('babelify', {
+            presets: ["@babel/preset-env", "@babel/preset-react"],
+            plugins: ["@babel/plugin-transform-runtime", "@babel/plugin-proposal-class-properties"]
+        }).bundle()
             .on('error', function (err) {
                 console.log(err.toString());
 
