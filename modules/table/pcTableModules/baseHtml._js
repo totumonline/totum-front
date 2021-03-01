@@ -359,6 +359,17 @@
                 }
                 if (pcTable.isCreatorView) {
                     let LogButtons = $('<div class="creator-log-buttons">');
+                    let codes = $.cookie('pcTableLogs') || '[]';
+                    codes = JSON.parse(codes);
+
+                    if(codes.length){
+                        LogButtons.addClass('with-logs')
+                        setTimeout(()=>{
+                            App.blink(LogButtons.find('button'), 6, "#fff")
+
+                        }, 100)
+                    }
+
 
                     let btn = $('<button class="btn btn-danger btn-sm"><i class="fa" style="width: 12px"></i> Показать логи</button>')
                         .appendTo(LogButtons)
@@ -366,26 +377,32 @@
                             let $div;
 
                             const apply = function () {
-                                let codes = [];
+                                let codesNew = [];
                                 $div.find('input:checked').each(function (i, input) {
-                                    codes.push($(input).attr('name'));
+                                    codesNew.push($(input).attr('name'));
                                 });
-                                if (codes.length > 0) {
+                                if (codesNew.length > 0) {
                                     btn.find('i').attr('class', 'fa fa-check-square-o')
                                 } else {
                                     btn.find('i').attr('class', 'fa fa-square-o')
                                 }
-                                $.cookie('pcTableLogs', JSON.stringify(codes), {path: '/'});
+                                $.cookie('pcTableLogs', JSON.stringify(codesNew), {path: '/'});
                                 pcTable.FullLOGS = [];
                                 pcTable.LOGS = {};
                                 btn.popover('destroy');
+
+                                if(codesNew.length){
+                                    LogButtons.addClass('with-logs')
+                                }else{
+                                    LogButtons.removeClass('with-logs')
+                                }
+                                codes=codesNew
                             };
                             if (btn.is('[aria-describedby]')) {
                                 $div = $('#' + btn.attr('aria-describedby'));
                                 apply();
                             } else {
-                                let codes = $.cookie('pcTableLogs') || '[]';
-                                codes = JSON.parse(codes);
+
                                 $div = $('<div>');
                                 $div.append('<div><input type="checkbox" name="c"/> Код</div>');
                                 $div.append('<div><input type="checkbox" name="a"/> Код-действия</div>');
@@ -430,8 +447,6 @@
                         });
 
                     let img = btn.find('i');
-                    let codes = $.cookie('pcTableLogs') || '[]';
-                    codes = JSON.parse(codes);
 
                     if (codes.length > 0) img.addClass('fa-check-square-o'); else img.addClass('fa-square-o');
 

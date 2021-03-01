@@ -45,7 +45,7 @@
             td.append(span)
 
 
-            if(this.fields.tree.selectTable && row.v){
+            if(this.fields.tree.selectTable && row.v && !this.fields.tree.treeBfield){
                 let edit = $('<button class="btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-edit"></i></button>').on('click', ()=>{
                     let obj
                     if(!this.fields.tree.treeBfield){
