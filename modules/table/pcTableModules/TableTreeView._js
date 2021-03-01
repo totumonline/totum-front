@@ -43,10 +43,10 @@
 
 
             td.append(span)
-            td.append(row.t)
+
 
             if(this.fields.tree.selectTable && row.v){
-                let edit = $('<button class="pull-right btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-edit"></i></button>').on('click', ()=>{
+                let edit = $('<button class="btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-edit"></i></button>').on('click', ()=>{
                     let obj
                     if(!this.fields.tree.treeBfield){
                         obj={id: row.v};
@@ -57,8 +57,9 @@
                         this.model.refresh();
                     })
                 })
-                td.append(edit)
+                span.append(edit)
             }
+            td.append(row.t)
 
             tr.append(td)
             return row.tr = tr;
