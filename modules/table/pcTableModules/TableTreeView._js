@@ -40,8 +40,26 @@
 
             span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
             let td = $('<td colspan="' + (this.fieldCategories.column.length - 1) + '" class="tree-view-td" style="padding-left: ' + (7 + row.level * 10) + 'px"></td>');
+
+
             td.append(span)
             td.append(row.t)
+
+            if(this.fields.tree.selectTable && row.v){
+                let edit = $('<button class="pull-right btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-edit"></i></button>').on('click', ()=>{
+                    let obj
+                    if(!this.fields.tree.treeBfield){
+                        obj={id: row.v};
+                    }else{
+                        //Здесь нужно получить ид по бфилду
+                    }
+                    new EditPanel(this.fields.tree.selectTable, null, obj).then(()=>{
+                        this.model.refresh();
+                    })
+                })
+                td.append(edit)
+            }
+
             tr.append(td)
             return row.tr = tr;
         }

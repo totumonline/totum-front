@@ -747,7 +747,12 @@
                             let unic_fields = [];
 
                             let newCheckedRows = [];
-                            pcTable.dataSortedVisible.forEach(function (id) {
+
+                            pcTable.dataSortedVisible.forEach(function (idObj) {
+                                let id = idObj;
+                                if(typeof idObj === 'object' && idObj.row){
+                                    id = idObj.row.id
+                                }
                                 if (checkedRows.indexOf(id) !== -1) {
                                     newCheckedRows.push(id);
                                 }
