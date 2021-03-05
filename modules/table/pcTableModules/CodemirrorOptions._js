@@ -289,9 +289,11 @@
                             if(stream.peek()==='$'){
                                 return classes;
                             }
-
-                            while (/^([shc]\.)?[a-z0-9_]*/.test(stream.string) && stream.next()) {
+                            stream.next();
+                            let str;
+                            while ((str=stream.string.substring(stream.start+1, stream.pos+1)) && /^([shc]\.)?[a-z0-9_]*$/.test(str) && stream.next()) {
                             }
+
 
                             if(!subFunc()) return error();
 
