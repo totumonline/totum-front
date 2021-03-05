@@ -880,13 +880,18 @@
                 }
 
                 if (!this.isTreeView) {
-                    let btnAdd = $('<button class="btn btn-default btn-sm" style="margin-left: 5px;" disabled>Сбросить <span class="fa fa-filter"></span></button>').width(82)
+                    let btnAdd = $('<button class="btn btn-sm" style="margin-left: 5px;">Сбросить <span class="fa fa-filter"></span></button>').width(82)
                         .on('click', function () {
                             setTimeout(function () {
                                 pcTable.filtersEmpty.call(pcTable)
                             }, 50)
 
                         });
+                    if(this.filters){
+                        btnAdd.addClass('btn-warning');
+                    }else{
+                        btnAdd.attr('disabled', true).addClass('btn-default');
+                    }
                     buttons.append(btnAdd);
                     this.filtersClearButton = btnAdd;
                 }
