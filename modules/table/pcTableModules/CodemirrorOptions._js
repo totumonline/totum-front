@@ -321,6 +321,9 @@
                             break;
                         case '$':
                             stream.next();
+                            if(stream.peek()==='$'){
+                                stream.next();
+                            }
 
                             if (stream.peek() === '#') {
                                 stream.next();
