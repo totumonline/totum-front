@@ -252,7 +252,7 @@
                 }
                 state.isStart = false;
 
-                if (stream.match(/(math|json)`[^`]*`/)) { 
+                if (stream.match(/(math|json)`[^`]*`/)) {
                     return "spec";
                 } else {
 
@@ -286,27 +286,22 @@
                             stream.next();
                             let classes = 'db_name';
 
-                            while (/[a-z0-9_]/.test(stream.peek()) && stream.next()) {
+                            if(stream.peek()==='$'){
+                                return classes;
+                            }
+
+                            while (/^([shc]\.)?[a-z0-9_]*/.test(stream.string) && stream.next()) {
                             }
 
                             if(!subFunc()) return error();
 
+                            let varName = stream.string.substring(stream.start+1, stream.pos).replace(/^([shc]\.)?([a-z0-9_]+)$/, '$2');
 
-                            let varName = stream.string.substring(stream.start + 1, stream.pos);
-
-                            if (/[^0-9a-z._]/.test(varName.replace(/\[.*/g, '').slice(1))) {
+                            if (varName!=='n' && !/^[0-9a-z_]{2,}/.test(varName.replace(/\[.*/g, '').slice(1))) {
                                 classes += ' tmp-error'
                             }
 
                             if (varName === "") return error();
-
-                            if (varName[0] === '$') {
-                                varName = varName.replace(/\[.*/g, '').slice(1).trim();
-
-                                if (state.lineNames.indexOf(varName) === -1) {
-                                    classes += " var-not-in";
-                                }
-                            }
                             return classes;
                             break;
                         case '@':
