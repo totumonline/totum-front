@@ -162,7 +162,12 @@
                 }
 
                 function subFunc(){
+                    let doubleS=false;
                     while(stream.peek()==='[' && stream.next()){
+                        if(stream.peek()==='['){
+                            doubleS = true;
+                            stream.next()
+                        }
                         if(stream.peek()==='"' || stream.peek()==="'"){
                             let quote = stream.peek();
                             stream.next()
@@ -173,6 +178,12 @@
                             while (/[a-z0-9_A-Z$#@.]/.test(stream.peek()) && stream.next()) {
                             }
                         }
+                        if(stream.peek()!==']'){
+                            return false;
+                        }
+                        stream.next()
+                    }
+                    if(doubleS){
                         if(stream.peek()!==']'){
                             return false;
                         }
