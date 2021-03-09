@@ -93,25 +93,34 @@
             let start, stop;
             let line = cm.getLine(cur.line);
 
-            if (shift) {
+            if (shift || alt) {
 
                 start = cur.ch;
-                if (line[start] === ';') start--;
-                while (line[start] && [';', '('].indexOf(line[start]) === -1) {
-                    start--;
-                }
-                stop = start;
 
 
-                while (line[start] && [':', '('].indexOf(line[start]) === -1) {
-                    start--;
+                let check=start;
+                while (line[check]===' '){
+                    check++;
                 }
-                if (line[start] === ':') {
+                /*Удаляем следующий параметр*/
+                if(line[check]===';'){
+                    start=check;
+                    stop=start+1;
+                    while (line[stop]!==';' && line[stop]!==')'){
+                        stop++;
+                    }
+                }
+                /*Удаляем текущий параметр*/
+                else{
+                    stop=start;
+                    while (line[stop]!==';' && line[stop]!==')'){
+                        stop++;
+                    }
+                    while (line[start]!=='(' && line[start]!==';'){
+                        start--;
+                    }
                     start++;
-                    if (line[start] === ' ') start++;
                 }
-                stop = cur.ch;
-
 
             } else {
 
@@ -129,10 +138,6 @@
                 stop = start;
                 while (line[stop] && [';', ')'].indexOf(line[stop]) === -1) {
                     stop++;
-                }
-
-                if (alt) {
-                    start = cur.ch;
                 }
             }
 
@@ -156,8 +161,8 @@
 
                 function error() {
                     "use strict";
+                    state.inFunction=false;
                     stream.skipToEnd();
-
                     return 'error';
                 }
 
@@ -291,7 +296,7 @@
                             }
                             stream.next();
                             let str;
-                            while ((str=stream.string.substring(stream.start+1, stream.pos+1)) && /^([shc]\.)?[a-z0-9_]*$/.test(str) && stream.next()) {
+                            while ((str=stream.string.substring(stream.start+1, stream.pos+1)) && /^[a-z0.-9_а-яА-Я]*$/.test(str) && stream.next()) {
                             }
 
 
@@ -299,7 +304,7 @@
 
                             let varName = stream.string.substring(stream.start+1, stream.pos).replace(/^([shc]\.)?([a-z0-9_]+)$/, '$2');
 
-                            if (varName!=='n' && !/^[0-9a-z_]{2,}/.test(varName.replace(/\[.*/g, '').slice(1))) {
+                            if (varName!=='n' && !/^[0-9a-z_]{2,}/.test(varName.replace(/\[.*/g, ''))) {
                                 classes += ' tmp-error'
                             }
 
@@ -653,7 +658,7 @@
         // Find the token at the cursor
         var cur = editor.getCursor(), token = getToken(editor, cur);
 
-        if (token.type !== 'error' && token.type !== 'string-name' && /\b(?:string|comment)\b/.test(token.type)) return;
+        if (token.type !== 'string-name' && /\b(?:string|comment)\b/.test(token.type)) return;
 
 
         var innerMode = CodeMirror.innerMode(editor.getMode(), token.state);
