@@ -116,6 +116,10 @@
                     while (line[stop]!==';' && line[stop]!==')'){
                         stop++;
                     }
+                    if(line[stop]===';'){
+                        stop++
+                    }
+
                     while (line[start]!=='(' && line[start]!==';'){
                         start--;
                     }
@@ -320,7 +324,7 @@
 
                             let string = stream.string.substring(stream.start + 1, stream.pos)
 
-                            if (/^[a-z0-9_]{3,}\.[a-z0-9_]{2,}(\[([a-zA-Z0-9_\$\#]+|"[^"]+"|'[^']+')\])*$/i.test(string)) {
+                            if (/^[a-z0-9_]{3,}\.[a-z0-9_]{2,}(\[\[?([a-zA-Z0-9_\$\#]+|"[^"]+"|'[^']+')\]?\])*$/i.test(string)) {
                                 return "db_name";
                             }
 
