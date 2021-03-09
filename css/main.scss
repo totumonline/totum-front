@@ -1306,7 +1306,7 @@ th {
         background-color: $btn-warning-bgcolor;
 
         &.ins-handed {
-          input:not([type="checkbox"]) {
+          input {
             width: calc(100% - 20px);
           }
 
