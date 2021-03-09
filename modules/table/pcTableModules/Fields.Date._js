@@ -200,6 +200,7 @@ fieldTypes.date = {
             'j': 'M',
             'z': 'DDD',
             'W': 'W',
+            'F': 'MMMM',
             'm': 'MM',
             'M': 'MMM',
             'n': 'M',
