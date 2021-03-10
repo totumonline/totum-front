@@ -303,9 +303,10 @@
 
                 this.width = $('body').width() - TreeWidth;
                 this._container.width(this.width);
-                if (!this.isMobile)
+                if (!this.isMobile) {
                     this._innerContainer.width(this.width - 80);
-                else {
+                    this.addInnerContainerScroll();
+                } else {
                     this._innerContainer.width('auto');
                 }
 
@@ -325,6 +326,47 @@
                     this._addHorizontalDraggable();
                 }
                 this._container.height(window.innerHeight - this._container.offset().top - 10);
+            },
+            addInnerContainerScroll: function () {
+
+                if (this._innerContainer.width() < this._innerContainer.find('>table:first, >div:first').width()) {
+                    if (!this._innerContainerPS) {
+                        this._innerContainerPS = new PerfectScrollbar(this._innerContainer.get(0), {});
+                        let timeout;
+                        this._container.on('scroll.scroller', () => {
+                            if (timeout) clearTimeout(timeout);
+                            timeout = setTimeout(scrollPosition, 30);
+                        })
+                    }
+                    const scrollPosition = () => {
+                        let innConTop = this._innerContainer.offset().top - 80 + 1;
+                        let innHeight = this._innerContainer.innerHeight() + parseInt($('#table').data('pctable')._innerContainer.css('paddingBottom'))
+                        let connHeight = this._container.innerHeight();
+                        /*Иннер не ниже высоты окна и не выше*/
+
+                        let old = this._innerContainerPS.scrollbarXBottom;
+                        this._innerContainerPS.scrollbarXBottom = 0;
+
+                        if (innConTop < connHeight && (innConTop + innHeight > connHeight)) {
+                            let scrollTop = innConTop + this._innerContainer.innerHeight();
+                            /*Скролл ниже высоты окна*/
+                            if (scrollTop > connHeight) {
+                                this._innerContainerPS.scrollbarXBottom = scrollTop - connHeight
+                            }
+                        }
+
+                        if (old != this._innerContainerPS.scrollbarXBottom) {
+
+                            this._innerContainerPS.update();
+                        }
+                    }
+                    setTimeout(scrollPosition, 500)
+
+                } else if (this._innerContainerPS) {
+                    this._container.off('scroll.scroller');
+                    this._innerContainerPS.destroy();
+                    this._innerContainerPS = null;
+                }
             },
             initForPanel: function (config) {
                 $.extend(true, this, config);

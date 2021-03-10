@@ -1011,6 +1011,15 @@ th {
     padding-bottom: 25px;
     padding-left: $idWidth;
     margin-bottom: 20px;
+
+    .ps__rail-x {
+      opacity: 1;
+      background-color: transparent;
+
+      .ps__thumb-x {
+        background-color: rgb(225, 224, 223);
+      }
+    }
   }
 
   .pcTable-scrollwrapper {
@@ -1164,11 +1173,12 @@ th {
   overflow-y: hidden;
   background-color: transparent;
 
-  .button-wrapper.cell-button{
+  .button-wrapper.cell-button {
     padding: 0 !important;
     display: inline-block;
     margin-left: 5px;
-    button.button-field{
+
+    button.button-field {
       font-size: 12px;
       line-height: 1.5;
       border-radius: 3px;
@@ -1209,10 +1219,12 @@ th {
 .pcTable-rowsWrapper {
   background-color: $rowsBackColor;
 }
-#refresh-notify{
-  display:grid;
+
+#refresh-notify {
+  display: grid;
   grid-template-columns: 1fr 95px;
 }
+
 .pcTable-beforeSpace {
 
   position: relative;
@@ -1298,7 +1310,7 @@ th {
     background-color: $tdDataRowMainColor;
 
     .InsertRow {
-      .text-edit-button{
+      .text-edit-button {
         width: 100%;
       }
 
@@ -1758,7 +1770,6 @@ ul.CodeMirror-hints {
       width: 1000px;
       max-width: 99%;
     }
-
 
 
     &.edit-field-panel .modal-dialog {

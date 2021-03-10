@@ -85,6 +85,7 @@ let path = {
             , 'bower_components/bootstrap3-dialog/dist/js/bootstrap-dialog.min.js'
             , 'bower_components/remarkable-bootstrap-notify/bootstrap-notify.min.js'
             , 'bower_components/jquery.nicescroll/jquery.nicescroll.min.js'
+            , 'node_modules/perfect-scrollbar/dist/perfect-scrollbar.js'
         ],
         dest: './http/js/'
     },
@@ -102,6 +103,7 @@ let path = {
             , 'bower_components/codemirror/addon/scroll/simplescrollbars.css'
             , 'bower_components/jstree/dist/themes/default-with-imgs/style.css'
             , 'bower_components/jstree/dist/themes/dark-with-imgs/style.css'
+            , 'node_modules/perfect-scrollbar/css/perfect-scrollbar.css'
         ],
         dest: './http/css/'
     },
