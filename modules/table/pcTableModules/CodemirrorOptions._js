@@ -98,29 +98,29 @@
                 start = cur.ch;
 
 
-                let check=start;
-                while (line[check]===' '){
+                let check = start;
+                while (line[check] === ' ') {
                     check++;
                 }
                 /*Удаляем следующий параметр*/
-                if(line[check]===';'){
-                    start=check;
-                    stop=start+1;
-                    while (line[stop]!==';' && line[stop]!==')'){
+                if (line[check] === ';') {
+                    start = check;
+                    stop = start + 1;
+                    while (line[stop] !== ';' && line[stop] !== ')') {
                         stop++;
                     }
                 }
                 /*Удаляем текущий параметр*/
-                else{
-                    stop=start;
-                    while (line[stop]!==';' && line[stop]!==')'){
+                else {
+                    stop = start;
+                    while (line[stop] !== ';' && line[stop] !== ')') {
                         stop++;
                     }
-                    if(line[stop]===';'){
+                    if (line[stop] === ';') {
                         stop++
                     }
 
-                    while (line[start]!=='(' && line[start]!==';'){
+                    while (line[start] !== '(' && line[start] !== ';') {
                         start--;
                     }
                     start++;
@@ -165,35 +165,35 @@
 
                 function error() {
                     "use strict";
-                    state.inFunction=false;
+                    state.inFunction = false;
                     stream.skipToEnd();
                     return 'error';
                 }
 
-                function subFunc(){
-                    let doubleS=false;
-                    while(stream.peek()==='[' && stream.next()){
-                        if(stream.peek()==='['){
+                function subFunc() {
+                    let doubleS = false;
+                    while (stream.peek() === '[' && stream.next()) {
+                        if (stream.peek() === '[') {
                             doubleS = true;
                             stream.next()
                         }
-                        if(stream.peek()==='"' || stream.peek()==="'"){
+                        if (stream.peek() === '"' || stream.peek() === "'") {
                             let quote = stream.peek();
                             stream.next()
-                            while ((stream.peek()!==quote) && stream.next()) {
+                            while ((stream.peek() !== quote) && stream.next()) {
                             }
                             stream.next()
-                        }else{
+                        } else {
                             while (/[a-z0-9_A-Z$#@.]/.test(stream.peek()) && stream.next()) {
                             }
                         }
-                        if(stream.peek()!==']'){
+                        if (stream.peek() !== ']') {
                             return false;
                         }
                         stream.next()
                     }
-                    if(doubleS){
-                        if(stream.peek()!==']'){
+                    if (doubleS) {
+                        if (stream.peek() !== ']') {
                             return false;
                         }
                         stream.next()
@@ -295,20 +295,20 @@
                             stream.next();
                             let classes = 'db_name';
 
-                            if(stream.peek()==='$'){
+                            if (stream.peek() === '$') {
                                 return classes;
                             }
                             stream.next();
                             let str;
-                            while ((str=stream.string.substring(stream.start+1, stream.pos+1)) && /^[a-z0.-9_а-яА-Я]*$/.test(str) && stream.next()) {
+                            while ((str = stream.string.substring(stream.start + 1, stream.pos + 1)) && /^[a-z0.-9_а-яА-Я]*$/.test(str) && stream.next()) {
                             }
 
 
-                            if(!subFunc()) return error();
+                            if (!subFunc()) return error();
 
-                            let varName = stream.string.substring(stream.start+1, stream.pos).replace(/^([shc]\.)?([a-z0-9_]+)$/, '$2');
+                            let varName = stream.string.substring(stream.start + 1, stream.pos).replace(/^([shc]\.)?([a-z0-9_]+)$/, '$2');
 
-                            if (varName!=='n' && !/^[0-9a-z_]{2,}/.test(varName.replace(/\[.*/g, ''))) {
+                            if (varName !== 'n' && !/^[0-9a-z_]{2,}/.test(varName.replace(/\[.*/g, ''))) {
                                 classes += ' tmp-error'
                             }
 
@@ -320,7 +320,7 @@
                             let nS;
                             while (/[a-z0-9_.]/.test(nS = stream.peek()) && stream.next()) {
                             }
-                            if(!subFunc()) return error();
+                            if (!subFunc()) return error();
 
                             let string = stream.string.substring(stream.start + 1, stream.pos)
 
@@ -332,7 +332,7 @@
                             break;
                         case '$':
                             stream.next();
-                            if(stream.peek()==='$'){
+                            if (stream.peek() === '$') {
                                 stream.next();
                             }
 
@@ -340,12 +340,12 @@
                                 stream.next();
                                 while (/[a-z0-9_]/.test(stream.peek()) && stream.next()) {
                                 }
-                                if(!subFunc()) return error();
+                                if (!subFunc()) return error();
                                 return 'code-var'
                             } else {
                                 while (/[a-zA-Z0-9_"]/i.test(stream.peek()) && stream.next()) {
                                 }
-                                if(!subFunc()) return error();
+                                if (!subFunc()) return error();
 
                                 let variableName = stream.string.substring(stream.start, stream.pos);
                                 variableName = variableName.replace(/\[.*/g, '');
@@ -532,11 +532,19 @@
                 let func;
                 let lower = tok.string.toLowerCase();
                 let params = '';
+
+                let delimiter;
                 if (lower.indexOf('/') !== -1) {
                     func = lower.substring(0, lower.indexOf('/'));
                     params = lower.substring(lower.indexOf('/'));
-
-                } else func = lower.trimRight();
+                    delimiter = '/';
+                }
+                else if (lower.indexOf(';') !== -1) {
+                    func = lower.substring(0, lower.indexOf(';'));
+                    params = lower.substring(lower.indexOf(';'));
+                    delimiter = ';';
+                }
+                else func = lower.trimRight();
 
 
                 if (func = TOTUMjsFuncs[func]) {
@@ -546,7 +554,7 @@
                         replaceText = '(';
                         let firstParamCh = 1;
                         let isFirst = true;
-                        params.split('/').forEach(function (str) {
+                        params.split(delimiter).forEach(function (str) {
                             if (str.length === 0) ;
                             else {
                                 if (!isFirst) {
@@ -660,7 +668,7 @@
 
     function scriptHint(editor, keywords, getToken, options) {
         // Find the token at the cursor
-        var cur = editor.getCursor(), token = getToken(editor, cur);
+        var cur = editor.getCursor(), token = getToken(editor, cur), line = editor.getLine(cur.line), start;
 
         if (token.type !== 'string-name' && /\b(?:string|comment)\b/.test(token.type)) return;
 
@@ -673,6 +681,7 @@
 
         token.state.isDb_name = false;
         token.state.showAll = true;
+
 
         options.inStart = true;
 
@@ -690,13 +699,13 @@
             }
         };
 
-        let match, $math={
+        let match, $math = {
             text: 'math``',
             textVis: 'math``'
             , title: '',
             render: renderHint, type: '', curPos: token.start + 5, hint: hintFunc,
             tab: true
-        }, $json={
+        }, $json = {
             text: 'json``',
             textVis: 'json``'
             , title: '',
@@ -720,6 +729,39 @@
             });
 
 
+        } else if (token.type === 'error' && token.state.func && token.state.func[2].length && [";", "/"].indexOf(line[token.start]) !== -1) {
+            keywords = [];
+
+            start = token.string.substr(0, cur.ch-token.start).replace(/^[;\/]+([a-z_]*).*/, '$1')
+            let end = token.string.substr(cur.ch-token.start ).replace(/^[;\/]+[a-z_]*(.*)/, '$1')
+
+            token.state.func[2].forEach(function (fName) {
+
+                let type = '';
+                let zpt = '';
+
+                if ([";", ")"].indexOf(end.trim()[0]) !== -1) zpt = end;
+                else if (end.match(/[)]/)) zpt = ';' + end;
+
+                if (token.state.func[3].indexOf(fName) !== -1) type += ' item-reqParam';
+                if (token.state.func[4].indexOf(fName) !== -1) type += ' item-multiParam';
+                if (DbFieldParams.indexOf(fName) !== -1) type += ' item-fieldParam';
+
+                let st = "";
+                if (["(", " "].indexOf(line[token.start - 1]) === -1) {
+                    st = " ";
+                }
+
+                keywords.push({
+                    text: st + fName + ': ' + zpt,
+                    textVis: fName,
+                    title: "",
+                    render: renderHint,
+                    type: type,
+                    hint: hintFunc,
+                    curPos: token.start + st.length + (fName + ': ' + zpt).length - zpt.length
+                });
+            })
         } else if (/^'.*?'?$/.test(token.string) && DbFieldParams.indexOf(token.state.functionParam) !== -1) {
 
             token.state.showAll = true;
@@ -955,14 +997,14 @@
 
             } else if (token.state.inFuncName) {
                 if (!token.state.inFunction) {
-                    if (match = token.string.match(/^([a-zA-Z]+)\//)) {
+                    if (match = token.string.match(/^([a-zA-Z]+)([\/;])/)) {
                         let func;
                         token.state.showAll = true;
 
                         if (func = TOTUMjsFuncs[match[1].toLowerCase()]) {
                             let oldStart = token.start;
-                            token.start = token.start + token.string.lastIndexOf('/') + 1;
-                            token.string = token.string.slice(token.string.lastIndexOf('/') + 1, cur.ch - oldStart);
+                            token.start = token.start + token.string.lastIndexOf(match[2]) + 1;
+                            token.string = token.string.slice(token.string.lastIndexOf(match[2]) + 1, cur.ch - oldStart);
                             token.end = cur.ch;
                             keywords = [];
                             func[2].forEach(function (fName) {
@@ -1028,7 +1070,7 @@
         }
 
         return {
-            list: getCompletions(token, keywords, options),
+            list: getCompletions(token, keywords, options, start),
             from: CodeMirror.Pos(cur.line, token.start),
             to: CodeMirror.Pos(cur.line, token.end)
         };
@@ -1485,8 +1527,10 @@
         };
     })();
 
-    function getCompletions(token, keywords, options) {
-        var foundStart = [], foundOther = [], start = token.string.toLowerCase(),
+    function getCompletions(token, keywords, options, start) {
+        var foundStart = [],
+            foundOther = [],
+            start = start === undefined ? token.string.toLowerCase() : start,
             global = options && options.globalScope || window;
 
         if (!token.state.showAll && start === "") return found;

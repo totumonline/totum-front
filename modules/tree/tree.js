@@ -295,10 +295,11 @@
                         return false;
                         break;
                     default:
+
                         if (!window.location.pathname.match(/^\/Table\//))
                             window.location.href = d.node.original.href;
                         else
-                            window.location.href = d.node.original.link ? d.node.original.link : prefix + d.node.original.href;
+                            window.location.href = d.node.original.link ? d.node.original.link : (d.node.original.href[0]!=='/'?prefix + d.node.original.href:d.node.original.href);
                 }
                 return false;
             });
