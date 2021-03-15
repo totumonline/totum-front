@@ -339,7 +339,7 @@
                         })
                     }
                     const scrollPosition = () => {
-                        let innConTop = this._innerContainer.offset().top - 80 + 1;
+                        let innConTop = this._innerContainer.offset().top - this._container.offset().top - 3 ;
                         let innHeight = this._innerContainer.innerHeight() + parseInt($('#table').data('pctable')._innerContainer.css('paddingBottom'))
                         let connHeight = this._container.innerHeight();
                         /*Иннер не ниже высоты окна и не выше*/
