@@ -189,7 +189,7 @@
                 sectionWithTitles = "title" in sectionParams ? sectionParams.title : sectionWithTitles;
 
                 if (!pcTable.isCreatorView) {
-                    if (sectionParams.lable === false) {
+                    if (sectionParams.label === false) {
                         sectionTitle = "";
                     } else {
                         sectionTitle = sectionTitle.replace(/(\*\*.*)/, '')
@@ -197,7 +197,7 @@
                     }
                 } else {
                     sectionTitle = sectionTitle.replace(/(\*\*.*)/, '')
-                    lableLowOpacity = sectionParams.lable === false || sectionTitle === ''
+                    lableLowOpacity = sectionParams.label === false || sectionTitle === ''
                 }
             }
 

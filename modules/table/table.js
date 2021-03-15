@@ -330,14 +330,7 @@
             addInnerContainerScroll: function () {
 
                 if (this._innerContainer.width() < this._innerContainer.find('>table:first, >div:first').width()) {
-                    if (!this._innerContainerPS) {
-                        this._innerContainerPS = new PerfectScrollbar(this._innerContainer.get(0), {});
-                        let timeout;
-                        this._container.on('scroll.scroller', () => {
-                            if (timeout) clearTimeout(timeout);
-                            timeout = setTimeout(scrollPosition, 30);
-                        })
-                    }
+
                     const scrollPosition = () => {
                         let innConTop = this._innerContainer.offset().top - this._container.offset().top - 3 ;
                         let innHeight = this._innerContainer.innerHeight() + parseInt($('#table').data('pctable')._innerContainer.css('paddingBottom'))
@@ -356,11 +349,20 @@
                         }
 
                         if (old != this._innerContainerPS.scrollbarXBottom) {
-
                             this._innerContainerPS.update();
                         }
                     }
+                    if (!this._innerContainerPS) {
+                        this._innerContainerPS = new PerfectScrollbar(this._innerContainer.get(0), {});
+                        let timeout;
+                        this._container.on('scroll.scroller', () => {
+                            if (timeout) clearTimeout(timeout);
+                            timeout = setTimeout(scrollPosition, 30);
+                        })
+                        new ResizeObserver(scrollPosition).observe(this.scrollWrapper.get(0))
+                    }
                     setTimeout(scrollPosition, 500)
+
 
                 } else if (this._innerContainerPS) {
                     this._container.off('scroll.scroller');
