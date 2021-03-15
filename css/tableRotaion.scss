@@ -83,6 +83,10 @@
             display: none;
           }
         }
+
+        &.editCell[data-fieldtype="checkbox"]{
+          padding-top: 6px;
+        }
         .cell-value{
           padding-top: 2px;
         }

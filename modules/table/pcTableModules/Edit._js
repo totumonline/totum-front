@@ -438,6 +438,7 @@ $.extend(App.pcTableMain.prototype, {
 
 
         td.html(input);
+        td.attr('data-fieldtype', field.type)
         td.data('SaveMe', function (event) {
             event = event || {};
             saveClbck(input, event);
