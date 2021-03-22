@@ -880,7 +880,7 @@
                 }
 
                 if (!this.isTreeView) {
-                    
+
                     let btnAdd = $('<button class="btn btn-sm" style="margin-left: 5px;">Сбросить <span class="fa fa-filter"></span></button>').width(82)
                         .on('click', function () {
                             setTimeout(function () {
@@ -906,7 +906,9 @@
                 buttons.prepend(comment.text(this.f.tablecomment));
                 setTimeout(function () {
                     let btnsWidth = 0;
-                    btnsWidth += comment.parent().find('>span').width() || 0;
+                    comment.parent().find('>span').each(function (){
+                        btnsWidth += $(this).width() || 0;
+                    })
                     btnsWidth += 90;
                     comment.css('width', 'calc(100% - ' + (btnsWidth) + 'px)');
 
