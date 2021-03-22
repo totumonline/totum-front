@@ -332,24 +332,26 @@
                 if (this._innerContainer.width() < this._innerContainer.find('>table:first, >div:first').width()) {
 
                     const scrollPosition = () => {
-                        let innConTop = this._innerContainer.offset().top - this._container.offset().top - 3 ;
+                        let innConTop = this._innerContainer.offset().top - this._container.offset().top - 3;
                         let innHeight = this._innerContainer.innerHeight() + parseInt($('#table').data('pctable')._innerContainer.css('paddingBottom'))
                         let connHeight = this._container.innerHeight();
                         /*Иннер не ниже высоты окна и не выше*/
 
-                        let old = this._innerContainerPS.scrollbarXBottom;
-                        this._innerContainerPS.scrollbarXBottom = 0;
+                        if (this._innerContainerPS) {
+                            let old = this._innerContainerPS.scrollbarXBottom;
+                            this._innerContainerPS.scrollbarXBottom = 0;
 
-                        if (innConTop < connHeight && (innConTop + innHeight > connHeight)) {
-                            let scrollTop = innConTop + this._innerContainer.innerHeight();
-                            /*Скролл ниже высоты окна*/
-                            if (scrollTop > connHeight) {
-                                this._innerContainerPS.scrollbarXBottom = scrollTop - connHeight
+                            if (innConTop < connHeight && (innConTop + innHeight > connHeight)) {
+                                let scrollTop = innConTop + this._innerContainer.innerHeight();
+                                /*Скролл ниже высоты окна*/
+                                if (scrollTop > connHeight) {
+                                    this._innerContainerPS.scrollbarXBottom = scrollTop - connHeight
+                                }
                             }
-                        }
 
-                        if (old != this._innerContainerPS.scrollbarXBottom) {
-                            this._innerContainerPS.update();
+                            if (old != this._innerContainerPS.scrollbarXBottom) {
+                                this._innerContainerPS.update();
+                            }
                         }
                     }
                     if (!this._innerContainerPS) {

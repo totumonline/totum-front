@@ -188,22 +188,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         let btnCopy;
         let btns = $('<div class="buttons"></div>');
         let mobileButtons = [];
-        //edit
-        if (td.is('.edt')) {
-            mobileButtons.push({
-                label: '<i class="fa fa-pencil-square-o"></i>',
-                action: function (dialog) {
-                    dialog.close();
-                    td.dblclick();
-                }
-            });
-            $('<button class="btn btn-sm btn-default"><i class="fa fa-pencil-square-o"></i></button>')
-                .on('click', function () {
-                    td.dblclick();
-                    return false;
-                })
-                .appendTo(btns);
-        }
+
         //copy
         {
             btnCopy = $('<button class="btn btn-sm btn-default copy_me" disabled data-copied-text="Скопировано" title="Копировать "><i class="fa fa-copy"></i></button>');
@@ -226,36 +211,26 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             btns.append(btnCopy);
         }
 
-
-        //log
-        if (pcTable.tableRow.type !== 'tmp' && field.logButton) {
+        //edit
+        if (td.is('.edt')) {
             mobileButtons.push({
-                label: 'Лог',
+                label: '<i class="fa fa-pencil-square-o"></i>',
                 action: function (dialog) {
-                    let rowName;
-                    if (pcTable.mainFieldName && item.id) {
-                        rowName = item[pcTable.mainFieldName].v;
-                    }
-                    pcTable.model.getFieldLog(field['name'], item.id, rowName);
                     dialog.close();
+                    td.dblclick();
                 }
             });
-
-            $('<button class="btn btn-sm btn-default" title="Лог ручных изменений по полю">Лог</button>')
+            $('<button class="btn btn-sm btn-default"><i class="fa fa-pencil-square-o"></i></button>')
                 .on('click', function () {
-                    let rowName;
-                    if (pcTable.mainFieldName && item.id) {
-                        rowName = item[pcTable.mainFieldName].v;
-                    }
-                    pcTable.model.getFieldLog(field['name'], item.id, rowName);
-                    let btn = $(this).addClass('disabled');
-                    setTimeout(function () {
-                        btn.removeClass('disabled');
-                    }, 1000);
+                    td.dblclick();
                     return false;
                 })
                 .appendTo(btns);
         }
+
+
+
+
 
         //filter
 
@@ -341,6 +316,36 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             btns.append(btn);
 
 
+            //log
+            if (pcTable.tableRow.type !== 'tmp' && field.logButton) {
+                mobileButtons.push({
+                    label: 'Лог',
+                    action: function (dialog) {
+                        let rowName;
+                        if (pcTable.mainFieldName && item.id) {
+                            rowName = item[pcTable.mainFieldName].v;
+                        }
+                        pcTable.model.getFieldLog(field['name'], item.id, rowName);
+                        dialog.close();
+                    }
+                });
+
+                $('<button class="btn btn-sm btn-default" title="Лог ручных изменений по полю">Лог</button>')
+                    .on('click', function () {
+                        let rowName;
+                        if (pcTable.mainFieldName && item.id) {
+                            rowName = item[pcTable.mainFieldName].v;
+                        }
+                        pcTable.model.getFieldLog(field['name'], item.id, rowName);
+                        let btn = $(this).addClass('disabled');
+                        setTimeout(function () {
+                            btn.removeClass('disabled');
+                        }, 1000);
+                        return false;
+                    })
+                    .appendTo(btns);
+            }
+            
             //close
             $('<button class="btn btn-sm btn-default" title="Закрыть панель"><i class="fa fa-times"></i></button>')
                 .on('click', function () {

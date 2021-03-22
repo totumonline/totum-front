@@ -115,7 +115,6 @@
                 blocktitle = {};
 
 
-
                 let sectionParams = {};
                 let sectionParamsMatch = sectionTitle.match(/\*\*(.*)/);
                 if (sectionParamsMatch) {
@@ -135,7 +134,16 @@
                                 case 'breakwidth':
                                 case 'titleleft':
                                 case 'titleright':
-                                    formatsFromSection[split[0]] = addSectionParam(formatsFromSection[split[0]], split, ((str) => str === false ? null : str), false);
+                                    let func;
+                                    if (['titleleft', 'titleright'].indexOf(split[0]) !== -1) {
+                                        func = ((str) => str.toString().trim().match(/^\d+$/) ? str.toString().trim() + 'px' : str)
+                                    } else {
+                                        func = ((str) => str)
+                                    }
+
+                                    formatsFromSection[split[0]] = addSectionParam(formatsFromSection[split[0]], split, func, false);
+
+
                                     break;
 
                                 case 'outline':
@@ -325,7 +333,7 @@
                 if (FloatInners.length === 0 || FloatInners[FloatInners.length - 1].num != blockNum || (field.field.tableBreakBefore && ind !== 0)) {
                     floatInner = $('<div class="pcTable-floatInner">').appendTo(floatBlock);
                     if (blockNum) {
-                        if(pcTable.isCreatorView){
+                        if (pcTable.isCreatorView) {
                             floatInner.append('<div data-type="blocknum" style="position:absolute;z-index: 100; color: #ff8585; background-color: #fff; padding: 3px; font-size: 10px; right: 4px; top: 4px;">' + blockNum + '</div>')
                         }
                     }
@@ -343,13 +351,11 @@
                             floatInner.data('plate', sec.plate)
                         }
                     }
-                    if(blockNum && sec.blocktitle[blockNum]){
+                    if (blockNum && sec.blocktitle[blockNum]) {
                         let blocktitle = $('<div class="blocktitle"></div>').append($('<span>').text(sec.blocktitle[blockNum]))
                         floatInner.prepend(blocktitle)
 
                     }
-
-
 
 
                     if (sec.plateh) {
@@ -411,7 +417,7 @@
 
                 if (field.format.titleleft || field.format.titleright) {
                     fieldCell.css('display', 'grid');
-                    if (pcTable.isCreatorView){
+                    if (pcTable.isCreatorView) {
                         tdWrapper.css('margin-top', '18px')
                     }
 
