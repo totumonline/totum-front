@@ -351,7 +351,7 @@
         this.__applyFilters();
 
 
-        if (this.dataSortedVisible.length) {
+        if (this.dataSortedVisible.length || this.kanban) {
             if (this.kanban) {
                 this._innerContainer.addClass('kanbanInnerContainer');
                 $div.addClass('kanbanWrapper').empty()
@@ -372,12 +372,16 @@
                     let kId = v[0];
                     $div.append(v.$div);
 
-                    this.dataSortedVisible.forEach((id) => {
-                        let val = this.data[id][this.tableRow.panels_view.kanban].v || "";
-                        if (val == kId) {
-                            $cards.append(this._getRowCard(id));
-                        }
-                    })
+                    if (this.dataSortedVisible.length) {
+                        this.dataSortedVisible.forEach((id) => {
+                            let val = this.data[id][this.tableRow.panels_view.kanban].v || "";
+                            if (val == kId) {
+                                $cards.append(this._getRowCard(id));
+                            }
+                        })
+                    } else {
+                        $cards.append('<div class="empty-kanban">Нет данных</div>');
+                    }
                 })
                 $div.width(width);
                 this.tableWidth = width;
@@ -392,7 +396,7 @@
         } else {
             $div.append('<div class="no-panels">Нет данных</div>');
         }
-        setTimeout(()=>{
+        setTimeout(() => {
             this._container.getNiceScroll().resize();
         })
 
@@ -530,7 +534,6 @@
             };
         }
         if (this.kanban) {
-
             let scrollable = this._container;
             let scroll_debounce;
             let wrapper, cln, attached = false;
@@ -569,10 +572,9 @@
 
             this.rowButtonsCalcWidth = function () {
 
-                if(this.tableWidth < this.tableRow.panels_view.width){
+                if (this.tableWidth < this.tableRow.panels_view.width) {
                     this.__$rowsButtons.width(this.tableRow.panels_view.width)
-                }
-                else if (this.tableWidth < this._innerContainer.width()) {
+                } else if (this.tableWidth < this._innerContainer.width()) {
                     this.__$rowsButtons.width(this.tableWidth)
                 } else if (!this.isMobile) {
                     this.__$rowsButtons.width(this._innerContainer.width())
@@ -594,9 +596,9 @@
                 });
                 this.tableWidth -= this._innerContainer.offset().left + 50;
                 if (!this.isMobile) {
-                    if(this.tableWidth < this.tableRow.panels_view.width){
+                    if (this.tableWidth < this.tableRow.panels_view.width) {
                         this.__$rowsButtons.width(this.tableRow.panels_view.width)
-                    } else{
+                    } else {
                         this.__$rowsButtons.width(this.tableWidth)
                     }
                 }
