@@ -261,7 +261,7 @@
                 }
                 state.isStart = false;
 
-                if (stream.match(/(math|json|str)`[^`]*`/)) {
+                if (stream.match(/(math|json|str|cond)`[^`]*`/)) {
                     return "spec";
                 } else {
 
