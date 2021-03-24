@@ -311,15 +311,17 @@ $.extend(App.pcTableMain.prototype, {
 
         let onAction = false;
 
-        let escClbck = function ($input, eventIN, tdIN) {
+        let escClbck = function ($input, eventIN, tdIN, noColorize) {
 
             let td = tdIN || $input.closest('td');
             let event = eventIN || {};
 
             if (!td.length || !td.closest('body').length) return false;
             var tdNew = pcTable._removeEditing.call(pcTable, td);
-            pcTable._colorizeElement(tdNew, pcTable_COLORS.blured);
-            goToFunc(event && event.altKey ? 'right' : (event && event.shiftKey ? 'down' : false))
+            if (!noColorize) {
+                pcTable._colorizeElement(tdNew, pcTable_COLORS.blured);
+                goToFunc(event && event.altKey ? 'right' : (event && event.shiftKey ? 'down' : false))
+            }
         };
         let revert = function (goTo) {
             pcTable._removeEditing.call(pcTable, td);
@@ -386,7 +388,6 @@ $.extend(App.pcTableMain.prototype, {
 
 
         let blurClbck = function ($input, event) {
-
             setTimeout(function () {
                 if (onAction) {
                     onAction = false;
@@ -403,7 +404,10 @@ $.extend(App.pcTableMain.prototype, {
             onAction = true;
 
             isFromButton = isFromButton || false;
-            if (!isFromButton && isGroupSelected) return false;
+            if (!isFromButton && isGroupSelected) {
+                escClbck($input, null, null, true);
+                return false;
+            }
 
             let td = $input.closest('td');
             let editVal;
@@ -511,27 +515,37 @@ $.extend(App.pcTableMain.prototype, {
 
             if (field.code && !field.codeOnlyInAdd) {
 
-                $btn = $('<button class="btn btn-sm btn-warning" data-name="Фиксировать выделенные"><i class="fa fa-hand-rock-o" title="Фиксировать"></i></button>');
-                $btn.data('click', function () {
-                    onAction = true;
-                    let selectedTd = pcTable._container.find('td.selected');
-                    pcTable._setTdSaving(selectedTd);
-                    let editedData = pcTable.selectedCells.getEditedData(null, true);
-                    pcTable._saveEdited.call(pcTable, selectedTd.closest('tr'), editedData, false);
-                });
-                editCellsBlock.append($btn);
-
-                $btn = $('<button class="btn btn-sm btn-danger" data-name="Сбросить ручные"><i class="fa fa-eraser" title="Сбросить ручные"></i></button>');
-                $btn.data('click', function () {
-                    onAction = true;
-                    let selectedTd = pcTable._container.find('td.selected');
-                    pcTable._setTdSaving(selectedTd);
-                    let editedData = pcTable.selectedCells.getEditedData('NULL');
-                    editedData['setValuesToDefaults'] = true;
-                    pcTable._saveEdited.call(pcTable, selectedTd.closest('tr'), editedData, false);
-                });
-                editCellsBlock.append($btn)
-
+                if (Object.keys(pcTable.selectedCells.ids).some((field) => {
+                    return pcTable.selectedCells.ids[field].some((id) => {
+                        return !pcTable.data[id][field].h;
+                    })
+                })) {
+                    $btn = $('<button class="btn btn-sm btn-warning" data-name="Фиксировать выделенные"><i class="fa fa-hand-rock-o" title="Фиксировать"></i></button>');
+                    $btn.data('click', function () {
+                        onAction = true;
+                        let selectedTd = pcTable._container.find('td.selected');
+                        pcTable._setTdSaving(selectedTd);
+                        let editedData = pcTable.selectedCells.getEditedData(null, true);
+                        pcTable._saveEdited.call(pcTable, selectedTd.closest('tr'), editedData, false);
+                    });
+                    editCellsBlock.append($btn);
+                }
+                if (Object.keys(pcTable.selectedCells.ids).some((field) => {
+                    return pcTable.selectedCells.ids[field].some((id) => {
+                        return pcTable.data[id][field].h;
+                    })
+                })) {
+                    $btn = $('<button class="btn btn-sm btn-danger" data-name="Сбросить ручные"><i class="fa fa-eraser" title="Сбросить ручные"></i></button>');
+                    $btn.data('click', function () {
+                        onAction = true;
+                        let selectedTd = pcTable._container.find('td.selected');
+                        pcTable._setTdSaving(selectedTd);
+                        let editedData = pcTable.selectedCells.getEditedData('NULL');
+                        editedData['setValuesToDefaults'] = true;
+                        pcTable._saveEdited.call(pcTable, selectedTd.closest('tr'), editedData, false);
+                    });
+                    editCellsBlock.append($btn)
+                }
             }
 
         } else if (item[field.name] && item[field.name].h == true) {

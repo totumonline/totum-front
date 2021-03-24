@@ -12,9 +12,10 @@ fieldTypes.checkbox = {
         var $input = $('<input type="checkbox" name="cell_edit"/>');
 
         if (tabindex) $input.attr('tabindex', tabindex);
-
+        let action = false;
         $input.on('keyup', function (event) {
             if (event.keyCode == 13) {
+                action = true;
                 setTimeout(function () {
                     enterClbk($input, event);
                 }, 20);
@@ -22,10 +23,12 @@ fieldTypes.checkbox = {
             }
         });
         $input.on('blur', function (event) {
-            setTimeout(function () {
-                if ($input.length && $input.closest('body').length)
-                    escClbk($input, event);
-            }, 220);
+            if (!action) {
+                setTimeout(function () {
+                    if ($input.length && $input.closest('body').length)
+                        escClbk($input, event);
+                }, 220);
+            }
         });
 
         var field = this;
@@ -35,6 +38,7 @@ fieldTypes.checkbox = {
         }
 
         $input.on('click', function (event) {
+            action = true;
             enterClbk($input, event);
         });
         return $input;
