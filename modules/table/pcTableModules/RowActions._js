@@ -414,7 +414,7 @@
 
                         }
                     }
-
+                    pcTable.selectedCells.summarizer.check();
                 }
 
                 if (deleted.length) {

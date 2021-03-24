@@ -69,7 +69,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         allTextData.append(textDiv).appendTo($panel);
 
         let textInner = textDiv.find('.copytext');
-        if (field.unitType && (val.v) !== null && !(field.type==='select' && field.multiple)) {
+        if (field.unitType && (val.v) !== null && !(field.type === 'select' && field.multiple)) {
             textInner.attr('data-unit', field.unitType);
         }
 
@@ -163,7 +163,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
             if (field.changeSelectTable) {
                 let divForPanneSelect = $('<div><div class="center"></div></div>');
-                
+
                 if (field.multi) {
                     if (val.v && val.v.length) {
                         let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Редактировать").on('click', () => {
@@ -173,8 +173,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
                 } else if (val.v) {
                     let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Редактировать").on('click', () => {
-                        field.sourceButtonClick(item).then((data)=>{
-                            if(data && data.json && data.json.updated){
+                        field.sourceButtonClick(item).then((data) => {
+                            if (data && data.json && data.json.updated) {
                                 pcTable.model.refresh();
                             }
                         });
@@ -227,9 +227,6 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 })
                 .appendTo(btns);
         }
-
-
-
 
 
         //filter
@@ -345,7 +342,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     })
                     .appendTo(btns);
             }
-            
+
             //close
             $('<button class="btn btn-sm btn-default" title="Закрыть панель"><i class="fa fa-times"></i></button>')
                 .on('click', function () {
@@ -759,9 +756,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 }
 
 
-                DoIt.call(this);
-
-                function DoIt() {
+                (() => {
 
                     if (td.is('.val')/* || !td.is('.edt')*/) {
                         if (this.notRowCell && this.notRowCell.index(td) !== -1) {
@@ -883,13 +878,65 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         $('table.pcTable-table').addClass('selected-multi');
                     } else if (SelectedKeys.length === 1 && Object.values(pcTable.selectedCells.ids)[0].length > 1) {
                         $('table.pcTable-table').removeClass('selected-multi').addClass('selected-column');
+
                     } else {
                         $('table.pcTable-table').removeClass('selected-multi').removeClass('selected-column');
                     }
+                })();
+                this.summarizer.check();
+            },
+            summarizer: {
+                timeout: null,
+                element: $('<div class="summarizer"><span></span> : <span></span></div>'),
+                status: 0,
+                check: () => {
+                    let selFields = Object.keys(pcTable.selectedCells.ids);
+                    let numberField;
+                    if (selFields.length && selFields.every((field) => {
+                        if (!numberField) {
+                            numberField = pcTable.fields[field];
+                        } else {
+                            if (pcTable.fields[field].dectimalPlaces && pcTable.fields[field].dectimalPlaces > numberField.dectimalPlaces) {
+                                numberField = pcTable.fields[field];
+                            }
+                        }
 
+                        return pcTable.fields[field].type === 'number';
+                    })) {
+                        let count = 0;
+                        let summ = 0;
+                        selFields.forEach((field) => {
+                            pcTable.selectedCells.ids[field].forEach((id) => {
+                                count++;
+                                if (pcTable.data[id][field].v !== null) {
+                                    summ += parseFloat(pcTable.data[id][field].v);
+                                }
+                            })
+                        })
+                        let spans = pcTable.selectedCells.summarizer.element.find('span');
+
+                        spans[1].innerHTML = numberField.numberFormat(summ, numberField.dectimalPlaces || 0);
+                        spans[0].innerHTML = count;
+
+                        if (!pcTable.selectedCells.summarizer.status) {
+                            pcTable.selectedCells.summarizer.status = 1;
+                            pcTable.selectedCells.summarizer.timeout = setTimeout(() => {
+                                pcTable.selectedCells.summarizer.element.appendTo(pcTable._innerContainer);
+                            }, 1000);
+                        }
+                    } else {
+                        pcTable.selectedCells.summarizer.empty();
+                    }
+                },
+                empty: () => {
+                    if (pcTable.selectedCells.summarizer.status) {
+                        pcTable.selectedCells.summarizer.status = 0;
+                        if (pcTable.selectedCells.summarizer.timeout) {
+                            clearTimeout(pcTable.selectedCells.summarizer.timeout);
+                        }
+                        pcTable.selectedCells.summarizer.element.detach();
+                    }
                 }
-
-
             }
 
         };
@@ -918,12 +965,10 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     type: null,
                     draggable: true
                 })
-            }
-            else if (event.target.className === 'file-pdf-preview') {
+            } else if (event.target.className === 'file-pdf-preview') {
                 window.open(event.target.getAttribute('data-filename'))
                 return false;
-            }
-            else {
+            } else {
                 let element = $(this);
 
                 if (element.is('.cell-button') && !element.find('button.button-field').is(':disabled')) {
