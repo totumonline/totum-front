@@ -890,6 +890,11 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 element: $('<div class="summarizer"><span></span> : <span></span></div>'),
                 status: 0,
                 check: () => {
+                    if (pcTable.isMobile) {
+                        return;
+                    }
+
+
                     let selFields = Object.keys(pcTable.selectedCells.ids);
                     let numberField;
                     if (selFields.length && selFields.every((field) => {
