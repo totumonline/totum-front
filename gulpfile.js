@@ -130,6 +130,7 @@ gulp.task('DEVELOP', function () {
 
     gulp.start('product:js');
     gulp.start('product:css');
+    gulp.start('dev:fonts');
 
     watch([path.js.src, path.js.src_parts, './functions.js'], function (event, cb) {
         gulp.start('product:js');
@@ -138,6 +139,12 @@ gulp.task('DEVELOP', function () {
         gulp.start('product:css');
     });
 });
+
+gulp.task('dev:fonts', function () {
+    return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', 'bower_components/JetBrainsMono/fonts/webfonts/*.*'])
+        .pipe(gulp.dest('./http/fonts/'));
+});
+
 gulp.task('QUICK-PROD', ['product:js', 'product:css'], function () {
     return gulp.src('./http/**/main.*')/*.pipe(debug())*/
         .pipe(gulp.dest(path.http.dest));
@@ -151,8 +158,8 @@ gulp.task('QUICK-PROD-DEV', function () {
 /*product*/
 {
     gulp.task('product:fonts', function () {
-        return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', 'bower_components/JetBrainsMono/web/woff2/*.*'])
-            .pipe(gulp.dest('./http/fonts/'));
+        return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', 'bower_components/JetBrainsMono/fonts/webfonts/*.*'])
+            .pipe(gulp.dest('../../../http/fonts/'));
     });
 
     gulp.task('product:jsLibs', function () {

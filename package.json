@@ -7,7 +7,7 @@
   "devDependencies": {
     "@babel/core": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
-    "bower": "^1.8.8",
+    "bower": "^1.8.12",
     "browserify": "^17.0.0",
     "child_process": "^1.0.2",
     "cors": "^2.8.5",
@@ -57,6 +57,7 @@
     "copy-to-base": "cp http/js/* ../../../http/js/ && cp http/css/* ../../../http/css/",
     "run-dev-gulp": "gulp DEVELOP",
     "run-all-prod-gulp": "gulp",
-    "run-quick-prod-gulp": "gulp QUICK-PROD"
+    "run-quick-prod-gulp": "gulp QUICK-PROD",
+
   }
 }

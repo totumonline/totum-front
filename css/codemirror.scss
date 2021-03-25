@@ -1,12 +1,17 @@
 @import "vars.scss";
 
+#pk .CodeMirror {
+  border-color: transparent;
+}
 #pk .CodeMirror * {
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
   line-height: 22px;
+  font-weight: 300;
 }
 #pk .CodeMirror-scroll{
   height: auto;
+  background-color: #fcfcfc;
 
   margin-bottom: 0;
   padding-bottom: 50px;
