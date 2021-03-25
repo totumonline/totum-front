@@ -2,12 +2,17 @@
 
 #pk .CodeMirror {
   border-color: transparent;
+  .CodeMirror-gutters{
+    border-right-color: transparent;
+  }
 }
 #pk .CodeMirror * {
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
   line-height: 22px;
   font-weight: 300;
+
+
 }
 #pk .CodeMirror-scroll{
   height: auto;
