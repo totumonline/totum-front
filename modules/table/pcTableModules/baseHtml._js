@@ -819,18 +819,19 @@
                 if (!this.PageData) {
                     this.PageData = {$block: $('<div class="ttm-pagination"></div>')}
                 }
+                let lastId;
 
-                if (this.data) {
+                /*if (this.data) {
                     let keys = Object.keys(this.data);
                     if (keys.length > 0) {
                         lastId = keys[keys.length - 1];
                     }
-                }
+                }*/
                 let pageSplit = this.tableRow.pagination.split('/');
                 let pageCount = this.isMobile ? pageSplit[1] : pageSplit[0];
-                let lastId = pageSplit[2] || null;
-                this.PageData.onPage = parseInt(pageCount);
+                lastId = pageSplit[2] || null;
 
+                this.PageData.onPage = parseInt(pageCount);
                 this.model.loadPage(this, lastId, pageCount);
 
                 return this.PageData.$block.empty().append('<i class="fa fa-spinner"></i>');
