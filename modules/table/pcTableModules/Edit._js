@@ -404,9 +404,10 @@ $.extend(App.pcTableMain.prototype, {
             onAction = true;
 
             isFromButton = isFromButton || false;
-            if (!isFromButton && isGroupSelected) {
-                escClbck($input, null, null, true);
-                return false;
+            if (!isFromButton) {
+                if (isGroupSelected) {
+                    return false;
+                }
             }
 
             let td = $input.closest('td');
