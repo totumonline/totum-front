@@ -362,9 +362,9 @@
                     let codes = $.cookie('pcTableLogs') || '[]';
                     codes = JSON.parse(codes);
 
-                    if(codes.length){
+                    if (codes.length) {
                         LogButtons.addClass('with-logs')
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             App.blink(LogButtons.find('button'), 6, "#fff")
 
                         }, 100)
@@ -391,12 +391,12 @@
                                 pcTable.LOGS = {};
                                 btn.popover('destroy');
 
-                                if(codesNew.length){
+                                if (codesNew.length) {
                                     LogButtons.addClass('with-logs')
-                                }else{
+                                } else {
                                     LogButtons.removeClass('with-logs')
                                 }
-                                codes=codesNew
+                                codes = codesNew
                             };
                             if (btn.is('[aria-describedby]')) {
                                 $div = $('#' + btn.attr('aria-describedby'));
@@ -889,9 +889,9 @@
                             }, 50)
 
                         });
-                    if(this.filters && Object.keys(this.filters).length){
+                    if (this.filters && Object.keys(this.filters).length) {
                         btnAdd.addClass('btn-warning');
-                    }else{
+                    } else {
                         btnAdd.attr('disabled', true).addClass('btn-default');
                     }
                     buttons.append(btnAdd);
@@ -907,7 +907,7 @@
                 buttons.prepend(comment.text(this.f.tablecomment));
                 setTimeout(function () {
                     let btnsWidth = 0;
-                    comment.parent().find('>span').each(function (){
+                    comment.parent().find('>span').each(function () {
                         btnsWidth += $(this).width() || 0;
                     })
                     btnsWidth += 90;
@@ -1232,7 +1232,7 @@
             if (pcTable.fieldCategories.param) {
 
                 $.each(pcTable.fieldCategories.param, function (k, v) {
-                    if (!v.showMeWidth || paramsChanges && paramsChanges[v.name] !== true) return true;
+                    if (!v.showMeWidth || paramsChanges && !paramsChanges[v.name]) return true;
 
                     let cell = pcTable._createCell(pcTable.data_params, v);
                     let oldCell = pcTable._paramsBlock.find('td[data-field="' + v.name + '"]');
@@ -1242,7 +1242,7 @@
 
                     oldCell.replaceWith(cell);
 
-                    if (colorizeIt) {
+                    if (colorizeIt && paramsChanges[v.name] !== 'f') {
                         pcTable._colorizeElement(cell, pcTable_COLORS.saved);
                     }
                 })
@@ -1441,13 +1441,13 @@
 
             if (pcTable.fieldCategories.footer) {
                 $.each(pcTable.fieldCategories.footer, function (k, v) {
-                    if (!v.showMeWidth || paramsChanges && paramsChanges[v.name] !== true) return true;
+                    if (!v.showMeWidth || paramsChanges && !paramsChanges[v.name]) return true;
 
                     let cell = pcTable._createCell(pcTable.data_params, v);
                     cell.attr('data-field', v.name);
                     footers.find('td[data-field="' + v.name + '"]').replaceWith(cell);
 
-                    if (colorizeIt) {
+                    if (colorizeIt && paramsChanges[v.name] !== 'f') {
                         pcTable._colorizeElement(cell, pcTable_COLORS.saved);
                     }
                 })

@@ -109,7 +109,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 column3 = $('<div>').appendTo(this.$panel);
                 columns['column2'] = column2;
                 columns['column3'] = column3;
-            } else if (fCount > 1) {
+            } else if (fCount > 6) {
                 column2 = $('<div>').appendTo(this.$panel);
                 columns['column2'] = column2;
             } else {
@@ -190,18 +190,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     }
                     nowKoeffs += thisKoeff;
                     cell = EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format, divWrapper);
-                    {
-                        let width = (window.innerWidth - 48);
-
-                        if (isEditFieldPanel) {
-                            width = 'auto';
-                        } else if (fCount === 1) {
-                            width = width < 970 ? width : 970;
-                        } else {
-                            width = width < 480 ? width : 480;
-                        }
-                        divWrapper.width(width);
-                    }
+                    divWrapper.width('auto');
                 }
 
 
@@ -392,7 +381,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             }
 
-            EditPanelFunc.cleateBootstrapPanel.call(EditPanelFunc, title, dialogType, (EditPanelFunc.type === 'insert' || isAnyEditableFields));
+            EditPanelFunc.cleateBootstrapPanel.call(EditPanelFunc, title, dialogType, (EditPanelFunc.type === 'insert' || isAnyEditableFields), fCount<7?'one-column-panel':'');
             EditPanelFunc.isNewPanel = false;
 
         }
@@ -400,7 +389,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     };
 
 
-    this.cleateBootstrapPanel = function (title, type, isEditable) {
+    this.cleateBootstrapPanel = function (title, type, isEditable, cssClass) {
         let EditPanel = this;
         let buttons = [];
         let save;
@@ -470,7 +459,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             type: type || null,
             size: BootstrapDialog.SIZE_WIDE,
             message: EditPanel.$panel,
-            cssClass: 'edit-row-panel' + (isEditFieldPanel ? ' edit-field-panel' : ''),
+            cssClass: 'edit-row-panel ' + (isEditFieldPanel ? 'edit-field-panel' : cssClass || ''),
             title: title,
             buttons: buttons,
             draggable: true,
@@ -555,7 +544,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             } else {
                 if (field.CodeActionOnClick && !divWrapper.find('.edit-btn').length) {
                     divWrapper.append($('<button class="btn btn-sm btn-default edit-btn" style="width: 100%"><i class="fa fa-hand-pointer-o"></i></button>').on('click', () => {
-                        EditPanelFunc.pcTable.model.refresh = ()=>{
+                        EditPanelFunc.pcTable.model.refresh = () => {
                             window.location.reload();
                         }
                         EditPanelFunc.pcTable.model.dblClick(item.id, field.name).then((json) => {

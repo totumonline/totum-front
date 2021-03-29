@@ -1203,6 +1203,10 @@
         "use strict";
 
         CodeMirror.showHint = function (cm, getHints, options) {
+            /*setTimeout(()=>{
+                debugger
+            }, 1000)*/
+
             // We want a single cursor position.
             if (cm.somethingSelected()) return;
             if (getHints == null) getHints = cm.getHelper(cm.getCursor(), "hint");
@@ -1218,6 +1222,7 @@
                 }, completion.options);
             else
                 return completion.showHints(getHints(cm, completion.options));
+
         };
 
         CodeMirror.commentMe = function (cm) {

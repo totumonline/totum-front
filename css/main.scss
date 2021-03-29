@@ -1622,10 +1622,11 @@ th.id .pcTable-filters.for-selected .btn {
 
 #ttmInput {
   margin-top: 20px;
-  border-color: #e8e8e8;
   height: auto;
   font-size: 12px;
-  border-radius: 3px;
+
+    border-color: transparent;
+    background-color: #fcfcfc;
 }
 
 .InsertPanel .cell-wrapper {
@@ -1660,6 +1661,9 @@ th.id .pcTable-filters.for-selected .btn {
   .form-control, [data-field-type="select"] .bootstrap-select button {
     border-color: transparent;
     background-color: #fcfcfc;
+  }
+  .form-control.bootstrap-select {
+       box-shadow: none;
   }
 
   .btns {
@@ -1786,6 +1790,10 @@ ul.CodeMirror-hints {
     .modal-dialog {
       width: 1200px;
       max-width: 99%;
+
+    }
+    &.one-column-panel .modal-dialog{
+      width: 600px;
     }
 
 

@@ -5,14 +5,15 @@
   .CodeMirror-gutters{
     border-right-color: transparent;
   }
+  .CodeMirror-linenumber{
+    color: #cecece;
+  }
+  font-weight: 300;
 }
 #pk .CodeMirror * {
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
   line-height: 26px;
-  font-weight: 300;
-
-
 }
 #pk .CodeMirror-scroll{
   height: auto;
@@ -29,6 +30,7 @@
 .CodeMirror-hints {
   border-radius: 0;
   padding: 3px;
+  font-size: 13px;
 
 
   li.CodeMirror-hint-active {
