@@ -1692,7 +1692,7 @@
             let $th = $('<th>')
                 .data('field', field.name);
 
-            field.$th=$th;
+            field.$th = $th;
 
             let width = field.showMeWidth || field.width || 100;
             if (!this.isRotatedView || !(field.category === 'column')) {
@@ -1964,7 +1964,7 @@
                     let $divPopoverArrowDown = $('<div class="cell-header-dropdown">');
                     let btnDropDown = $('<button class="btn btn-default btn-xxs"  tabindex="-1">' +
                         '<i class="fa fa-caret-down"></i></button>');
-                    if(pcTable.fixedColumn === field.name){
+                    if (pcTable.fixedColumn === field.name) {
                         btnDropDown.addClass('btn-warning').removeClass('btn-default')
                     }
 
@@ -2173,13 +2173,13 @@
                     }
                     if (field.showMeWidth > 0 && field.category === 'column' && !pcTable.isTreeView) {
 
-                        if(pcTable.fixedColumn===field.name){
+                        if (pcTable.fixedColumn === field.name) {
                             $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Открепить').addClass('color-warning').appendTo($divPopoverArrowDown)
                                 .on('click', function () {
                                     btnDropDown.popover('hide');
                                     pcTable.fixColumn();
                                 });
-                        }else{
+                        } else if (field.type !== 'button') {
                             $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Закрепить').appendTo($divPopoverArrowDown)
                                 .on('click', function () {
                                     btnDropDown.popover('hide');
