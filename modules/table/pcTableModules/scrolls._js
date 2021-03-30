@@ -245,6 +245,7 @@
                         if (forceCheckTableHeight && pcTable._container.getNiceScroll) {
                             pcTable._container.getNiceScroll().resize();
                         }
+                        pcTable._content.trigger('scrolled');
                     }
                 },
                 setHtml: function (rows, top, bottom, forceRefreshData) {

@@ -273,6 +273,7 @@
 //=include pcTableModules/RowActions._js
 //=include pcTableModules/Insert._js
 //=include pcTableModules/baseHtml._js
+//=include pcTableModules/FixColumn._js
 //=include pcTableModules/FloatBlocks._js
 //=include pcTableModules/HorizontalDraggable._js
 //=include pcTableModules/RowPanel._js
@@ -355,7 +356,11 @@
                         }
                     }
                     if (!this._innerContainerPS) {
-                        this._innerContainerPS = new PerfectScrollbar(this._innerContainer.get(0), {});
+                        this._innerContainerPS = new PerfectScrollbar(this._innerContainer.get(0), {
+                            useBothWheelAxes: false,
+                            scrollbarYActive: false,
+                            scrollbarXActive: true
+                        });
                         let timeout;
                         this._container.on('scroll.scroller', () => {
                             if (timeout) clearTimeout(timeout);
