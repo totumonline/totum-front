@@ -21,7 +21,7 @@
 
                     let $th = pcTable.fields[name].$th;
                     let i = $th.index();
-                    let width = $th.width();
+                    let width = $th.outerWidth();
                     let fieldOffset = $th.offset().left;
 
 
