@@ -440,7 +440,7 @@
                 pcTable._innerContainer.on('scroll', closeCallbacksFunc);
 
                 if (this.isCreatorView) {
-                    this._container.on('click, contextmenu', '.creator-icons:not([aria-describedby])', function (event) {
+                    this._container.on('click contextmenu', '.creator-icons:not([aria-describedby])', function (event) {
                         let self = $(this);
                         pcTable.creatorIconsPopover(self)
                     })
