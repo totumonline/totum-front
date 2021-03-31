@@ -179,11 +179,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                                 cln = 3
                             columns['column' + cln].append(divWrapper);
                         }
-                    } else if (nowKoeffs > 0 && fCount === 2) {
-                        column2.append(divWrapper);
                     } else if (nowKoeffs < allKoeffs && (nowKoeffs + thisKoeff) > allKoeffs) {
                         column1.append(divWrapper);
                     } else if ((nowKoeffs + thisKoeff) <= allKoeffs) {
+                        column1.append(divWrapper);
+                    } else if (!column2.length) {
                         column1.append(divWrapper);
                     } else {
                         column2.append(divWrapper);
@@ -381,7 +381,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             }
 
-            EditPanelFunc.cleateBootstrapPanel.call(EditPanelFunc, title, dialogType, (EditPanelFunc.type === 'insert' || isAnyEditableFields), fCount<7?'one-column-panel':'');
+            EditPanelFunc.cleateBootstrapPanel.call(EditPanelFunc, title, dialogType, (EditPanelFunc.type === 'insert' || isAnyEditableFields), fCount < 7 ? 'one-column-panel' : '');
             EditPanelFunc.isNewPanel = false;
 
         }

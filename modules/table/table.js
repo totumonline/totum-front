@@ -440,37 +440,9 @@
                 pcTable._innerContainer.on('scroll', closeCallbacksFunc);
 
                 if (this.isCreatorView) {
-                    this._container.on('click', '.creator-icons:not([aria-describedby])', function (event) {
+                    this._container.on('click, contextmenu', '.creator-icons:not([aria-describedby])', function (event) {
                         let self = $(this);
-                        if (self.closest('.popover').length === 0) {
-                            let div = $('<div style="width:200px" class="creator-icons">');
-
-
-                            self.find('i').each(function (i, icon) {
-                                let el = $('<div>').append(icon.outerHTML);
-
-                                if (i === 0) {
-                                    el.append(' ' + self.closest('th').find('.field_name').text());
-                                }
-
-                                if (icon.title) el.append(' ' + icon.title);
-                                div.append(el)
-                            });
-
-
-                            App.popNotify({
-                                isParams: true,
-                                $text: div,
-                                element: self,
-                                trigger: 'manual',
-                                placement: 'top'
-                            });
-                            setTimeout(function () {
-                                pcTable.closeCallbacks.push(function () {
-                                    if (self && self.length) self.popover('destroy');
-                                })
-                            }, 200);
-                        }
+                        pcTable.creatorIconsPopover(self)
                     })
                 }
                 pcTable._container.on('contextmenu', function (event) {
@@ -599,54 +571,252 @@
                 }
 
             },
-            render: function (addVars) {
-                let pcTable = this;
+            creatorIconsPopover: async function (icons) {
+                if (icons.closest('.popover').length === 0) {
+                    let div = $('<div style="width:200px" class="creator-icons">');
 
-                this.loadVisibleFields(this.f && this.f.fieldhide ? this.f.fieldhide : undefined);
+
+                    icons.find('i').each(function (i, icon) {
+                        if (['fa-star', 'fa-star-o', 'fa-cogs'].some((c) => {
+                            return $(icon).hasClass(c)
+                        })) return;
+                        let el = $('<div>').append(icon.outerHTML);
+
+                        if (i === 0) {
+                            el.append(' ' + icons.closest('th').find('.field_name').text());
+                        }
+
+                        if (icon.title) el.append(' ' + icon.title);
+                        div.append(el)
+                    });
+
+                    let buttons = [];
+                    let field = this.fields[icons.closest('th').data('field')];
+                    let settingsData;
+                    const getSettings = async function () {
+                        return new Promise((resolve, reject) => {
+                            App.getPcTableById(2).then(function (pcTableTablesFields) {
+                                resolve(pcTableTablesFields.fields.data_src.jsonFields)
+                            })
+                        })
+                    }
 
 
-                if (this.viewType === 'panels' && !this.isMobile)
-                    this._renderTablePanelView();
-                else if (!this.isTreeView && this.tableRow.rotated_view) {
-                    this._renderRotatedView();
+                    let codes = {"code": "Код", "codeAction": "Действ", "codeSelect": "Селект", "format": "Формат"};
+                    let codesKeys = Object.keys(codes);
+                    for (let i = 0; i < codesKeys.length; i++) {
+                        let name = codesKeys[i];
+                        let nameCode = name === 'format' ? 'formatCode' : '';
+
+                        if (nameCode ? field[nameCode] : field[name]) {
+                            buttons.push($('<button class="btn btn-default btn-xxs" data-action="' + name + '">' + codes[name] + '</button>'))
+                        } else {
+                            if (!settingsData) {
+                                settingsData = await getSettings();
+                            }
+                            if (settingsData.fieldListParams[field.type].indexOf(name) !== -1) {
+                                buttons.push($('<button class="btn btn-default btn-xxs offed" data-action="' + name + '">' + codes[name] + '</button>'))
+                            }
+                        }
+                    }
+
+                    if (buttons.length) {
+                        let divButtons = $('<div class="buttons">');
+                        buttons.forEach((btn) => {
+                            divButtons.append(btn);
+                        })
+                        divButtons.appendTo(div);
+                        let pcTable = this;
+
+                        divButtons.on('click', 'button', async function () {
+                            let btn = $(this);
+                            if (!settingsData) {
+                                settingsData = await getSettings();
+                            }
+                            pcTable.editFieldCode(field.name, btn.data('action'), settingsData).then((refresh) => {
+                                if (refresh) {
+                                    switch (field.category) {
+                                        case 'param':
+                                            pcTable._rerendParamsblock();
+                                            break;
+                                        case 'footer':
+                                            if (field.column) {
+                                                pcTable._rerenderColumnsFooter();
+                                            } else {
+                                                pcTable._rerendBottomFoolers();
+                                            }
+                                            break;
+                                        case 'filter':
+                                            pcTable._rerendFiltersBlock();
+                                            break;
+                                        case 'column':
+                                            pcTable._refreshHead();
+                                            break;
+                                    }
+                                    setTimeout(() => {
+                                        App.blink(field.$th.find('.creator-icons i'), 3, "green", 'color');
+                                    }, 100)
+                                } else {
+                                    App.blink(icons.find('i'), 3, "green", 'color')
+                                }
+
+                            }, () => {
+                            })
+                        })
+                    }
+
+
+                    App.popNotify({
+                        isParams: true,
+                        $text: div,
+                        element: icons,
+                        trigger: 'manual',
+                        placement: 'top'
+                    });
+                    setTimeout(() => {
+                        this.closeCallbacks.push(function () {
+                            if (icons && icons.length) icons.popover('destroy');
+                        })
+                    }, 200);
+                }
+            },
+            editFieldCode: function (fieldName, codeType, settings) {
+                return new Promise((resolve, reject) => {
+                    let field = this.fields[fieldName];
+                    let fieldSettingsList = settings.fieldListParams[field.type];
+                    let pcTable = this;
+                    App.getPcTableById(2).then(function (pcTableTablesFields) {
+                        pcTableTablesFields.model.checkEditRow({id: field.id}).then(function (json) {
+                            let checkboxes = [];
+                            let chList = [];
+
+                            switch (codeType) {
+                                case 'code':
+                                    chList = ["codeOnlyInAdd"];
+                                    break;
+                                case 'codeAction':
+                                    chList = ["CodeActionOnAdd", "CodeActionOnChange", "CodeActionOnDelete", "CodeActionOnClick"]
+                                    break;
+                                case
+                                'select':
+                                    chList = ["codeSelectIndividual", "multiple"];
+                                    break;
+                            }
+                            if (chList) {
+                                chList.forEach((name) => {
+                                    if (fieldSettingsList.indexOf(name) !== -1) {
+                                        let fieldSettings = settings.fieldSettings[name];
+                                        if (fieldSettings['categories']) {
+                                            if (fieldSettings['categories'].indexOf(field.category) === -1) return false;
+                                        }
+                                        checkboxes.push([name, fieldSettings.title, json.row.data_src.v[name] ? json.row.data_src.v[name].Val : false]);
+                                    }
+                                })
+                            }
+
+
+                            App.totumCodeEdit(json.row.data_src.v[codeType].Val, codeType + ' поля ' + field.name, field.pcTable.tableRow.name, checkboxes)
+                                .then((data) => {
+                                    pcTableTablesFields.model.checkEditRow({id: field.id}).then(function (json) {
+                                        let data_src = json.row.data_src.v
+                                        //data.code
+                                        //data.checkboxes
+
+                                        data_src[codeType].Val = data.code;
+                                        let refresh = false
+
+                                        if (!data_src[codeType].isOn) {
+                                            data_src[codeType].isOn = true;
+                                            refresh = true;
+                                        }
+                                        Object.keys(data.checkboxes).forEach((name) => {
+                                            if (data_src[name].Val !== data.checkboxes[name]) {
+                                                data_src[name].Val = data.checkboxes[name];
+                                                data_src[name].isOn = data.checkboxes[name];
+                                                refresh = true;
+                                            }
+                                        })
+
+                                        pcTableTablesFields.model.save({[field.id]: {data_src: data_src}}).then(() => {
+
+                                            Object.keys(data.checkboxes).forEach((name) => {
+                                                pcTable.fields[field.name][name] = data.checkboxes[name];
+                                            })
+                                            if (codeType === 'format') {
+                                                pcTable.fields[field.name].formatCode = true;
+                                                pcTable.model.refresh();
+                                            } else if (codeType === 'select') {
+                                                window.location.refresh()
+                                            } else {
+                                                pcTable.fields[field.name][codeType] = true;
+                                                pcTable.model.refresh(null, 'recalculate');
+                                            }
+                                            resolve(refresh);
+
+                                        }).fail(reject);
+                                    }).fail(reject);
+                                }, function (e) {
+                                    console.log(e);
+                                    reject()
+                                })
+
+
+                        });
+                    })
+                })
+
+            },
+            render:
+
+                function (addVars) {
+                    let pcTable = this;
+
+                    this.loadVisibleFields(this.f && this.f.fieldhide ? this.f.fieldhide : undefined);
+
+
+                    if (this.viewType === 'panels' && !this.isMobile)
+                        this._renderTablePanelView();
+                    else if (!this.isTreeView && this.tableRow.rotated_view) {
+                        this._renderRotatedView();
+                    }
+
+                    this.ScrollClasterized = this.Scroll();
+
+                    this._renderTable();
+                    if (this._sorting.addSortable) {
+                        this._sorting.addSortable(this);
+                    }
+                    this._addSelectable();
+                    this._addEditable();
+                    this._addSave();
+
+                    this.row_actions_add();
+
+
+                    this.__addFilterable();
+                    this._refreshHead();
+
+
+                    if (pcTable.checkIsUpdated > 0) {
+                        let timeout = parseInt(pcTable.checkIsUpdated) * 2000;
+                        setTimeout(function () {
+                            pcTable.checkTableIsChanged.call(pcTable, timeout)
+                        }, timeout);
+                    }
+
+
+                    this.refresh();
+                    this.setWidthes();
+                    this.__applyFilters();
+                    if (addVars) {
+                        if (this.isMobile)
+                            pcTable._addInsertWithPanel(addVars);
+                        else
+                            pcTable._addInsert(addVars);
+                    }
+
                 }
 
-                this.ScrollClasterized = this.Scroll();
-
-                this._renderTable();
-                if (this._sorting.addSortable) {
-                    this._sorting.addSortable(this);
-                }
-                this._addSelectable();
-                this._addEditable();
-                this._addSave();
-
-                this.row_actions_add();
-
-
-                this.__addFilterable();
-                this._refreshHead();
-
-
-                if (pcTable.checkIsUpdated > 0) {
-                    let timeout = parseInt(pcTable.checkIsUpdated) * 2000;
-                    setTimeout(function () {
-                        pcTable.checkTableIsChanged.call(pcTable, timeout)
-                    }, timeout);
-                }
-
-
-                this.refresh();
-                this.setWidthes();
-                this.__applyFilters();
-                if (addVars) {
-                    if (this.isMobile)
-                        pcTable._addInsertWithPanel(addVars);
-                    else
-                        pcTable._addInsert(addVars);
-                }
-
-            }
             ,
             _addSave: function () {
                 $('body').on('keyup', function (event) {
@@ -873,7 +1043,8 @@
                 }
             }
         }
-    );
+    )
+    ;
 
 
 })

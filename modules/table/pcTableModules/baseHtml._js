@@ -1806,7 +1806,7 @@
                         if (title !== '') title += "\n";
                         title += 'При удалении';
                     }
-                    if (field.type === 'button') {
+                    if (field.type === 'button' || field.CodeActionOnClick) {
                         if (title !== '') title += "\n";
                         title += 'При клике';
                     }

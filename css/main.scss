@@ -2046,6 +2046,39 @@ input {
       font-weight: normal;
 
     }
+    .buttons{
+      text-indent: revert;
+      padding: 0;
+      padding-top: 5px;
+    }
+    button{
+      text-align: center;
+      margin-left: 3px;
+      &:first-child{
+        margin-left: 0;
+      }
+
+      background-color: $btn-danger-bgcolor;
+      color: #fff;
+      width: 45px;
+      text-shadow: none;
+      &.offed{
+        background-color: #fafafa;
+        color: #333;
+      }
+    }
+  }
+}
+.totum-edit-codes{
+  .flex{
+    display: flex;
+    padding-top: 10px;
+    div{
+      padding-left: 10px;
+    }
+    label{
+      padding-left: 5px;
+    }
   }
 }
 
