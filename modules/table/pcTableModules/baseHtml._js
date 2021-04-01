@@ -408,7 +408,7 @@
                                 $div.append('<div><input type="checkbox" name="a"/> Код-действия</div>');
                                 $div.append('<div><input type="checkbox" name="s"/> Селекты</div>');
                                 $div.append('<div><input type="checkbox" name="f"/> Форматирование</div>');
-                                $div.append('<div><input type="checkbox" name="recalcs"/> Пересчеты и селекты</div>');
+
                                 let $times = $('<div><input type="checkbox" name="flds"/> Время расчета полей </div>');
                                 $div.append($times)
                                 if (pcTable.FieldLOGS && pcTable.FieldLOGS.length) {

@@ -2074,11 +2074,12 @@ input {
     display: flex;
     padding-top: 10px;
     div{
-      padding-left: 10px;
+      padding-left: 20px;
     }
     label{
       padding-left: 5px;
       cursor: pointer;
+      font-weight: normal;
     }
   }
 }

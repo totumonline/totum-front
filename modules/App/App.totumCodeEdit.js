@@ -79,7 +79,7 @@
                             }
                         }, "Отключение кода")
                     },
-                    cssClass: 'btn-danger btn-save',
+                    cssClass: 'btn-default btn-save',
                     label: 'Отключить'
                 })
 

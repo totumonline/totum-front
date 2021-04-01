@@ -723,7 +723,11 @@
                                 + ' | sort: ' + field.ord;
 
 
-                            App.totumCodeEdit(json.row.data_src.v[codeType].Val, title, field.pcTable.tableRow.name, checkboxes, codeType !== 'codeSelect')
+                            App.totumCodeEdit(
+                                json.row.data_src.v[codeType].Val, title, field.pcTable.tableRow.name,
+                                checkboxes,
+                                (codeType !== 'codeSelect' && json.row.data_src.v[codeType] && json.row.data_src.v[codeType].isOn)
+                            )
                                 .then((data) => {
                                     pcTableTablesFields.model.checkEditRow({id: field.id}).then(function (json) {
                                         let data_src = json.row.data_src.v
