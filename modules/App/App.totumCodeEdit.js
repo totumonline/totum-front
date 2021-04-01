@@ -1,5 +1,5 @@
 (function () {
-    App.totumCodeEdit = function (code, title, table, checkboxes) {
+    App.totumCodeEdit = function (code, title, table, checkboxes, canBeSwitchOff) {
         return new Promise((resolve, reject) => {
 
             let newCodemirrorDiv = $('<div class="HTMLEditor" id="bigOneCodemirror" style="height: 100%;"></div>');
@@ -18,7 +18,9 @@
                 chsDiv = $('<div class="flex">').appendTo(wrapper);
                 checkboxes.forEach(([name, title, val]) => {
                     let ch = $('<input type="checkbox">').attr('name', name);
-                    let chDiv = $('<div class="">').append(ch).append($('<label>').text(title));
+                    let chDiv = $('<div class="">').append(ch).append($('<label>').text(title).on('click', () => {
+                        ch.trigger('click')
+                    }));
                     if (val) {
                         ch.prop("checked", true)
                     }
@@ -28,21 +30,25 @@
 
 
             let Dialog
-            const save=()=>{
-                let chVals=[];
+
+            const getCheckboxes = () => {
+                let chVals = [];
                 if (checkboxes) {
                     wrapper.find('input').each(function () {
-                        chVals[this.name]=this.checked;
+                        chVals[this.name] = this.checked;
                     })
                 }
+                return chVals;
+            }
+            const save = () => {
                 resolved = true;
                 resolve({
                     code: editorMax.getValue(),
-                    checkboxes: chVals,
+                    checkboxes: getCheckboxes(),
                 })
                 Dialog.close();
             }
-            $('body').on(eventName, ()=>{
+            $('body').on(eventName, () => {
 
                 save();
             });
@@ -54,11 +60,33 @@
                 }
 
             ];
+            if (canBeSwitchOff)
+                buttons.unshift({
+                    action: () => {
+                        App.confirmation("Отключить код " + title, {
+                            "Отмена": (dialog) => {
+                                dialog.close();
+                            },
+                            'Отключить': (dialog) => {
+                                resolved = true;
+                                resolve({
+                                    code: editorMax.getValue(),
+                                    checkboxes: getCheckboxes(),
+                                    switchoff: true,
+                                })
+                                dialog.close();
+                                Dialog.close();
+                            }
+                        }, "Отключение кода")
+                    },
+                    cssClass: 'btn-danger btn-save',
+                    label: 'Отключить'
+                })
 
             window.top.BootstrapDialog.show({
                 message: wrapper,
                 type: null,
-                title: 'Правка текстового поля',
+                title: title,
                 buttons: buttons,
                 cssClass: 'fieldparams-edit-panel',
                 draggable: true,
@@ -68,7 +96,7 @@
                         reject();
                 },
                 onshow: function (dialog) {
-                    Dialog=dialog;
+                    Dialog = dialog;
                     dialog.$modalHeader.css('cursor', 'pointer');
 
                     let heightDiff = 100;

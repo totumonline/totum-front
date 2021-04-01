@@ -698,7 +698,7 @@
                                     chList = ["CodeActionOnAdd", "CodeActionOnChange", "CodeActionOnDelete", "CodeActionOnClick"]
                                     break;
                                 case
-                                'select':
+                                'codeSelect':
                                     chList = ["codeSelectIndividual", "multiple"];
                                     break;
                             }
@@ -715,7 +715,16 @@
                             }
 
 
-                            App.totumCodeEdit(json.row.data_src.v[codeType].Val, codeType + ' поля ' + field.name, field.pcTable.tableRow.name, checkboxes)
+                            let title = '<span style="text-transform:uppercase">'+settings.fieldSettings[codeType].title+'</span>'
+                                +' | ' + field.title
+                                +' | ' + field.name
+                                +' | ' + field.type
+                                +' | ' + (field.category==='param'?'header':field.category)
+                                +' | sort: ' + field.ord;
+
+
+
+                            App.totumCodeEdit(json.row.data_src.v[codeType].Val, title, field.pcTable.tableRow.name, checkboxes, codeType!=='codeSelect')
                                 .then((data) => {
                                     pcTableTablesFields.model.checkEditRow({id: field.id}).then(function (json) {
                                         let data_src = json.row.data_src.v
@@ -728,7 +737,12 @@
                                         if (!data_src[codeType].isOn) {
                                             data_src[codeType].isOn = true;
                                             refresh = true;
+                                        } else if (data.switchoff) {
+                                            data_src[codeType].isOn = false;
+                                            refresh = true;
                                         }
+
+
                                         Object.keys(data.checkboxes).forEach((name) => {
                                             if (data_src[name].Val !== data.checkboxes[name]) {
                                                 data_src[name].Val = data.checkboxes[name];
@@ -743,12 +757,21 @@
                                                 pcTable.fields[field.name][name] = data.checkboxes[name];
                                             })
                                             if (codeType === 'format') {
-                                                pcTable.fields[field.name].formatCode = true;
+                                                if (data.switchoff)
+                                                    pcTable.fields[field.name].formatCode = false;
+                                                else
+                                                    pcTable.fields[field.name].formatCode = true;
                                                 pcTable.model.refresh();
-                                            } else if (codeType === 'select') {
-                                                window.location.refresh()
+                                            } else if (codeType === 'codeSelect') {
+
+                                                window.location.reload()
+
                                             } else {
-                                                pcTable.fields[field.name][codeType] = true;
+
+                                                if (data.switchoff)
+                                                    pcTable.fields[field.name][codeType] = false;
+                                                else
+                                                    pcTable.fields[field.name][codeType] = true;
                                                 pcTable.model.refresh(null, 'recalculate');
                                             }
                                             resolve(refresh);
