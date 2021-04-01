@@ -382,7 +382,9 @@
                     } else {
                         img = '<img src="/imgs/file_ico.png" />';
                     }
-                    let a = $('<div>' + img + '<a href="/fls/' + file.file + '" download="' + $('<div>').text(file.name).html() + '"></a></div>');
+
+                    let a = $('<div><a href="/fls/' + file.file + '" download="' + $('<div>').text(file.name).html() + '"></a></div>');
+                    a.prepend(img)
                     a.find('a').append(file.name);
                     div.append(a);
                 });

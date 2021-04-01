@@ -113,7 +113,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 column2 = $('<div>').appendTo(this.$panel);
                 columns['column2'] = column2;
             } else {
-                this.$panel.css('grid-template-columns', '1fr');
+                this.$panel.css('grid-template-columns', 'minmax(0, 1fr)');
             }
 
         }
@@ -167,30 +167,34 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     })
                     cell = EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format, divWrapper);
                 } else {
+                    let clmn;
                     if (isEditFieldPanel) {
                         if (index === 0) {
                             this.$panel.prepend(divWrapper.css({
                                 'grid-column-start': 1,
                                 'grid-column-end': 4
                             }));
+
                         } else {
                             let cln = (Math.floor((index + 1) / 2));
                             if (index === 7)
                                 cln = 3
-                            columns['column' + cln].append(divWrapper);
+                            clmn = columns['column' + cln];
                         }
                     } else if (nowKoeffs < allKoeffs && (nowKoeffs + thisKoeff) > allKoeffs) {
-                        column1.append(divWrapper);
+                        clmn = column1
                     } else if ((nowKoeffs + thisKoeff) <= allKoeffs) {
-                        column1.append(divWrapper);
+                        clmn = column1
                     } else if (!column2.length) {
-                        column1.append(divWrapper);
+                        clmn = column1
                     } else {
-                        column2.append(divWrapper);
+                        clmn = column2
                     }
+                    if (clmn)
+                        clmn.append(divWrapper);
+
                     nowKoeffs += thisKoeff;
                     cell = EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format, divWrapper);
-                    divWrapper.width('auto');
                 }
 
 
