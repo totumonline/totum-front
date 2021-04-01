@@ -447,9 +447,9 @@
                 }
                 pcTable._container.on('contextmenu', function (event) {
                     let self = $(event.target);
+                    closeCallbacksFunc();
                     if (!(self.closest('.popover').length || self.closest('.edit-row-panel').length)) {
                         return false;
-
                     }
                 });
 
@@ -715,16 +715,15 @@
                             }
 
 
-                            let title = '<span style="text-transform:uppercase">'+settings.fieldSettings[codeType].title+'</span>'
-                                +' | ' + field.title
-                                +' | ' + field.name
-                                +' | ' + field.type
-                                +' | ' + (field.category==='param'?'header':field.category)
-                                +' | sort: ' + field.ord;
+                            let title = '<span style="text-transform:uppercase">' + settings.fieldSettings[codeType].title + '</span>'
+                                + ' | ' + field.title
+                                + ' | ' + field.name
+                                + ' | ' + field.type
+                                + ' | ' + (field.category === 'param' ? 'header' : field.category)
+                                + ' | sort: ' + field.ord;
 
 
-
-                            App.totumCodeEdit(json.row.data_src.v[codeType].Val, title, field.pcTable.tableRow.name, checkboxes, codeType!=='codeSelect')
+                            App.totumCodeEdit(json.row.data_src.v[codeType].Val, title, field.pcTable.tableRow.name, checkboxes, codeType !== 'codeSelect')
                                 .then((data) => {
                                     pcTableTablesFields.model.checkEditRow({id: field.id}).then(function (json) {
                                         let data_src = json.row.data_src.v
@@ -744,7 +743,10 @@
 
 
                                         Object.keys(data.checkboxes).forEach((name) => {
-                                            if (data_src[name].Val !== data.checkboxes[name]) {
+                                            if (!data_src[name] || data_src[name].Val !== data.checkboxes[name]) {
+
+                                                data_src[name] = data_src[name] || {};
+
                                                 data_src[name].Val = data.checkboxes[name];
                                                 data_src[name].isOn = data.checkboxes[name];
                                                 refresh = true;
