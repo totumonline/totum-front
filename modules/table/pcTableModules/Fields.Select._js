@@ -186,6 +186,8 @@ fieldTypes.select = {
                 if (!/^\$/.test(k)) {
                     if (k === 'id') {
                         itemTmp[k] = item[k];
+                    } else if (k === field.name) {
+                        itemTmp[k] = val
                     } else {
                         if (item[k] !== null && typeof item[k] === 'object' && Object.keys(item[k]).indexOf('v') !== -1) {
                             itemTmp[k] = item[k]['v'];
@@ -251,7 +253,7 @@ fieldTypes.select = {
                     const createOption = function (val, text, deleted, subtext) {
                         subtext = subtext ? $('<small class="text-muted">').text(subtext) : '';
 
-                        let option = $('<option>').text(val);
+                        let option = $('<option>').attr("value", val);
                         let content = $('<div>').text((text === null || text === '' ? '[' + val + ']' : text));
                         if (subtext) {
                             content.append(subtext);
@@ -522,7 +524,6 @@ fieldTypes.select = {
                         input.data('changed', false);
                     });
                     input.on('show.bs.select', function () {
-
                         addValues(val);
                     });
                     input.on('shown.bs.select', function () {
@@ -536,10 +537,12 @@ fieldTypes.select = {
                             selectPicker.$menuInner.height(300)
                         }
                         let position = selectPicker.$menu.get(0).getBoundingClientRect();
-                        if(position.right > window.innerWidth - 20){
+                        if (position.right > window.innerWidth - 20) {
                             let diff = position.right - window.innerWidth + 20;
                             let width = selectPicker.$menuInner.width();
                             selectPicker.$menuInner.width(width - diff).css('overflow-x', 'scroll');
+                        } else {
+                            selectPicker.$menuInner.width('auto')
                         }
 
 
@@ -642,11 +645,10 @@ fieldTypes.select = {
         if (!field.multiple && item[field['name']].v_) {
             listVals = [item[field['name']].v_];
         }
-
         if (listVals) {
             $.each(listVals, function (k, val) {
                 "use strict";
-                let d = $('<div>').text(val[0]);
+                let d = $('<div>').text(val[0] + (field.multiple && field.unitType ? ' ' + field.unitType : ''));
 
                 if (val[1]) {
                     d.addClass('deleted_value')
@@ -822,16 +824,62 @@ fieldTypes.select = {
     },
     getElementString: function (val, arrayVal) {
         "use strict";
+        let r;
         if (val === null || val === undefined) {
-            if (!arrayVal || !arrayVal[0]) return this.withEmptyVal || '';
+            if (!arrayVal || !arrayVal[0]) r = this.withEmptyVal || '';
         }
 
-        if (arrayVal[0] === null || arrayVal[0] === '') {
+        if (r === undefined && (arrayVal[0] === null || arrayVal[0] === '')) {
 
-            return '[' + (this.withEmptyVal || '') + ']';
+            r = '[' + (this.withEmptyVal || '') + ']';
         }
 
+        if (r === undefined) {
+            r = arrayVal[0];
+        }
 
-        return arrayVal[0];
+        if (this.multiple && this.unitType) {
+            r += ' ' + this.unitType;
+        }
+
+        return r;
+    }, sourceButtonClick: function (item, isAdd) {
+        let $d = $.Deferred();
+        let ee = {}, field = this, pcTable = this.pcTable;
+
+        $.each(item, function (k, v) {
+            if (k.substring(0, 1) !== '$') {
+                ee[k] = v;
+            }
+        });
+        if (isAdd) {
+            ee[field.name] = null;
+        }
+        let opened = 0;
+
+        let LastData;
+
+        $(window.top.document.body)
+            .on('pctable-opened.select-' + field.name, function () {
+                opened++;
+            })
+            .on('pctable-closed.select-' + field.name, function (event, data) {
+                opened--;
+                if (data && data.json) {
+                    LastData = data;
+                }
+                let isAdded = (data /*&& data.tableId === field.selectTableId*/ && data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
+                const refreshInputAndPage = function () {
+                    if (opened === 0 || isAdded) {
+                        $('body').off('.select-' + field.name);
+                        $d.resolve(LastData);
+                    }
+                };
+                setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть
+            });
+
+        pcTable.model.selectSourceTableAction(field.name, ee);
+
+        return $d;
     }
 };

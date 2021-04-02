@@ -1,0 +1,35 @@
+.pcTable-table tbody td.tree-view-td{
+  background-color: #faf9f8;
+  border-top-color: #faf9f8;
+  border-right-color: #faf9f8;
+  border-left-color: #faf9f8;
+  font-size: 16px;
+}
+.tree-view{
+  .fa{
+    opacity: 0.4;
+    font-size: 13px;
+  }
+  button.btn-default{
+    background-color: transparent;
+    color: inherit;
+  }
+  .treeRow{
+    padding-top: 2px;
+    margin-right: 4px;
+
+  }
+  .fa-arrows-v{
+    margin-right: 8px;
+  }
+  min-width: 50px;
+}
+.btn.treeRow{
+  border-color: transparent;
+  width: 20px;
+  margin-left: 4px;
+  margin-right: 4px;
+  & + .btn.treeRow{
+    margin-left: 0;
+  }
+}

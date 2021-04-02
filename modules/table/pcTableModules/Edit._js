@@ -4,8 +4,24 @@ $.extend(App.pcTableMain.prototype, {
 
         let arias = this._container;
 
+        pcTable.actionOnClick = function (cell, field) {
+            let newcell = cell.clone(true).insertAfter(cell);
+            cell.hide();
 
-        arias.on('dblclick', 'td.val:not(.editing), td.edt:not(.editing), .dataRows td:not(.editing,.id,.n)', function (event) {
+            field = field || this._getFieldBytd(cell);
+            newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">Выполняется</span>');
+
+            let item = cell.closest('.DataRow').length ? this._getItemBytd(cell) : {};
+
+            this.model.dblClick(item.id, field.name).always((json) => {
+                newcell.remove();
+                cell.show();
+                this.table_modify(json);
+            })
+            return false;
+        };
+
+        arias.on('dblclick', 'td.val:not(.editing), td.edt:not(.editing), .dataRows tr:not(.treeRow) td:not(.editing,.id,.n)', function (event) {
             let cell = $(this);
 
             let tr = cell.closest('tr');
@@ -16,18 +32,25 @@ $.extend(App.pcTableMain.prototype, {
             if (cell.is('.edt')) {
                 pcTable._createEditCell.call(pcTable, cell, true)
             } else {
-                if (tr.is('.DataRow') && pcTable.tableRow.type === 'cycles') {
-                    pcTable.model.dblClick(pcTable._getItemBytd(cell)['id'], pcTable._getFieldBytd(cell).name);
-                    return false;
-                }
 
-                let newcell = cell.clone(true).insertAfter(cell);
-                cell.hide();
-                newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">Заблокировано</span>');
-                setTimeout(function () {
-                    newcell.remove();
-                    cell.show();
-                }, 500);
+                let field = pcTable._getFieldBytd.call(pcTable, cell);
+                if (field.CodeActionOnClick) {
+                    pcTable.actionOnClick(cell, field);
+                } else {
+
+                    if (tr.is('.DataRow') && pcTable.tableRow.type === 'cycles') {
+                        pcTable.model.dblClick(pcTable._getItemBytd(cell)['id'], pcTable._getFieldBytd(cell).name);
+                        return false;
+                    }
+
+                    let newcell = cell.clone(true).insertAfter(cell);
+                    cell.hide();
+                    newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">Заблокировано</span>');
+                    setTimeout(function () {
+                        newcell.remove();
+                        cell.show();
+                    }, 500);
+                }
             }
 
         }).on('click', '.editCellsBlock .btn, td.edt .ttm-edit, td .ttm-panel', function (event) {
@@ -139,7 +162,7 @@ $.extend(App.pcTableMain.prototype, {
 
         this.model.save(editedData)
             .then(
-                function (json) {
+                (json) => {
 
                     pcTable.table_modify.call(pcTable, json, undefined, $editObj);
                     /* if ($editObj.closest('table').length) {
@@ -152,11 +175,11 @@ $.extend(App.pcTableMain.prototype, {
                         goTo();
                     }
                 }
-            ).always(function () {
+            ).always(() => {
 
             pcTable._saving = false;
 
-            if ($editObj.is('tr.DataRow') && $editObj.closest('table').length === 1 && $editObj.find('.editing').length) $editObj.each(function () {
+            if ($editObj.is('tr.DataRow') && $editObj.closest('table').length === 1 && $editObj.find('.editing').length) $editObj.each(() => {
                 pcTable.refreshRow($(this))
             });
             else if ($editObj.is('td') && $editObj.find('.fa-spinner').length && $editObj.closest('body').length > 0) {
@@ -288,15 +311,17 @@ $.extend(App.pcTableMain.prototype, {
 
         let onAction = false;
 
-        let escClbck = function ($input, eventIN, tdIN) {
+        let escClbck = function ($input, eventIN, tdIN, noColorize) {
 
             let td = tdIN || $input.closest('td');
             let event = eventIN || {};
 
             if (!td.length || !td.closest('body').length) return false;
             var tdNew = pcTable._removeEditing.call(pcTable, td);
-            pcTable._colorizeElement(tdNew, pcTable_COLORS.blured);
-            goToFunc(event && event.altKey ? 'right' : (event && event.shiftKey ? 'down' : false))
+            if (!noColorize) {
+                pcTable._colorizeElement(tdNew, pcTable_COLORS.blured);
+                goToFunc(event && event.altKey ? 'right' : (event && event.shiftKey ? 'down' : false))
+            }
         };
         let revert = function (goTo) {
             pcTable._removeEditing.call(pcTable, td);
@@ -363,7 +388,6 @@ $.extend(App.pcTableMain.prototype, {
 
 
         let blurClbck = function ($input, event) {
-
             setTimeout(function () {
                 if (onAction) {
                     onAction = false;
@@ -380,7 +404,11 @@ $.extend(App.pcTableMain.prototype, {
             onAction = true;
 
             isFromButton = isFromButton || false;
-            if (!isFromButton && isGroupSelected) return false;
+            if (!isFromButton) {
+                if (isGroupSelected) {
+                    return false;
+                }
+            }
 
             let td = $input.closest('td');
             let editVal;
@@ -415,6 +443,7 @@ $.extend(App.pcTableMain.prototype, {
 
 
         td.html(input);
+        td.attr('data-fieldtype', field.type)
         td.data('SaveMe', function (event) {
             event = event || {};
             saveClbck(input, event);
@@ -487,27 +516,37 @@ $.extend(App.pcTableMain.prototype, {
 
             if (field.code && !field.codeOnlyInAdd) {
 
-                $btn = $('<button class="btn btn-sm btn-warning" data-name="Фиксировать выделенные"><i class="fa fa-hand-rock-o" title="Фиксировать"></i></button>');
-                $btn.data('click', function () {
-                    onAction = true;
-                    let selectedTd = pcTable._container.find('td.selected');
-                    pcTable._setTdSaving(selectedTd);
-                    let editedData = pcTable.selectedCells.getEditedData(null, true);
-                    pcTable._saveEdited.call(pcTable, selectedTd.closest('tr'), editedData, false);
-                });
-                editCellsBlock.append($btn);
-
-                $btn = $('<button class="btn btn-sm btn-danger" data-name="Сбросить ручные"><i class="fa fa-eraser" title="Сбросить ручные"></i></button>');
-                $btn.data('click', function () {
-                    onAction = true;
-                    let selectedTd = pcTable._container.find('td.selected');
-                    pcTable._setTdSaving(selectedTd);
-                    let editedData = pcTable.selectedCells.getEditedData('NULL');
-                    editedData['setValuesToDefaults'] = true;
-                    pcTable._saveEdited.call(pcTable, selectedTd.closest('tr'), editedData, false);
-                });
-                editCellsBlock.append($btn)
-
+                if (Object.keys(pcTable.selectedCells.ids).some((field) => {
+                    return pcTable.selectedCells.ids[field].some((id) => {
+                        return !pcTable.data[id][field].h;
+                    })
+                })) {
+                    $btn = $('<button class="btn btn-sm btn-warning" data-name="Фиксировать выделенные"><i class="fa fa-hand-rock-o" title="Фиксировать"></i></button>');
+                    $btn.data('click', function () {
+                        onAction = true;
+                        let selectedTd = pcTable._container.find('td.selected');
+                        pcTable._setTdSaving(selectedTd);
+                        let editedData = pcTable.selectedCells.getEditedData(null, true);
+                        pcTable._saveEdited.call(pcTable, selectedTd.closest('tr'), editedData, false);
+                    });
+                    editCellsBlock.append($btn);
+                }
+                if (Object.keys(pcTable.selectedCells.ids).some((field) => {
+                    return pcTable.selectedCells.ids[field].some((id) => {
+                        return pcTable.data[id][field].h;
+                    })
+                })) {
+                    $btn = $('<button class="btn btn-sm btn-danger" data-name="Сбросить ручные"><i class="fa fa-eraser" title="Сбросить ручные"></i></button>');
+                    $btn.data('click', function () {
+                        onAction = true;
+                        let selectedTd = pcTable._container.find('td.selected');
+                        pcTable._setTdSaving(selectedTd);
+                        let editedData = pcTable.selectedCells.getEditedData('NULL');
+                        editedData['setValuesToDefaults'] = true;
+                        pcTable._saveEdited.call(pcTable, selectedTd.closest('tr'), editedData, false);
+                    });
+                    editCellsBlock.append($btn)
+                }
             }
 
         } else if (item[field.name] && item[field.name].h == true) {
@@ -541,83 +580,57 @@ $.extend(App.pcTableMain.prototype, {
 
         if (field.changeSelectTable && field.type === 'select') {
 
-            let sourseBtnClick = function () {
+            let sourceBtnClick = function () {
                 onAction = true;
                 sourcePanelOpened = true;
                 setTimeout(() => {
                     input.click();
                 }, 3)
 
-
-                let ee = {};
-                $.each(item, function (k, v) {
-                    if (k.substring(0, 1) !== '$') {
-                        ee[k] = v;
-                    }
-                });
                 let isAdd = $(this).data('add-button');
-                if (isAdd) {
-                    ee[field.name] = null;
-                }
-                let opened = 0;
 
-                $(window.top.document.body)
-                    .on('pctable-opened.select-' + field.name, function () {
-                        opened++;
-                    })
-                    .on('pctable-closed.select-' + field.name, function (event, data) {
-                        opened--;
-                        let isAdded = (data /*&& data.tableId === field.selectTableId*/ && data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
-                        const refreshInputAndPage = function () {
-                            if (opened === 0 || isAdded) {
-                                let inputOld = input;
-                                delete field.list;
-                                if (inputOld.data('input').data('LISTs')) {
-                                    inputOld.data('input').data('LISTs').isListForLoad = true;
-                                }
-                                item = $.extend(true, {}, item);
-                                if (isAdded) {
+                field.sourceButtonClick(item, isAdd).then((data) => {
+                    let isAdded = (data && data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
+                    let inputOld = input;
+                    delete field.list;
+                    if (inputOld.data('input').data('LISTs')) {
+                        inputOld.data('input').data('LISTs').isListForLoad = true;
+                    }
+                    item = $.extend(true, {}, item);
+                    if (isAdded) {
 
-                                    if (field.multiple) {
-                                        item[field.name].v = field.getEditVal(input);
-                                        item[field.name].v.push(Object.keys(data.json.chdata.rows)[0]);
-                                    } else {
-                                        item[field.name].v = Object.keys(data.json.chdata.rows)[0];
-                                    }
+                        if (field.multiple) {
+                            item[field.name].v = field.getEditVal(input);
+                            item[field.name].v.push(Object.keys(data.json.chdata.rows)[0]);
+                        } else {
+                            item[field.name].v = Object.keys(data.json.chdata.rows)[0];
+                        }
 
-                                }
+                    }
 
-                                if (!isAdded && field.category === 'column') {
-                                    pcTable.model.refresh(function (json) {
-                                        pcTable.table_modify.call(pcTable, json);
-                                    });
-                                }
-                                item[field.name].replaceViewValue = function (viewArray) {
-                                    if (field.category != 'column') {
-                                        pcTable.data_params[field.name].v_ = viewArray;
-                                    }
-                                };
-                                inputOld.replaceWith(input = field.getEditElement(inputOld, item[field.name], item, saveClbck, escClbck, blurClbck));
-
-                                $('body').off('.select-' + field.name);
-                                onAction = false;
-                            }
-                        };
-                        setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть
-                    });
-                pcTable.model.selectSourceTableAction(field.name, ee);
-
+                    if (!isAdded && field.category === 'column') {
+                        pcTable.model.refresh(function (json) {
+                            pcTable.table_modify.call(pcTable, json);
+                        });
+                    }
+                    item[field.name].replaceViewValue = function (viewArray) {
+                        if (field.category != 'column') {
+                            pcTable.data_params[field.name].v_ = viewArray;
+                        }
+                    };
+                    inputOld.replaceWith(input = field.getEditElement(inputOld, item[field.name], item, saveClbck, escClbck, blurClbck));
+                    onAction = false;
+                })
                 return false;
             };
 
-
             $btn = $('<button class="btn btn-sm btn-primary"><i class="fa fa-edit" title="Изменить в таблице-источнике"></i></button>');
-            $btn.on('click', sourseBtnClick);
+            $btn.on('click', sourceBtnClick);
             editCellsBlock.append($btn);
             if (field.changeSelectTable === 2) {
                 $btn = $('<button class="btn btn-sm btn-primary" data-add-button="true"><i class="fa fa-plus" title="Добавить в таблицу-источник"></i></button>');
                 editCellsBlock.append($btn);
-                $btn.on('click', sourseBtnClick);
+                $btn.on('click', sourceBtnClick);
             }
         }
         let btnCount = editCellsBlock.find('button').length;

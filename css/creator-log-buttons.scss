@@ -5,4 +5,8 @@
   #TOTUM_FOOTER & button{
     margin-top: 10px;
   }
+  #TOTUM_FOOTER &.with-logs button{
+    background-color: red;
+    color: #fff;
+  }
 }

@@ -22,6 +22,7 @@
   left: 0px;
   bottom: 0px;
   box-shadow: 0 0 7px 0px #0000000f;
+
 }
 
 @import "brand";
@@ -38,6 +39,10 @@
   background-color: #f3f3f3;
   padding-top: 10px;
   width: 300px;
+
+  .jstree-node.tree-folder{
+    margin-top: 10px;
+  }
   /* color: #bbb;*/
 
 
@@ -63,7 +68,7 @@
   }
 
   .jstree-icon {
-    opacity: 0.4;
+    opacity: 0.3;
   }
 
   .jstree-icon.jstree-themeicon.jstree-themeicon-custom.fa {

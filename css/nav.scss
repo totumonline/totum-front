@@ -30,6 +30,7 @@
 
 #DocsPopover {
 
+  overflow: auto;
   a, i {
     color: $btn-danger-bgcolor;
   }
@@ -40,6 +41,11 @@
     }
   }
 
+  >div{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   padding: 10px;
   height: 220px;
   width: 200px;
@@ -129,3 +135,4 @@
     }
   }
 }
+

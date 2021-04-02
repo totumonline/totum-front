@@ -28,11 +28,50 @@ fieldTypes.button = {
         if (td) {
             td.addClass('cell-button');
         }
-        const NoBorderColorizer = function (btn) {
+
+
+        const NoBorderColorizer = (btn) => {
             if (field.td_style && typeof field.td_style === 'function') {
                 let btnStyle = field.td_style(format).Button;
                 if (btnStyle) {
                     btn.css(btnStyle);
+                }
+            } else if (item.__td_style && typeof item.__td_style === 'function') {
+                let style = item.__td_style(format);
+                if (style.Button) {
+                    btn.css(style.Button);
+                }
+                if (style.td) {
+                    td.css(style.td);
+                }
+            } else if (td.is('.button-wrapper')) {
+                let css = {};
+                if (format.background) {
+                    css.backgroundColor = format.background;
+                }
+                if (format.color) {
+                    css.color = format.color;
+                }
+                btn.css(css)
+
+                let width;
+                if (this.pcTable.isMobile) {
+                    width = this.width > $('#table').width() - 30 ? $('#table').width() - 30 : this.width;
+                    td.width(width);
+                    btn.width(width);
+                } else {
+                    this.pcTable.rowButtonsCalcWidth();
+                    width = this.width > this.pcTable.__$rowsButtons.width() - 10 ? this.pcTable.__$rowsButtons.width() - 10 : this.width;
+                    td.width(width);
+                    btn.width(width);
+                    if (width === 20) {
+                        setTimeout(() => {
+                            this.pcTable.rowButtonsCalcWidth();
+                            width = this.width > this.pcTable.__$rowsButtons.width() - 20 ? this.pcTable.__$rowsButtons.width() - 20 : this.width;
+                            td.width(width);
+                            btn.width(width - 16);
+                        }, 40)
+                    }
                 }
             } else if (field.pcTable.isMobile && field.category !== 'column') {
                 let css = {};
@@ -44,6 +83,7 @@ fieldTypes.button = {
                 }
                 btn.css(css)
             }
+
         };
 
 
@@ -68,7 +108,6 @@ fieldTypes.button = {
                     icon.css('float', 'none');
                 }
             }
-
             return btn;
         }
 

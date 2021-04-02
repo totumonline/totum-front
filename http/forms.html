@@ -1,0 +1,44 @@
+<html>
+<head>
+
+
+
+</head>
+<body>
+<div>
+<script>
+    let num = "78";
+    (function (src, cssSrc, address, post, get, input) {
+        let div = document.currentScript.parentNode;
+        let path = 'model';
+
+        let newScript = document.createElement("script");
+        newScript.charset = "utf-8";
+
+        newScript.onerror = (event) => {
+            console.log(event)
+            div.innerHTML = '<div>Не загрузилось :(</div>';
+        };
+        newScript.onload = (event) => {
+            address = src.match(/^(.*?\/)[^\/]*$/)[1] + address;
+            address = 'http://localhost:8080/Forms/' + path;
+
+            ttmForm(div, address, true, post, get, input);
+        };
+        div.insertBefore(newScript, document.currentScript);
+
+        newScript.src = src;
+        if (!window.ttmCss) {
+            window.ttmCss = true;
+            let styles = document.createElement("link");
+            styles.rel = "stylesheet";
+            styles.type = "text/css";
+            styles.href = cssSrc;
+            document.head.append(styles);
+        }
+    })("http://localhost:8080/js/forms.js?" + num, "http://localhost:8080/css/forms.css?" + num, "test-form", [], window.location.search, "input_text");
+
+</script>
+</div>
+</body>
+</html>

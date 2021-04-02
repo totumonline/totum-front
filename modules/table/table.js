@@ -130,6 +130,15 @@
                 contanerClass: 'pcTable-container',
                 tableClass: 'pcTable-table',
                 width: null,
+
+                /*TreeView*/
+                isTreeView: false,
+                treeReloadRows: [],
+                tree: [],
+                treeIndex: {},
+                treeSort: [],
+
+
                 checkIsUpdated: 0,
                 _containerId: '',
                 scrollWrapper: null,
@@ -264,6 +273,8 @@
 //=include pcTableModules/RowActions._js
 //=include pcTableModules/Insert._js
 //=include pcTableModules/baseHtml._js
+//=include pcTableModules/FixColumn._js
+//=include pcTableModules/FloatBlocks._js
 //=include pcTableModules/HorizontalDraggable._js
 //=include pcTableModules/RowPanel._js
 //=include pcTableModules/Csv._js
@@ -271,6 +282,9 @@
 //=include pcTableModules/Print._js
 //=include pcTableModules/SortingN._js
 //=include pcTableModules/formatFunctions._js
+//=include pcTableModules/TableTreeView._js
+//=include pcTableModules/TablePanelView._js
+//=include pcTableModules/TableRotatedView._js
 
 
     $.extend(App.pcTableMain.prototype, {
@@ -290,9 +304,10 @@
 
                 this.width = $('body').width() - TreeWidth;
                 this._container.width(this.width);
-                if (!this.isMobile)
+                if (!this.isMobile) {
                     this._innerContainer.width(this.width - 80);
-                else {
+                    this.addInnerContainerScroll();
+                } else {
                     this._innerContainer.width('auto');
                 }
 
@@ -312,6 +327,55 @@
                     this._addHorizontalDraggable();
                 }
                 this._container.height(window.innerHeight - this._container.offset().top - 10);
+            },
+            addInnerContainerScroll: function () {
+
+                if (this._innerContainer.width() < this._innerContainer.find('>table:first, >div:first').width()) {
+
+                    const scrollPosition = () => {
+                        let innConTop = this._innerContainer.offset().top - this._container.offset().top - 3;
+                        let innHeight = this._innerContainer.innerHeight() + parseInt($('#table').data('pctable')._innerContainer.css('paddingBottom'))
+                        let connHeight = this._container.innerHeight();
+                        /*Иннер не ниже высоты окна и не выше*/
+
+                        if (this._innerContainerPS) {
+                            let old = this._innerContainerPS.scrollbarXBottom;
+                            this._innerContainerPS.scrollbarXBottom = 0;
+
+                            if (innConTop < connHeight && (innConTop + innHeight > connHeight)) {
+                                let scrollTop = innConTop + this._innerContainer.innerHeight();
+                                /*Скролл ниже высоты окна*/
+                                if (scrollTop > connHeight) {
+                                    this._innerContainerPS.scrollbarXBottom = scrollTop - connHeight
+                                }
+                            }
+
+                            if (old != this._innerContainerPS.scrollbarXBottom) {
+                                this._innerContainerPS.update();
+                            }
+                        }
+                    }
+                    if (!this._innerContainerPS) {
+                        this._innerContainerPS = new PerfectScrollbar(this._innerContainer.get(0), {
+                            useBothWheelAxes: false,
+                            scrollbarYActive: false,
+                            scrollbarXActive: true
+                        });
+                        let timeout;
+                        this._container.on('scroll.scroller', () => {
+                            if (timeout) clearTimeout(timeout);
+                            timeout = setTimeout(scrollPosition, 30);
+                        })
+                        new ResizeObserver(scrollPosition).observe(this.scrollWrapper.get(0))
+                    }
+                    setTimeout(scrollPosition, 500)
+
+
+                } else if (this._innerContainerPS) {
+                    this._container.off('scroll.scroller');
+                    this._innerContainerPS.destroy();
+                    this._innerContainerPS = null;
+                }
             },
             initForPanel: function (config) {
                 $.extend(true, this, config);
@@ -376,51 +440,21 @@
                 pcTable._innerContainer.on('scroll', closeCallbacksFunc);
 
                 if (this.isCreatorView) {
-                    this._container.on('click', '.creator-icons:not([aria-describedby])', function (event) {
+                    this._container.on('click contextmenu', '.creator-icons:not([aria-describedby])', function (event) {
                         let self = $(this);
-                        if (self.closest('.popover').length === 0) {
-                            let div = $('<div style="width:200px" class="creator-icons">');
-
-
-                            self.find('i').each(function (i, icon) {
-                                let el = $('<div>').append(icon.outerHTML);
-
-                                if (i === 0) {
-                                    el.append(' ' + self.closest('th').find('.field_name').text());
-                                }
-
-                                if (icon.title) el.append(' ' + icon.title);
-                                div.append(el)
-                            });
-
-
-                            App.popNotify({
-                                isParams: true,
-                                $text: div,
-                                element: self,
-                                trigger: 'manual',
-                                placement: 'top'
-                            });
-                            setTimeout(function () {
-                                pcTable.closeCallbacks.push(function () {
-                                    if (self && self.length) self.popover('destroy');
-                                })
-                            }, 200);
-                        }
+                        pcTable.creatorIconsPopover(self)
                     })
                 }
                 pcTable._container.on('contextmenu', function (event) {
                     let self = $(event.target);
+                    closeCallbacksFunc();
                     if (!(self.closest('.popover').length || self.closest('.edit-row-panel').length)) {
                         return false;
-
                     }
                 });
 
 
                 this._container.append(this._innerContainer);
-
-                this.addReOrderRowBind();
 
                 this.initRowsData()
 
@@ -435,9 +469,8 @@
                     });
                 }
             },
-            refreshArraysFieldCategories: function (forTable) {
+            refreshArraysFieldCategories: function () {
                 "use strict";
-                forTable = forTable || false;
 
                 let pcTable = this;
                 pcTable.hidden_fields = pcTable.hidden_fields || {};
@@ -451,7 +484,7 @@
 
                 pcTable.fieldCategories = {};
 
-                ['param', 'column', 'filter', 'footer'].forEach(function (category) {
+                ['param', 'column', 'filter', 'footer', 'panel_fields'].forEach(function (category) {
                     pcTable.fieldCategories[category] = [];
                 });
 
@@ -494,21 +527,30 @@
                     pcTable.fields[name] = field;
 
                     if (field.showInWeb) {
-                        pcTable.fieldCategories[field.category].push(field);
+                        if (field.category === 'column') {
+                            if (field.name !== 'n') {
+                                pcTable.fieldCategories['panel_fields'].push(field);
+                            }
+                            if ((field.name === 'tree' && field.category === 'column' && field.treeViewType)) {
+                                pcTable.isTreeView = true;
+                                pcTable.fieldCategories[field.category].unshift(field);
+                            } else {
+                                pcTable.fieldCategories[field.category].push(field);
+                            }
+                        } else {
+                            pcTable.fieldCategories[field.category].push(field);
+                        }
                     } else if (field.name) {
                         pcTable.hidden_fields[field.name] = field;
                     }
                 };
 
-                if (forTable) {
-                    let n = {type: "n"};
-                    initField('n', n);
-                    let _fields = $.extend({}, this.fields);
-                    delete _fields.n;
-                    $.each(_fields, initField);
-                } else {
-                    $.each(this.fields, initField);
-                }
+                let n = {type: "n"};
+                initField('n', n);
+                let _fields = $.extend({}, this.fields);
+                delete _fields.n;
+                $.each(_fields, initField);
+
 
                 if (reorderedFields) {
                     ['param', 'column', 'filter', 'footer'].forEach(function (category) {
@@ -529,50 +571,282 @@
                 }
 
             },
-            render: function (addVars) {
-                let pcTable = this;
-
-                this.loadVisibleFields(this.f && this.f.fieldhide ? this.f.fieldhide : undefined);
-
-
-                this._renderTable();
+            creatorIconsPopover: async function (icons) {
+                if (icons.closest('.popover').length === 0) {
+                    let div = $('<div style="width:200px" class="creator-icons">');
 
 
-                if (this._sorting.addSortable) {
-                    this._sorting.addSortable(this);
+                    icons.find('i').each(function (i, icon) {
+                        if (['fa-star', 'fa-star-o', 'fa-cogs'].some((c) => {
+                            return $(icon).hasClass(c)
+                        })) return;
+                        let el = $('<div>').append(icon.outerHTML);
+
+                        if (i === 0) {
+                            el.append(' ' + icons.closest('th').find('.field_name').text());
+                        }
+
+                        if (icon.title) el.append(' ' + icon.title);
+                        div.append(el)
+                    });
+
+                    let buttons = [];
+                    let field = this.fields[icons.closest('th').data('field')];
+                    let settingsData;
+                    const getSettings = async function () {
+                        return new Promise((resolve, reject) => {
+                            App.getPcTableById(2).then(function (pcTableTablesFields) {
+                                resolve(pcTableTablesFields.fields.data_src.jsonFields)
+                            })
+                        })
+                    }
+
+
+                    let codes = {"code": "Код", "codeAction": "Действ", "codeSelect": "Селект", "format": "Формат"};
+                    let codesKeys = Object.keys(codes);
+                    for (let i = 0; i < codesKeys.length; i++) {
+                        let name = codesKeys[i];
+                        let nameCode = name === 'format' ? 'formatCode' : '';
+
+                        if (nameCode ? field[nameCode] : field[name]) {
+                            buttons.push($('<button class="btn btn-default btn-xxs" data-action="' + name + '">' + codes[name] + '</button>'))
+                        } else {
+                            if (!settingsData) {
+                                settingsData = await getSettings();
+                            }
+                            if (settingsData.fieldListParams[field.type].indexOf(name) !== -1) {
+                                buttons.push($('<button class="btn btn-default btn-xxs offed" data-action="' + name + '">' + codes[name] + '</button>'))
+                            }
+                        }
+                    }
+
+                    if (buttons.length) {
+                        let divButtons = $('<div class="buttons">');
+                        buttons.forEach((btn) => {
+                            divButtons.append(btn);
+                        })
+                        divButtons.appendTo(div);
+                        let pcTable = this;
+
+                        divButtons.on('click', 'button', async function () {
+                            let btn = $(this);
+                            if (!settingsData) {
+                                settingsData = await getSettings();
+                            }
+                            pcTable.editFieldCode(field.name, btn.data('action'), settingsData).then((refresh) => {
+                                if (refresh) {
+                                    switch (field.category) {
+                                        case 'param':
+                                            pcTable._rerendParamsblock();
+                                            break;
+                                        case 'footer':
+                                            if (field.column) {
+                                                pcTable._rerenderColumnsFooter();
+                                            } else {
+                                                pcTable._rerendBottomFoolers();
+                                            }
+                                            break;
+                                        case 'filter':
+                                            pcTable._rerendFiltersBlock();
+                                            break;
+                                        case 'column':
+                                            pcTable._refreshHead();
+                                            break;
+                                    }
+                                    setTimeout(() => {
+                                        App.blink(field.$th.find('.creator-icons i'), 3, "green", 'color');
+                                    }, 100)
+                                } else {
+                                    App.blink(icons.find('i'), 3, "green", 'color')
+                                }
+
+                            }, () => {
+                            })
+                        })
+                    }
+
+
+                    App.popNotify({
+                        isParams: true,
+                        $text: div,
+                        element: icons,
+                        trigger: 'manual',
+                        placement: 'top'
+                    });
+                    setTimeout(() => {
+                        this.closeCallbacks.push(function () {
+                            if (icons && icons.length) icons.popover('destroy');
+                        })
+                    }, 200);
                 }
-                this._addSelectable();
-                this._addEditable();
-                this._addSave();
+            },
+            editFieldCode: function (fieldName, codeType, settings) {
+                return new Promise((resolve, reject) => {
+                    let field = this.fields[fieldName];
+                    let fieldSettingsList = settings.fieldListParams[field.type];
+                    let pcTable = this;
+                    App.getPcTableById(2).then(function (pcTableTablesFields) {
+                        pcTableTablesFields.model.checkEditRow({id: field.id}).then(function (json) {
+                            let checkboxes = [];
+                            let chList = [];
 
-                this.row_actions_add();
+                            switch (codeType) {
+                                case 'code':
+                                    chList = ["codeOnlyInAdd"];
+                                    break;
+                                case 'codeAction':
+                                    chList = ["CodeActionOnAdd", "CodeActionOnChange", "CodeActionOnDelete", "CodeActionOnClick"]
+                                    break;
+                                case
+                                'codeSelect':
+                                    chList = ["codeSelectIndividual", "multiple"];
+                                    break;
+                            }
+                            if (chList) {
+                                chList.forEach((name) => {
+                                    if (fieldSettingsList.indexOf(name) !== -1) {
+                                        let fieldSettings = settings.fieldSettings[name];
+                                        if (fieldSettings['categories']) {
+                                            if (fieldSettings['categories'].indexOf(field.category) === -1) return false;
+                                        }
+                                        checkboxes.push([name, fieldSettings.title, json.row.data_src.v[name] ? json.row.data_src.v[name].Val : false]);
+                                    }
+                                })
+                            }
 
 
-                this.__addFilterable();
-                this._refreshHead();
+                            let title = '<span style="text-transform:uppercase">' + settings.fieldSettings[codeType].title + '</span>'
+                                + ' | ' + field.title
+                                + ' | ' + field.name
+                                + ' | ' + field.type
+                                + ' | ' + (field.category === 'param' ? 'header' : field.category)
+                                + ' | sort: ' + field.ord;
 
 
-                this.ScrollClasterized = this.Scroll();
+                            App.totumCodeEdit(
+                                json.row.data_src.v[codeType].Val, title, field.pcTable.tableRow.name,
+                                checkboxes,
+                                (codeType !== 'codeSelect' && json.row.data_src.v[codeType] && json.row.data_src.v[codeType].isOn)
+                            )
+                                .then((data) => {
+                                    pcTableTablesFields.model.checkEditRow({id: field.id}).then(function (json) {
+                                        let data_src = json.row.data_src.v
+                                        //data.code
+                                        //data.checkboxes
 
-                if (pcTable.checkIsUpdated > 0) {
-                    let timeout = parseInt(pcTable.checkIsUpdated) * 2000;
-                    setTimeout(function () {
-                        pcTable.checkTableIsChanged.call(pcTable, timeout)
-                    }, timeout);
-                }
+                                        data_src[codeType].Val = data.code;
+                                        let refresh = false
+
+                                        if (!data_src[codeType].isOn) {
+                                            data_src[codeType].isOn = true;
+                                            refresh = true;
+                                        } else if (data.switchoff) {
+                                            data_src[codeType].isOn = false;
+                                            refresh = true;
+                                        }
 
 
-                this.refresh();
-                this.setWidthes();
-                this.__applyFilters();
-                if (addVars) {
-                    if (this.isMobile)
-                        pcTable._addInsertWithPanel(addVars);
-                    else
-                        pcTable._addInsert(addVars);
-                }
+                                        Object.keys(data.checkboxes).forEach((name) => {
+                                            if (!data_src[name] || data_src[name].Val !== data.checkboxes[name]) {
+
+                                                data_src[name] = data_src[name] || {};
+
+                                                data_src[name].Val = data.checkboxes[name];
+                                                data_src[name].isOn = data.checkboxes[name];
+                                                refresh = true;
+                                            }
+                                        })
+
+                                        pcTableTablesFields.model.save({[field.id]: {data_src: data_src}}).then(() => {
+
+                                            Object.keys(data.checkboxes).forEach((name) => {
+                                                pcTable.fields[field.name][name] = data.checkboxes[name];
+                                            })
+                                            if (codeType === 'format') {
+                                                if (data.switchoff)
+                                                    pcTable.fields[field.name].formatCode = false;
+                                                else
+                                                    pcTable.fields[field.name].formatCode = true;
+                                                pcTable.model.refresh();
+                                            } else if (codeType === 'codeSelect') {
+
+                                                window.location.reload()
+
+                                            } else {
+
+                                                if (data.switchoff)
+                                                    pcTable.fields[field.name][codeType] = false;
+                                                else
+                                                    pcTable.fields[field.name][codeType] = true;
+                                                pcTable.model.refresh(null, 'recalculate');
+                                            }
+                                            resolve(refresh);
+
+                                        }).fail(reject);
+                                    }).fail(reject);
+                                }, function (e) {
+                                    console.log(e);
+                                    reject()
+                                })
+
+
+                        });
+                    })
+                })
 
             },
+            render:
+
+                function (addVars) {
+                    let pcTable = this;
+
+                    this.loadVisibleFields(this.f && this.f.fieldhide ? this.f.fieldhide : undefined);
+
+
+                    if (this.viewType === 'panels' && !this.isMobile)
+                        this._renderTablePanelView();
+                    else if (!this.isTreeView && this.tableRow.rotated_view) {
+                        this._renderRotatedView();
+                    }
+
+                    this.ScrollClasterized = this.Scroll();
+
+                    this._renderTable();
+                    if (this._sorting.addSortable) {
+                        this._sorting.addSortable(this);
+                    }
+                    this._addSelectable();
+                    this._addEditable();
+                    this._addSave();
+
+                    this.row_actions_add();
+
+
+                    this.__addFilterable();
+                    this._refreshHead();
+
+
+                    if (pcTable.checkIsUpdated > 0) {
+                        let timeout = parseInt(pcTable.checkIsUpdated) * 2000;
+                        setTimeout(function () {
+                            pcTable.checkTableIsChanged.call(pcTable, timeout)
+                        }, timeout);
+                    }
+
+
+                    this.refresh();
+                    this.setWidthes();
+                    this.__applyFilters();
+                    if (addVars) {
+                        if (this.isMobile)
+                            pcTable._addInsertWithPanel(addVars);
+                        else
+                            pcTable._addInsert(addVars);
+                    }
+
+                }
+
+            ,
             _addSave: function () {
                 $('body').on('keyup', function (event) {
                     if (event.ctrlKey || event.metaKey) {
@@ -582,7 +856,8 @@
                     }
                 });
 
-            },
+            }
+            ,
 
             reloaded: function () {
 
@@ -591,7 +866,8 @@
                     notify.closest('.alert').remove();
                     this.checkTableIsChanged(parseInt(this.checkIsUpdated) * 2000);
                 }
-            },
+            }
+            ,
             checkTableIsChanged: function (timeout) {
                 let pcTable = this;
 
@@ -611,10 +887,10 @@
                                 } else {
 
                                     $.notify({
-                                        message: '<div id="refresh-notify"><button class="btn btn-warning btn-sm" style="margin-right: 20px;">' +
-                                            'Обновить</button> <span>Таблица была изменена пользователем <b>' +
+                                        message: '<div id="refresh-notify"><span>Таблица была изменена пользователем <b>' +
                                             json.username + '</b> в <b>' + App.dateFormats.covert(json.dt, 'YY-MM-DD HH:mm', 'HH:mm DD.MM')
-                                            + '</b> </span></div>'
+                                            + '</b> </span><button class="btn btn-warning btn-sm" style="margin-right: 20px;">' +
+                                            'Обновить</button></div>'
                                     }, {
                                         type: 'warning',
                                         allow_dismiss: false,
@@ -648,18 +924,22 @@
                     }
                 });
                 return fieldName;
-            },
+            }
+            ,
             _getFieldbyName: function (fieldName) {
                 return this.fields[fieldName];
-            },
+            }
+            ,
             _getColumnIndexByTd: function (td, tr) {
                 var tr = tr || td.closest('tr');
                 return tr.find('td').index(td);
-            },
+            }
+            ,
             _fieldByTd: function (td, tr) {
                 let cIndex = this._getColumnIndexByTd(td, tr);
                 return this.fieldCategories.visibleColumns[cIndex - 1];
-            },
+            }
+            ,
             _getRowIndexById: function (id) {
                 var index = null;
                 let p = this;
@@ -670,7 +950,8 @@
                     }
                 }
                 return null;
-            },
+            }
+            ,
             _getFieldBytd: function (td) {
                 if (!td.closest('tr').is('.DataRow')) {
                     return this.fields[td.data('field')]
@@ -678,26 +959,32 @@
                     return this.fieldCategories.visibleColumns[td.closest('tr').find(td.prop('tagName')).index(td) - 1]
                 }
 
-            },
+            }
+            ,
             _isParamsArea: function ($obj) {
                 return $obj.closest('table').is('.pcTable-paramsTable')
-            },
+            }
+            ,
             _isFootersArea: function ($obj) {
                 return $obj.closest('tbody').is('.pcTable-footers')
-            },
+            }
+            ,
             _getItemBytd: function (td) {
                 let tr = td.closest('tr');
                 return this._getItemByTr(tr);
-            },
+            }
+            ,
             _getItemByTr: function (tr) {
                 if (!tr.is('.DataRow')) {
                     return this.data_params;
                 }
                 return this.data[tr.data(pcTable_ROW_ItemId_KEY)];
-            },
+            }
+            ,
             _getItemById: function (id) {
                 return this.data[id];
-            },
+            }
+            ,
             _deleteItemById: function (id) {
                 let item = this._getItemById(id);
                 if (item && item.$tr) {
@@ -713,8 +1000,13 @@
                         this[array].splice(ind, 1);
                     }
                 }, this);
+
+                if (this.isTreeView) {
+                    this.treeDeletingRow(id)
+                }
                 delete this.data[id];
-            },
+            }
+            ,
             _getTdByFieldName: function (fieldName, tr) {
                 let fieldIndex = 0;
                 this.fieldCategories.visibleColumns.every(function (field, index) {
@@ -725,10 +1017,12 @@
                     return true;
                 });
                 return this._getTdByColumnIndex(tr, fieldIndex + 1);
-            },
+            }
+            ,
             _getTdByColumnIndex: function (tr, index) {
                 return tr.find('td:eq(' + index + ')');
-            },
+            }
+            ,
             refresh: function () {
                 this._refreshTitle();
                 this._refreshParamsBlock();
@@ -737,29 +1031,50 @@
 
                 this._refreshContentTable();
 
-            },
+            }
+            ,
 
-            initRowsData() {
-                let data = {};
+            initRowsData: function () {
+
                 this.__checkedRows = [];
                 this.dataSorted = [];
                 this.dataSortedVisible = [];
                 if (this.ScrollClasterized)
                     this.ScrollClasterized.emptyCache();
 
-                if (this.rows) {
-                    this.rows.map(function (item) {
-                        this.dataSorted.push(item.id);
-                        this.dataSortedVisible.push(item.id);
-                        data[item.id] = item;
-                        data[item.id].$checked = -1 !== this.__checkedRows.indexOf(item.id) ? true : false;
-                    }, this);
+                if (this.isTreeView) {
+
+                    this.tree.forEach((tv, i) => {
+                        this.getTreeBranch(tv, i);
+                    })
+
+                    if (this.rows) {
+                        this._treeApplyRows(this.rows);
+                    }
+
+                    setTimeout(() => {
+                        this.treeApply();
+                    })
+                    this.model.setLoadedTableData(this.data);
+
+                } else {
+                    let data = {};
+                    if (this.rows) {
+                        this.rows.map(function (item) {
+                            this.dataSorted.push(item.id);
+                            this.dataSortedVisible.push(item.id);
+                            data[item.id] = item;
+                            data[item.id].$checked = -1 !== this.__checkedRows.indexOf(item.id) ? true : false;
+                        }, this);
+                    }
+                    this.data = data;
+                    this.model.setLoadedTableData(this.data, this.PageData ? this.PageData.offset : undefined, this.PageData ? this.PageData.onPage : undefined);
                 }
-                this.data = data;
-                this.model.setLoadedTableData(this.data, this.PageData ? this.PageData.offset : undefined, this.PageData ? this.PageData.onPage : undefined);
             }
         }
-    );
+    )
+    ;
 
 
-})(window, jQuery);
+})
+(window, jQuery);

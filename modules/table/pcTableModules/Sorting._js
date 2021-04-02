@@ -10,8 +10,10 @@ $.extend(App.pcTableMain.prototype, {
             this._table.addClass('no-correct-n-filtered');
         }
 
+        let sortFunc;
+
         if (isNumber) {
-            pcTable.dataSorted = pcTable.dataSorted.sort(function (a, b) {
+            sortFunc = function (a, b) {
                 let a1 = data[a][fieldName].v;
                 let b1 = data[b][fieldName].v;
 
@@ -42,9 +44,9 @@ $.extend(App.pcTableMain.prototype, {
                     else r = -sortDirection;
                 }
                 return r;
-            });
+            };
         } else if (field.type === 'select') {
-            pcTable.dataSorted = pcTable.dataSorted.sort(function (a, b) {
+            sortFunc = function (a, b) {
                 let a_, b_;
 
                 const getVal = function (a) {
@@ -73,22 +75,82 @@ $.extend(App.pcTableMain.prototype, {
                 if (a_ === b_) return 0;
                 else if (a_ > b_) return sortDirection;
                 else return -sortDirection;
-            });
+            }
         } else {
-            pcTable.dataSorted = pcTable.dataSorted.sort(function (a, b) {
+            sortFunc = function (a, b) {
                 let a_, b_;
                 a_ = data[a][fieldName].v + '';
                 b_ = data[b][fieldName].v + '';
                 if (a_ > b_) return sortDirection;
                 else if (a_ == b_) return 0;
                 else return -sortDirection;
-            });
+            };
         }
-        this.dataSortedVisible = [];
-        pcTable.dataSorted.every(function (id) {
-            if (pcTable.data[id].$visible) pcTable.dataSortedVisible.push(id);
-            return true;
-        });
+
+        if (pcTable.isTreeView) {
+
+            if (fieldName !== 'tree' && pcTable.fields.tree.treeViewType !== 'self') {
+                let list = [];
+                let old = [...pcTable.dataSorted]
+                pcTable.dataSorted = [];
+                const sortList = () => {
+                    if (list.length) {
+                        list = list.sort(sortFunc)
+                        pcTable.dataSorted.push(...list)
+                        list = [];
+                    }
+                }
+
+                old.forEach((v) => {
+                    if (typeof v === 'object') {
+                        sortList();
+                        pcTable.dataSorted.push(v)
+                    } else {
+                        list.push(v)
+                    }
+                })
+                sortList();
+            } else {
+                let sortTreeFunc = (a, b) => {
+                    a_ = pcTable.treeIndex[a].t || "";
+                    b_ = pcTable.treeIndex[b].t || "";
+                    if (a_ === b_) return 0;
+                    else if (a_ > b_) return sortDirection;
+                    else return -sortDirection;
+                };
+                if(fieldName !== 'tree'){
+                    sortTreeFunc = (a, b) => {
+                       return sortFunc(pcTable.treeIndex[a].row.id, pcTable.treeIndex[b].row.id)
+                    }
+                }
+
+                const sortTree = (id) => {
+                    let branch = pcTable.treeIndex[id];
+                    branch.trees = branch.trees.sort(sortTreeFunc)
+                    branch.trees.forEach(sortTree);
+                }
+                pcTable.treeSort = pcTable.treeSort.sort(sortTreeFunc)
+                pcTable.treeSort.forEach(sortTree)
+                pcTable.treeApply();
+            }
+
+        } else {
+            pcTable.dataSorted = pcTable.dataSorted.sort(sortFunc)
+        }
+
+        pcTable.dataSortedVisible=[]
+        for (let i = 0; i < this.dataSorted.length; i++) {
+            let element = this.dataSorted[i];
+            if (typeof element === 'object') {
+                pcTable.dataSortedVisible.push(element);
+            } else {
+                let item = this.data[element];
+                this.__applyFiltersToItem(item);
+                if (item.$visible) {
+                    pcTable.dataSortedVisible.push(element);
+                }
+            }
+        }
 
         pcTable._refreshContentTable();
     }

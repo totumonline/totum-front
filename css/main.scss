@@ -28,6 +28,18 @@ input.error {
   padding-bottom: 10px;
 }
 
+.creator-hidden {
+  .creator-hidden-block {
+    display: none;
+  }
+
+  &:hover {
+    .creator-hidden-block {
+      display: inline;
+    }
+  }
+}
+
 [data-target='#notify-texh'] {
   i:last-child {
     display: none;
@@ -67,14 +79,20 @@ input.error {
   }
 }
 
-@media (min-width: 1470px) {
-  .pcTable-topButtons #TOTUM_FOOTER {
+@media (min-width: 600px) {
+  .page_content.tree-minifyed .pcTable-topButtons #TOTUM_FOOTER {
     display: block;
   }
 }
 
-@media (min-width: 800px) {
-  .tree-minifyed .pcTable-topButtons #TOTUM_FOOTER {
+@media (min-width: 1120px) {
+  .page_content:not(.tree-minifyed) .pcTable-topButtons #TOTUM_FOOTER {
+    display: block;
+  }
+}
+
+@media (min-width: 600px) {
+  .page_content.tree-minifyed .pcTable-topButtons #TOTUM_FOOTER {
     display: block;
   }
 }
@@ -175,7 +193,7 @@ footer {
 }
 
 
-.btn.btn-default{
+.btn.btn-default {
   border-color: transparent;
   background-color: #fafafa;
 
@@ -399,6 +417,20 @@ input:not([type="checkbox"]):focus {
     color: #555;
 
   }
+
+  ul {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+      height: 5px;
+      margin-bottom: -5px;
+    }
+  }
 }
 
 
@@ -430,7 +462,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
 }
 
 @mixin pcTable-td() {
-  border: 1px solid #e4e4e4;
+  border: 1px solid #f1f1f1;
   height: 35px;
   overflow: hidden;
   padding: 5px;
@@ -457,6 +489,14 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
       padding-left: 4px;
     }
 
+    &.asUrl {
+      cursor: pointer;
+      color: #337ab7;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
 
   }
 
@@ -470,7 +510,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     padding: 5px;
 
   }
-   input:not([type="checkbox"]){
+  input:not([type="checkbox"]) {
     border: 0 !important;
     outline: 0 !important;
   }
@@ -507,10 +547,10 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     float: left;
     opacity: 0.4;
   }
-  .ttm-edit{
+  .ttm-edit {
     opacity: 0.4;
   }
-  .fa-exclamation-triangle{
+  .fa-exclamation-triangle {
     opacity: 0.4;
   }
 
@@ -546,7 +586,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
 @mixin pcTable-th() {
   color: #000000;
   background-color: inherit;
-  border: 1px solid #e4e4e4;
+  border: 1px solid #f1f1f1;
   .btn {
     &:hover {
       box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.17), 0px 4px 3px 0px rgba(0, 0, 0, 0.08), 0px 0px 6px 0px rgba(0, 0, 0, 0.07);
@@ -568,6 +608,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
   span.cell-title {
 
     white-space: nowrap;
+    color: #4a4a4a;
   }
 
 
@@ -754,7 +795,7 @@ th {
 }
 
 
-.pcTable-hiddenFieldsTable{
+.pcTable-hiddenFieldsTable {
   margin-top: 10px;
 }
 
@@ -790,7 +831,8 @@ th {
   .cell {
     min-height: 32px;
   }
-  button.btn-default{
+
+  button.btn-default {
     background-color: transparent;
   }
 }
@@ -814,6 +856,10 @@ th {
   .pcTable-sectionTitle {
     i, span {
       cursor: pointer
+    }
+
+    &.lowOpacity {
+      opacity: 0.5;
     }
 
     span.danger {
@@ -965,6 +1011,33 @@ th {
     padding-bottom: 25px;
     padding-left: $idWidth;
     margin-bottom: 20px;
+
+    .ps__rail-x {
+      opacity: 1;
+      background-color: transparent;
+
+      .ps__thumb-x {
+        background-color: rgb(225, 224, 223);
+      }
+    }
+    .scroll-top-button, .summarizer{
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      border: none;
+      font-size: 16px;
+      background-color: #f3f2f2;
+      padding: 10px;
+      border-radius: 4px;
+      z-index: 100;
+      box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+    }
+    .summarizer{
+      right: 60px;
+      span{
+        font-size: 14px;
+      }
+    }
   }
 
   .pcTable-scrollwrapper {
@@ -1007,6 +1080,7 @@ th {
     font-size: 14px;
     padding-bottom: 0;
     padding-left: 49px;
+
   }
 
   td, td.with-code {
@@ -1051,7 +1125,7 @@ th {
 }
 
 .pcTable-filtersTable {
-  border-bottom: 1px solid #e4e4e4;
+  border-bottom: 1px solid #f1f1f1;
 
 }
 
@@ -1068,7 +1142,8 @@ th {
   }
 
   margin-bottom: 20px;
-  &:empty{
+
+  &:empty {
     margin: 0;
   }
 }
@@ -1081,6 +1156,7 @@ th {
   &:empty {
     display: none;
   }
+
   font-size: 14px;
   font-family: 'Open Sans';
   line-height: 21px;
@@ -1095,12 +1171,15 @@ th {
 .pcTable-tableComment {
   float: left;
   padding-top: 5px;
+  padding-bottom: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
   height: 35px;
   white-space: nowrap;
   cursor: pointer;
+  line-height: 25px;
+  min-width: 150px;
 }
 
 .pcTable-buttons {
@@ -1110,7 +1189,23 @@ th {
   padding-bottom: 5px;
   text-align: right;
   margin-right: 10px;
+  overflow-y: hidden;
   background-color: transparent;
+
+  .button-wrapper.cell-button {
+    padding: 0 !important;
+    display: inline-block;
+    margin-left: 5px;
+
+    button.button-field {
+      font-size: 12px;
+      line-height: 1.5;
+      border-radius: 3px;
+      padding: 3px 7px;
+      height: 26px;
+      box-sizing: border-box;
+    }
+  }
 
   .pcTable-container.no-fields & {
     display: none;
@@ -1142,6 +1237,11 @@ th {
 
 .pcTable-rowsWrapper {
   background-color: $rowsBackColor;
+}
+
+#refresh-notify {
+  display: grid;
+  grid-template-columns: 1fr 95px;
 }
 
 .pcTable-beforeSpace {
@@ -1229,12 +1329,15 @@ th {
     background-color: $tdDataRowMainColor;
 
     .InsertRow {
+      .text-edit-button {
+        width: 100%;
+      }
 
       td {
         background-color: $btn-warning-bgcolor;
 
         &.ins-handed {
-          input:not([type="checkbox"]) {
+          input {
             width: calc(100% - 20px);
           }
 
@@ -1491,6 +1594,7 @@ th.id .pcTable-filters.for-selected .btn {
 .InsertPanel {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-gap: 10px;
 
   .cell {
@@ -1520,13 +1624,14 @@ th.id .pcTable-filters.for-selected .btn {
 
 #ttmInput {
   margin-top: 20px;
-  border-color: #e8e8e8;
   height: auto;
   font-size: 12px;
-  border-radius: 3px;
+
+    border-color: transparent;
+    background-color: #fcfcfc;
 }
 
-.InsertPanel .cell-wrapper{
+.InsertPanel .cell-wrapper {
   padding-right: 10px;
   padding-left: 10px;
   padding-bottom: 15px;
@@ -1537,6 +1642,7 @@ th.id .pcTable-filters.for-selected .btn {
   box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
   //font-family: 'Open Sans', serif;
 
+  width: 100%;
   > .btns .btn {
     border-color: transparent;
 
@@ -1558,6 +1664,9 @@ th.id .pcTable-filters.for-selected .btn {
   .form-control, [data-field-type="select"] .bootstrap-select button {
     border-color: transparent;
     background-color: #fcfcfc;
+  }
+  .form-control.bootstrap-select {
+       box-shadow: none;
   }
 
   .btns {
@@ -1581,7 +1690,7 @@ th.id .pcTable-filters.for-selected .btn {
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-bottom: 10px;
-    font-weight: 500;
+    font-weight: 400;
     font-size: 14px;
   }
 
@@ -1682,11 +1791,16 @@ ul.CodeMirror-hints {
 
   .edit-row-panel {
     .modal-dialog {
-      width: 820px;
-    }
-    &.edit-field-panel .modal-dialog{
-      width: 1000px;
+      width: 1200px;
       max-width: 99%;
+
+    }
+    &.one-column-panel .modal-dialog{
+      width: 600px;
+    }
+
+
+    &.edit-field-panel .modal-dialog {
       .InsertPanel {
         grid-template-columns: 1fr 1fr 1fr;
         grid-gap: 10px;
@@ -1702,7 +1816,7 @@ ul.CodeMirror-hints {
 
   .fieldparams-edit-panel {
     .modal-dialog {
-      width: 900px;
+      width: 1200px;
       max-width: 99%;
     }
   }
@@ -1722,13 +1836,16 @@ ul.CodeMirror-hints {
   .simpleTable {
     font-size: 13px;
     width: 100%;
+
     thead td {
       font-weight: 500;
     }
 
     td {
-      border: 1px solid #e4e4e4;
+      border: 1px solid #f1f1f1;
       overflow: hidden;
+      height: 35px;
+      padding: 5px;
 
       &.input {
         background-color: $btn-danger-bgcolor;
@@ -1739,10 +1856,8 @@ ul.CodeMirror-hints {
 
         input {
           width: 100%;
-          margin: -2px;
           padding: 2px;
           border: none;
-
         }
       }
     }
@@ -1778,7 +1893,8 @@ ul.CodeMirror-hints {
 .hidding-form input[type=checkbox] {
   margin-right: 7px;
 }
-input{
+
+input {
   box-shadow: none !important;
 }
 
@@ -1793,7 +1909,7 @@ input{
 
 .i-show-table {
   border-collapse: collapse;
-  border: 1px solid #e4e4e4;
+  border: 1px solid #f1f1f1;
   table-layout: fixed;
 
   td {
@@ -1932,6 +2048,41 @@ input{
       font-weight: normal;
 
     }
+    .buttons{
+      text-indent: revert;
+      padding: 0;
+      padding-top: 5px;
+    }
+    button{
+      text-align: center;
+      margin-left: 3px;
+      &:first-child{
+        margin-left: 0;
+      }
+
+      background-color: $btn-danger-bgcolor;
+      color: #fff;
+      width: 45px;
+      text-shadow: none;
+      &.offed{
+        background-color: #fafafa;
+        color: #333;
+      }
+    }
+  }
+}
+.totum-edit-codes{
+  .flex{
+    display: flex;
+    padding-top: 10px;
+    div{
+      padding-left: 20px;
+    }
+    label{
+      padding-left: 5px;
+      cursor: pointer;
+      font-weight: normal;
+    }
   }
 }
 
@@ -1939,6 +2090,16 @@ input{
   z-index: 1000;
 }
 
+.pcTable-container.withNoColumns .pcTable-rowsWrapper {
+  display: none;
+}
+
+.cell-help {
+  opacity: 0.25;
+}
+
+
+@import "fields/string.scss";
 @import "fields/file.scss";
 @import "fields/No.scss";
 @import "fields/text.scss";
@@ -1954,6 +2115,7 @@ input{
 @import "panels.scss";
 @import "tree.scss";
 @import "scrolls.scss";
+@import "fixed-column.scss";
 @import "hidding.scss";
 @import "tech-table.scss";
 @import "codemirror.scss";
@@ -1962,6 +2124,9 @@ input{
 @import "notifications";
 @import "floatBlocks";
 @import "pagination";
+@import "tableRotaion";
+@import "treeView";
+@import "panelView";
 @import "mobile";
 
 

@@ -29,6 +29,10 @@
 .bootstrap-select > .dropdown-toggle.bs-placeholder, .bootstrap-select > .dropdown-toggle.bs-placeholder:active, .bootstrap-select > .dropdown-toggle.bs-placeholder:focus, .bootstrap-select > .dropdown-toggle.bs-placeholder:hover {
   color: #333;
 }
+.bootstrap-select .dropdown-menu{
+  overflow-x: auto;
+}
+
 
 .bootstrap-select.btn-group .dropdown-menu li a {
   text-overflow: ellipsis;

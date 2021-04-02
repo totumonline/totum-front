@@ -57,7 +57,7 @@
                 $('table.pcTable-table').removeClass('with-checks');
             }
 
-            if (this.dataSortedVisible.length !== this.__checkedRows.length) {
+            if (this.dataSortedVisible.filter((v) => typeof v !== 'object' || v.row).length !== this.__checkedRows.length) {
                 pcTable._idCheckButton.html('<span class="fa fa-square-o"></span>');
             } else {
                 pcTable._idCheckButton.html('<span class="fa fa-check"></span>');
@@ -100,7 +100,7 @@
         ,
         _refreshCheckedStatus: function () {
             this._checkStatusBar.find('[data-name="count_checked_rows"]:first').text(this.__checkedRows.length);
-            this._checkStatusBar.find('[data-name="count_visible_rows"]:first').text(this.dataSortedVisible.length);
+            this._checkStatusBar.find('[data-name="count_visible_rows"]:first').text(this.dataSortedVisible.filter((v) => typeof v !== 'object' || v.row).length);
         }
         ,
 
@@ -301,6 +301,11 @@
             let insertVisibleIndex = 0;
             let editFieldName = editedObj ? editedObj.data('field') : undefined;
 
+
+            if (pcTable.isPanel) {
+                delete json.chdata.params;
+            }
+
             if ($trIdBefore) {
                 insertIndex = pcTable.dataSorted.indexOf($trIdBefore) + 1;
                 insertVisibleIndex = pcTable.dataSortedVisible.indexOf($trIdBefore) + 1;
@@ -322,6 +327,12 @@
                         });
                     }
 
+                    if (json.chdata.tree) {
+                        json.chdata.tree.forEach((tv, i) => {
+                            this.getTreeBranch(tv, i);
+                        })
+                    }
+
 
                     $.each(json.chdata.rows, function (k, v) {
                         let item = pcTable._getItemById(v.id);
@@ -335,56 +346,63 @@
                         if (App.isEmpty(pcTable.data) && pcTable._content) {
                             pcTable._content.find('.pcTable-noDataRow').remove();
                         }
-                        let reorderRows=[];
+                        let reorderRows = [];
                         $.each(addedRows, function (k, v) {
                             v.$visible = true;
-
                             v.$checked = false;
                             if (!insertIndex && pcTable.tableRow.with_order_field && !pcTable.tableRow.new_row_in_sort) {
                                 v.__inserted = true;
                             }
                             pcTable.data[v.id] = v;
 
-                            let nowInsertInsex = insertIndex;
-                            let nowInsertVisibleIndex = insertVisibleIndex;
+                            if (pcTable.isTreeView) {
+                                pcTable.placeInTree(v, null, true)
+                                this.treeRefresh = true;
 
-                            if ((v.__after && (!$trIdBefore || $trIdBefore.id !== v.__after))) {
-                                nowInsertInsex = pcTable.dataSorted.indexOf(v.__after) + 1;
-                                nowInsertVisibleIndex = pcTable.dataSortedVisible.indexOf(v.__after) + 1;
-                            } else if ('order' in json.chdata) {
-                                reorderRows.push(v.id)
+                            } else {
+
+                                let nowInsertIndex = insertIndex;
+                                let nowInsertVisibleIndex = insertVisibleIndex;
+
+                                if ((v.__after && (!$trIdBefore || $trIdBefore.id !== v.__after))) {
+                                    nowInsertIndex = pcTable.dataSorted.indexOf(v.__after) + 1;
+                                    nowInsertVisibleIndex = pcTable.dataSortedVisible.indexOf(v.__after) + 1;
+                                } else if ('order' in json.chdata) {
+                                    reorderRows.push(v.id)
+                                }
+
+                                pcTable.dataSorted.splice(nowInsertIndex, 0, v.id);
+                                pcTable.dataSortedVisible.splice(nowInsertVisibleIndex, 0, v.id);
+
+                                insertIndex++;
+                                insertVisibleIndex++;
+
                             }
-
-                            pcTable.dataSorted.splice(nowInsertInsex, 0, v.id);
-                            pcTable.dataSortedVisible.splice(nowInsertVisibleIndex, 0, v.id);
-
-                            insertIndex++;
-                            insertVisibleIndex++;
 
                         });
 
-                        reorderRows.forEach(function (id){
+                        /*reorderRows.forEach(function (id) {
                             let place = json.chdata.order.indexOf(id);
                             let newPlace = 0;
                             let newPlaceVisible = 0;
-                            if(place>0){
+                            if (place > 0) {
                                 let beforeId = json.chdata.order[place - 1];
                                 newPlace = pcTable.dataSorted.indexOf(beforeId) + 1
                                 newPlaceVisible = pcTable.dataSortedVisible.indexOf(beforeId) + 1
                             }
                             let oldPlace = pcTable.dataSorted.indexOf(id);
                             let oldPlaceVisible = pcTable.dataSortedVisible.indexOf(id);
-                            if(oldPlace!==newPlace){
+                            if (oldPlace !== newPlace) {
                                 pcTable.dataSorted.splice(newPlace, 0, id);
                                 let oldPlace = pcTable.dataSorted.indexOf(id);
                                 pcTable.dataSorted.splice(oldPlace, 1);
                             }
-                            if(oldPlaceVisible!==newPlaceVisible){
+                            if (oldPlaceVisible !== newPlaceVisible) {
                                 pcTable.dataSortedVisible.splice(newPlaceVisible, 0, id);
                                 let oldPlaceVisible = pcTable.dataSortedVisible.indexOf(id);
                                 pcTable.dataSortedVisible.splice(oldPlaceVisible, 1);
                             }
-                        })
+                        })*/
 
 
                         if ($trIdBefore && !pcTable.isMobile) {
@@ -396,8 +414,8 @@
 
                         }
                     }
+                    pcTable.selectedCells.summarizer.check();
                 }
-
 
                 if (deleted.length) {
                     $.each(deleted, function (k, v) {
@@ -406,7 +424,6 @@
                     if (App.isEmpty(pcTable.data) && pcTable._content && pcTable._content.find('.' + this.noDataRowClass).length === 0) {
                         pcTable._content.append(pcTable._createNoDataRow());
                     }
-
                 }
 
                 if (deleted.length || addedRows.length || (json.chdata.nsorted_ids && pcTable.nSorted && !Object.equals(json.chdata.nsorted_ids, pcTable.dataSorted))) {
@@ -426,17 +443,27 @@
                         }
                     }
 
+                    this._refreshContentTable(0, false, true);
+                    //this.ScrollClasterized.insertToDOM(undefined, true);
+                }
 
-                    this.ScrollClasterized.insertToDOM(undefined, true);
+                if (json.chdata.order) {
+                    this.dataSorted = json.chdata.order;
+                    pcTable.dataSortedVisible = [];
+                    pcTable.dataSorted.forEach((id) => {
+                        if (this.data[id].$visible)
+                            pcTable.dataSortedVisible.push(id)
+                    })
+                    this._refreshContentTable(0, false, true);
                 }
 
                 let paramsChanges = {};
                 if (json.chdata.params) {
                     $.each(json.chdata.params, function (k, v) {
                         ['v', 'v_', 'f', 'e', 'h', 'c', 'ch'].forEach(function (part) {
-                            if (v[part] !== undefined || pcTable.data_params[k][part]) {
+                            if (pcTable.data_params[k] && (v[part] !== undefined || pcTable.data_params[k][part])) {
                                 if (!Object.equals(pcTable.data_params[k][part], v[part]) || k === editFieldName) {
-                                    paramsChanges[k] = true;
+                                    paramsChanges[k] = part;
                                     pcTable.data_params[k][part] = v[part];
                                 }
                             }
@@ -455,10 +482,17 @@
                 if (json.chdata.params || json.chdata.fields) {
                     pcTable._refreshParamsBlock(paramsChanges, true);
                     pcTable._refreshFootersBlock(paramsChanges, true);
+
+                    if (pcTable.f && pcTable.f.buttons && pcTable.f.buttons.some) {
+                        pcTable.f.buttons.some((name) => {
+                            pcTable._rowsButtons();
+                            return true;
+                        })
+                    }
                 }
                 if (json.chdata.f) {
                     let newf = json.chdata.f;
-                    ['blockadd', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment'].forEach(function (k) {
+                    ['blockadd', 'buttons', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment'].forEach(function (k) {
                         if (k in newf || k in pcTable.f) {
                             if (typeof newf[k] == "object") {
                                 if (!Object.equals(newf[k], pcTable.f[k])) {
@@ -480,15 +514,25 @@
                 if (App.isEmpty(pcTable.data) && pcTable._content) {
                     pcTable._content.empty().append(this._createNoDataRow());
                 }
+
+                if (this.treeRefresh) {
+                    this.treeApply();
+                }
             }
+
+
             if (json.updated) {
-                pcTable.model.tableData.updated = JSON.parse(json.updated)
+                pcTable.model.tableData.updated = JSON.parse(json.updated);
                 pcTable._refreshTitle();
             }
-            if (json.filtersString) {
-                pcTable._refreshFiltersBlock.call(pcTable, json)
+            if (!pcTable.isPanel) {
+                if (json.filtersString) {
+                    pcTable._refreshFiltersBlock.call(pcTable, json)
+                }
+                pcTable._headCellIdButtonsState();
+
+                pcTable.ScrollClasterized.insertToDOM(null, true);
             }
-            pcTable._headCellIdButtonsState();
         }
         ,
         rows_edit: function ($tr) {
@@ -600,6 +644,17 @@
             }
             return checkedRows;
 
+        },
+        getRowTitle(item) {
+            if (this.mainFieldName !== 'id') {
+                if (item[this.mainFieldName]._v) {
+                    return item[this.mainFieldName]._v;
+                } else {
+                    return item[this.mainFieldName].v;
+                }
+
+            }
+            return item.id;
         }
         ,
         row_refresh: function (trId) {
@@ -692,7 +747,12 @@
                             let unic_fields = [];
 
                             let newCheckedRows = [];
-                            pcTable.dataSortedVisible.forEach(function (id) {
+
+                            pcTable.dataSortedVisible.forEach(function (idObj) {
+                                let id = idObj;
+                                if(typeof idObj === 'object' && idObj.row){
+                                    id = idObj.row.id
+                                }
                                 if (checkedRows.indexOf(id) !== -1) {
                                     newCheckedRows.push(id);
                                 }

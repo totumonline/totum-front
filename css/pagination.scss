@@ -45,8 +45,15 @@
       }
     }
   }
-  #ttm-onpage-input span{
-    width: 80px; display: inline-block; margin-left: 5px;
+  #ttm-onpage-input {
+    span {
+      width: 80px;
+      display: inline-block;
+      margin-left: 5px;
+    }
+    .fa-square{
+      margin-left: 5px;
+    }
   }
 }
 .ttm-paging-danges.text-center{

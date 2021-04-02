@@ -1,0 +1,24 @@
+.ttm-fieldCell[data-field-type="text"]{
+  &[data-field-viewtype="text"]{
+    .ttm-fieldValue div.text{
+      white-space: pre-line;
+      font-size: 14px;
+      padding: 5px 10px 0 10px;
+      color: #4c4c4c;
+    }
+    .ttm-fieldValue{
+      padding-bottom: 5px;
+    }
+  }
+&[data-field-viewtype="html"]{
+    .ttm-fieldValue div.text{
+      white-space: normal;
+      font-size: 14px;
+      padding: 5px 10px 0 10px;
+      color: #4c4c4c;
+    }
+  }
+  .ttm-fieldValue{
+    padding-bottom: 5px;
+  }
+}

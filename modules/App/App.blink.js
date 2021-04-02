@@ -1,13 +1,19 @@
 (function () {
-    App.blink = function ($element, $times, $color) {
+    App.blink = function ($element, $times, $backgroundcolor, $param) {
         let i = $times || 8;
+        $param = $param || 'background-color';
+
+        if (i % 2) {
+            i++;
+        }
         let warn = true;
         let blink = function () {
             if ($element) {
                 if (warn) {
-                    $element.css('background-color', $color);
+                    $element.css($param, $backgroundcolor);
                 } else {
-                    $element.css('background-color', '');
+                    if ($backgroundcolor)
+                        $element.css($param, '');
                 }
                 warn = !warn;
                 i--;

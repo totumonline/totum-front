@@ -1,0 +1,118 @@
+.innerContainer.panelsView {
+  &:not(.kanbanInnerContainer) {
+    overflow: visible;
+  }
+
+  .cell-help {
+    float: right;
+  }
+
+  padding-bottom: 50px;
+
+  .pcTable-floatBlock {
+    padding: 0;
+    white-space: inherit;
+
+    .panelsView-card {
+
+      cursor: pointer;
+      border: 1px solid transparent;
+
+      &.selected {
+        //background-color: #c8f8ff80;
+      }
+
+      box-shadow: 0 0 7px 0px #0000000f;
+      background-color: #fff;
+      padding: 10px;
+      overflow: hidden;
+      margin: 5px;
+      border-radius: 4px;
+
+      > div {
+        width: 100%;
+        display: block;
+
+
+        td {
+          width: 100%;
+
+          button.button-field {
+            height: 100%;
+          }
+
+          &.nonowrap {
+            overflow: auto;
+          }
+
+          padding-top: 7px;
+        }
+
+        th {
+          height: 25px;
+          color: #9a9a9a;
+
+          padding: 0 5px
+        }
+      }
+
+      &.mouse-on {
+        position: absolute;
+        background-color: lightblue;
+      }
+    }
+
+  }
+
+  .kanbanWrapper {
+    display: grid;
+    grid-gap: 20px;
+
+    &.cln {
+      position: fixed;
+      top: 60px;
+
+      .kanban-title {
+        box-shadow: 0 0 7px 0px #0000000f
+      }
+    }
+
+    .kanban-title {
+      padding: 20px;
+      font-size: 20px;
+      background-color: #f1f1f1;
+      padding: 10px 15px 10px 15px;
+      font-size: 16px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .kanban-cards {
+      margin-left: -5px;
+      margin-right: -5px;
+      .empty-kanban{
+        padding-left: 15px;
+
+      }
+    }
+  }
+
+  .panel-controls {
+
+    margin-top: 15px;
+    padding-left: 2px;
+
+    .fa, span{
+      opacity: 0.5;
+    }
+
+    button {
+      margin-top: -2px;
+      margin-left: 10px;
+    }
+  }
+
+  .pcTable-floatInner>div{
+    margin-bottom: 5px;
+  }
+}

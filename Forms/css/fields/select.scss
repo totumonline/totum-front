@@ -1,0 +1,129 @@
+div[data-field-type="select"] {
+  &[data-field-viewtype="grid"] {
+    > div {
+      margin: 16px;
+    }
+
+    .MuiGrid-item {
+      box-sizing: content-box;
+    }
+
+    .MuiPaper-root {
+
+      h6 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      &.ttm-checked {
+        background-color: #f500570d;
+      }
+
+      padding: 10px;
+
+      .previews {
+        p {
+          white-space: normal;
+        }
+      }
+    }
+
+    .cell-comment {
+      padding-bottom: 15px;
+      padding-left: 0px;
+    }
+
+    .ttm-help, .ttm-format-text {
+      padding-left: 0px;
+    }
+
+    .ttm-fieldValue {
+      padding-bottom: 20px;
+    }
+    .previews > div{
+      padding-top: 10px;
+      &:first-child{
+        padding-top: 0;
+      }
+    }
+  }
+
+  &[data-field-viewtype="checkboxpicture"] {
+    li {
+      cursor: pointer;
+    }
+
+    li > div {
+      padding-left: 0;
+
+      .MuiTypography-body2 {
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .MuiSwitch-root {
+      margin-right: -17px;
+    }
+
+  }
+
+  .MuiAvatar-root {
+    margin-right: 16px;
+  }
+
+  &[data-view-type=""] {
+    .cell-comment {
+      i {
+        cursor: pointer;
+      }
+    }
+  }
+
+  &[data-field-viewtype="checkbox"], &[data-field-viewtype="switch"] {
+    .MuiFormControl-root {
+      padding-left: 8px;
+      width: 100%;
+    }
+  }
+
+  .ttm-value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: list-item;
+  }
+
+  .ttm-right-preview {
+    float: right;
+    padding-left: 10px;
+    opacity: 0.4;
+  }
+
+  .MuiTypography-body1 {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .ttm-checked .ttm-right-preview {
+    opacity: 1;
+  }
+
+  .ttm-select-section-name {
+    padding-bottom: 5px;
+  }
+
+  .ttm-select-section-name:not(:first-child) {
+    padding-top: 10px;
+  }
+
+  &[data-field-viewtype="viewimage"] {
+    .ttm-file-image {
+      //transition: background-image 0.3s ease;
+    }
+
+  }
+
+  .MuiAvatar-img {
+    padding: 0 !important;
+  }
+}

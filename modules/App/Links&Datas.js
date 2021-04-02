@@ -138,7 +138,7 @@
                             onhidden: function () {
                                 if (linkObject.refresh) {
                                     let pcTable = $('#table').data('pctable');
-                                    model.refresh()
+                                    model.refresh(null, linkObject.refresh)
                                     //window.location.reload();
                                 }
                             },
@@ -182,13 +182,7 @@
                                     'label': "Вкладка",
                                     cssClass: 'btn-m btn-default',
                                     'action': function (dialog) {
-                                        try {
-                                            if ($iframe.get(0).contentWindow.sessionStorage.linkObject)
-                                                linkObject = JSON.parse($iframe.get(0).contentWindow.sessionStorage.linkObject);
-                                        } catch (e) {
-
-                                        }
-                                        openLinkLocation('blank');
+                                        window.open($iframe.get(0).contentWindow.location, '_blank');
                                         dialog.close();
                                     }
                                 },
@@ -296,7 +290,7 @@
                                 cssClass: 'target-iframe',
                                 onhidden: function () {
                                     if (linkObject.refresh) {
-                                        model.refresh()
+                                        model.refresh(null, linkObject.refresh)
                                     }
                                     dialogOffset--;
                                 },
@@ -347,14 +341,7 @@
                                         'label': "Вкладка",
                                         cssClass: 'btn-m btn-default',
                                         'action': function (dialog) {
-
-                                            try {
-                                                if ($iframe.get(0).contentWindow.sessionStorage.linkObject)
-                                                    linkObject = JSON.parse($iframe.get(0).contentWindow.sessionStorage.linkObject);
-                                            } catch (e) {
-
-                                            }
-                                            openLinkLocation('blank');
+                                            window.open($iframe.get(0).contentWindow.location, '_blank');
                                             dialog.close();
                                         }
                                     },
@@ -393,7 +380,7 @@
 
         });
     };
-    App.showDatas = function (datas, notificationId) {
+    App.showDatas = function (datas, notificationId, wnd) {
         let dialogs = [];
         let model = this;
         let props;
@@ -406,6 +393,12 @@
                         input = html.find('#ttmInput');
                     } else {
                         input = $('<input type="text" class="form-control" id="ttmInput">');
+                        if (data[1].type){
+                            input.attr('type', data[1].type)
+                            if(data[1].type==='password'){
+                                input.attr('autocomplete', "off")
+                            }
+                        }
                         if (data[1].value)
                             input.val(data[1].value)
                         html.append(input);
@@ -419,8 +412,11 @@
 
                     let save = function () {
                         model.inputClick(data[1].hash, input.val()).then(function () {
-                            if (data[1].refresh) {
-                                model.refresh()
+                            if(data[1].close && wnd && wnd.closeMe){
+                                window.closeMe();
+                            }
+                            else if (data[1].refresh) {
+                                model.refresh(null, data[1].refresh)
                             }
                             Dialog.close();
                         });
@@ -464,8 +460,11 @@
                                 label: btn.text,
                                 action: function (dialog) {
                                     model.buttonsClick(data[1].hash, i).then(function () {
-                                        if (data[1].buttons[i].refresh) {
-                                            model.refresh()
+                                        if(data[1].close && wnd && wnd.closeMe){
+                                            window.closeMe();
+                                        }
+                                        else if (data[1].buttons[i].refresh) {
+                                            model.refresh(null, data[1].buttons[i].refresh)
                                         }
                                         dialog.close();
                                     });
@@ -638,23 +637,25 @@
         const showPanel = function () {
             let panel = panels.shift();
 
-            let data = {};
+            let data = {}, fixed= {};
             if (panel.id) {
                 data.id = panel.id;
             } else if (panel.field) {
                 data = panel.field;
+                fixed = data;
             }
 
             const show = function (pcTable) {
-                (new EditPanel(pcTable.tableRow.id, null, data, panels.length > 0)).then(function (json, isNext) {
-                    if (json && panel.refresh) {
-                        let pcTable = $('#table').data('pctable');
-                        pcTable.model.refresh()
-                    } else if (json || isNext) {
+                (new EditPanel(pcTable.tableRow.id, null, data, panels.length > 0, fixed)).then(function (json, isNext) {
+                    if (json || isNext) {
                         if (panels.length) {
                             showPanel();
                             return;
                         }
+                    }
+                    if (panel.refresh) {
+                        let pcTable = $('#table').data('pctable');
+                        pcTable.model.refresh(null, panel.refresh)
                     }
                     def.resolve();
                 });
@@ -689,7 +690,7 @@
             onhidden: function () {
                 if (refresh) {
                     let pcTable = $('#table').data('pctable');
-                    pcTable.model.refresh()
+                    pcTable.model.refresh(null, refresh)
                 }
             },
             onshown: function (dialog) {
@@ -736,7 +737,7 @@
                     if (refresh === 'strong') {
                         window.location.reload()
                     } else {
-                        model.refresh()
+                        model.refresh(null, refresh)
                     }
                 }
                 dialogOffset--;
@@ -790,9 +791,9 @@
             }
         }
 
-        let src = '/Table/0/' + data.table_id + '?sess_hash=' + data.sess_hash;
+        let src = '/Table/0/' + data.table_id + '?sess_hash=' + data.sess_hash+'&iframe=1';
         if (window.location.pathname !== '/' && !/^\/Table\//.test(window.location.pathname))
-            src = data.table_id + '?sess_hash=' + data.sess_hash;
+            src = data.table_id + '?sess_hash=' + data.sess_hash+'&iframe=1';
 
         let $iframe = $('<iframe style="width: 100%; height: ' + (height || "80vh") + '; border: none;" src="' + src + '">');
         $('body').append($iframe);
@@ -802,7 +803,7 @@
                 'label': "В новой вкладке",
                 cssClass: 'btn-m btn-danger',
                 'action': function (dialog) {
-                    let wnd = window.open(src, '_blank');
+                    let wnd = window.open($iframe.get(0).contentWindow.location, '_blank');
                     dialog.close();
                     return;
                 }
@@ -852,7 +853,7 @@
                     setTimeout(function () {
                         def.resolve();
 
-                    }, 3000)
+                    }, 2000)
                 }
             };
 

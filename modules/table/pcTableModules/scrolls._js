@@ -52,6 +52,7 @@
             let self = {};
 
             self.table = undefined;
+            self.topButton = undefined;
             let scrollable;
 
 
@@ -85,7 +86,11 @@
                             let saveButton = pcTable._innerContainer.find('th.n').find('i.fa-save').parent().clone(true);
                             self.table.find('th.n').append($('<div class="pcTable-filters">').append(saveButton));
                         }
-
+                        if(!pcTable.isMobile && !self.topButton){
+                            self.topButton = $('<button class="scroll-top-button"><i class="fa fa-arrow-up"></i></button>').appendTo(pcTable._innerContainer).on('click', function () {
+                                pcTable._container.scrollTop(pcTable._container.find('.pcTable-rowsWrapper').offset().top - pcTable.scrollWrapper.offset().top);
+                            });
+                        }
                     }
                     self.table.css({
                         position: 'absolute',
@@ -108,10 +113,16 @@
                         } else {
                             self.table.css({top: parseInt($('#table').offset().top) - parseInt($('.innerContainer').offset().top)})
                         }
+
                     } else {
                         if (self.table) {
                             self.table.remove();
                             self.table = undefined;
+                            if(self.topButton){
+                                self.topButton.remove();
+                                self.topButton = undefined;
+                            }
+
                             pcTable._content.off('scroll')
                         }
                     }
@@ -145,8 +156,7 @@
                     scrollFunc.call(pcTable);
                 }, 50);
             });
-
-
+            
             let cache = {
                 top_offset: 0,
                 bottom_offset: 0,
@@ -235,6 +245,7 @@
                         if (forceCheckTableHeight && pcTable._container.getNiceScroll) {
                             pcTable._container.getNiceScroll().resize();
                         }
+                        pcTable._content.trigger('scrolled');
                     }
                 },
                 setHtml: function (rows, top, bottom, forceRefreshData) {
@@ -251,13 +262,17 @@
                         $trs.appendChild(pcTable._createNoDataRow('По условиям фильтрации не выбрана ни одна строка').get(0));
                     } else {
                         for (let i in rows) {
-                            let id = rows[i];
-                            let item = pcTable.data[id];
-                            if (!item.$tr || forceRefreshData) {
-                                pcTable._createRow.call(pcTable, item);
+                            let row = rows[i];
+                            if (typeof row !== 'object') {
+                                let item = pcTable.data[row];
+                                if (!item.$tr || forceRefreshData) {
+                                    pcTable._createRow.call(pcTable, item);
+                                }
+                                item.$tr.data('item', item);
+                                $trs.appendChild(item.$tr.get(0));
+                            }else{
+                                $trs.appendChild(pcTable._createTreeFolderRow.call(pcTable, row).get(0));
                             }
-                            item.$tr.data('item', item);
-                            $trs.appendChild(item.$tr.get(0));
                         }
                     }
                     if (bottom) $trs.appendChild($('<tr style="height: ' + bottom + 'px;" class="loading-row"><td colspan="' + (pcTable.fieldCategories.column.length + 1) + '"></td></tr>').get(0));

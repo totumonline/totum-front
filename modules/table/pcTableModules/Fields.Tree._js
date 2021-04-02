@@ -7,8 +7,6 @@
             return div.data('val');
         },
         getEditElement: function ($oldInput, oldValueParam, item, enterClbk, escClbk, blurClbk, tabindex, editNow) {
-
-
             let field = this;
             let div = $oldInput || $('<div>');
             let dialog = div.data('dialog') || $('<div>').css('min-height', 200);
@@ -447,26 +445,46 @@
         },
         getCellText: function (fieldValue, td, item) {
             let field = this;
-            let arrayVals = item[field.name].v_;
-            if (fieldValue) {
-                if (field.multiple) {
-                    if (Array.isArray(fieldValue)) {
-                        if (fieldValue.length === 0) return field.getElementSpan(null);
-                        else if (fieldValue.length === 1) return field.getElementSpan(fieldValue[0], arrayVals[0]);
-                        else {
-                            if (field.multySelectView === "0" && !field.FullView) {
-                                return $('<span class="select-item">' + fieldValue.length + ' эл.<span>')
-                            } else {
-                                let span = $('<span class="select-item">');
-                                fieldValue.forEach((fVal, i) => span.append(field.getElementSpan(fVal, arrayVals[i])));
-                                return span;
+
+            if (field.name === 'tree' && item.__tree && (field.treeViewType === 'self' || (item.tree_category && item.tree_category.v))) {
+                let row = item.__tree;
+                let format = item.tree.f || {}
+                let icon = format.icon || (row.opened ? 'folder-open' : 'folder');
+                let folder = $('<i class="fa fa-' + icon + '"></i>').data('treeRow', row.v);
+
+
+                let span = $('<span class="tree-view">').css('padding-left', row.level * 10).append(folder);
+                if (format.expand !== false) {
+                    folder.addClass('treeRow');
+                    span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
+                }else{
+                    folder.css('margin-right', 8)
+                }
+
+                span.append(format.text || row.t);
+                return span;
+            } else {
+                let arrayVals = item[field.name].v_;
+                if (fieldValue) {
+                    if (field.multiple) {
+                        if (Array.isArray(fieldValue)) {
+                            if (fieldValue.length === 0) return field.getElementSpan(null);
+                            else if (fieldValue.length === 1) return field.getElementSpan(fieldValue[0], arrayVals[0]);
+                            else {
+                                if (field.multySelectView === "0" && !field.FullView) {
+                                    return $('<span class="select-item">' + fieldValue.length + ' эл.<span>')
+                                } else {
+                                    let span = $('<span class="select-item">');
+                                    fieldValue.forEach((fVal, i) => span.append(field.getElementSpan(fVal, arrayVals[i])));
+                                    return span;
+                                }
                             }
+                        } else {
+                            return field.getElementSpan(fieldValue, [fieldValue, 0]);
                         }
-                    } else {
-                        return field.getElementSpan(fieldValue, [fieldValue, 0]);
-                    }
-                } else return field.getElementSpan(fieldValue, arrayVals);
-            } else return field.getElementString(null);
+                    } else return field.getElementSpan(fieldValue, arrayVals);
+                } else return field.getElementString(null);
+            }
 
         },
         checkIsFiltered: function (fieldVal, filters) {
@@ -518,6 +536,7 @@
         },
         getElementSpan: function (val, arrayVal) {
             let span = $('<span>');
+
             if (val !== null) {
                 span.text(this.getElementString(val, arrayVal));
                 if (arrayVal[1] === 1) {

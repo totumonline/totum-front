@@ -1,0 +1,53 @@
+.innerContainer {
+  .fixed-column {
+    position: absolute;
+    max-height: 100%;
+    overflow: hidden;
+    z-index: 10;
+    box-shadow: 0 0 7px 0px #0000000f;
+    box-sizing: border-box;
+    white-space: nowrap;
+
+
+    top: 0;
+
+    #table:not(.worker-view) & th {
+      padding-bottom: 23px;
+      padding-top: 22px;
+    }
+
+    th, td {
+      width: 100%;
+      display: block;
+      height: 35px;
+      border-color: transparent;
+      border-bottom: 1px dashed #f1f1f1;
+      padding: 5px;
+      background-color: #faf9f8 !important;
+      cursor: default;
+    }
+
+    td .cell-value {
+      width: auto;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: block;
+      vertical-align: bottom;
+      max-height: 35px;
+      cursor: default;
+      &.asUrl{
+        color: inherit;
+        cursor: default;
+        &:hover{
+          text-decoration: none;
+        }
+      }
+    }
+
+    .top-head {
+      position: absolute;
+      z-index: 20;
+
+    }
+  }
+}

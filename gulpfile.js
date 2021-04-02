@@ -85,6 +85,7 @@ let path = {
             , 'bower_components/bootstrap3-dialog/dist/js/bootstrap-dialog.min.js'
             , 'bower_components/remarkable-bootstrap-notify/bootstrap-notify.min.js'
             , 'bower_components/jquery.nicescroll/jquery.nicescroll.min.js'
+            , 'node_modules/perfect-scrollbar/dist/perfect-scrollbar.js'
         ],
         dest: './http/js/'
     },
@@ -102,6 +103,7 @@ let path = {
             , 'bower_components/codemirror/addon/scroll/simplescrollbars.css'
             , 'bower_components/jstree/dist/themes/default-with-imgs/style.css'
             , 'bower_components/jstree/dist/themes/dark-with-imgs/style.css'
+            , 'node_modules/perfect-scrollbar/css/perfect-scrollbar.css'
         ],
         dest: './http/css/'
     },
@@ -128,14 +130,21 @@ gulp.task('DEVELOP', function () {
 
     gulp.start('product:js');
     gulp.start('product:css');
+    gulp.start('dev:fonts');
 
-    watch([path.js.src, path.js.src_parts, './functions.json'], function (event, cb) {
+    watch([path.js.src, path.js.src_parts, './functions.js'], function (event, cb) {
         gulp.start('product:js');
     });
     watch(['css/**/*', 'css/*'], function (event, cb) {
         gulp.start('product:css');
     });
 });
+
+gulp.task('dev:fonts', function () {
+    return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', 'bower_components/JetBrainsMono/fonts/webfonts/*.*'])
+        .pipe(gulp.dest('./http/fonts/'));
+});
+
 gulp.task('QUICK-PROD', ['product:js', 'product:css'], function () {
     return gulp.src('./http/**/main.*')/*.pipe(debug())*/
         .pipe(gulp.dest(path.http.dest));
@@ -149,8 +158,8 @@ gulp.task('QUICK-PROD-DEV', function () {
 /*product*/
 {
     gulp.task('product:fonts', function () {
-        return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', 'bower_components/JetBrainsMono/web/woff2/*.*'])
-            .pipe(gulp.dest('./http/fonts/'));
+        return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', 'bower_components/JetBrainsMono/fonts/webfonts/*.*'])
+            .pipe(gulp.dest('../../../http/fonts/'));
     });
 
     gulp.task('product:jsLibs', function () {
@@ -188,7 +197,7 @@ gulp.task('QUICK-PROD-DEV', function () {
         return branch.pipe(gulp.dest(path.css.dest));
     });
     gulp.task('product:js', function () {
-        gulp.src('./functions.json')
+        gulp.src('./functions.js')
             .pipe(gulp.dest('./http/js/'));
 
 

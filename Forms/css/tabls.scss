@@ -1,0 +1,11 @@
+.MuiTabs-root{
+  padding-bottom: 15px;
+  .MuiTabs-scrollButtons{
+    &.MuiTabs-scrollButtonsDesktop{
+      display: inline-flex;
+    }
+  }
+  .MuiTabs-scroller{
+  }
+
+}

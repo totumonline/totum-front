@@ -2,16 +2,11 @@ let panelId = 0;
 window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertChangesCalcsFields = {}) {
 
     if (window.top !== window) return window.top.EditPanel.call(window.top, pcTable, dialogType, inData, isElseItems, insertChangesCalcsFields);
-
     let data = $.extend(true, {}, inData);
 
     let EditPanelFunc = this;
     EditPanelFunc.pcTable = pcTable;
     EditPanelFunc.panelId = 'panel' + (panelId++);
-
-    if (typeof pcTable === 'object' && data.id) {
-        pcTable.openedPanels[data.id] = EditPanelFunc;
-    }
 
     let isEditFieldPanel = pcTable === 2 || (typeof pcTable === 'object' && pcTable.tableRow.id === 2);
 
@@ -48,7 +43,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 }).fail(reject);
             })
         }
-        if (EditPanelFunc.beforeSave) {
+        if (EditPanelFunc.beforeSave && !isFirstLoad) {
             if (val = await EditPanelFunc.beforeSave(val)) {
                 return Check();
             }
@@ -97,8 +92,12 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         };
 
         if (!column1.length) {
-            EditPanelFunc.pcTable.fieldCategories.column.forEach(function (field, index) {
+            EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (field, index) {
                 if (field.name === 'n') return;
+                let format = $.extend({}, (EditPanelFunc.pcTable.f || {}), (EditPanelFunc.editItem.f || {}), (json.row[field.name].f || {}));
+                if (format.hide && format.hide.extpanel) {
+                    return;
+                }
                 allKoeffs += getKoeff(field);
                 fCount++
             });
@@ -110,19 +109,17 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 column3 = $('<div>').appendTo(this.$panel);
                 columns['column2'] = column2;
                 columns['column3'] = column3;
-            } else if (fCount > 1) {
+            } else if (fCount > 6) {
                 column2 = $('<div>').appendTo(this.$panel);
                 columns['column2'] = column2;
             } else {
-                this.$panel.css('grid-template-columns', '1fr');
+                this.$panel.css('grid-template-columns', 'minmax(0, 1fr)');
             }
 
         }
 
 
-        EditPanelFunc.pcTable.fieldCategories.column.forEach(function (field, index) {
-
-            if (field.name === 'n') return;
+        EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (field, index) {
 
             let cell = EditPanelFunc.$panel.find('div.cell[data-field-name="' + field.name + '"]');
 
@@ -170,41 +167,34 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     })
                     cell = EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format, divWrapper);
                 } else {
+                    let clmn;
                     if (isEditFieldPanel) {
                         if (index === 0) {
                             this.$panel.prepend(divWrapper.css({
                                 'grid-column-start': 1,
                                 'grid-column-end': 4
                             }));
+
                         } else {
-                            let cln = (Math.floor((index  + 1) / 2));
+                            let cln = (Math.floor((index + 1) / 2));
                             if (index === 7)
                                 cln = 3
-                            columns['column' + cln].append(divWrapper);
+                            clmn = columns['column' + cln];
                         }
-                    } else if (nowKoeffs > 0 && fCount === 2) {
-                        column2.append(divWrapper);
                     } else if (nowKoeffs < allKoeffs && (nowKoeffs + thisKoeff) > allKoeffs) {
-                        column1.append(divWrapper);
+                        clmn = column1
                     } else if ((nowKoeffs + thisKoeff) <= allKoeffs) {
-                        column1.append(divWrapper);
+                        clmn = column1
+                    } else if (!column2.length) {
+                        clmn = column1
                     } else {
-                        column2.append(divWrapper);
+                        clmn = column2
                     }
+                    if (clmn)
+                        clmn.append(divWrapper);
+
                     nowKoeffs += thisKoeff;
                     cell = EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format, divWrapper);
-                    {
-                        let width = (window.innerWidth - 48);
-
-                        if (isEditFieldPanel) {
-                            width = 'auto';
-                        } else if (fCount === 1) {
-                            width = width < 790 ? width : 790;
-                        } else {
-                            width = width < 390 ? width : 390;
-                        }
-                        divWrapper.width(width);
-                    }
                 }
 
 
@@ -395,7 +385,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             }
 
-            EditPanelFunc.cleateBootstrapPanel.call(EditPanelFunc, title, dialogType, (EditPanelFunc.type === 'insert' || isAnyEditableFields));
+            EditPanelFunc.cleateBootstrapPanel.call(EditPanelFunc, title, dialogType, (EditPanelFunc.type === 'insert' || isAnyEditableFields), fCount < 7 ? 'one-column-panel' : '');
             EditPanelFunc.isNewPanel = false;
 
         }
@@ -403,7 +393,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     };
 
 
-    this.cleateBootstrapPanel = function (title, type, isEditable) {
+    this.cleateBootstrapPanel = function (title, type, isEditable, cssClass) {
         let EditPanel = this;
         let buttons = [];
         let save;
@@ -424,7 +414,6 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 setTimeout(function () {
                     EditPanelFunc.pcTable.model.doAfterProcesses(function () {
                         EditPanel.saveRow.call(EditPanel, panel, btn);
-
                     });
                 }, 250)
             };
@@ -453,6 +442,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             EditPanel.close = function () {
                 $d.resolve(undefined, /*next*/true);
+                $(window.top.document.body).trigger('pctable-closed', {'type': 'panel'});
                 EditPanelFunc.resolved = true;
                 EditPanel.bootstrapPanel.close();
             }
@@ -473,7 +463,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             type: type || null,
             size: BootstrapDialog.SIZE_WIDE,
             message: EditPanel.$panel,
-            cssClass: 'edit-row-panel' + (isEditFieldPanel ? ' edit-field-panel' : ''),
+            cssClass: 'edit-row-panel ' + (isEditFieldPanel ? 'edit-field-panel' : cssClass || ''),
             title: title,
             buttons: buttons,
             draggable: true,
@@ -484,9 +474,6 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     $(window.top.document.body).trigger('pctable-closed', {'type': 'panel'});
                 }
                 $(window.top.document.body).off('.' + EditPanelFunc.panelId);
-                if (typeof pcTable === 'object' && pcTable.openedPanels && data.id && pcTable.openedPanels[data.id]) {
-                    delete pcTable.openedPanels[data.id];
-                }
             },
             onshown: function (dialog) {
                 "use strict";
@@ -558,6 +545,16 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 cell.on('click', function () {
                     EditPanelFunc.pcTable._buttonClick.call(EditPanelFunc.pcTable, cell, field, item);
                 });
+            } else {
+                if (field.CodeActionOnClick && !divWrapper.find('.edit-btn').length) {
+                    divWrapper.append($('<button class="btn btn-sm btn-default edit-btn" style="width: 100%"><i class="fa fa-hand-pointer-o"></i></button>').on('click', () => {
+                        EditPanelFunc.pcTable.model.refresh = () => {
+                            window.location.reload();
+                        }
+                        EditPanelFunc.pcTable.model.dblClick(item.id, field.name).then((json) => {
+                        })
+                    }))
+                }
             }
 
             cell.html(span).data('input', null);
@@ -759,8 +756,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         if (EditPanelFunc.editItem.id) {
             data.id = EditPanelFunc.editItem.id;
         }
-        EditPanelFunc.pcTable.fieldCategories.column.forEach(function (f) {
-            if (f.name === 'n') return;
+        EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (f) {
             let editItem = val[f.name] || EditPanelFunc.editItem[f.name];
 
             if (f.type == 'comments') {
@@ -815,9 +811,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (!EditPanelFunc.$panel || !EditPanelFunc.$panel.length) return false;
 
-            EditPanelFunc.pcTable.fieldCategories.column.forEach(function (field, index) {
-                if (field.name === 'n') return;
-
+            EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (field, index) {
                 if (focusIndex === index) {
                     if (!EditPanelFunc.isEditable(field)) {
                         ++focusIndex;
@@ -833,6 +827,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 }
             });
             if (isLastCell) {
+
                 let buttonSave = EditPanelFunc.bootstrapPanel.indexedButtons[Object.keys(EditPanelFunc.bootstrapPanel.indexedButtons)[0]];
                 buttonSave.focus();
             }
@@ -840,20 +835,36 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     };
 
 
+    const _refreshContentTable = () => {
+
+    };
+
     if (typeof EditPanelFunc.pcTable !== 'object') {
         App.getPcTableById(EditPanelFunc.pcTable).then(function (pcTable) {
             EditPanelFunc.pcTable = pcTable;
+
+            pcTable.isPanel = true;
+            pcTable._refreshContentTable = _refreshContentTable;
             EditPanelFunc.checkRow({}, true);
+
+            if (EditPanelFunc.editItem.id) {
+                pcTable.model.setLoadedTableData({[EditPanelFunc.editItem.id]: {}});
+            }
         });
     } else if (EditPanelFunc.pcTable[0]) {
         App.getPcTableById(EditPanelFunc.pcTable[0], {sess_hash: EditPanelFunc.pcTable[1]}).then(function (pcTable) {
-            pcTable.model.setLoadedTableData(EditPanelFunc.pcTable[2]);
+            if (EditPanelFunc.pcTable[2]) {
+                pcTable.model.setLoadedTableData(EditPanelFunc.pcTable[2]);
+            }
             EditPanelFunc.pcTable = pcTable;
+            pcTable.isPanel = true;
+            pcTable._refreshContentTable = _refreshContentTable;
             EditPanelFunc.checkRow({}, true);
         });
     } else {
         EditPanelFunc.checkRow({}, true);
     }
+
 
     return $d.promise();
 };

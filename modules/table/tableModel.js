@@ -64,7 +64,7 @@
                 App.showLInks(json.links, pcTable.model);
                 delete json.links;
             }, shoInterfaceDatas: function (json) {
-                App.showDatas.call(pcTable.model, json.interfaceDatas);
+                App.showDatas.call(pcTable.model, json.interfaceDatas, null, window);
                 delete json.interfaceDatas;
             }, showPanels: function (json) {
                 App.showPanels(json.panels);
@@ -156,8 +156,11 @@
                             }
                         }
                         if (json.FieldLOGS && Object.keys(json.FieldLOGS).length) {
-                            pcTableObj.FieldLOGS=pcTableObj.FieldLOGS || [];
-                            pcTableObj.FieldLOGS.push({'data':json.FieldLOGS, 'name': (methods[data_tmp['method']] || data_tmp['method'])});
+                            pcTableObj.FieldLOGS = pcTableObj.FieldLOGS || [];
+                            pcTableObj.FieldLOGS.push({
+                                'data': json.FieldLOGS,
+                                'name': (methods[data_tmp['method']] || data_tmp['method'])
+                            });
                         }
                         if (data_tmp['method'] !== 'loadPage' && pcTableObj.PageData && json.allCount) {
                             let changed = false;
@@ -345,7 +348,7 @@
                     method: 'duplicate'
                 });
             },
-            dblClick: function (rowId, fieldName){
+            dblClick: function (rowId, fieldName) {
                 return this.__ajax('post', {field: fieldName, id: rowId, method: 'dblClick'});
             },
             getFieldLog: function (fieldName, rowId, rowName) {
@@ -494,16 +497,31 @@
             getTableData: function (sess_hash) {
                 return this.__ajax('post', {method: 'getTableData', tableData: {sess_hash: sess_hash}});
             },
-            refresh: function (func) {
+            panelsView: function (switcher) {
+                return this.__ajax('post', {method: 'panelsViewCookie', switcher: switcher ? 1 : 0});
+            },
+            refresh: function (func, refreshType) {
 
                 func = func || function (json) {
                     pcTable.table_modify.call(pcTable, json);
                     pcTable.reloaded.call(pcTable);
                 };
-                this.__ajax('post', {method: 'refresh'}).then(function(json){
+                let tree;
+                if (pcTable.treeIndex) {
+                    tree = {};
+                    Object.keys(pcTable.treeIndex).forEach((k) => {
+                        tree[k] = pcTable.treeIndex[k].l ? 1 : 0;
+                    })
+                    tree = JSON.stringify(tree);
+                }
+                this.__ajax('post', {
+                    method: 'refresh',
+                    tree: tree,
+                    recalculate: refreshType === 'recalculate' ? true : null
+                }).then(function (json) {
                     try {
                         func(json)
-                    }catch (e){
+                    } catch (e) {
                         window.location.reload();
                     }
                 })
@@ -556,6 +574,10 @@
             },
             getPanelFormats: function (fName, id) {
                 return this.__ajax('post', {method: 'getPanelFormats', field: fName, id: id})
+            }, loadUserButtons: function () {
+                return this.__ajax('post', {method: 'loadUserButtons'})
+            }, userButtonsClick: function (hash, index) {
+                return this.__ajax('post', {method: 'userButtonsClick', hash: hash, index: index})
             },
             loadPage: function (pcTable, lastId, count, prevLastId) {
                 let _filters = {};

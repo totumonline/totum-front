@@ -1,0 +1,36 @@
+.ttm-section {
+  .MuiButton-label {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &.ttm-secNoTitles .ttm-fieldCell[data-field-type="button"] {
+    margin-bottom: 8px;
+  }
+
+  .ttm-fieldCell[data-field-type="button"] {
+    .cell-comment {
+      padding-left: 5px;
+    }
+    .Mui-disabled{
+      opacity: 0.5;
+    }
+  }
+
+}
+
+.MuiButton-contained:hover {
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+  background-color: #d5d5d5;
+}
+
+.ttm-cell-button {
+  button i.fa {
+    float: left;
+    padding-top: 5px;
+  }
+  button{
+    height: 36px;
+  }
+}

@@ -9,11 +9,10 @@ fieldTypes.n = $.extend({}, fieldTypes.default, {
         let format = item.f || {};
         td.addClass('n');
 
-        if (!item.id || format.block || format.blockOrder || item.__inserted){
+        if (!item.id || format.block || format.blockorder || item.__inserted){
             return '';
         }
-
-
+        
 
         return $('<span class="btns"><button class="btn btn-xxs btn-default"><i class="fa fa-angle-up"></i></button> <button class="btn btn-xxs btn-default"><i class="fa fa-angle-down"></i></button></span>');
     }

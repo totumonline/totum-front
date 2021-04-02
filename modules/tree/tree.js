@@ -74,7 +74,7 @@
                     data[k].state.opened = true;
                 }
                 if (v.href) {
-                    data[k]["a_attr"] = {"href": prefix + v.href}
+                    data[k]["a_attr"] = {"href": (v.href.toString().match(/\/Table\//) ? '' : prefix) + v.href}
                 } else if (v.link) {
                     data[k]["a_attr"] = {"href": v.link}
                 }
@@ -145,6 +145,13 @@
                     let c = $.jstree.core.prototype.redraw_node
                     $leftTree.jstree(true).redraw_node = function (node, deep, is_callback, force_render) {
                         let _node = c.bind(this)(node, deep, is_callback, force_render);
+                        if(node.match(/^tree/)){
+                            let tmp=$leftTree.jstree(true).get_node(node)
+                            if(tmp.data.type=='folder'){
+                                $(_node).addClass('tree-folder')
+                            }
+                        }
+
                         let edit_folder = $(_node).find('>a.edit-folder');
                         if (edit_folder.length) {
 
@@ -170,6 +177,20 @@
                         }
                         return _node;
                     };
+                })
+            }else{
+                $leftTree.on("init.jstree", function (e, data) {
+                    let c = $.jstree.core.prototype.redraw_node
+                    $leftTree.jstree(true).redraw_node = function (node, deep, is_callback, force_render) {
+                        let _node = c.bind(this)(node, deep, is_callback, force_render);
+                        if (node.match(/^tree/)) {
+                            let tmp = $leftTree.jstree(true).get_node(node)
+                            if (tmp.data.type == 'folder') {
+                                $(_node).addClass('tree-folder')
+                            }
+                        }
+                        return _node;
+                    }
                 })
             }
 
@@ -274,10 +295,11 @@
                         return false;
                         break;
                     default:
+
                         if (!window.location.pathname.match(/^\/Table\//))
                             window.location.href = d.node.original.href;
                         else
-                            window.location.href = d.node.original.link ? d.node.original.link : prefix + d.node.original.href;
+                            window.location.href = d.node.original.link ? d.node.original.link : (d.node.original.href[0]!=='/'?prefix + d.node.original.href:d.node.original.href);
                 }
                 return false;
             });

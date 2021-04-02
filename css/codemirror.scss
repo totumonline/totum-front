@@ -1,12 +1,23 @@
 @import "vars.scss";
 
+#pk .CodeMirror {
+  border-color: transparent;
+  .CodeMirror-gutters{
+    border-right-color: transparent;
+  }
+  .CodeMirror-linenumber{
+    color: #cecece;
+  }
+  font-weight: 300;
+}
 #pk .CodeMirror * {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  line-height: 22px;
+  font-size: 14px;
+  line-height: 26px;
 }
 #pk .CodeMirror-scroll{
   height: auto;
+  background-color: #fcfcfc;
 
   margin-bottom: 0;
   padding-bottom: 50px;
@@ -19,6 +30,8 @@
 .CodeMirror-hints {
   border-radius: 0;
   padding: 3px;
+  font-size: 13px;
+
 
   li.CodeMirror-hint-active {
     background-color: $btn-primary-bgcolor;
@@ -57,14 +70,20 @@
 
 .CodeMirror-code {
   .light {
-    background-color: yellow;
+    background-color: yellow !important;
+    padding: 3px 0;
   }
   span.cm- {
 
+
+
     &start {
       color: darken(#48a5ec, 20%);
-      &.fixed {
+      &.cm-fixed {
         color: #1b6cec;
+      }
+      &.cm-exec{
+        color: #b32ab3;
       }
       &.cm-dubbled {
         color: red;
@@ -133,9 +152,11 @@
 
     &error {
       color: red !important;
+      background-color: #fff4f6;
     }
     &tmp-error{
       color: red !important;
+      background-color: #fff4f6;
     }
 
 

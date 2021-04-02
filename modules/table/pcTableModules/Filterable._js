@@ -50,7 +50,8 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
         if (pcTable.tableRow['type'] !== "tmp") {
             this.sessionStorageFilters.setFilters(this.filters);
         }
-        this.selectedCells.empty();
+        if (this.selectedCells)
+            this.selectedCells.empty();
 
         if (Object.equals(this.filters, {})) {
             this.filtersClearButton.addClass('btn-default').removeClass('btn-warning').attr('disabled', true)
@@ -64,20 +65,35 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
     }
 
 
-    let old = this.dataSortedVisible.slice();
+    let old = [];
+    if (this.isTreeView) {
+        this.dataSortedVisible.forEach((v) => {
+            if (typeof v != 'object') {
+                old.push(v)
+            }
+        })
+    } else {
+        old = this.dataSortedVisible.slice();
+    }
     let new_ = [];
+    let new_check = [];
 
     for (let i = 0; i < this.dataSorted.length; i++) {
-        let id = this.dataSorted[i];
-        let item = this.data[id];
-        this.__applyFiltersToItem(item);
-        if (item.$visible) {
-            new_.push(id);
+        let element = this.dataSorted[i];
+        if (typeof element === 'object') {
+            new_.push(element);
+        } else {
+            let item = this.data[element];
+            this.__applyFiltersToItem(item);
+            if (item.$visible) {
+                new_.push(element);
+                new_check.push(element);
+            }
         }
     }
 
 
-    if (forse || JSON.stringify(old) !== JSON.stringify(new_)) {
+    if (forse || JSON.stringify(old) !== JSON.stringify(new_check)) {
         this.dataSortedVisible = new_;
         this._refreshContentTable(false, true);
         this._headCellIdButtonsState();
@@ -108,6 +124,8 @@ App.pcTableMain.prototype.__applyFiltersToItem = function (item, notAttachIt) {
                     let field = pcTable._getFieldbyName(fieldName);
                     if (!field.checkIsFiltered(item[fieldName], filterVals)) {
                         visible = false;
+                    }else{
+                        field.checkIsFiltered(item[fieldName], filterVals)
                     }
                     break;
                 case "h":
@@ -150,7 +168,9 @@ App.pcTableMain.prototype.addValueToFilters = function (fieldName, valObj) {
     if (!pcTable.filters[fieldName]) pcTable.filters[fieldName] = [];
     let field = pcTable.fields[fieldName];
     pcTable.filters[fieldName].push(...field.getFilterDataByValue.call(field, valObj));
-    field.$th.find('.btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
+    if (field.$th) {
+        field.$th.find('.btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
+    }
     pcTable.__applyFilters.call(pcTable);
 };
 App.pcTableMain.prototype.isValInFilters = function (fieldName, valObj) {
@@ -159,8 +179,8 @@ App.pcTableMain.prototype.isValInFilters = function (fieldName, valObj) {
     let field = pcTable.fields[fieldName];
     let val = field.getFilterDataByValue.call(field, valObj);
 
-    return pcTable.filters[fieldName].some((v)=>{
-        return val.indexOf(v)!==-1;
+    return pcTable.filters[fieldName].some((v) => {
+        return val.indexOf(v) !== -1;
     });
 };
 App.pcTableMain.prototype.removeValueFromFilters = function (fieldName, valObj) {
@@ -170,11 +190,11 @@ App.pcTableMain.prototype.removeValueFromFilters = function (fieldName, valObj) 
     let field = pcTable.fields[fieldName];
 
     let val = field.getFilterDataByValue.call(field, valObj);
-    let spliced=0;
-    let newFiled=[...pcTable.filters[fieldName]];
-    pcTable.filters[fieldName].forEach((v, i)=>{
-        if(val.indexOf(v)!==-1){
-            newFiled.splice(i-spliced, 1);
+    let spliced = 0;
+    let newFiled = [...pcTable.filters[fieldName]];
+    pcTable.filters[fieldName].forEach((v, i) => {
+        if (val.indexOf(v) !== -1) {
+            newFiled.splice(i - spliced, 1);
             spliced++;
         }
     })
@@ -186,332 +206,343 @@ App.pcTableMain.prototype.removeValueFromFilters = function (fieldName, valObj) 
     }
 
 
-    field.$th.find('.btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
+    if(field.$th){
+        field.$th.find('.btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
+    }
     pcTable.__applyFilters.call(pcTable);
 
 };
+App.pcTableMain.prototype.loadFilters = function () {
+    var filters = {};
+    if (this.tableRow['type'] != "tmp")
+        filters = this.sessionStorageFilters.getFilters();
+    if (filters)
+        this.filters = filters;
+    else this.filters = {};
+}
 App.pcTableMain.prototype.__addFilterable = function () {
     const pcTable = this;
 
-    var filters = {};
-    if (pcTable.tableRow['type'] != "tmp")
-        filters = pcTable.sessionStorageFilters.getFilters();
-    if (filters)
-        pcTable.filters = filters;
-    else pcTable.filters = {};
+    this.loadFilters();
 
-    this._header.on('click', '.pcTable-filters > span button.btn-filter:not(#checkS)', function (event) {
+    if (!this.viewType) {
+        this._header.on('click', '.pcTable-filters > span button.btn-filter:not(#checkS)', function (event) {
 
-        let btn = $(this);
-        if (btn.attr('aria-describedby')) return true;
+            let btn = $(this);
+            if (btn.attr('aria-describedby')) return true;
 
-        let th = btn.closest('th');
-        let fieldName = th.is('.id') ? 'id' : th.data('field');
+            let th = btn.closest('th');
+            let fieldName = th.is('.id') ? 'id' : th.data('field');
 
-        let selectDiv = $('<div class="filter-div-button">');
-        let select = $('<select class="selectpicker" data-size="6" multiple title="Выберите значения" data-style="btn-sm btn-default" data-width="css-width" data-live-search="true" data-selected-text-format="count">').appendTo(selectDiv);
+            let selectDiv = $('<div class="filter-div-button">');
+            let select = $('<select class="selectpicker" data-size="6" multiple title="Выберите значения" data-style="btn-sm btn-default" data-width="css-width" data-live-search="true" data-selected-text-format="count">').appendTo(selectDiv);
 
-        const popoverDestroy = function () {
-            try {
-                btn.popover('destroy');
-            } catch (e) {
-
-            }
-        };
-
-        const setSelectedFilters = function () {
-            popoverDestroy();
-            if (!select.data('add-options')) {
-                vals = select.selectpicker('val');
-            } else {
-                vals = select.data('add-options');
-                select.data('add-options', null);
-            }
-            let j1 = JSON.stringify(pcTable.filters[fieldName] || []);
-            let j2 = JSON.stringify(vals);
-            if (j1 !== j2) {
-                pcTable.filters[fieldName] = vals;
-                if (pcTable.filters[fieldName].length === 0) delete pcTable.filters[fieldName];
-                if (fieldName === 'id' && !btn.closest('.pcTable-table').is(".pcTable-table:first")) {
-                    pcTable._header.find('th.id .btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
-                }
-                btn.parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
-                pcTable.__applyFilters.call(pcTable);
-            }
-
-        };
-        const filterRemove = function () {
-            popoverDestroy();
-
-            delete pcTable.filters[fieldName];
-            btn.removeClass('btn-warning').addClass('btn-default');
-            pcTable.__applyFilters.call(pcTable);
-        };
-
-        let isDeleteAction = false;
-        let objTimeout;
-
-        const actionIt = function (actionName) {
-            if (objTimeout) clearTimeout(objTimeout);
-
-            if (isDeleteAction) return;
-            if (actionName === 'filterRemove') {
-                isDeleteAction = true;
-                filterRemove();
-                return;
-            }
-            if (actionName === 'setInvertFilters') {
-                let selected = Object.values(select.selectpicker('val'));
-                let newSelected = [];
-
-                $.each(select.data('options'), function (k, v) {
-                    if (selected.indexOf(v) === -1) {
-                        newSelected.push(v);
-                    }
-                });
-                select.data('add-options', newSelected)
-            }
-            objTimeout = setTimeout(function () {
-                setSelectedFilters();
-            }, 10);
-        };
-
-
-        selectDiv = $('<div class="pcTable-filter-select" style="height: 220px;">').append(selectDiv);
-        select.data('container', selectDiv);
-
-        var vals = {};
-        $.each(pcTable.data, function (_id, v) {
-            if (fieldName === 'id') {
-                vals[_id.toString()] = _id.toString();
-            } else {
-                pcTable.fields[fieldName].addDataToFilter(vals, v[fieldName]);
-            }
-        });
-
-
-        var filterOptions = {};
-
-        $.each(vals, function (k, v) {
-            filterOptions[v] = k;
-        });
-        filterOptions = App.ksort(filterOptions);
-
-
-        let optgroups = {};
-
-        let cutLength = 100;
-
-        let filterVal = pcTable.filters[fieldName] ? [...pcTable.filters[fieldName]] : [];
-        let chousenVisible = 0;
-
-        const randOptions = function (q) {
-            optgroups = {'Выбранное': $('<optgroup label="Выбранное">'), '': $('<optgroup label="">')};
-
-            let isLikedFunc = function () {
-                return true;
-            };
-            if (q && q !== '') {
-                let qs = q.toLowerCase().replace('ё', 'е').split(" ");
-                isLikedFunc = function (v) {
-                    let text = v !== null ? v.toString().toLowerCase().replace('ё', 'е') : "";
-                    return !qs.some(function (q) {
-                        return text.indexOf(q) === -1
-                    })
-                }
-            }
-            let isCutted = false;
-            let notChoised = 0;
-
-            $.each(filterOptions, function (k, v) {
-                if (k === 'null') k = 'null ';
-
-                if (filterVal.indexOf(v.toString()) !== -1) {
-                    let isVisible = isLikedFunc(k);
-                    optgroups['Выбранное'].append('<option data-content="' + k + '" ' + (isVisible ? '' : 'style="display: none"') + '>' + v + '</option>');
-                    chousenVisible += isVisible ? 1 : 0;
-                } else {
-                    if (!isLikedFunc(k)) return true;
-
-                    if (notChoised >= cutLength) {
-                        isCutted = true;
-                    } else {
-                        optgroups[''].append('<option data-content="' + k + ' ">' + v + '</option>');
-                        notChoised++;
-                    }
-                }
-            });
-            select.empty();
-            if (!chousenVisible) {
-                optgroups['Выбранное'].attr('label', '');
-            }
-            select.append(optgroups['Выбранное']);
-            select.append(optgroups['']);
-            if (isCutted) {
-                select.append('<option data-content="Данные не полны. Пользуйтесь поиском" disabled = disabled style="text-align: center; cursor: pointer">0</option>');
-            }
-            select.data('options', filterOptions);
-            select.selectpicker('val', filterVal);
-            select.selectpicker('refresh');
-        };
-
-        select.on('change.bs.select', function () {
-            filterVal = select.val();
-        });
-        randOptions();
-
-        let popover = btn.popover({
-            html: true,
-            content: selectDiv,
-            trigger: 'manual',
-            container: pcTable._container,
-            placement: 'auto bottom',
-            template: '<div class="popover" role="tooltip" style=""><div class="arrow" style="left: 50%;"></div><div class="popover-content" style=" padding: 3px 5px;"></div></div>'
-        });
-
-        select.selectpicker('render').selectpicker('toggle');
-
-        btn.one('remove', () => {
-            setTimeout(() => {
-                let $p;
-                if (popover && popover.length && popover.attr('aria-describedby') && ($p = $('#' + popover.attr('aria-describedby')))) {
-                    $p.remove();
-                }
-            }, 10)
-        })
-
-
-        let $buttons = $('<div class="buttons" style="position: absolute; bottom: -10px; width: 100%; text-align: center">');
-
-        $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">Прим.</span></span>').appendTo($buttons).on('click', function () {
-            actionIt('setSelectedFilters');
-        });
-        $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">Инверт.</span></span>').appendTo($buttons).on('click', function () {
-            actionIt('setInvertFilters');
-        });
-        $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px">Отмен.</span>').appendTo($buttons).on('click', function () {
-            actionIt('filterRemove');
-        });
-
-
-        if (pcTable.fields[fieldName] && pcTable.fields[fieldName].code && !pcTable.fields[fieldName].codeOnlyInAdd) {
-            let h_select = $('<select data-title="Все" data-dropup-auto="false" class="dropup" data-container=".popover" data-style="btn btn-xxs filter-by-hand '
-                + (pcTable.filters[fieldName + "/h"] ? 'btn-warning' : 'btn-default') + ' ">' +
-                '<option value="">Все</option>' +
-                '<option value="n">Без руки</option>' +
-                '<option value="h">С рукой все</option>' +
-                '<option value="hf">С рукой как в расчете</option>' + //<i class="fa fa-hand-rock-o pull-right"></i>
-                '<option value="hc">С рукой отличающиеся</option>' + //<i class="fa fa-hand-paper-o pull-right"></i>
-                '</select>')
-                .appendTo($buttons)
-                .on('change', function () {
-                    pcTable.filters[fieldName + "/h"] = h_select.selectpicker('val');
-                    if (pcTable.filters[fieldName + "/h"] === "") {
-                        delete pcTable.filters[fieldName + "/h"];
-                    }
-                    popoverDestroy();
-                    btn.parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
-                    pcTable.__applyFilters.call(pcTable);
-                    return false;
-                })
-                .wrap('<span id="filterHand">');
-
-            setTimeout(function () {
-                h_select.selectpicker('render').selectpicker("val", pcTable.filters[fieldName + "/h"] || "");
+            const popoverDestroy = function () {
                 try {
-                    h_select.data('selectpicker').$menu.offset({bottom: 15, left: -90}).css('border', '1px solid grey');
+                    btn.popover('destroy');
                 } catch (e) {
 
                 }
-            }, 100)
-        }
+            };
 
-        if (pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
-            if (chousenVisible)
-                selectDiv.height(260)
-            else
-                selectDiv.height(220)
-            $buttons.append('<div class="text-center ttm-paging-danges">Фильтрация по текущей странице</div>');
-        } else {
-            if (chousenVisible)
-                selectDiv.height(220)
-            else
-                selectDiv.height(200)
-        }
-        $buttons.appendTo(selectDiv);
-
-        select.on('hidden.bs.select', function () {
-            actionIt('setSelectedFilters');
-        });
-
-        if (pcTable.filters[fieldName]) select.selectpicker('val', pcTable.filters[fieldName]);
-
-        setTimeout(function () {
-
-            if (popover && popover.length) {
-                popover.popover('show');
-                selectDiv.on('mouseenter', 'li', function () {
-                    let self = $(this);
-                    if (!self.attr('title')) {
-                        self.attr('title', self.text());
-                    }
-                });
-
-                if (fieldName === 'id') {
-                    $('#' + btn.attr('aria-describedby')).position({
-                        my: "left top",
-                        at: "left-3px bottom+10px",
-                        of: btn
-                    }).find('.arrow').css('left', '12px')
+            const setSelectedFilters = function () {
+                popoverDestroy();
+                if (!select.data('add-options')) {
+                    vals = select.selectpicker('val');
+                } else {
+                    vals = select.data('add-options');
+                    select.data('add-options', null);
                 }
-                select.data('selectpicker')._searchStyle = function () {
-                    return 'multiincludes';
-                };
-
-                select.data('selectpicker').$searchbox.focus();
-
-                let searchTimeout;
-
-                select.data('selectpicker').$searchbox.off().on('click.dropdown.data-api focus.dropdown.data-api touchend.dropdown.data-api', function (e) {
-                    e.stopPropagation();
-                });
-
-                select.data('selectpicker').$searchbox.on('keydown', function (e) {
-                    if (e.key === 'Escape') {
-                        select.data('selectpicker').$button.click();
-                        return true;
+                let j1 = JSON.stringify(pcTable.filters[fieldName] || []);
+                let j2 = JSON.stringify(vals);
+                if (j1 !== j2) {
+                    pcTable.filters[fieldName] = vals;
+                    if (pcTable.filters[fieldName].length === 0) delete pcTable.filters[fieldName];
+                    if (fieldName === 'id' && !btn.closest('.pcTable-table').is(".pcTable-table:first")) {
+                        pcTable._header.find('th.id .btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
                     }
-                });
-                let Q = '';
-                select.data('selectpicker').$searchbox.on('keyup', function (e) {
-                    let q = $(this).val();
-                    if (Q !== q) {
-                        Q = q;
-                        if (searchTimeout) {
-                            clearTimeout(searchTimeout)
+                    btn.parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
+                    pcTable.__applyFilters.call(pcTable);
+                }
+
+            };
+            const filterRemove = function () {
+                popoverDestroy();
+
+                delete pcTable.filters[fieldName];
+                btn.removeClass('btn-warning').addClass('btn-default');
+                pcTable.__applyFilters.call(pcTable);
+            };
+
+            let isDeleteAction = false;
+            let objTimeout;
+
+            const actionIt = function (actionName) {
+                if (objTimeout) clearTimeout(objTimeout);
+
+                if (isDeleteAction) return;
+                if (actionName === 'filterRemove') {
+                    isDeleteAction = true;
+                    filterRemove();
+                    return;
+                }
+                if (actionName === 'setInvertFilters') {
+                    let selected = Object.values(select.selectpicker('val'));
+                    let newSelected = [];
+
+                    $.each(select.data('options'), function (k, v) {
+                        if (selected.indexOf(v) === -1) {
+                            newSelected.push(v);
                         }
-                        searchTimeout = setTimeout(function () {
-                            randOptions(Q);
-                        }, 750);
-                    }
-                });
+                    });
+                    select.data('add-options', newSelected)
+                }
+                objTimeout = setTimeout(function () {
+                    setSelectedFilters();
+                }, 10);
+            };
 
-                pcTable._container.on('click.filter filterPressed.filter', function (e) {
-                    if ($(e.target).closest("#filterHand").length === 0 && (e.type === "filterPressed" || e.altKey !== undefined) && $('#' + btn.attr('aria-describedby')).is(':visible')) { //Это чтобы не отлавливать всякие технические события
-                        pcTable._container.off('.filter');
-                        actionIt('setSelectedFilters');
+
+            selectDiv = $('<div class="pcTable-filter-select" style="height: 220px;">').append(selectDiv);
+            select.data('container', selectDiv);
+
+            var vals = {};
+            Object.values(pcTable.dataSorted).forEach(function (_id) {
+                if (typeof _id !== 'object') {
+                    if (fieldName === 'id') {
+                        vals[_id.toString()] = _id.toString();
+                    } else {
+                        pcTable.fields[fieldName].addDataToFilter(vals, pcTable.data[_id][fieldName]);
+                    }
+                }
+            });
+
+
+            var filterOptions = {};
+
+            $.each(vals, function (k, v) {
+                filterOptions[v] = k;
+            });
+            filterOptions = App.ksort(filterOptions);
+
+
+            let optgroups = {};
+
+            let cutLength = 100;
+
+            let filterVal = pcTable.filters[fieldName] ? [...pcTable.filters[fieldName]] : [];
+            let chousenVisible = 0;
+
+            const randOptions = function (q) {
+                optgroups = {'Выбранное': $('<optgroup label="Выбранное">'), '': $('<optgroup label="">')};
+
+                let isLikedFunc = function () {
+                    return true;
+                };
+                if (q && q !== '') {
+                    let qs = q.toLowerCase().replace('ё', 'е').split(" ");
+                    isLikedFunc = function (v) {
+                        let text = v !== null ? v.toString().toLowerCase().replace('ё', 'е') : "";
+                        return !qs.some(function (q) {
+                            return text.indexOf(q) === -1
+                        })
+                    }
+                }
+                let isCutted = false;
+                let notChoised = 0;
+
+                $.each(filterOptions, function (k, v) {
+                    if (k === 'null') k = 'null ';
+
+                    if (filterVal.indexOf(v.toString()) !== -1) {
+                        let isVisible = isLikedFunc(k);
+                        optgroups['Выбранное'].append('<option data-content="' + k + '" ' + (isVisible ? '' : 'style="display: none"') + '>' + v + '</option>');
+                        chousenVisible += isVisible ? 1 : 0;
+                    } else {
+                        if (!isLikedFunc(k)) return true;
+
+                        if (notChoised >= cutLength) {
+                            isCutted = true;
+                        } else {
+                            optgroups[''].append('<option data-content="' + k + ' ">' + v + '</option>');
+                            notChoised++;
+                        }
                     }
                 });
-                pcTable._innerContainer.one('scroll.filter', function (e) {
-                    if ($('#' + btn.attr('aria-describedby')).is(':visible')) {
-                        pcTable._container.off('.filter');
-                        actionIt('setSelectedFilters');
+                select.empty();
+                if (!chousenVisible) {
+                    optgroups['Выбранное'].attr('label', '');
+                }
+                select.append(optgroups['Выбранное']);
+                select.append(optgroups['']);
+                if (isCutted) {
+                    select.append('<option data-content="Данные не полны. Пользуйтесь поиском" disabled = disabled style="text-align: center; cursor: pointer">0</option>');
+                }
+                select.data('options', filterOptions);
+                select.selectpicker('val', filterVal);
+                select.selectpicker('refresh');
+            };
+
+            select.on('change.bs.select', function () {
+                filterVal = select.val();
+            });
+            randOptions();
+
+            let popover = btn.popover({
+                html: true,
+                content: selectDiv,
+                trigger: 'manual',
+                container: pcTable._container,
+                placement: 'auto bottom',
+                template: '<div class="popover" role="tooltip" style=""><div class="arrow" style="left: 50%;"></div><div class="popover-content" style=" padding: 3px 5px;"></div></div>'
+            });
+
+            select.selectpicker('render').selectpicker('toggle');
+
+            btn.one('remove', () => {
+                setTimeout(() => {
+                    let $p;
+                    if (popover && popover.length && popover.attr('aria-describedby') && ($p = $('#' + popover.attr('aria-describedby')))) {
+                        $p.remove();
                     }
-                });
+                }, 10)
+            })
+
+
+            let $buttons = $('<div class="buttons" style="position: absolute; bottom: -10px; width: 100%; text-align: center">');
+
+            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">Прим.</span></span>').appendTo($buttons).on('click', function () {
+                actionIt('setSelectedFilters');
+            });
+            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">Инверт.</span></span>').appendTo($buttons).on('click', function () {
+                actionIt('setInvertFilters');
+            });
+            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px">Отмен.</span>').appendTo($buttons).on('click', function () {
+                actionIt('filterRemove');
+            });
+
+
+            if (pcTable.fields[fieldName] && pcTable.fields[fieldName].code && !pcTable.fields[fieldName].codeOnlyInAdd) {
+                let h_select = $('<select data-title="Все" data-dropup-auto="false" class="dropup" data-container=".popover" data-style="btn btn-xxs filter-by-hand '
+                    + (pcTable.filters[fieldName + "/h"] ? 'btn-warning' : 'btn-default') + ' ">' +
+                    '<option value="">Все</option>' +
+                    '<option value="n">Без руки</option>' +
+                    '<option value="h">С рукой все</option>' +
+                    '<option value="hf">С рукой как в расчете</option>' + //<i class="fa fa-hand-rock-o pull-right"></i>
+                    '<option value="hc">С рукой отличающиеся</option>' + //<i class="fa fa-hand-paper-o pull-right"></i>
+                    '</select>')
+                    .appendTo($buttons)
+                    .on('change', function () {
+                        pcTable.filters[fieldName + "/h"] = h_select.selectpicker('val');
+                        if (pcTable.filters[fieldName + "/h"] === "") {
+                            delete pcTable.filters[fieldName + "/h"];
+                        }
+                        popoverDestroy();
+                        btn.parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
+                        pcTable.__applyFilters.call(pcTable);
+                        return false;
+                    })
+                    .wrap('<span id="filterHand">');
+
+                setTimeout(function () {
+                    h_select.selectpicker('render').selectpicker("val", pcTable.filters[fieldName + "/h"] || "");
+                    try {
+                        h_select.data('selectpicker').$menu.offset({
+                            bottom: 15,
+                            left: -90
+                        }).css('border', '1px solid grey');
+                    } catch (e) {
+
+                    }
+                }, 100)
             }
-        }, 50);
-        pcTable._container.trigger('filterPressed');
-    });
 
+            if (pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
+                if (chousenVisible)
+                    selectDiv.height(260)
+                else
+                    selectDiv.height(220)
+                $buttons.append('<div class="text-center ttm-paging-danges">Фильтрация по текущей странице</div>');
+            } else {
+                if (chousenVisible)
+                    selectDiv.height(220)
+                else
+                    selectDiv.height(200)
+            }
+            $buttons.appendTo(selectDiv);
+
+            select.on('hidden.bs.select', function () {
+                actionIt('setSelectedFilters');
+            });
+
+            if (pcTable.filters[fieldName]) select.selectpicker('val', pcTable.filters[fieldName]);
+
+            setTimeout(function () {
+
+                if (popover && popover.length) {
+                    popover.popover('show');
+                    selectDiv.on('mouseenter', 'li', function () {
+                        let self = $(this);
+                        if (!self.attr('title')) {
+                            self.attr('title', self.text());
+                        }
+                    });
+
+                    if (fieldName === 'id') {
+                        $('#' + btn.attr('aria-describedby')).position({
+                            my: "left top",
+                            at: "left-3px bottom+10px",
+                            of: btn
+                        }).find('.arrow').css('left', '12px')
+                    }
+                    select.data('selectpicker')._searchStyle = function () {
+                        return 'multiincludes';
+                    };
+
+                    select.data('selectpicker').$searchbox.focus();
+
+                    let searchTimeout;
+
+                    select.data('selectpicker').$searchbox.off().on('click.dropdown.data-api focus.dropdown.data-api touchend.dropdown.data-api', function (e) {
+                        e.stopPropagation();
+                    });
+
+                    select.data('selectpicker').$searchbox.on('keydown', function (e) {
+                        if (e.key === 'Escape') {
+                            select.data('selectpicker').$button.click();
+                            return true;
+                        }
+                    });
+                    let Q = '';
+                    select.data('selectpicker').$searchbox.on('keyup', function (e) {
+                        let q = $(this).val();
+                        if (Q !== q) {
+                            Q = q;
+                            if (searchTimeout) {
+                                clearTimeout(searchTimeout)
+                            }
+                            searchTimeout = setTimeout(function () {
+                                randOptions(Q);
+                            }, 750);
+                        }
+                    });
+
+                    pcTable._container.on('click.filter filterPressed.filter', function (e) {
+                        if ($(e.target).closest("#filterHand").length === 0 && (e.type === "filterPressed" || e.altKey !== undefined) && $('#' + btn.attr('aria-describedby')).is(':visible')) { //Это чтобы не отлавливать всякие технические события
+                            pcTable._container.off('.filter');
+                            actionIt('setSelectedFilters');
+                        }
+                    });
+                    pcTable._innerContainer.one('scroll.filter', function (e) {
+                        if ($('#' + btn.attr('aria-describedby')).is(':visible')) {
+                            pcTable._container.off('.filter');
+                            actionIt('setSelectedFilters');
+                        }
+                    });
+                }
+            }, 50);
+            pcTable._container.trigger('filterPressed');
+        });
+    }
 };
 

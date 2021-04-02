@@ -1,16 +1,4 @@
 (function () {
-    let pcTableContainerFieldHelpEvent = false;
-
-    const slimThs = function (tdNoTitles) {
-        tdNoTitles.forEach((f) => {
-            let h = f.th.outerHeight();
-            f.th.remove();
-            if (f.tdWrapper.data('height')) {
-                f.tdWrapper.css('height', f.tdWrapper.data('height') + parseInt(h));
-            }
-        })
-    }
-
     $.extend(App.pcTableMain.prototype, {
         _rerenderColumnsFooter: function () {
             let footer = this._createFootersTableBlock();
@@ -50,15 +38,28 @@
                 this._table.addClass('no-correct-n-filtered')
             }
 
-            this._table.append(this._createHead())
-                .append(this._createFirstBody())
-                .append(this._createBody())
-                .append(this._createAfterBody())
 
+            if (this.isRotatedView) {
+                this._innerContainer.addClass('rotatedPcTable')
+                this._table.append(this._createHead())
+                    .append(this._createBody())
+            } else {
+                this._table.append(this._createHead())
+                    .append(this._createFirstBody())
+                    .append(this._createBody())
+                    .append(this._createAfterBody())
+            }
 
             this._footersBlock = this._createFootersTableBlock();
             this._table.append(this._footersBlock);
             this._popovers = $('<div class="popovers">');
+
+
+            if (pcTable.isTreeView) {
+                pcTable._connectTreeView.call(pcTable);
+            } else {
+                this.addReOrderRowBind();
+            }
 
 
             if (this.fieldCategories.column.length === 1) {
@@ -358,6 +359,17 @@
                 }
                 if (pcTable.isCreatorView) {
                     let LogButtons = $('<div class="creator-log-buttons">');
+                    let codes = $.cookie('pcTableLogs') || '[]';
+                    codes = JSON.parse(codes);
+
+                    if (codes.length) {
+                        LogButtons.addClass('with-logs')
+                        setTimeout(() => {
+                            App.blink(LogButtons.find('button'), 6, "#fff")
+
+                        }, 100)
+                    }
+
 
                     let btn = $('<button class="btn btn-danger btn-sm"><i class="fa" style="width: 12px"></i> Показать логи</button>')
                         .appendTo(LogButtons)
@@ -365,45 +377,48 @@
                             let $div;
 
                             const apply = function () {
-                                let codes = [];
+                                let codesNew = [];
                                 $div.find('input:checked').each(function (i, input) {
-                                    codes.push($(input).attr('name'));
+                                    codesNew.push($(input).attr('name'));
                                 });
-                                if (codes.length > 0) {
+                                if (codesNew.length > 0) {
                                     btn.find('i').attr('class', 'fa fa-check-square-o')
                                 } else {
                                     btn.find('i').attr('class', 'fa fa-square-o')
                                 }
-                                $.cookie('pcTableLogs', JSON.stringify(codes), {path: '/'});
+                                $.cookie('pcTableLogs', JSON.stringify(codesNew), {path: '/'});
                                 pcTable.FullLOGS = [];
                                 pcTable.LOGS = {};
                                 btn.popover('destroy');
+
+                                if (codesNew.length) {
+                                    LogButtons.addClass('with-logs')
+                                } else {
+                                    LogButtons.removeClass('with-logs')
+                                }
+                                codes = codesNew
                             };
                             if (btn.is('[aria-describedby]')) {
                                 $div = $('#' + btn.attr('aria-describedby'));
                                 apply();
                             } else {
-                                let codes = $.cookie('pcTableLogs') || '[]';
-                                codes = JSON.parse(codes);
+
                                 $div = $('<div>');
                                 $div.append('<div><input type="checkbox" name="c"/> Код</div>');
                                 $div.append('<div><input type="checkbox" name="a"/> Код-действия</div>');
                                 $div.append('<div><input type="checkbox" name="s"/> Селекты</div>');
                                 $div.append('<div><input type="checkbox" name="f"/> Форматирование</div>');
-                                $div.append('<div><input type="checkbox" name="recalcs"/> Пересчеты и селекты</div>');
-                                let $times=$('<div><input type="checkbox" name="flds"/> Время расчета полей </div>');
+
+                                let $times = $('<div><input type="checkbox" name="flds"/> Время расчета полей </div>');
                                 $div.append($times)
-                                if (pcTable.FieldLOGS && pcTable.FieldLOGS.length){
-                                    pcTable.FieldLOGS.forEach((log)=>{
-                                        let $calcFieldsLogBtn = $('<div style="cursor: pointer"><button class="btn btn-xs"><i class="fa fa-table"></i></button> '+log.name+'</div>').on('click', function () {
+                                if (pcTable.FieldLOGS && pcTable.FieldLOGS.length) {
+                                    pcTable.FieldLOGS.forEach((log) => {
+                                        let $calcFieldsLogBtn = $('<div style="cursor: pointer"><button class="btn btn-xs"><i class="fa fa-table"></i></button> ' + log.name + '</div>').on('click', function () {
                                             pcTable.model.calcFieldsLog(JSON.stringify(log.data), log.name);
                                         })
                                         $times.append($calcFieldsLogBtn);
                                     })
                                 }
-
-
-
 
 
                                 $div.append('<div style="padding-top: 10px;"><button class="btn btn-sm btn-default">Применить</button></div>');
@@ -432,8 +447,6 @@
                         });
 
                     let img = btn.find('i');
-                    let codes = $.cookie('pcTableLogs') || '[]';
-                    codes = JSON.parse(codes);
 
                     if (codes.length > 0) img.addClass('fa-check-square-o'); else img.addClass('fa-square-o');
 
@@ -542,6 +555,27 @@
             if (!this.isAnonim && !pcTable.beforeSpaceHide)
                 csv.append(this._getFavoriteStar());
 
+            if (this.tableRow.panels_view) {
+                if (this.tableRow.panels_view.state === 'both' && !pcTable.isMobile && window === window.top) {
+                    let btn;
+                    if (this.viewType !== 'panels') {
+                        btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
+                            this.model.panelsView(true).then(() => {
+                                window.location.reload();
+                            })
+
+                        });
+                    } else {
+                        btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-table"></i></button>').on('click', () => {
+                            this.model.panelsView(false).then(() => {
+                                window.location.reload();
+                            })
+                        });
+                    }
+                    csv.append(btn);
+                }
+            }
+
 
             if (this.isCreatorView && this.isMain) {
                 let creatorPart = $('<div class="creator-buttons">');
@@ -568,13 +602,13 @@
 
                 if (this.tableRow.type === "calcs") {
                     creatorPart.append(' ');
-                    let btnCopyTable = $('<a href="/Table/' + this.TablesVersions.branchId + '/' + this.TablesVersions.id + '/?'
-                        + $.param({f: this.TablesVersions.version_filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Создание версий таблиц"><i class="fa fa-code-fork"></i></a>');
+                    let btnCopyTable = $('<a href="/Table/' + this.TablesVersions.branchId + '/' + this.TablesVersions.id + '?'
+                        + $.param({f: this.calcstable_cycle_version_filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Создание версий таблиц"><i class="fa fa-code-fork"></i></a>');
                     creatorPart.append(btnCopyTable);
 
                     creatorPart.append(' ');
-                    btnCopyTable = $('<a href="/Table/' + this.TablesCyclesVersions.branchId + '/' + this.TablesCyclesVersions.id + '/?'
-                        + $.param({f: this.TablesCyclesVersions.version_filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Изменение версий таблиц цикла"><i class="fa fa-random"></i></a>');
+                    btnCopyTable = $('<a href="/Table/' + this.TablesCyclesVersions.branchId + '/' + this.TablesCyclesVersions.id + '?'
+                        + $.param({f: this.calcstable_versions_filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Изменение версий таблиц цикла"><i class="fa fa-random"></i></a>');
                     creatorPart.append(btnCopyTable);
 
 
@@ -757,7 +791,7 @@
             selector.val(onPage)
 
             selector.on('change', () => {
-                this.PageData.onPage = selector.val();
+                this.PageData.onPage = parseInt(selector.val());
                 this.model.loadPage(this, 0, selector.val());
             });
 
@@ -773,7 +807,7 @@
 
             if (allPages > 1) {
                 $block.addClass('ttm-pagination-warning');
-                $block.append(' <i class="fa fa-square"></i>');
+                onpaging.append(' <i class="fa fa-square"></i>');
             }
 
             return $block;
@@ -785,18 +819,19 @@
                 if (!this.PageData) {
                     this.PageData = {$block: $('<div class="ttm-pagination"></div>')}
                 }
+                let lastId;
 
-                let lastId = null;
-                if (this.data) {
+                /*if (this.data) {
                     let keys = Object.keys(this.data);
                     if (keys.length > 0) {
                         lastId = keys[keys.length - 1];
                     }
-                }
+                }*/
                 let pageSplit = this.tableRow.pagination.split('/');
                 let pageCount = this.isMobile ? pageSplit[1] : pageSplit[0];
-                this.PageData.onPage = parseInt(pageCount);
+                lastId = pageSplit[2] || null;
 
+                this.PageData.onPage = parseInt(pageCount);
                 this.model.loadPage(this, lastId, pageCount);
 
                 return this.PageData.$block.empty().append('<i class="fa fa-spinner"></i>');
@@ -832,15 +867,37 @@
                     buttons.append(insButtons);
                 }
 
-                let btnAdd = $('<button class="btn btn-default btn-sm" style="margin-left: 5px;" disabled>Сбросить <span class="fa fa-filter"></span></button>').width(82)
-                    .on('click', function () {
-                        setTimeout(function () {
-                            pcTable.filtersEmpty.call(pcTable)
-                        }, 50)
 
-                    });
-                buttons.append(btnAdd);
-                this.filtersClearButton = btnAdd;
+                if (!pcTable.isCreatorView && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length) {
+                    pcTable.f.buttons.forEach((name) => {
+                        if (pcTable.isReplacedToRowsButtonsField(name)) {
+                            let $td = $('<span class="button-wrapper">').data('field', name);
+                            let button = pcTable.fields[name].getCellText(null, $td, pcTable.data_params);
+
+                            $td.append(button).appendTo(buttons)
+                            button.wrap('<span class="cell-value">')
+                        }
+                    })
+                }
+
+                if (!this.isTreeView) {
+
+                    let btnAdd = $('<button class="btn btn-sm" style="margin-left: 5px;">Сбросить <span class="fa fa-filter"></span></button>').width(82)
+                        .on('click', function () {
+                            setTimeout(function () {
+                                pcTable.filtersEmpty.call(pcTable)
+                            }, 50)
+
+                        });
+                    if (this.filters && Object.keys(this.filters).length) {
+                        btnAdd.addClass('btn-warning');
+                    } else {
+                        btnAdd.attr('disabled', true).addClass('btn-default');
+                    }
+                    buttons.append(btnAdd);
+                    this.filtersClearButton = btnAdd;
+                }
+
             }
 
             if (this.f.tablecomment) {
@@ -850,7 +907,9 @@
                 buttons.prepend(comment.text(this.f.tablecomment));
                 setTimeout(function () {
                     let btnsWidth = 0;
-                    btnsWidth += comment.parent().find('>span').width() || 0;
+                    comment.parent().find('>span').each(function () {
+                        btnsWidth += $(this).width() || 0;
+                    })
                     btnsWidth += 90;
                     comment.css('width', 'calc(100% - ' + (btnsWidth) + 'px)');
 
@@ -898,7 +957,11 @@
         }
         ,
         _createTableText: function () {
-            this.tableText = $('<div class="pcTable-tableText"></div>').text(this.f.tabletext);
+            this.tableText = $('<div class="pcTable-tableText"></div>').html(this.f.tabletext);
+            if (this.f.tablehtml) {
+                this.tableText.append(this.f.tablehtml);
+            }
+
             return this.tableText;
         }
         ,
@@ -1088,756 +1151,12 @@
             return this._filtersBlock;
         }
         ,
-            __fillFloatBlock: function ($paramsBlock, fields) {
-            let pcTable = this;
-            let panelColor;
-            let sectionTitle = '';
-
-            let sectionDiv, sectionWithTitles = {_ALL: true}, sectionGap = 0;
-
-            let plate = false;
-            let outline = false;
-            let border = false;
-            let platemh = false;
-            let plateh = false;
-
-            let sections = [];
-            let sectionField;
-
-
-            const addSectionParam = (param, splitted, ValReplace, isArrayValue) => {
-                if (!param)
-                    param = {};
-                const splitVal = (param) => {
-                    if (isArrayValue) {
-                        let split = param.split(/\s*\/\s*/);
-                        if (split.length > 1) {
-                            return {_big: replaceVal(split[0]), _small: replaceVal(split[1])}
-                        } else {
-                            return {_big: replaceVal(param), _small: replaceVal(param)}
-                        }
-                    }
-                    return replaceVal(param)
-                }
-                const replaceVal = (param) => {
-                    switch (param) {
-                        case 'false':
-                        case 'FALSE':
-                            param = false;
-                            break;
-                        case 'true':
-                        case 'TRUE':
-                            param = true;
-                            break;
-                    }
-                    param = ValReplace(param);
-                    return param;
-                }
-
-                if (splitted.length === 2) {
-                    param = splitVal(splitted[1])
-                } else if (/^([a-z_0-9]+\s*,?\s*)+$/.test(splitted[1])) {
-                    splitted[1].split(/\s*,\s*/).forEach((num) => {
-                        param[num] = splitVal(splitted[2])
-                    })
-                } else {
-                    param = splitVal(splitted[1])
-                }
-                return param;
-            };
-
-
-            $.each(fields, function (k, field) {
-
-
-                if (field.panelColor !== undefined) {
-                    panelColor = field.panelColor;
-                } else field.panelColor = panelColor;
-
-                if (field.sectionTitle !== undefined) {
-                    sectionWithTitles = {_ALL: true}
-                    sectionTitle = field.sectionTitle.trim();
-                    sectionGap = 0;
-                    plate = false;
-                    outline = false;
-                    border = false;
-                    platemh = false;
-                    sectionField = field;
-
-                    let sectionParams = {};
-                    let sectionParamsMatch = sectionTitle.match(/\*\*(.*)/);
-                    if (sectionParamsMatch) {
-                        sectionParamsMatch[1].trim().split(/\s*;\s*/).forEach((param) => {
-                            let split = param.trim().split(/\s*:\s*/);
-                            split[0] = split[0].toLowerCase();
-
-                            if (split.length > 1) {
-                                switch (split[0]) {
-                                    case 'outline':
-                                        outline = addSectionParam(outline, split, ((str) => str === true ? "#e4e4e4" : str), true)
-                                        break;
-                                    case 'title':
-                                        sectionParams.title = sectionParams.title || {_ALL: true};
-                                        let title = addSectionParam({}, split, ((str) => str))
-                                        if (typeof title === 'boolean')
-                                            sectionParams.title._ALL = title;
-                                        else {
-                                            sectionParams.title = {...sectionParams.title, ...title}
-                                        }
-                                        break;
-                                    case 'border':
-                                        border = addSectionParam(border, split, (str) => str === false ? "transparent" : str, true)
-                                        break;
-                                    case'plate':
-                                        plate = addSectionParam(plate, split, (str) => str === false ? "transparent" : str, true)
-                                        break;
-                                    case 'platemh':
-                                        platemh = addSectionParam(platemh, split, (str) => typeof str === 'string' && /^\d+$/.test(str) ? str + 'px' : str, true)
-                                        break;
-                                    case 'plateh':
-                                        plateh = addSectionParam(plateh, split, (str) => typeof str === 'string' && /^\d+$/.test(str) ? str + 'px' : str, true)
-                                        break;
-                                    case 'gap':
-                                        sectionParams.gap = addSectionParam(sectionParams.gap, split, (str) => str)
-                                        break;
-                                    default:
-                                        switch (split[1]) {
-                                            case 'true':
-                                            case 'TRUE':
-                                                sectionParams[split[0]] = true;
-                                                break;
-                                            case 'false':
-                                            case 'FALSE':
-                                                sectionParams[split[0]] = false;
-                                                break;
-                                        }
-                                }
-                            }
-                        })
-
-                        sectionGap = sectionParams.gap || sectionGap;
-                    }
-
-                    sectionWithTitles = "title" in sectionParams ? sectionParams.title : sectionWithTitles;
-
-                    if (!pcTable.isCreatorView) {
-                        if (sectionParams.lable === false) {
-                            sectionTitle = "";
-                        } else {
-                            sectionTitle = sectionTitle.replace(/(\*\*.*)/, '')
-                            sectionTitle = $('<div>').text(sectionTitle.trim()).html();
-                        }
-                    } else {
-                        sectionTitle = sectionTitle.replace(/(\*\*.*)/, '')
-
-                    }
-                }
-
-                if (!sectionDiv || (field.tableBreakBefore && field.sectionTitle)) {
-                    sectionDiv = [];
-                    sections.push({
-                        title: sectionTitle,
-                        fields: sectionDiv,
-                        withTitles: sectionWithTitles,
-                        sectionGap: sectionGap,
-                        plate: plate,
-                        sectionField: sectionField,
-                        outline: outline,
-                        border: border,
-                        plateh: plateh,
-                        platemh: platemh
-                    });
-                    sectionTitle = '';
-                }
-                if (!field.showMeWidth) return;
-
-                sectionDiv.push({
-                    field: field,
-                    panelColor: panelColor
-                })
-            });
-
-            const addFieldGap = (field, sectionGap) => {
-                let _gap = -1;
-                let $div = field.fieldCell;
-                if (sectionGap) {
-                    if (!$div.prev().is('br') && !($div.is(':first-child') || $div.prev().is('[data-type="blocknum"]'))) {
-                        if (typeof sectionGap !== 'object') {
-                            _gap = sectionGap;
-                        } else {
-                            if (field.format.blocknum in sectionGap) {
-                                _gap = sectionGap[field.format.blocknum]
-                            } else if (field.field.name in sectionGap) {
-                                _gap = sectionGap[field.field.name]
-                            }
-                        }
-                        if (_gap) {
-                            if (/^\d+$/.test(_gap)) {
-                                _gap = parseInt(_gap) - 1;
-                                _gap += 'px';
-                            }
-                        }
-                    }
-                }
-                $div.css('marginLeft', _gap)
-            }
-            sections.forEach((sec) => {
-                //' + (sec.isNoTitles ? 'sec-no-titles' : '') + '
-                let sDv = $('<div class="pcTable-section ">').appendTo($paramsBlock);
-                let sectionGap = sec.sectionGap;
-
-                if (sec.title || (pcTable.isCreatorView && sec.sectionField)) {
-                    let $title = $('<span>').html(sec.title);
-                    if (pcTable.isCreatorView) {
-
-                        $('<span class="danger"> <i class="fa fa-edit" style="font-size: 14px; padding-left: 10px;"></i></span>').on('click', () => {
-
-                            this.__editSectionTitle(sec.sectionField)
-                            return false;
-                        }).appendTo($title);
-                        $('<span class="danger"> <i class="fa fa-times" style="font-size: 14px; padding-left: 5px;"></i></span>').on('click', () => {
-
-                            this.__deleteSection(sec.sectionField)
-                            return false;
-                        }).appendTo($title)
-                    }
-                    pcTable.___createClosedSection(sDv, $('<div class="pcTable-sectionTitle"></div>').html($title).appendTo(sDv), 'p');
-                }
-                let floatBlock = $('<div class="pcTable-floatBlock">').appendTo(sDv);
-
-                if (!floatBlock.is(':visible')) {
-                    sDv.data('closedrender', true);
-                    return;
-                }
-
-                let headHeight = 0;
-                let FloatInners = [];
-                let FlowLines = [
-                    FloatInners
-                ];
-                let FlowBlocks = [FlowLines];
-
-                let floatInner;
-                let sectionMarked = false;
-
-
-                sec.fields.forEach((field, ind) => {
-
-                    if (field.field.tableBreakBefore && ind !== 0) {
-                        floatBlock = $('<div class="pcTable-floatBlock">').appendTo(sDv);
-
-                        FloatInners = [];
-                        FlowLines = [FloatInners];
-                        FlowBlocks.push(FlowLines);
-                    }
-
-                    pcTable.data_params[field.field.name] = pcTable.data_params[field.field.name] || {}
-
-                    field.format = pcTable.data_params[field.field.name].f || {};
-
-                    let blockNum = field.format.blocknum || 0;
-                    if (typeof field.format.blocknum !== "undefined" && !sectionMarked) {
-                        sDv.addClass('sectionWithPannels');
-                    }
-                    if (FloatInners.length === 0 || FloatInners[FloatInners.length - 1].num != blockNum || (field.field.tableBreakBefore && ind !== 0)) {
-                        floatInner = $('<div class="pcTable-floatInner">').appendTo(floatBlock);
-                        if (blockNum && pcTable.isCreatorView) {
-                            floatInner.append('<div data-type="blocknum" style="position:absolute;z-index: 100; color: #ff8585; background-color: #fff; padding: 3px; font-size: 10px; right: 4px; top: 4px;">' + blockNum + '</div>')
-                        }
-                        if (sec.outline) {
-                            if (blockNum in sec.outline)
-                                floatInner.data('border-color', sec.outline[blockNum])
-                            else {
-                                floatInner.data('border-color', sec.outline)
-                            }
-                        }
-                        if (sec.plate) {
-                            if (blockNum in sec.plate)
-                                floatInner.data('plate', sec.plate[blockNum])
-                            else {
-                                floatInner.data('plate', sec.plate)
-                            }
-                        }
-                        if (sec.plateh) {
-                            if (blockNum in sec.plateh)
-                                floatInner.data('plateh', sec.plateh[blockNum])
-                            else {
-                                floatInner.data('plateh', sec.plateh)
-                            }
-                        }
-                        if (sec.platehm) {
-                            if (blockNum in sec.platehm)
-                                floatInner.data('platehm', sec.platehm[blockNum])
-                            else {
-                                floatInner.data('platehm', sec.platehm)
-                            }
-                        }
-
-
-                        FloatInners.push({
-                            div: floatInner,
-                            num: blockNum,
-                            isWrappable: false,
-                            sec: sec,
-                            fields: [],
-                        })
-                    }
-
-                    let inner = FloatInners[FloatInners.length - 1];
-                    if (inner.fields.length > 0 && !field.format.nextline)
-                        inner.isWrappable = true;
-                    inner.fields.push(field);
-
-
-                    field._showMeWidth = field.field.showMeWidth;
-
-                    if (field.format.breakwidth) {
-                        field.field.showMeWidth = field.format.breakwidth;
-                    }
-
-                    if (field.format.nextline && ind > 0) floatInner.append('<br/>');
-
-                    let fieldCell = $('<div>').appendTo(floatInner);
-                    fieldCell.width(field.field.showMeWidth + 1);
-                    fieldCell.attr('data-field-type', field.field.type);
-
-                    field.field.isNoTitles = false;
-                    if ('withTitles' in sec) {
-                        if (field.field.name in sec.withTitles) {
-                            field.field.isNoTitles = !sec.withTitles[field.field.name];
-                        } else if (blockNum && blockNum in sec.withTitles) {
-                            field.field.isNoTitles = !sec.withTitles[blockNum];
-                        } else if ('_ALL' in sec.withTitles) {
-                            field.field.isNoTitles = !sec.withTitles['_ALL'];
-                        }
-                    }
-
-                    let th = pcTable._createHeadCell(null, field.field, field.panelColor).appendTo(fieldCell);
-                    let tdWrapper = $('<div class="td-wrapper">').appendTo(fieldCell);
-                    let td = pcTable._createCell(pcTable.data_params, field.field).appendTo(tdWrapper);
-
-
-                    if (field.format.maxheight) {
-                        let style = {'maxHeight': field.format.maxheight};
-                        if (field.format.height) {
-                            style.minHeight = field.format.height;
-                            tdWrapper.css('minHeight', field.format.height);
-                        }
-                        td.height('');
-                        fieldCell.css(style);
-                        fieldCell.addClass('nonowrap');
-                    } else if (field.format.height) {
-                        td.height('');
-                        fieldCell.addClass('nonowrap');
-                        fieldCell.height(field.format.height);
-                    }
-                    if (field.field.isNoTitles) {
-                        if (!pcTable.isCreatorView)
-                            th.empty();
-                        else {
-                            th.addClass('no-titled')
-                        }
-                    } else {
-                        th.css('display', 'table-cell')
-                        field.th = th;
-                        if (th.height() > headHeight) headHeight = th.height();
-                    }
-                    field.td = td;
-                    field.th = th.width('');
-                    field.tdWrapper = tdWrapper;
-                    field.fieldCell = fieldCell;
-
-
-                    if (pcTable.isCreatorView) {
-                        if (field.format.glue) {
-                            fieldCell.addClass('f-glue')
-                        }
-                        if (field.format.fill) {
-                            fieldCell.addClass('f-fill')
-                        }
-                    }
-
-
-                });
-                sec.fields.forEach((field) => {
-                    let thHeight = 0;
-                    if (field.th) {
-                        field.th.css('display', '');
-                        let h = 21;
-                        if (pcTable.isCreatorView) {
-                            h = 40;
-                        }
-                        field.th.height(h);
-                        thHeight = field.th.outerHeight();
-                    }
-
-                    if (field.format.maxheight) {
-                        field.tdWrapper.css('maxHeight', field.format.maxheight - thHeight - 10);
-                    } else if (field.format.height && !field.format.maxheight) {
-                        field.tdWrapper.css('height', field.format.height - thHeight);
-                        field.tdWrapper.data('height', field.format.height - thHeight);
-                    }
-                    addFieldGap(field, sectionGap)
-                });
-
-
-                const getDiff = function (FlInners) {
-                    if (!FlInners.length) return 0;
-                    let floatBlock = FlInners[0].div.parent();
-                    let rightParent = floatBlock.position().left + parseInt(floatBlock.css('paddingLeft')) + floatBlock.width();
-                    let lastLeft;
-                    let widestLine;
-                    for (let f in FlInners) {
-                        let inner = FlInners[FlInners.length - 1].div;
-                        inner.w = false;
-                        let leftLast = inner.position().left + inner.outerWidth();
-                        if (!lastLeft || leftLast > lastLeft) {
-                            lastLeft = leftLast;
-                            widestLine = FlInners[FlInners.length - 1];
-                        }
-                    }
-                    widestLine.w = true;
-                    return rightParent - lastLeft;
-                };
-
-
-                const growFieldsfnc = function (FloatInners, isSmallerSize) {
-                    if (!FloatInners.length) return;
-
-
-                    if (/Safari/.test(navigator.userAgent)) {
-                        FloatInners.forEach(function (inner) {
-                            inner.div.width(100);
-                            inner.div.width('');
-                        });
-                    }
-
-                    let diff = getDiff(FloatInners);
-                    let LineTop = 0 + parseInt(FloatInners[0].div.css('paddingTop'));
-
-                    let firstLines = [];
-                    let otherLines = [];
-                    let minWidthFirstLines = 0;
-
-                    FloatInners.forEach(function (inner) {
-                        let lineTop = null;
-                        let lineObj = {width: 0, fields: []};
-                        let lastField;
-
-                        inner.fields.forEach(function (field) {
-                            if ((field.format.maxwidth && field.field.width < field.format.maxwidth) || (field.format.fill && (isSmallerSize || field.fieldCell.position().top !== LineTop || LineTop === null))) {
-                                if (lineTop != field.fieldCell.position().top) {
-                                    lineTop = field.fieldCell.position().top;
-                                    lineObj = {width: 0, fields: []};
-                                    if (lineTop !== LineTop) {
-                                        otherLines.push(lineObj)
-                                    } else {
-                                        firstLines.push(lineObj)
-                                    }
-                                }
-                                lineObj.fields.push(field);
-                                lineObj.width += field.field.width;
-                                if (lineTop === LineTop) {
-                                    minWidthFirstLines += field.field.width;
-                                }
-
-                            }
-                            lastField = field.fieldCell;
-                        });
-
-                    });
-
-                    const fillLines = function (line) {
-                        let parent = line.fields[0].fieldCell.parent();
-
-                        let top = line.fields[0].fieldCell.position().top;
-                        let left;
-                        let lastField;
-                        parent.find('>div').each(function (i, field) {
-                            let $field = $(field);
-                            let position = $field.position();
-                            if (position.top === top && (!left || position.left > left)) {
-                                left = position.left;
-                                lastField = $field;
-                            }
-                        });
-                        let addDiff = parent.width() + parseInt(parent.css('paddingLeft')) - left - lastField.outerWidth(true);
-
-
-                        let grow = 0;
-                        let nn = 0;
-                        while (nn++ < 100 && line.fields.length && addDiff > 1) {
-                            line.fields.forEach(function (field, iFields) {
-                                if (addDiff > grow) {
-                                    let _grow = Math.round(addDiff / line.width * field.field.width);
-                                    if (!field.format.fill) {
-                                        if ((field.format.maxwidth <= (field.fieldCell.width() + _grow))) {
-                                            _grow = field.format.maxwidth - field.fieldCell.width();
-                                            line.fields.splice(iFields, 1);
-                                            line.width -= field.field.width;
-                                        }
-                                    }
-                                    grow += _grow;
-                                    field.fieldCell.width(field.fieldCell.width() + _grow);
-                                }
-                            });
-                            addDiff -= grow;
-                            grow = 0;
-                        }
-                    };
-
-
-                    firstLines.forEach(fillLines);
-
-                    let addDiff = diff;
-                    let grow = 0;
-                    let nn = 0;
-                    while (addDiff > 1 && nn++ < 6 && firstLines.length) {
-                        firstLines.forEach(function (lineObj, iLines) {
-
-                            lineObj.fields.forEach(function (field, iFields) {
-                                if (addDiff > grow) {
-                                    let _grow = Math.round(addDiff / minWidthFirstLines * field.field.width);
-                                    if (_grow > addDiff - grow) _grow = addDiff - grow;
-                                    if (!(isSmallerSize && field.format.fill) && field.format.maxwidth <= (field.fieldCell.width() + _grow)) {
-                                        _grow = field.format.maxwidth - field.fieldCell.width();
-                                        lineObj.fields.splice(iFields, 1);
-                                        minWidthFirstLines -= field.field.width;
-                                    }
-                                    grow += _grow;
-                                    field.fieldCell.width(field.fieldCell.width() + _grow);
-                                }
-                            });
-                            if (lineObj.fields.length === 0) {
-                                firstLines.splice(iLines, 1);
-                            }
-                        });
-                        addDiff -= grow;
-                        grow = 0;
-                    }
-
-                    otherLines.forEach(fillLines)
-
-                };
-                const checkDiffs = function (FlowLines) {
-                    let result = true;
-                    FlowLines.some((FloatInners, i) => {
-                        if (getDiff(FloatInners) < 0) {
-                            result = false;
-                            return true;
-                        }
-                    });
-                    return result;
-                };
-
-
-                let isSmallerSize = false;
-                FlowBlocks.forEach(function (FlowLines, fInd) {
-                    let diffItt = 0;
-                    while ((++diffItt < 400) && !checkDiffs(FlowLines)) {
-                        FlowLines.forEach(function (FloatInners, i) {
-                            let diff = getDiff(FloatInners);
-                            if (diff < 0) {
-                                isSmallerSize = true;
-                                /!*Cносим поля в блоках*!/;
-                                for (let iF = FloatInners.length - 1; iF >= 0; iF--) {
-                                    /!*Cносим поля в блокe*!/;
-                                    let inner = FloatInners[iF];
-                                    if (inner.isWrappable && inner.w) {
-                                        let leftField;
-                                        let leftFieldI;
-                                        let leftPosition;
-                                        for (let i = inner.fields.length - 1; i >= 1; i--) {
-                                            let field = inner.fields[i];
-                                            field.i = i
-                                            if (!leftPosition || field.fieldCell.position().left > leftPosition) {
-                                                leftPosition = field.fieldCell.position().left;
-                                                leftField = field;
-                                                leftFieldI = i;
-                                            }
-                                        }
-                                        if (leftField && !leftField.format.nextline && !leftField.fieldCell.prev().is('br')) {
-                                            if (leftField.format.glue) {
-                                                while (true) {
-                                                    if (!leftField.i) {
-                                                        leftField = null;
-                                                        break;
-                                                    }
-                                                    leftField = inner.fields[leftField.i - 1];
-                                                    leftFieldI = leftField.i
-                                                    if (leftField.format.nextline || leftField.fieldCell.is(':first-child') || leftField.fieldCell.prev().is('br')) {
-                                                        leftField = null;
-                                                        break;
-                                                    } else if (!leftField.format.glue) {
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                            if (leftField) {
-                                                leftField.fieldCell.before('<br class="wrapped"/>');
-                                                leftField.fieldCell.nextAll('br.wrapped').remove();
-                                                for (let i = leftFieldI; i <= inner.fields.length - 1; i++) {
-                                                    addFieldGap(inner.fields[i], sectionGap)
-                                                }
-                                                return;
-                                            }
-                                        }
-                                    }
-                                }
-
-
-                                /!*Сносим блоки*!/
-                                let LastFirstLineInner = FlowLines[0].length - 1;
-
-                                if (LastFirstLineInner > 0) {
-                                    let fInner = FlowLines[0][LastFirstLineInner];
-                                    let inner = fInner.div;
-                                    inner.before('<br/>');
-                                    FlowLines.push([fInner]);
-                                    FlowLines[0].splice(LastFirstLineInner, 1);
-                                    FlowLines.forEach(function (inners) {
-                                        inners.forEach(function (inner) {
-                                            inner.div.find('br.wrapped').remove();
-                                            inner.fields.forEach((field) => addFieldGap(field, sectionGap))
-                                        });
-
-                                    });
-                                }
-                            }
-                        });
-                    }
-
-                    FlowLines.forEach(function (FloatInners, i) {
-                        FloatInners.forEach(({div, fields}) => {
-                            fields.forEach((field) => {
-                                if (field.format.breakwidth) {
-                                    field.fieldCell.css('width', field._showMeWidth);
-                                    field.field.showMeWidth = field._showMeWidth
-                                }
-                            })
-                        })
-
-                        growFieldsfnc(FloatInners, isSmallerSize);
-
-                        FloatInners.forEach(({div, fields, sec, blocknum}) => {
-                            let tdNoTitles = [];
-                            let isAllNoTitles = true;
-                            fields.forEach((field) => {
-                                if (field.fieldCell.prev().is('br')) {
-                                    if (!pcTable.isCreatorView && tdNoTitles.length)
-                                        slimThs(tdNoTitles)
-                                    tdNoTitles = [];
-                                    isAllNoTitles = true;
-                                }
-                                if (field.field.isNoTitles) {
-                                    if (isAllNoTitles) {
-                                        tdNoTitles.push(field)
-                                    }
-                                } else {
-                                    tdNoTitles = [];
-                                    isAllNoTitles = false;
-                                }
-
-
-                                if (sec.border) {
-                                    let _border;
-                                    if (field.field.name in sec.border) {
-                                        _border = sec.border[field.field.name];
-                                    } else if (blocknum in sec.border) {
-                                        _border = sec.border[blocknum];
-                                    } else {
-                                        _border = sec.border;
-                                    }
-                                    if (_border) {
-
-                                        let func_format = (format) => {
-                                            let _b = isSmallerSize ? _border['_small'] : _border['_big'];
-                                            let style = {'borderColor': _b};
-                                            if (_b === 'transparent') {
-                                                if (!format.background && !field.panelColor) {
-                                                    style.backgroundColor = "transparent"
-                                                }
-                                                if (field.field.type === 'button') {
-                                                    field.fieldCell.addClass('no-border')
-                                                    style.Button = {};
-                                                    if (format.background) {
-                                                        style.Button.backgroundColor = format.background
-                                                    }
-                                                    if (format.color) {
-                                                        style.Button.color = format.color
-                                                    }
-                                                    field.td.find('button').css(style.Button);
-                                                    style.backgroundColor = "transparent"
-                                                }
-                                            } else if (_b === true) {
-                                                style.borderColor = ""
-                                                style.backgroundColor = ""
-                                                if (field.field.type === 'button') {
-                                                    field.fieldCell.removeClass('no-border')
-                                                    style.Button = {};
-                                                    style.Button.backgroundColor = ''
-                                                    style.Button.color = format.color
-                                                    field.td.find('button').css(style.Button);
-                                                }
-                                            }
-                                            return style;
-                                        }
-                                        field.td.css(func_format(field.format))
-                                        field.field.td_style = func_format;
-                                    } else {
-                                        field.td.css(func_format(field.format))
-                                        field.field.td_style = func_format;
-                                    }
-                                }
-                            })
-
-                            if (!pcTable.isCreatorView && tdNoTitles.length) {
-                                slimThs(tdNoTitles)
-                            }
-
-
-                            let style = {};
-
-                            if (div.data('plateh')) {
-                                let heights = div.data('plateh');
-                                let height = isSmallerSize ? heights["_small"] : heights['_big']
-                                if (height !== false) {
-                                    style.height = height;
-                                    style.overflow = 'auto';
-                                }
-                            }
-                            if (div.data('platemh')) {
-                                let heights = div.data('platemh');
-                                let height = isSmallerSize ? heights["_small"] : heights['_big']
-
-                                if (height !== false) {
-                                    style.maxHeight = height;
-                                    style.overflow = 'auto';
-                                }
-                            }
-                            if (div.data('border-color')) {
-                                style.borderColor = isSmallerSize ? div.data('border-color')["_small"] : div.data('border-color')['_big'];
-                            }
-                            if (div.data('plate')) {
-                                style.backgroundColor = isSmallerSize ? div.data('plate')["_small"] : div.data('plate')['_big'];
-                            }
-                            div.css(style);
-
-                        })
-                    });
-
-                });
-            });
-
-
-        }
-        ,
         _createParamsBlock: function (scrollWrapper) {
             let $paramsBlock = $('<div>');
             if (scrollWrapper) {
                 $paramsBlock.appendTo(scrollWrapper);
                 return $paramsBlock
-            } else if(this._paramsBlock){
+            } else if (this._paramsBlock) {
                 this._paramsBlock.replaceWith($paramsBlock);
                 this._paramsBlock = $paramsBlock;
             }
@@ -1847,14 +1166,16 @@
                 $paramsBlock.addClass('pcTable-paramsTables');
                 if (pcTable.isMobile) {
                     let $table, $thead, $tbody;
-                    let panelColor;
                     let sectionTitle = '';
                     let isNoTitles = false;
 
                     let sectionDiv;
                     let sections = [];
                     $.each(pcTable.fieldCategories.param, function (k, field) {
+                            if (pcTable.isReplacedToRowsButtonsField(field.name))
+                                return;
 
+                            let panelColor;
                             if (field.panelColor !== undefined) {
                                 panelColor = field.panelColor;
                             }
@@ -1911,7 +1232,7 @@
             if (pcTable.fieldCategories.param) {
 
                 $.each(pcTable.fieldCategories.param, function (k, v) {
-                    if (!v.showMeWidth || paramsChanges && paramsChanges[v.name] !== true) return true;
+                    if (!v.showMeWidth || paramsChanges && !paramsChanges[v.name]) return true;
 
                     let cell = pcTable._createCell(pcTable.data_params, v);
                     let oldCell = pcTable._paramsBlock.find('td[data-field="' + v.name + '"]');
@@ -1921,7 +1242,7 @@
 
                     oldCell.replaceWith(cell);
 
-                    if (colorizeIt) {
+                    if (colorizeIt && paramsChanges[v.name] !== 'f') {
                         pcTable._colorizeElement(cell, pcTable_COLORS.saved);
                     }
                 })
@@ -1944,10 +1265,11 @@
             if (pcTable.isMobile) {
                 let width = 0, $table, $thead, $tbody;
                 let ContainerWidth = this._container.width() - 100;
-                let panelColor;
+
                 let sectionTitle = '';
                 let sectionDiv, isNoTitles;
                 $.each(pcTable.notTableFooterFields, function (k, field) {
+                    let panelColor;
                     if (field.panelColor !== undefined) {
                         panelColor = field.panelColor;
                     }
@@ -2037,6 +1359,10 @@
 
                             } else {
                                 td = pcTable._createHeadCell(k, columnsFooters[field.name][footerVarNum], columnsFooters[field.name][footerVarNum].panelColor).addClass('footer-name');
+
+                                if (pcTable.isRotatedView) {
+                                    td.width('auto')
+                                }
                                 trHead.append(td);
                             }
 
@@ -2050,6 +1376,11 @@
                         }
 
                     });
+
+                    let width = this.tableRow['rotated_view'] + 50
+                    trHead.width(width / 2)
+                    trVal.width(width / 2)
+
                     NewFooters = NewFooters.add(trHead);
                     NewFooters = NewFooters.add(trVal);
 
@@ -2064,6 +1395,7 @@
             const pcTable = this;
             let sectionId = sectionDiv.parent().find('>div').index(sectionDiv) + 2;
             let storageKey = pcTable.tableRow.id + '/' + (pcTable.tableRow.__version || 0) + '/' + placement + '/' + sectionId;
+
             pcTable.__sectionsCloses = pcTable.__sectionsCloses || JSON.parse(localStorage.getItem('sectionCloses') || '{}');
 
             if (pcTable.__sectionsCloses[storageKey]) sectionDiv.addClass('closed');
@@ -2085,6 +1417,13 @@
                                 break;
                         }
                         pcTable.scrollWrapper.parent().scrollTop(scroll);
+                    } else {
+                        sectionDiv.find('td').each(function () {
+                            let self = $(this);
+                            if (self.data('addProgress')) {
+                                self.data('addProgress')();
+                            }
+                        })
                     }
                 } else {
                     sectionDiv.addClass('closed');
@@ -2102,13 +1441,13 @@
 
             if (pcTable.fieldCategories.footer) {
                 $.each(pcTable.fieldCategories.footer, function (k, v) {
-                    if (!v.showMeWidth || paramsChanges && paramsChanges[v.name] !== true) return true;
+                    if (!v.showMeWidth || paramsChanges && !paramsChanges[v.name]) return true;
 
                     let cell = pcTable._createCell(pcTable.data_params, v);
                     cell.attr('data-field', v.name);
                     footers.find('td[data-field="' + v.name + '"]').replaceWith(cell);
 
-                    if (colorizeIt) {
+                    if (colorizeIt && paramsChanges[v.name] !== 'f') {
                         pcTable._colorizeElement(cell, pcTable_COLORS.saved);
                     }
                 })
@@ -2149,12 +1488,19 @@
             let $row = $("<tr>");
 
 
+            if (!this.fieldCategories.visibleColumns.length) {
+                pcTable._container.addClass('withNoColumns')
+            } else {
+                pcTable._container.removeClass('withNoColumns')
+            }
+
             pcTable._createHeadCellId().appendTo($row);
             let $width = $row.find('.id').width();
 
-            let panelColor;
+
             pcTable._table.removeClass('n-filtered');
             $.each(this.fieldCategories.visibleColumns, function (index, field) {
+                let panelColor;
                 if (field.panelColor !== undefined) {
                     panelColor = field.panelColor;
                 }
@@ -2171,7 +1517,8 @@
 
             this.tableWidth = $width;
 
-            this._table.width(this.tableWidth);
+            if (!this.isRotatedView)
+                this._table.width(this.tableWidth);
 
             return $row;
         }
@@ -2198,7 +1545,10 @@
             let OrderClass = 'btn-warning';
 
             let $btnNHiding = $('<button class="btn btn-default btn-xxs" id="n-expander"><i class="fa fa-sort"></i></button>')
-                .on('click', function () {
+            if (this.isTreeView) {
+                $btnNHiding.prop('disabled', true)
+            } else {
+                $btnNHiding.on('click', function () {
                     if (!pcTable.fieldCategories.visibleColumns.some(function (field) {
                         return field.name === 'n';
                     })) {
@@ -2208,9 +1558,10 @@
                         pcTable.fieldsHiddingHide.call(pcTable, 'n');
                         $btnNHiding.removeClass(OrderClass)
                     }
-
                     pcTable.ScrollClasterized.reloadScrollHead();
-                });
+                })
+            }
+
             if (pcTable.fieldCategories.visibleColumns.some(function (field) {
                 return field.name === 'n';
             })) {
@@ -2239,11 +1590,14 @@
                     pcTable.__checkedRows = [];
                 } else {
                     for (let i = 0; i < pcTable.dataSortedVisible.length; i++) {
-                        let id = pcTable.dataSortedVisible[i];
-                        let item = pcTable._getItemById(id);
-                        pcTable.row_actions_check.call(pcTable, item, true);
+                        let element = pcTable.dataSortedVisible[i];
+                        let item = typeof element !== 'object' ? pcTable._getItemById(element) : element.row;
+                        if (item && !item.$checked) {
+                            pcTable.row_actions_check.call(pcTable, item, true);
+                            pcTable.__checkedRows.push(item.id)
+                        }
+
                     }
-                    pcTable.__checkedRows = pcTable.dataSortedVisible.slice();
                 }
                 pcTable._headCellIdButtonsState();
             });
@@ -2327,30 +1681,43 @@
             return Object.getPath(this.f, ['fieldtitle', field.name], field.title)
         }
         ,
+
+        isReplacedToRowsButtonsField(fieldName) {
+            let pcTable = this;
+            return pcTable.fields[fieldName] && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length && pcTable.f.buttons.indexOf(fieldName) !== -1;
+        },
         _createHeadCell: function (index, field, panelColor) {
             let pcTable = this;
 
-            let width = field.showMeWidth || field.width || 100;
-            if (field.category !== 'column' && width && pcTable.isMobile) {
-                width = 100;
-            }
-
             let $th = $('<th>')
                 .data('field', field.name);
-            if (pcTable.isMobile) {
-                if (field.category === 'column' && field.editable) {
+
+            field.$th = $th;
+
+            let width = field.showMeWidth || field.width || 100;
+            if (!this.isRotatedView || !(field.category === 'column')) {
+
+                if (field.category !== 'column' && width && pcTable.isMobile) {
+                    width = 100;
+                }
+
+                if (pcTable.isMobile) {
+                    if (field.category === 'column' && field.editable) {
+                        width += 20;
+                    }
                     width += 20;
                 }
-                width += 20;
+                if (width)
+                    $th.width(width);
             }
-            if (width)
-                $th.width(width);
 
             if (pcTable.fields[field.name]) {
                 pcTable.fields[field.name].$th = $th;
             }
 
-            if (panelColor !== undefined && panelColor !== '') {
+            if (field.panelColor) {
+                $th.css('background-color', field.panelColor);
+            } else if (panelColor !== undefined && panelColor !== '') {
                 $th.css('background-color', panelColor);
                 field.panelColor = panelColor;
             }
@@ -2368,7 +1735,7 @@
                 .text(title)
                 .attr('title', title).appendTo($th);
 
-            if (pcTable.isCreatorView) {
+            if (pcTable.isCreatorView && !this.isRotatedView) {
                 let creatorIcons = $('<span class="creator-icons">').prependTo(spanTitle);
 
 
@@ -2439,7 +1806,7 @@
                         if (title !== '') title += "\n";
                         title += 'При удалении';
                     }
-                    if (field.type === 'button') {
+                    if (field.type === 'button' || field.CodeActionOnClick) {
                         if (title !== '') title += "\n";
                         title += 'При клике';
                     }
@@ -2448,7 +1815,7 @@
                     }
                     star.attr('title', title);
                 }
-                if (field.code) {
+                if (field.code && !field.linkFieldName) {
                     if (field.codeOnlyInAdd) {
                         creatorIcons.append('<i class="fa fa-cog-o roles"></i>');
                     } else {
@@ -2520,6 +1887,7 @@
                     $th.addClass('worker-with-i');
                 }
                 span_help = $('<span class="btn btn-xxs btn-default cell-help" tabindex="-1" id="field-help-' + field.name + '"><i class="fa fa-info"></i></span>');
+                $th.addClass('with-help');
 
                 if (pcTable.isCreatorView && /^\s*<admin>.*?<\/admin>\s*$/s.test(field.help)) {
                     span_help.addClass('danger-backg');
@@ -2575,24 +1943,13 @@
                     });
 
 
-                if (!pcTableContainerFieldHelpEvent) {
-                    pcTableContainerFieldHelpEvent = true;
-                    pcTable._container.on('click escPressed', function (event) {
-                        pcTable._container.find('[id^="field-help"][aria-describedby^="popover"]').each(function () {
-                            if ($(this).attr('id') !== event.target.id && !$(event.target).closest('#' + $(this).attr('id')).length) {
-                                $(this).trigger('close');
-                            }
-                        });
-
-                    });
-                }
+                pcTable.addThHelpCloser();
 
             }
 
 
             if (field.category === 'column') {
-
-                if (field.filterable && field.showMeWidth > 0) {
+                if (!pcTable.isTreeView && field.filterable && field.showMeWidth > 0) {
                     $th.addClass('with-filter2');
                     this.__getFilterButton(field.name).appendTo(filterBlock);
                 }
@@ -2607,6 +1964,9 @@
                     let $divPopoverArrowDown = $('<div class="cell-header-dropdown">');
                     let btnDropDown = $('<button class="btn btn-default btn-xxs"  tabindex="-1">' +
                         '<i class="fa fa-caret-down"></i></button>');
+                    if (pcTable.fixedColumn === field.name) {
+                        btnDropDown.addClass('btn-warning').removeClass('btn-default')
+                    }
 
                     if (!field.pcTable) {
                         btnDropDown.addClass('field_name')
@@ -2737,11 +2097,19 @@
                         //Скрыть
                         if (!pcTable.isMobile) {
                             let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-eye-slash"></i> Скрыть');
-                            btn.on('click', function () {
-                                btnDropDown.popover('hide');
-                                pcTable.fieldsHiddingHide.call(pcTable, field.name);
-                            });
+                            if (field.showMeWidth) {
+                                btn.append('<i class="fa fa-eye-slash"></i> Скрыть');
+                                btn.on('click', function () {
+                                    btnDropDown.popover('hide');
+                                    pcTable.fieldsHiddingHide.call(pcTable, field.name);
+                                });
+                            } else {
+                                btn.append('<i class="fa fa-eye-slash"></i> Показать');
+                                btn.on('click', function () {
+                                    btnDropDown.popover('hide');
+                                    pcTable.setColumnWidth.call(pcTable, field.name, field.width, field.id);
+                                });
+                            }
                             btn.appendTo($divPopoverArrowDown);
 
 
@@ -2770,7 +2138,7 @@
                                 ];
                                 if (pcTable.isCreatorView) {
                                     btns.splice(0, 0, {
-                                        label: 'Применить',
+                                        label: 'По умолчанию',
                                         cssClass: 'btn-m btn-danger',
                                         action: function (dialog) {
                                             let width = parseInt(div.find('input').val());
@@ -2803,7 +2171,23 @@
                         }
 
                     }
-                    if (field.showMeWidth > 0 && field.category === 'column') {
+                    if (field.showMeWidth > 0 && field.category === 'column' && !pcTable.isTreeView) {
+
+                        if (pcTable.fixedColumn === field.name) {
+                            $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Открепить').addClass('color-warning').appendTo($divPopoverArrowDown)
+                                .on('click', function () {
+                                    btnDropDown.popover('hide');
+                                    pcTable.fixColumn();
+                                });
+                        } else if (field.type !== 'button') {
+                            $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Закрепить').appendTo($divPopoverArrowDown)
+                                .on('click', function () {
+                                    btnDropDown.popover('hide');
+                                    pcTable.fixColumn(field.name);
+                                });
+                        }
+
+
                         //sort a-z
                         {
                             let btn = $('<div class="menu-item">');
@@ -2956,7 +2340,7 @@
             filterBlock.appendTo($th);
             let filterBlockWidth = filterBlock.find('.btn').length * 20 + 5;
 
-            if (this.isCreatorView && (!field.showMeWidth || field.showMeWidth > 50)) {
+            if (this.isCreatorView && !this.isRotatedView && (!field.showMeWidth || field.showMeWidth > 50)) {
                 let pcTableCreatorButtonsBlock = $('<div class="th-left-bottom-buttons">').appendTo($th);
                 if (field.category === 'footer' && field.column && this.fields[field.column] && !pcTable.hidden_fields[field.name]) {
                     width = this.fields[field.column].width;
@@ -2964,7 +2348,7 @@
                 let btn = $('<div class="btn  btn-xxs field_name copy_me"  tabindex="-1" data-copied-text="Скопировано">')
                     .text(field.name).appendTo(pcTableCreatorButtonsBlock).css('max-width', width - filterBlockWidth);
             }
-            if (pcTable.isMobile) {
+            if (!pcTable.isRotatedView && pcTable.isMobile) {
                 spanTitle.css('max-width', width - filterBlockWidth - 5)
             }
 
@@ -2984,8 +2368,8 @@
                 text = 'Подождите, таблица загружается';
             } else if (this.control.adding && !this.f.blockadd) {
                 $addBtn = $('<button class="btn btn-warning btn-xxs">Добавить строку</button>').width(120)
-                    .on('click', function () {
-                        pcTable._addInsertRow()
+                    .on('click', () => {
+                        this.__$rowsButtons.find('[data-action="add"]:first').click();
                     });
             }
 
@@ -3002,7 +2386,12 @@
 
             if (!item.$tr) {
                 item.$tr = $("<tr>");
-                item.$tr.height(pcTABLE_ROW_HEIGHT);
+
+                if (!pcTable.isRotatedView) {
+                    item.$tr.height(pcTABLE_ROW_HEIGHT);
+                } else {
+                    item.$tr.width(pcTable.tableRow.rotated_view);
+                }
                 /* перенос в css сглючивает прокрутку*/
                 item.$tr.data('item', item);
             }
@@ -3040,8 +2429,23 @@
                 }
             }
 
+            return item.$tr;
         }
         ,
+        addThHelpCloser: function () {
+            if (!this.pcTableContainerFieldHelpEvent) {
+                let pcTable = this;
+                this.pcTableContainerFieldHelpEvent = true;
+                this._container.on('click escPressed', function (event) {
+                    pcTable._container.find('[id^="field-help"][aria-describedby^="popover"]').each(function () {
+                        if ($(this).attr('id') !== event.target.id && !$(event.target).closest('#' + $(this).attr('id')).length) {
+                            $(this).trigger('close');
+                        }
+                    });
+
+                });
+            }
+        },
         refreshRow: function (tr, item, newData) {
             if ((tr && tr.is('.DataRow')) || item) {
 
@@ -3051,21 +2455,39 @@
 
                 let chData = [];
                 if (newData) {
+                    let changed = false, oldData;
+                    if (this.isTreeView) {
+                        oldData = {
+                            id: item.id,
+                            tree: {v: item.tree.v},
+                            tree_category: {v: item.tree_category ? item.tree_category.v : null}
+                        };
+                        if (this.fields.tree.treeBfield && oldData[this.fields.tree.treeBfield]) {
+                            oldData[this.fields.tree.treeBfield] = {...item[this.fields.tree.treeBfield]}
+                        }
+                    }
                     for (var k in newData) {
                         if (newData[k] !== null && typeof newData[k] == 'object') {
                             if (newData[k].changed) {
                                 chData.push(k);
                                 delete newData[k].changed;
-                            } else if (!Object.equals(newData[k], item[k])) {
+                                changed = true;
+                            } else if (!Object.equals(newData[k], item[k]) && (k in this.fields) && this.fields[k].type !== "listRow") {
                                 chData.push(k);
+                                changed = true;
                             }
                         } else if (newData[k] != item[k]) {
                             chData.push(k);
+                            changed = true;
                         }
                         item[k] = newData[k];
                     }
-
-                    $.extend(item, newData);
+                    if (changed) {
+                        $.extend(item, newData);
+                        if (this.isTreeView) {
+                            this.placeInTree(item, oldData, true)
+                        }
+                    }
                 }
 
                 if (tr) this._createRow(item, chData);
@@ -3128,7 +2550,7 @@
             var span = $('<span class="cell-value">')
             var val = item[field.name];
 
-            if (field.code && !field.codeOnlyInAdd) {
+            if (!field.linkFieldName && field.code && !field.codeOnlyInAdd) {
                 td.addClass('with-code');
             }
 
@@ -3137,6 +2559,7 @@
             }
             let isErrorVal;
             let $hand;
+            let $error;
             if (val) {
 
                 isErrorVal = val.e;
@@ -3161,25 +2584,27 @@
                     if (field.errorText) {
                         span.text(field.errorText);
                     } else {
-                        let e = $('<i class="fa fa-exclamation-triangle pull-right" aria-hidden="true"></i>');
+                        $error = $('<i class="fa fa-exclamation-triangle pull-right" aria-hidden="true"></i>');
                         if (pcTable.isMobile) {
-                            e.addClass('ttm-panel');
+                            $error.addClass('ttm-panel');
                         } else {
-                            e.attr('title', val.e)
+                            $error.attr('title', val.e)
                         }
-                        td.append(e);
+                        td.append($error);
                     }
                 }
 
-                if (format.text && field.type != "button") {
+                if (format.text && field.type != "button" && !(pcTable.isTreeView && field.name === 'tree' && item.__tree && (field.treeViewType === 'self' || (item.tree_category && item.tree_category.v)))) {
                     span.text(format.text);
                 } else if (!(val.e && field.errorText)) {
-                    var cellInner = isHeighter
-                        ? (field.getHighCelltext ? field.getHighCelltext(val.v, td, item) : (field.getPanelText ? field.getPanelText(val.v, td, item) : field.getCellText(val.v, td, item)))
-                        : field.getCellText(val.v, td, item);
+                    var cellInner = isHeighter ? field.getHighCelltext(val.v, td, item) : field.getCellText(val.v, td, item);
                     if (typeof cellInner === 'object') {
                         span.html(cellInner)
                     } else span.text(cellInner);
+                }
+
+                if (field.CodeActionOnClickAsUrl) {
+                    span.addClass('asUrl')
                 }
 
             }
@@ -3196,7 +2621,7 @@
 
             span.appendTo(td);
 
-            if (!format.text && field.unitType && !isErrorVal && val.v !== null && !('postfix' in field)) {
+            if (!format.text && field.unitType && !isErrorVal && val.v !== null && !('postfix' in field) && !(field.type === 'select' && field.multiple)) {
                 span.attr('data-unit-type', ' ' + field.unitType);
             }
 
@@ -3207,15 +2632,13 @@
                 td.addClass('selected');
             }
 
-            if (!field.isNoTitles || field.type !== "button") {
-                if (!(field.type === "button" && field.pcTable.isMobile && field.category !== 'column')) {
-                    if (format.background) {
-                        td.css('background-color', format.background);
-                    } else if (field.panelColor) {
-                        td.css('background-color', field.panelColor);
-                    }
-                    if (format.color) td.css('color', format.color);
+            if (!(field.type === "button" && field.pcTable.isMobile && field.category !== 'column')) {
+                if (format.background) {
+                    td.css('background-color', format.background);
+                } else if (field.panelColor) {
+                    td.css('background-color', field.panelColor);
                 }
+                if (format.color) td.css('color', format.color);
             }
 
             if (format.bold) td.css('font-weight', 'bold');
@@ -3230,11 +2653,12 @@
             if (format.italic) td.css('font-style', 'italic');
 
 
-            if (field.type !== "button") {
-
-                if (format.icon) {
-                    td.prepend('<i class="cell-icon fa fa-' + format.icon + '"></i>');
+            if ((field.type === 'tree' && cellInner && typeof cellInner === 'object' && cellInner.is('.tree-view'))) {
+                if ($error) {
+                    $error.remove();
                 }
+            } else if (format.icon && field.type !== "button") {
+                td.prepend('<i class="cell-icon fa fa-' + format.icon + '"></i>');
             }
 
             if (format.progress && format.progresscolor) {
@@ -3246,6 +2670,12 @@
                         span.css('box-shadow', 'inset ' + progress.toString() + 'px 0px 0 0 ' + format.progresscolor);
                     }
                 };
+                if (pcTable.isMobile) {
+                    td.data('addProgress', function () {
+                        let span = td.find('.cell-value');
+                        span.css('box-shadow', 'inset ' + (Math.round(span.width() * parseInt(format.progress) / 100)).toString() + 'px 0px 0 0 ' + format.progresscolor);
+                    });
+                }
                 addProgress();
             }
 
@@ -3366,7 +2796,7 @@
                                 v: {
                                     ...data_src,
                                     tableBreakBefore: {isOn: false},
-                                    sectionTitle: {isOn: false, Val: data_src.sectionTitle},
+                                    sectionTitle: {isOn: false, Val: data_src.sectionTitle.Val},
                                 }
                             },
                             id: sectionField.id
@@ -3457,9 +2887,9 @@
                         },
                         onshown: function (_dialog) {
                             _dialog.$modalContent.position({
-                                of: $('body'),
+                                of: $(window.top.document.body),
                                 my: 'top+50px',
-                                at: 'top'
+                                at: 'center top'
                             });
 
                             editor = CodeMirror(dialog.get(0), {

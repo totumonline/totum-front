@@ -55,6 +55,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     if (fieldSettings['categories']) {
                         if (fieldSettings['categories'].indexOf(item['category']['v']) === -1) return false;
                     }
+                    if (fieldSettings['names']) {
+                        if (fieldSettings['names'].indexOf(item['name']['v']) === -1) return false;
+                    }
 
 
                     let thisValue = {};
@@ -108,7 +111,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     };
                     let divInput = field.__addInput.call(field, fName, fieldSettings, thisValue, item, clback);
 
-                    if ((fieldSettings.align ?? 'center') !== 'center') {
+                    if ((fieldSettings.align || 'center') !== 'center') {
                         if (!left) {
                             let middle = $('<div class="fParams-grid">');
                             left = $('<div>').appendTo(middle);
@@ -601,14 +604,15 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 }
                 element.css('visibility', 'hidden');
                 element.outerHeight(34);
+
+                let val = oldValue === undefined && f.default ? f.default : oldValue;
+
                 setTimeout(function () {
                     element.selectpicker();
                     element.css('visibility', 'visible');
-                }, 0);
+                }, 10);
 
-
-                if (oldValue) element.val(oldValue);
-                else if (oldValue === undefined && f.default) element.val(f.default);
+                element.val(val);
                 break;
 
         }

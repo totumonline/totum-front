@@ -71,7 +71,11 @@
 
             if (isBigOneSave) {
                 event.stopPropagation();
-                cm.options.bigOneDialog.close()
+                if(typeof cm.options.bigOneDialog=== 'function'){
+                    cm.options.bigOneDialog();
+                }else {
+                    cm.options.bigOneDialog.close()
+                }
 
             } else if (event.ctrlKey && (event.keyCode || event.which).toString() === '191') {
                 CodeMirror.commentMe(cm);
