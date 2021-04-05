@@ -216,13 +216,13 @@
             arr = 'trees';
         }
         if (oldItem) {
-            if (newData) {
+            /*if (newData) {
                 if (!newData.tree || newData.tree.v === oldItem.tree.v) {
                     if (!newData.tree_category || newData.tree_category.v === oldItem.tree_category.v) {
                         return;
                     }
                 }
-            }
+            }*/
 
 
             let oldVal = oldItem ? oldItem.tree.v : undefined;

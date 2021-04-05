@@ -238,7 +238,12 @@
                         if (!cluster) cluster = this.getClusterNum(getScrollTop());
 
                         let data = this.generate(cluster),
-                            this_cluster_rows = data.rows.join(',');
+                            this_cluster_rows = data.rows.map((k)=>{
+                                if(typeof k === 'object'){
+                                    return k.row.id || k.id
+                                }
+                                return k;
+                            }).join(',');
                         if (forceRefreshData || this.checkChanges('data', this_cluster_rows, cache)) {
                             this.setHtml(data.rows, data.top_offset, data.bottom_offset, forceRefreshData);
                         }
