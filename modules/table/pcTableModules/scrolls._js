@@ -86,7 +86,7 @@
                             let saveButton = pcTable._innerContainer.find('th.n').find('i.fa-save').parent().clone(true);
                             self.table.find('th.n').append($('<div class="pcTable-filters">').append(saveButton));
                         }
-                        if(!pcTable.isMobile && !self.topButton){
+                        if (!pcTable.isMobile && !self.topButton) {
                             self.topButton = $('<button class="scroll-top-button"><i class="fa fa-arrow-up"></i></button>').appendTo(pcTable._innerContainer).on('click', function () {
                                 pcTable._container.scrollTop(pcTable._container.find('.pcTable-rowsWrapper').offset().top - pcTable.scrollWrapper.offset().top);
                             });
@@ -118,7 +118,7 @@
                         if (self.table) {
                             self.table.remove();
                             self.table = undefined;
-                            if(self.topButton){
+                            if (self.topButton) {
                                 self.topButton.remove();
                                 self.topButton = undefined;
                             }
@@ -156,7 +156,7 @@
                     scrollFunc.call(pcTable);
                 }, 50);
             });
-            
+
             let cache = {
                 top_offset: 0,
                 bottom_offset: 0,
@@ -238,9 +238,9 @@
                         if (!cluster) cluster = this.getClusterNum(getScrollTop());
 
                         let data = this.generate(cluster),
-                            this_cluster_rows = data.rows.map((k)=>{
-                                if(typeof k === 'object'){
-                                    return k.row.id || k.id
+                            this_cluster_rows = data.rows.map((k) => {
+                                if (typeof k === 'object') {
+                                    return k.row ? k.row.id : (k.id || k.v)
                                 }
                                 return k;
                             }).join(',');
@@ -275,7 +275,7 @@
                                 }
                                 item.$tr.data('item', item);
                                 $trs.appendChild(item.$tr.get(0));
-                            }else{
+                            } else {
                                 $trs.appendChild(pcTable._createTreeFolderRow.call(pcTable, row).get(0));
                             }
                         }
