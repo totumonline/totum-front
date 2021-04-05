@@ -24,11 +24,14 @@
   }
   min-width: 50px;
 }
+.btn.tree-view-td-edit{
+  margin-right: 6px;
+}
 .btn.treeRow{
   border-color: transparent;
   width: 20px;
   margin-left: 4px;
-  margin-right: 4px;
+  margin-right: 0;
   & + .btn.treeRow{
     margin-left: 0;
   }

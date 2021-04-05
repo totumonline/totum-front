@@ -306,7 +306,7 @@
 
                             if (!subFunc()) return error();
 
-                            let varName = stream.string.substring(stream.start + 1, stream.pos).replace(/^([shc]\.)?([a-z0-9_]+)$/, '$2');
+                            let varName = stream.string.substring(stream.start + 1, stream.pos).replace(/^([shcl]\.)?([a-z0-9_]+)$/, '$2');
 
                             if (varName !== 'n' && !/^[0-9a-z_]{2,}/.test(varName.replace(/\[.*/g, ''))) {
                                 classes += ' tmp-error'
@@ -338,7 +338,7 @@
 
                             if (stream.peek() === '#') {
                                 stream.next();
-                                while (/[a-z0-9_]/.test(stream.peek()) && stream.next()) {
+                                while (/[a-zA-Z0-9_]/.test(stream.peek()) && stream.next()) {
                                 }
                                 if (!subFunc()) return error();
                                 return 'code-var'
@@ -928,6 +928,7 @@
                         type: 'item-code-var'
                     },
                     {text: "$#nh", title: 'Текущий хост-name', render: renderHint, type: 'item-code-var'},
+                    {text: "$#duplicatedId", title: 'Ид дублированной строки', render: renderHint, type: 'item-code-var'},
                 ];
 
                 const funcSort = function (firsts) {
