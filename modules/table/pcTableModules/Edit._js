@@ -73,87 +73,88 @@ $.extend(App.pcTableMain.prototype, {
     _buttonClick: function ($td, field, item) {
         if ($td.data('clicked')) return false;
 
+        return  new Promise((resolve, reject)=>{
+            const func = function () {
+                "use strict";
 
-        const func = function () {
-            "use strict";
+                let id;
+                let editedData = {};
+                let tr = $td.parent();
 
-            let id;
-            let editedData = {};
-            let tr = $td.parent();
+                $td.data('clicked', true);
 
-            $td.data('clicked', true);
-
-            if (field.category === 'column') {
-                item = item || pcTable._getItemBytd($td);
-                id = item.id;
-                editedData.item = id;
-                editedData.fieldName = field.name;
-            } else {
-                item = item || pcTable.data_params;
-                editedData.item = 'params';
-                editedData.fieldName = field.name;
-            }
-
-            editedData.checked_ids = pcTable.row_actions_get_checkedIds();
-            $td.height($td.height());
-            $td.find('.cell-value, .ttm--panel-data').hide();
-            let $spinner = $('<div class="text-center"><i class="fa fa-spinner" style="color: #000"></i></div>');
-            $td.append($spinner);
-            pcTable._saving = true;
-            pcTable.model.click(editedData)
-                .then(
-                    function (json) {
-                        pcTable.table_modify.call(pcTable, json);
-
-                        if ($td.length && $td.isAttached()) {
-                            $spinner.remove();
-                            $td.find('.cell-value, .ttm--panel-data').show();
-
-                        } else {
-                            if (field.category === 'column') {
-                                item = pcTable._getItemById(id)
-                            } else {
-                                item = pcTable.data_params;
-                            }
-                        }
-                        if (field.uncheckAfterClick) {
-                            pcTable.row_actions_uncheck_all();
-                        }
-                        if (field.closeIframeAfterClick && window.closeMe) {
-                            window.closeMe();
-                        }
-                        field.btnOK.call(field, $td, item);
-                    }
-                ).fail(function () {
-                if ($td.length && $td.isAttached()) {
-                    $spinner.remove();
-                    $td.find('.cell-value, .ttm--panel-data').show();
-                    $td.removeData('clicked');
-
+                if (field.category === 'column') {
+                    item = item || pcTable._getItemBytd($td);
+                    id = item.id;
+                    editedData.item = id;
+                    editedData.fieldName = field.name;
+                } else {
+                    item = item || pcTable.data_params;
+                    editedData.item = 'params';
+                    editedData.fieldName = field.name;
                 }
-            }).always(function () {
-                pcTable._saving = false;
-            });
-        };
 
-        let pcTable = this;
-        if (field.warningEditPanel) {
-            let buttons =
-                {
-                    'Ок': function (panel) {
-                        panel.close();
-                        func();
-                    }, 'Отмена': function (panel) {
-                        panel.close();
+                editedData.checked_ids = pcTable.row_actions_get_checkedIds();
+                $td.height($td.height());
+                $td.find('.cell-value, .ttm--panel-data').hide();
+                let $spinner = $('<div class="text-center"><i class="fa fa-spinner" style="color: #000"></i></div>');
+                $td.append($spinner);
+                pcTable._saving = true;
+                pcTable.model.click(editedData)
+                    .then(
+                        function (json) {
+                            pcTable.table_modify.call(pcTable, json);
+
+                            if ($td.length && $td.isAttached()) {
+                                $spinner.remove();
+                                $td.find('.cell-value, .ttm--panel-data').show();
+
+                            } else {
+                                if (field.category === 'column') {
+                                    item = pcTable._getItemById(id)
+                                } else {
+                                    item = pcTable.data_params;
+                                }
+                            }
+                            if (field.uncheckAfterClick) {
+                                pcTable.row_actions_uncheck_all();
+                            }
+                            if (field.closeIframeAfterClick && window.closeMe) {
+                                window.closeMe();
+                            }
+                            field.btnOK.call(field, $td, item);
+                            resolve(json);
+                        }
+                    ).fail(function () {
+                    if ($td.length && $td.isAttached()) {
+                        $spinner.remove();
+                        $td.find('.cell-value, .ttm--panel-data').show();
+                        $td.removeData('clicked');
+
                     }
-                };
+                }).always(function () {
+                    pcTable._saving = false;
+                });
+            };
 
-            let dialog = App.confirmation((field.warningEditText || 'Точно изменить?'), buttons, 'Подтверждение');
+            let pcTable = this;
+            if (field.warningEditPanel) {
+                let buttons =
+                    {
+                        'Ок': function (panel) {
+                            panel.close();
+                            func();
+                        }, 'Отмена': function (panel) {
+                            panel.close();
+                        }
+                    };
 
-        } else {
-            func()
-        }
+                let dialog = App.confirmation((field.warningEditText || 'Точно изменить?'), buttons, 'Подтверждение');
 
+            } else {
+                func()
+            }
+        })
     },
     _saveEdited: function ($editObj, editedData, goTo) {
         let pcTable = this;

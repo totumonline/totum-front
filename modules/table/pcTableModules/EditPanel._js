@@ -543,7 +543,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (field.type === 'button' && EditPanelFunc.pcTable) {
                 cell.on('click', function () {
-                    EditPanelFunc.pcTable._buttonClick.call(EditPanelFunc.pcTable, cell, field, item);
+                    EditPanelFunc.pcTable._buttonClick(cell, field, item).then(()=>{
+                        if(field.closeIframeAfterClick){
+                            EditPanelFunc.close();
+                        }
+                    });
                 });
             } else {
                 if (field.CodeActionOnClick && !divWrapper.find('.edit-btn').length) {

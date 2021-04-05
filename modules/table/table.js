@@ -995,7 +995,16 @@
                 }
 
                 ['dataSorted', 'dataSortedVisible', '__checkedRows'].some(function (array) {
-                    let ind = this[array].indexOf(id);
+                    let ind;
+                    this[array].forEach((v, k) => {
+                        if (v === id) {
+                            ind = k
+                        } else if (typeof v === 'object') {
+                            if (v.row && v.row.id === id)
+                                ind = k
+                        }
+                    })
+
                     if (ind !== -1) {
                         this[array].splice(ind, 1);
                     }
