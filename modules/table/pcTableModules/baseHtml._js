@@ -83,7 +83,7 @@
                 .append(this._createRowsTitle(rowsParent))
                 .append(this._createFiltersBlock())
                 .append(() => {
-                    if (this.tableRow.pagination && this.tableRow.pagination !== '0/0') {
+                    if (!this.isTreeView && this.tableRow.pagination && this.tableRow.pagination !== '0/0') {
                         return this._pagination();
                     }
                 })
