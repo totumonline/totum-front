@@ -328,9 +328,20 @@
                     }
 
                     if (json.chdata.tree) {
+                        let ids = {};
                         json.chdata.tree.forEach((tv, i) => {
                             this.getTreeBranch(tv, i);
+                            ids[tv.v] = true;
                         })
+
+                        if (json.refresh) {
+                            Object.keys(this.treeIndex).forEach((id) => {
+                                if (id && !ids[id]) {
+                                    this.removeTreeBranch(id);
+                                    this.treeRefresh = true;
+                                }
+                            })
+                        }
                     }
 
 
@@ -415,7 +426,9 @@
 
                         }
                     }
-                    pcTable.selectedCells.summarizer.check();
+                    if (pcTable.selectedCells) {
+                        pcTable.selectedCells.summarizer.check();
+                    }
                 }
 
                 if (deleted.length) {
@@ -751,7 +764,7 @@
 
                             pcTable.dataSortedVisible.forEach(function (idObj) {
                                 let id = idObj;
-                                if(typeof idObj === 'object' && idObj.row){
+                                if (typeof idObj === 'object' && idObj.row) {
                                     id = idObj.row.id
                                 }
                                 if (checkedRows.indexOf(id) !== -1) {

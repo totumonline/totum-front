@@ -45,15 +45,15 @@
             td.append(span)
 
 
-            if(this.fields.tree.selectTable && row.v && !this.fields.tree.treeBfield){
-                let edit = $('<button class="btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-edit"></i></button>').on('click', ()=>{
+            if (this.fields.tree.selectTable && row.v && !this.fields.tree.treeBfield) {
+                let edit = $('<button class="btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-edit"></i></button>').on('click', () => {
                     let obj
-                    if(!this.fields.tree.treeBfield){
-                        obj={id: row.v};
-                    }else{
+                    if (!this.fields.tree.treeBfield) {
+                        obj = {id: row.v};
+                    } else {
                         //Здесь нужно получить ид по бфилду
                     }
-                    new EditPanel(this.fields.tree.selectTable, null, obj).then(()=>{
+                    new EditPanel(this.fields.tree.selectTable, null, obj).then(() => {
                         this.model.refresh();
                     })
                 })
@@ -70,6 +70,11 @@
         if (this.treeReloadRows.length) {
             this.model.loadTreeBranches(this.treeReloadRows, true).then((json) => {
                 if (json.tree) {
+                    json.tree.forEach((tv, i) => {
+                        if(this.treeIndex[tv.v]){
+                            this.treeIndex[tv.v].trees=[];
+                        }
+                    })
                     json.tree.forEach((tv, i) => {
                         this.getTreeBranch(tv, i);
                     })
@@ -201,6 +206,18 @@
                 this.data[item.id].$checked = -1 !== this.__checkedRows.indexOf(item.id);
             }
         }, this);
+    }
+    App.pcTableMain.prototype.removeTreeBranch = function (id) {
+        if (id in this.treeIndex) {
+            if (this.treeIndex[id].p) {
+                let parentNode = this.treeIndex[this.treeIndex[id].p];
+                //parentNode.trees.splice(parentNode.trees.indexOf(id), 1)
+                this.treeReloadRows.push(parentNode.v)
+            } else {
+                delete this.treeIndex[id];
+                this.treeRefresh();
+            }
+        }
     }
     App.pcTableMain.prototype.placeInTree = function (newData, oldItem, openIt) {
         let arr = 'sorted';
