@@ -994,13 +994,13 @@
                     this.openedPanels[id].close();
                 }
 
-                ['dataSorted', 'dataSortedVisible', '__checkedRows'].some(function (array) {
+                ['dataSorted', 'dataSortedVisible', '__checkedRows'].forEach(function (array) {
                     let ind;
                     this[array].forEach((v, k) => {
-                        if (v === id) {
+                        if (v.toString() === id.toString()) {
                             ind = k
                         } else if (typeof v === 'object') {
-                            if (v.row && v.row.id === id)
+                            if (v.row && v.row.id.toString() === id.toString())
                                 ind = k
                         }
                     })

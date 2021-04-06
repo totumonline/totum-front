@@ -7,9 +7,11 @@
         this._content.on('click', '.treeRow', function () {
             let node = $(this);
             if (node.is('.dbl')) {
-                pcTable._actionTreeFolderRow.call(pcTable, node, true)
+                pcTable._actionTreeFolderRow(node, true)
+            } else if (node.is('.ins')) {
+                pcTable._actionAddTreeFolderRow(node)
             } else {
-                pcTable._actionTreeFolderRow.call(pcTable, node)
+                pcTable._actionTreeFolderRow(node)
             }
         })
 
@@ -41,25 +43,46 @@
             span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
             let td = $('<td colspan="' + (this.fieldCategories.column.length - 1) + '" class="tree-view-td" style="padding-left: ' + (7 + row.level * 22) + 'px"></td>');
 
-
             td.append(span)
-
 
             if (this.fields.tree.selectTable && row.v && !this.fields.tree.treeBfield) {
                 let edit = $('<button class="btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-edit"></i></button>').on('click', () => {
-                    let obj
-                    if (!this.fields.tree.treeBfield) {
-                        obj = {id: row.v};
-                    } else {
-                        //Здесь нужно получить ид по бфилду
-                    }
+                    let obj = {id: row.v};
                     new EditPanel(this.fields.tree.selectTable, null, obj).then(() => {
                         this.model.refresh();
                     })
                 })
                 span.append(edit)
+
+                let add = $('<button class="btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-plus"></i></button>').on('click', () => {
+                    let obj = {tree: {v: row.v}};
+                    new EditPanel(this.fields.tree.selectTable, null, obj, null, {tree: true}).then((json) => {debugger
+                        this.treeReloadRows.push(Object.keys(json.chdata.rows)[0]);
+                        this.treeApply();
+                    })
+                })
+                span.append(add)
+
+                td.append(row.t)
+
+                if (this.isInsertable()) {
+                    let add = $('<button class="btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-th-large"></i></button>').on('click', () => {
+
+                        /*Тут должен быть парент от источника*/
+                        let obj = {tree: {v: row.v}};
+                        new EditPanel(this, null, obj, null, {tree: true}).then(() => {
+                            this.model.refresh();
+                        })
+                    })
+
+                    td.append(add)
+
+                }
+
+            } else {
+                td.append(row.t)
             }
-            td.append(row.t)
+
 
             tr.append(td)
             return row.tr = tr;
@@ -71,8 +94,8 @@
             this.model.loadTreeBranches(this.treeReloadRows, true).then((json) => {
                 if (json.tree) {
                     json.tree.forEach((tv, i) => {
-                        if(this.treeIndex[tv.v]){
-                            this.treeIndex[tv.v].trees=[];
+                        if (this.treeIndex[tv.v]) {
+                            this.treeIndex[tv.v].trees = [];
                         }
                     })
                     json.tree.forEach((tv, i) => {
@@ -121,6 +144,15 @@
             this._closeTreeFolderRow(treeRow, treeRowRecurcive)
         }
 
+    }
+    App.pcTableMain.prototype._actionAddTreeFolderRow = function (node, treeRowRecurcive) {
+        if (this.fields.tree.treeViewType === 'self') {
+            let obj = {tree: {v: this._getItemBytd(node.closest('td')).id}};
+            new EditPanel(this, null, obj, null, {tree: true}).then((json) => {
+                this.table_modify(json);
+                this.reloaded();
+            })
+        }
     }
     App.pcTableMain.prototype._expandTreeFolderRow = function (treeRow, treeRowRecurcive, recursiveCounter) {
         let inPointer = false;

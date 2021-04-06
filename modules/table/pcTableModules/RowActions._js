@@ -317,8 +317,6 @@
                 let addedRows = [];
 
                 if (json.chdata.rows) {
-
-
                     if (json.refresh && json.chdata.rows) {
                         Object.keys(pcTable.data).forEach(function (id) {
                             if (json.chdata.rows[id] === undefined) {

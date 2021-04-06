@@ -862,7 +862,7 @@
             }
             if (this.fieldCategories.column.length) {
 
-                if (this.control.adding && !this.f.blockadd) {
+                if (this.isInsertable()) {
                     let insButtons = pcTable._getInsertButtons();
                     buttons.append(insButtons);
                 }
@@ -2366,7 +2366,7 @@
             let $addBtn = $();
             if (!text && this.PageData && this.PageData.loading) {
                 text = 'Подождите, таблица загружается';
-            } else if (this.control.adding && !this.f.blockadd) {
+            } else if (this.isInsertable()) {
                 $addBtn = $('<button class="btn btn-warning btn-xxs">Добавить строку</button>').width(120)
                     .on('click', () => {
                         this.__$rowsButtons.find('[data-action="add"]:first').click();
