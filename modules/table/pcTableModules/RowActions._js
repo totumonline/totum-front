@@ -761,18 +761,17 @@
                             let newCheckedRows = [];
 
                             pcTable.dataSortedVisible.forEach(function (idObj) {
-                                let id = idObj;
+                                let id = parseInt(idObj);
                                 if (typeof idObj === 'object' && idObj.row) {
-                                    id = idObj.row.id
+                                    id = parseInt(idObj.row.id)
                                 }
                                 if (checkedRows.indexOf(id) !== -1) {
                                     newCheckedRows.push(id);
                                 }
                             });
-                            checkedRows = newCheckedRows;
 
                             const duplicate = function (dialogRef) {
-                                pcTable.model.duplicate(checkedRows, unic_replaces, trId).then(function (json) {
+                                pcTable.model.duplicate(newCheckedRows, unic_replaces, trId).then(function (json) {
                                     pcTable.table_modify.call(pcTable, json, trId);
                                     if (dialogRef)
                                         dialogRef.close();
@@ -807,8 +806,8 @@
                                     $head.append($('<td></td>').text(field.title));
                                 }
 
-                                for (let i in checkedRows) {
-                                    let id = checkedRows[i];
+                                for (let i in newCheckedRows) {
+                                    let id = newCheckedRows[i];
                                     let row = pcTable.data[id];
                                     let tr = $('<tr>');
 

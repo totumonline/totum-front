@@ -86,6 +86,9 @@
 
                 $('<div class="menu-item"><i class="fa fa-plus"></i> Добавить ветку</div>')
                 .on('click', () => {
+
+                    /*TODO Тут должен быть парент от источника вместо tree*/
+
                     let obj = {tree: {v: row.v}};
                     new EditPanel(this.fields.tree.selectTable, null, obj, null, {tree: true}).then((json) => {
                         this.treeReloadRows.push(Object.keys(json.chdata.rows)[0]);
@@ -97,7 +100,7 @@
                     $('<div class="menu-item"><i class="fa fa-th-large"></i> Добавить строку</div>')
                     .on('click', () => {
 
-                        /*Тут должен быть парент от источника*/
+
                         let obj = {tree: {v: row.v}};
                         new EditPanel(this, null, obj, null, {tree: true}).then(() => {
                             this.model.refresh();
