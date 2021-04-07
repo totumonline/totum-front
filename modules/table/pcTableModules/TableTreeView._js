@@ -40,48 +40,72 @@
 
             let span = $('<span class="tree-view">').append(folder);
 
-            span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
             let td = $('<td colspan="' + (this.fieldCategories.column.length - 1) + '" class="tree-view-td" style="padding-left: ' + (7 + row.level * 22) + 'px"></td>');
-
             td.append(span)
 
+            /*actions*/
+            let $divPopoverArrowDown = $('<div>')
+
+            let popover;
+            let dropdown = $('<button class="btn btn-default btn-xxs treeRow"><i class="fa fa-caret-down"></i></button>').popover({
+                html: true,
+                content: $divPopoverArrowDown,
+                trigger: 'manual',
+                container: this._container,
+                placement: 'auto bottom'
+            }).on('click', () => {
+                $('body').trigger('click');
+                dropdown.popover('show');
+                popover=$('#'+dropdown.attr('aria-describedby'));
+                setTimeout(() => {
+                    this.closeCallbacks.push(() => {
+                        if (dropdown && dropdown.length) dropdown.popover('hide');
+                    })
+                }, 200);
+                return false;
+            }).on('remove', ()=>{
+                popover.remove();
+            })
+            span.append(dropdown);
+
+            let OpenAll = $('<div class="menu-item"><i class="fa fa-arrows-v"></i> ' + (row.opened ? 'Закрыть' : 'Открыть') + ' все</div>').data('treeRow', row.v)
+                .on('click', () => {
+                    this._actionTreeFolderRow(OpenAll, true)
+                })
+                .appendTo($divPopoverArrowDown)
+
+
             if (this.fields.tree.selectTable && row.v && !this.fields.tree.treeBfield) {
-                let edit = $('<button class="btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-edit"></i></button>').on('click', () => {
+                $('<div class="menu-item"><i class="fa fa-edit"></i> Редактировать</div>').on('click', () => {
                     let obj = {id: row.v};
                     new EditPanel(this.fields.tree.selectTable, null, obj).then(() => {
                         this.model.refresh();
                     })
-                })
-                span.append(edit)
+                }).appendTo($divPopoverArrowDown)
 
-                let add = $('<button class="btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-plus"></i></button>').on('click', () => {
+
+                $('<div class="menu-item"><i class="fa fa-plus"></i> Добавить ветку</div>')
+                .on('click', () => {
                     let obj = {tree: {v: row.v}};
-                    new EditPanel(this.fields.tree.selectTable, null, obj, null, {tree: true}).then((json) => {debugger
+                    new EditPanel(this.fields.tree.selectTable, null, obj, null, {tree: true}).then((json) => {
                         this.treeReloadRows.push(Object.keys(json.chdata.rows)[0]);
                         this.treeApply();
                     })
-                })
-                span.append(add)
-
-                td.append(row.t)
+                }).appendTo($divPopoverArrowDown)
 
                 if (this.isInsertable()) {
-                    let add = $('<button class="btn btn-default btn-xs tree-view-td-edit"><i class="fa fa-th-large"></i></button>').on('click', () => {
+                    $('<div class="menu-item"><i class="fa fa-th-large"></i> Добавить строку</div>')
+                    .on('click', () => {
 
                         /*Тут должен быть парент от источника*/
                         let obj = {tree: {v: row.v}};
                         new EditPanel(this, null, obj, null, {tree: true}).then(() => {
                             this.model.refresh();
                         })
-                    })
-
-                    td.append(add)
-
+                    }).appendTo($divPopoverArrowDown)
                 }
-
-            } else {
-                td.append(row.t)
             }
+            td.append(row.t)
 
 
             tr.append(td)

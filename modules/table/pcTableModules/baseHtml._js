@@ -2313,9 +2313,7 @@
                         container: pcTable._container,
                         placement: 'auto bottom'
                     });
-                    btnDropDown.on('click', function () {
-                        let btn = $(this);
-
+                    btnDropDown.on('click',  () =>{
                         if (field.category === 'column' && pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
                             if ($divPopoverArrowDown.find('.column-dropdown').length === 0)
                                 $divPopoverArrowDown.append('<div class="column-dropdown">По текущей странице </div>');
@@ -2323,14 +2321,18 @@
                             $divPopoverArrowDown.find('.column-dropdown').remove();
                         }
 
-                        if (!btn.data('bs.popover').tip().hasClass('in')) {
-                            btn.popover('show');
+                       if (!btnDropDown.data('bs.popover').tip().hasClass('in')) {
+                           btnDropDown.popover('show');
                             setTimeout(function () {
-                                pcTable._container.one('click', function () {
+                               /* pcTable._container.one('click', function () {
                                     btn.popover('hide');
-                                });
+                                });*/
+                                pcTable.closeCallbacks.push(()=>{
+                                    btnDropDown.popover('hide');
+                                })
                             }, 20);
                         }
+
                     });
                     return btnDropDown;
 
