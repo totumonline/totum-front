@@ -345,7 +345,6 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 },
                 onshow: function (dialog) {
                     dialog.$modalHeader.css('cursor', 'pointer')
-                    dialog.$modalDialog.width(1000);
                     $('body').on(eventName, function (event) {
                         setTimeout(() => {
                             save(dialog)
