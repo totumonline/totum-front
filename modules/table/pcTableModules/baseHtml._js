@@ -2171,43 +2171,44 @@
                         }
 
                     }
-                    if (field.showMeWidth > 0 && field.category === 'column' && !pcTable.isTreeView) {
+                    if (field.showMeWidth > 0 && field.category === 'column') {
 
-                        if (pcTable.fixedColumn === field.name) {
-                            $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Открепить').addClass('color-warning').appendTo($divPopoverArrowDown)
-                                .on('click', function () {
-                                    btnDropDown.popover('hide');
-                                    pcTable.fixColumn();
-                                });
-                        } else if (field.type !== 'button') {
-                            $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Закрепить').appendTo($divPopoverArrowDown)
-                                .on('click', function () {
-                                    btnDropDown.popover('hide');
-                                    pcTable.fixColumn(field.name);
-                                });
+                        if (!pcTable.isTreeView) {
+                            if (pcTable.fixedColumn === field.name) {
+                                $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Открепить').addClass('color-warning').appendTo($divPopoverArrowDown)
+                                    .on('click', function () {
+                                        btnDropDown.popover('hide');
+                                        pcTable.fixColumn();
+                                    });
+                            } else if (field.type !== 'button') {
+                                $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Закрепить').appendTo($divPopoverArrowDown)
+                                    .on('click', function () {
+                                        btnDropDown.popover('hide');
+                                        pcTable.fixColumn(field.name);
+                                    });
+                            }
+
+
+                            //sort a-z
+                            {
+                                let btn = $('<div class="menu-item">');
+                                btn.append('<i class="fa fa-sort-alpha-asc"></i> Сортировать А-Я');
+                                $divPopoverArrowDown.append(btn)
+                                btn.on('click', function () {
+                                    pcTable.sort(field, 1);
+                                })
+                            }
+                            //sort z-a
+                            {
+                                let btn = $('<div class="menu-item">');
+                                btn.append('<i class="fa fa-sort-alpha-desc"></i> Сортировать Я-А');
+                                $divPopoverArrowDown.append(btn);
+                                btn.on('click', function () {
+                                    pcTable.sort(field, -1);
+                                })
+                            }
+
                         }
-
-
-                        //sort a-z
-                        {
-                            let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-sort-alpha-asc"></i> Сортировать А-Я');
-                            $divPopoverArrowDown.append(btn)
-                            btn.on('click', function () {
-                                pcTable.sort(field, 1);
-                            })
-                        }
-                        //sort z-a
-                        {
-                            let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-sort-alpha-desc"></i> Сортировать Я-А');
-                            $divPopoverArrowDown.append(btn);
-                            btn.on('click', function () {
-                                pcTable.sort(field, -1);
-                            })
-                        }
-
-
                         //Математические операции
                         if (field.category === 'column' && field.type === 'number') {
                             let btn = $('<div class="menu-item">');
@@ -2219,21 +2220,23 @@
                                 let summ = 0, count = 0, max = null, min = null, notNumber = 0;
                                 let error = false;
                                 pcTable.dataSortedVisible.some(function (id) {
-                                    try {
-                                        let BigVal = Big(pcTable.data[id][field.name].v);
+                                    if (typeof id !== 'object') {
+                                        try {
+                                            let BigVal = Big(pcTable.data[id][field.name].v);
 
-                                        summ = Big(summ).plus(BigVal);
-                                        ++count;
-                                        if (max === null) max = BigVal;
-                                        else {
-                                            if (BigVal.gt(max)) max = BigVal;
+                                            summ = Big(summ).plus(BigVal);
+                                            ++count;
+                                            if (max === null) max = BigVal;
+                                            else {
+                                                if (BigVal.gt(max)) max = BigVal;
+                                            }
+                                            if (min === null) min = BigVal;
+                                            else {
+                                                if (BigVal.lt(min)) min = BigVal;
+                                            }
+                                        } catch (e) {
+                                            ++notNumber;
                                         }
-                                        if (min === null) min = BigVal;
-                                        else {
-                                            if (BigVal.lt(min)) min = BigVal;
-                                        }
-                                    } catch (e) {
-                                        ++notNumber;
                                     }
                                 });
 
@@ -2313,7 +2316,7 @@
                         container: pcTable._container,
                         placement: 'auto bottom'
                     });
-                    btnDropDown.on('click',  () =>{
+                    btnDropDown.on('click', () => {
                         if (field.category === 'column' && pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
                             if ($divPopoverArrowDown.find('.column-dropdown').length === 0)
                                 $divPopoverArrowDown.append('<div class="column-dropdown">По текущей странице </div>');
@@ -2321,13 +2324,13 @@
                             $divPopoverArrowDown.find('.column-dropdown').remove();
                         }
 
-                       if (!btnDropDown.data('bs.popover').tip().hasClass('in')) {
-                           btnDropDown.popover('show');
+                        if (!btnDropDown.data('bs.popover').tip().hasClass('in')) {
+                            btnDropDown.popover('show');
                             setTimeout(function () {
-                               /* pcTable._container.one('click', function () {
-                                    btn.popover('hide');
-                                });*/
-                                pcTable.closeCallbacks.push(()=>{
+                                /* pcTable._container.one('click', function () {
+                                     btn.popover('hide');
+                                 });*/
+                                pcTable.closeCallbacks.push(() => {
                                     btnDropDown.popover('hide');
                                 })
                             }, 20);

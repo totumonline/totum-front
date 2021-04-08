@@ -113,40 +113,51 @@
 
 
             if (shiftKey) {
+
+                const findIndex = (checkI) => {
+                    return (i) => {
+                        if (typeof i !== 'object') return i.toString() === checkI.toString()
+                    }
+                }
+
                 let idsToCheck = [];
 
                 let lastInd;
 
-                if (LastCheckAction.id && (!item.$checked) === LastCheckAction.isCheck && (lastInd = pcTable.dataSortedVisible.indexOf(LastCheckAction.id)) !== -1) {
-                    let nowInd = pcTable.dataSortedVisible.indexOf(item.id);
+                if (LastCheckAction.id && (!item.$checked) === LastCheckAction.isCheck && (lastInd = pcTable.dataSortedVisible.findIndex(findIndex(LastCheckAction.id))) !== -1) {
+                    let nowInd = pcTable.dataSortedVisible.findIndex(findIndex(item.id));
                     if (lastInd < nowInd) {
                         idsToCheck = pcTable.dataSortedVisible.slice(lastInd + 1, nowInd + 1);
                     } else {
                         idsToCheck = pcTable.dataSortedVisible.slice(nowInd, lastInd);
                     }
-
-
                 } else {
                     pcTable.dataSortedVisible.some(function (id) {
-                        if (pcTable.data[id].$checked) idsToCheck = [];
-                        else {
-                            idsToCheck.push(id);
-                        }
-                        if (id === item.id) {
-                            return true;
+                        if (typeof id !== 'object') {
+                            if (pcTable.data[id].$checked) idsToCheck = [];
+                            else {
+                                idsToCheck.push(id);
+                            }
+                            if (id == item.id) {
+                                return true;
+                            }
                         }
                     });
                 }
                 if (!item.$checked) {
 
                     idsToCheck.forEach(function (id) {
-                        pcTable.__checkedRows.push(id);
-                        pcTable.row_actions_check(pcTable.data[id], true);
+                        if (typeof id !== 'object') {
+                            pcTable.__checkedRows.push(id);
+                            pcTable.row_actions_check(pcTable.data[id], true);
+                        }
                     });
                 } else {
                     idsToCheck.forEach(function (id) {
-                        pcTable.__checkedRows.splice(pcTable.__checkedRows.indexOf(id), 1);
-                        pcTable.row_actions_uncheck(pcTable.data[id], true);
+                        if (typeof id !== 'object') {
+                            pcTable.__checkedRows.splice(pcTable.__checkedRows.indexOf(id), 1);
+                            pcTable.row_actions_uncheck(pcTable.data[id], true);
+                        }
                     });
                 }
                 this._headCellIdButtonsState();

@@ -56,14 +56,14 @@
             }).on('click', () => {
                 $('body').trigger('click');
                 dropdown.popover('show');
-                popover=$('#'+dropdown.attr('aria-describedby'));
+                popover = $('#' + dropdown.attr('aria-describedby'));
                 setTimeout(() => {
                     this.closeCallbacks.push(() => {
                         if (dropdown && dropdown.length) dropdown.popover('hide');
                     })
                 }, 200);
                 return false;
-            }).on('remove', ()=>{
+            }).on('remove', () => {
                 popover.remove();
             })
             span.append(dropdown);
@@ -85,27 +85,27 @@
 
 
                 $('<div class="menu-item"><i class="fa fa-plus"></i> Добавить ветку</div>')
-                .on('click', () => {
+                    .on('click', () => {
 
-                    /*TODO Тут должен быть парент от источника вместо tree*/
+                        /*TODO Тут должен быть парент от источника вместо tree*/
 
-                    let obj = {tree: {v: row.v}};
-                    new EditPanel(this.fields.tree.selectTable, null, obj, null, {tree: true}).then((json) => {
-                        this.treeReloadRows.push(Object.keys(json.chdata.rows)[0]);
-                        this.treeApply();
-                    })
-                }).appendTo($divPopoverArrowDown)
+                        let obj = {tree: {v: row.v}};
+                        new EditPanel(this.fields.tree.selectTable, null, obj, null, {tree: true}).then((json) => {
+                            this.treeReloadRows.push(Object.keys(json.chdata.rows)[0]);
+                            this.treeApply();
+                        })
+                    }).appendTo($divPopoverArrowDown)
 
                 if (this.isInsertable()) {
                     $('<div class="menu-item"><i class="fa fa-th-large"></i> Добавить строку</div>')
-                    .on('click', () => {
+                        .on('click', () => {
 
 
-                        let obj = {tree: {v: row.v}};
-                        new EditPanel(this, null, obj, null, {tree: true}).then(() => {
-                            this.model.refresh();
-                        })
-                    }).appendTo($divPopoverArrowDown)
+                            let obj = {tree: {v: row.v}};
+                            new EditPanel(this, null, obj, null, {tree: true}).then(() => {
+                                this.model.refresh();
+                            })
+                        }).appendTo($divPopoverArrowDown)
                 }
             }
             td.append(row.t)
@@ -317,10 +317,11 @@
             }
             if (oldVal in this.treeIndex) {
                 let bOldVal = getBval(oldItem);
-
-                let oldIndex = this.treeIndex[oldVal][arr].indexOf(bOldVal.toString());
-                if (oldIndex !== -1) {
-                    this.treeIndex[oldVal][arr].splice(oldIndex, 1);
+                if (!newData || getBval(newData) != bOldVal) {
+                    let oldIndex = this.treeIndex[oldVal][arr].indexOf(bOldVal.toString());
+                    if (oldIndex !== -1) {
+                        this.treeIndex[oldVal][arr].splice(oldIndex, 1);
+                    }
                 }
             } else {
                 if (this.fields.tree.treeViewType === 'self' && (!newData || this.treeIndex[getBval(newData)].p != this.treeIndex[getBval(oldItem)].p)) {
