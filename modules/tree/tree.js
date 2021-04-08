@@ -66,6 +66,11 @@
 
             $.each(data, function (k, v) {
                 data[k]['data'] = {'type': v.type}
+
+                if (v.id.match(/^table/) && v.icon) {
+                    data[k].icon = "fa fa-" + v.icon;
+                }
+
                 if (v.state && v.state.selected) {
                     data[k]["li_attr"] = {"class": "jstree-selected"}
                 }
@@ -145,9 +150,9 @@
                     let c = $.jstree.core.prototype.redraw_node
                     $leftTree.jstree(true).redraw_node = function (node, deep, is_callback, force_render) {
                         let _node = c.bind(this)(node, deep, is_callback, force_render);
-                        if(node.match(/^tree/)){
-                            let tmp=$leftTree.jstree(true).get_node(node)
-                            if(tmp.data.type=='folder'){
+                        if (node.match(/^tree/)) {
+                            let tmp = $leftTree.jstree(true).get_node(node)
+                            if (tmp.data.type == 'folder') {
                                 $(_node).addClass('tree-folder')
                             }
                         }
@@ -178,7 +183,7 @@
                         return _node;
                     };
                 })
-            }else{
+            } else {
                 $leftTree.on("init.jstree", function (e, data) {
                     let c = $.jstree.core.prototype.redraw_node
                     $leftTree.jstree(true).redraw_node = function (node, deep, is_callback, force_render) {
@@ -299,7 +304,7 @@
                         if (!window.location.pathname.match(/^\/Table\//))
                             window.location.href = d.node.original.href;
                         else
-                            window.location.href = d.node.original.link ? d.node.original.link : (d.node.original.href[0]!=='/'?prefix + d.node.original.href:d.node.original.href);
+                            window.location.href = d.node.original.link ? d.node.original.link : (d.node.original.href[0] !== '/' ? prefix + d.node.original.href : d.node.original.href);
                 }
                 return false;
             });

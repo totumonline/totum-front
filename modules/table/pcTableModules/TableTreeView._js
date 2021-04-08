@@ -87,9 +87,9 @@
                 $('<div class="menu-item"><i class="fa fa-plus"></i> Добавить ветку</div>')
                     .on('click', () => {
 
-                        /*TODO Тут должен быть парент от источника вместо tree*/
+                        let parentField=this.fields.tree.treeViewParentField || "tree";
 
-                        let obj = {tree: {v: row.v}};
+                        let obj = {[parentField]: {v: row.v}};
                         new EditPanel(this.fields.tree.selectTable, null, obj, null, {tree: true}).then((json) => {
                             this.treeReloadRows.push(Object.keys(json.chdata.rows)[0]);
                             this.treeApply();

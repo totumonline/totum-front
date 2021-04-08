@@ -622,7 +622,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
         if (type === 'checkbox') {
             input.prepend($('<label class="field-param-lable">').html(title)
                 .addClass('form-check-label').prepend(element)
-                .append('<a href="http://docs.totum.online/polya#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
+                .append('<a href="http://docs.totum.online/fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
             input.addClass('checkbox');
             $switcher = element;
             if (!element.is(':checked')) {
@@ -631,7 +631,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             }
         } else {
             input.prepend($('<label class="field-param-lable">').html(title)
-                .append('<a href="http://docs.totum.online/polya#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
+                .append('<a href="http://docs.totum.online/fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
 
             if (element) {
                 element.data('type', type);
