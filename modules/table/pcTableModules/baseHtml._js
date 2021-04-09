@@ -2173,7 +2173,7 @@
                     }
                     if (field.showMeWidth > 0 && field.category === 'column') {
 
-                        if (!pcTable.isTreeView) {
+
                             if (pcTable.fixedColumn === field.name) {
                                 $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Открепить').addClass('color-warning').appendTo($divPopoverArrowDown)
                                     .on('click', function () {
@@ -2187,7 +2187,7 @@
                                         pcTable.fixColumn(field.name);
                                     });
                             }
-
+                        if (!pcTable.isTreeView) {
 
                             //sort a-z
                             {
@@ -2209,6 +2209,18 @@
                             }
 
                         }
+
+                        //select column
+                        {
+                            let btn = $('<div class="menu-item">');
+                            btn.append('<i class="fa fa-hand-pointer-o"></i> Выделить');
+                            $divPopoverArrowDown.append(btn);
+                            btn.on('click', function () {
+                                pcTable.selectedCells.empty();
+                                pcTable.selectedCells.selectColumn(field.name)
+                            })
+                        }
+
                         //Математические операции
                         if (field.category === 'column' && field.type === 'number') {
                             let btn = $('<div class="menu-item">');
@@ -2268,6 +2280,10 @@
                                 $('<tr><td>Нечисл. элементов</td><td>' + format(notNumber, true) + '</td></tr>').appendTo(tbody);
 
 
+                                if(pcTable.isTreeView){
+                                    $div.append('<div>Посчитано только по видимым строкам</div>')
+                                }
+
                                 let title = field.title + (field.unitType ? ', ' + field.unitType : '');
                                 if (pcTable.isMobile) {
                                     App.mobilePanel(title, $div)
@@ -2294,6 +2310,8 @@
                                 }
                             })
                         }
+
+
                     }
 
                     //linkToSelectTable

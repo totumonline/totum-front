@@ -555,6 +555,14 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 this.ids = {};
                 this.lastSelected = null;
             },
+            selectColumn: function (fieldName) {
+                pcTable.dataSortedVisible.forEach((id)=>{
+                    if(typeof id!=='object'){
+                       this.add(id, fieldName, true);
+                    }
+                })
+                this.summarizer.check();
+            },
             getEditedData: function (val, fix) {
                 let editedData = {};
                 let isMulti = false;
@@ -615,13 +623,16 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
                 });
             },
-            add: function (id, fieldName) {
+            add: function (id, fieldName, selectTd) {
                 if (!this.ids[fieldName]) {
                     this.ids[fieldName] = [];
                 }
                 this.ids[fieldName].push(id);
                 if (pcTable.data[id].$tr) {
                     pcTable.data[id].$tr.addClass('selected');
+                    if(selectTd){
+                        pcTable._getTdByFieldName(fieldName, pcTable.data[id].$tr).addClass('selected')
+                    }
                 }
             },
             selectPanelDestroy: function () {
@@ -897,30 +908,36 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                     let selFields = Object.keys(pcTable.selectedCells.ids);
                     let numberField;
-                    if (selFields.length && selFields.every((field) => {
-                        if (!numberField) {
-                            numberField = pcTable.fields[field];
-                        } else {
-                            if (pcTable.fields[field].dectimalPlaces && pcTable.fields[field].dectimalPlaces > numberField.dectimalPlaces) {
-                                numberField = pcTable.fields[field];
-                            }
-                        }
+                    if (selFields.length) {
 
-                        return pcTable.fields[field].type === 'number';
-                    })) {
+                        let allNumbers = selFields.every((field) => {
+                            if (!numberField) {
+                                numberField = pcTable.fields[field];
+                            } else {
+                                if (pcTable.fields[field].dectimalPlaces && pcTable.fields[field].dectimalPlaces > numberField.dectimalPlaces) {
+                                    numberField = pcTable.fields[field];
+                                }
+                            }
+                            return pcTable.fields[field].type === 'number';
+                        })
+
                         let count = 0;
                         let summ = 0;
                         selFields.forEach((field) => {
                             pcTable.selectedCells.ids[field].forEach((id) => {
                                 count++;
-                                if (pcTable.data[id][field].v !== null) {
+                                if (allNumbers && pcTable.data[id][field].v !== null) {
                                     summ += parseFloat(pcTable.data[id][field].v);
                                 }
                             })
                         })
                         let spans = pcTable.selectedCells.summarizer.element.find('span');
 
-                        spans[1].innerHTML = numberField.numberFormat(summ, numberField.dectimalPlaces || 0, '.');
+                        if (allNumbers) {
+                            spans[1].innerHTML = numberField.numberFormat(summ, numberField.dectimalPlaces || 0, '.');
+                        } else {
+                            spans[1].innerHTML = '-';
+                        }
                         spans[0].innerHTML = count;
 
                         if (!pcTable.selectedCells.summarizer.status) {

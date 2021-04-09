@@ -1,4 +1,5 @@
 .totum-math-operations {
+  margin-bottom: 20px;
   th {
     height: 32px;
     width: 150px;
@@ -6,6 +7,9 @@
 
   th:last-child {
     width: 200px;
+  }
+  td{
+    padding-top: 5px;
   }
 
 }
