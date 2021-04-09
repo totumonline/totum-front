@@ -404,6 +404,10 @@ input:not([type="checkbox"]):focus {
   }
 
   color: #000000;
+
+  .notification-table &{
+    display: none;
+  }
 }
 
 .pcTable-tabls {
@@ -1783,6 +1787,7 @@ ul.CodeMirror-hints {
     border-radius: 6px;
     border: none;
     color: #000;
+    min-width: 500px;
   }
 
   .alert-warning {

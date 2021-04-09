@@ -769,14 +769,15 @@
         }
 
         let src = '/Table/0/' + data.table_id + '?sess_hash=' + data.sess_hash;
-        if (!/^\/Table\//.test(window.location.pathname))
+        if (!/^\/Table\//.test(window.location.pathname) && !window.location.pathname.match(/^\/(\?.*)?$/))
             src = data.table_id + '?sess_hash=' + data.sess_hash;
 
         let $iframe = $('<iframe style="width: 100%; height: ' + (height || "80vh") + '; border: none;" src="' + src + '">');
         $iframe.on('load', function () {
             let _window = $iframe.get(0).contentWindow;
             _window.closeMe = closeMe;
-            $(_window.document.body).css('background-color', 'transparent')
+            $(_window.document.body).css('background-color', 'transparent').addClass('notification-table')
+
         });
         return $iframe;
     }
