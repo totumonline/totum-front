@@ -21,6 +21,17 @@ $.extend(App.pcTableMain.prototype, {
             return false;
         };
 
+        const blockFunc = (cell, title) => {
+            let newcell = cell.clone(true).insertAfter(cell);
+            cell.hide();
+            newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">' + title + '</span>');
+            setTimeout(function () {
+                newcell.remove();
+                cell.show();
+            }, 500);
+        }
+
+
         arias.on('dblclick', 'td.val:not(.editing), td.edt:not(.editing), .dataRows tr:not(.treeRow) td:not(.editing,.id,.n)', function (event) {
             let cell = $(this);
 
@@ -29,27 +40,27 @@ $.extend(App.pcTableMain.prototype, {
 
             if (cell.is('.footer-name, .id, .footer-empty')) return false;
 
-            if (cell.is('.edt')) {
-                pcTable._createEditCell.call(pcTable, cell, true)
-            } else {
 
-                let field = pcTable._getFieldBytd.call(pcTable, cell);
-                if (field.CodeActionOnClick) {
-                    pcTable.actionOnClick(cell, field);
+            if (tr.is('.DataRow') && pcTable.isRestoreView) {
+                blockFunc(cell, 'Удалено')
+            } else {
+                if (cell.is('.edt')) {
+                    pcTable._createEditCell.call(pcTable, cell, true)
                 } else {
 
-                    if (tr.is('.DataRow') && pcTable.tableRow.type === 'cycles') {
-                        pcTable.model.dblClick(pcTable._getItemBytd(cell)['id'], pcTable._getFieldBytd(cell).name);
-                        return false;
-                    }
+                    let field = pcTable._getFieldBytd.call(pcTable, cell);
+                    if (field.CodeActionOnClick) {
+                        pcTable.actionOnClick(cell, field);
+                    } else {
 
-                    let newcell = cell.clone(true).insertAfter(cell);
-                    cell.hide();
-                    newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">Заблокировано</span>');
-                    setTimeout(function () {
-                        newcell.remove();
-                        cell.show();
-                    }, 500);
+                        if (tr.is('.DataRow') && pcTable.tableRow.type === 'cycles') {
+                            pcTable.model.dblClick(pcTable._getItemBytd(cell)['id'], pcTable._getFieldBytd(cell).name);
+                            return false;
+                        }
+
+                        blockFunc(cell, 'Заблокировано')
+
+                    }
                 }
             }
 
@@ -73,7 +84,7 @@ $.extend(App.pcTableMain.prototype, {
     _buttonClick: function ($td, field, item) {
         if ($td.data('clicked')) return false;
 
-        return  new Promise((resolve, reject)=>{
+        return new Promise((resolve, reject) => {
             const func = function () {
                 "use strict";
 

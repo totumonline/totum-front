@@ -116,6 +116,10 @@
                     data_tmp.onPage = onPage;
                 }
 
+                if (pcTable && pcTable.isRestoreView) {
+                    data_tmp.restoreView = true;
+                }
+
                 let Model = this;
                 let success = function (json) {
 
@@ -162,7 +166,7 @@
                                 'name': (methods[data_tmp['method']] || data_tmp['method'])
                             });
                         }
-                        if (data_tmp['method'] !== 'loadPage' && pcTableObj.PageData && json.allCount) {
+                        if (data_tmp['method'] !== 'loadPage' && pcTableObj.PageData && json.allCount !== undefined) {
                             let changed = false;
                             if ('offset' in json && json.offset !== null && pcTableObj.PageData.offset !== json.offset) {
                                 changed = true;
@@ -337,6 +341,12 @@
 
                 return this.__ajax('post', {delete_ids: JSON.stringify(ids), method: 'delete'});
             },
+            restore: function (ids) {
+                if (ids.length === 0)
+                    return false;
+
+                return this.__ajax('post', {restore_ids: JSON.stringify(ids), method: 'restore'});
+            },
             duplicate: function (ids, unic_replaces, insertAfter) {
                 if (ids.length === 0)
                     return false;
@@ -500,7 +510,7 @@
             panelsView: function (switcher) {
                 return this.__ajax('post', {method: 'panelsViewCookie', switcher: switcher ? 1 : 0});
             },
-            refresh: function (func, refreshType) {
+            refresh: function (func, refreshType, withoutIds) {
 
                 func = func || function (json) {
                     pcTable.table_modify.call(pcTable, json);
@@ -517,7 +527,8 @@
                 this.__ajax('post', {
                     method: 'refresh',
                     tree: tree,
-                    recalculate: refreshType === 'recalculate' ? true : null
+                    recalculate: refreshType === 'recalculate' ? true : null,
+                    withoutIds: withoutIds ? true : null
                 }).then(function (json) {
                     try {
                         func(json)

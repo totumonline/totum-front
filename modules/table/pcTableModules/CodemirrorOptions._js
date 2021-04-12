@@ -711,6 +711,18 @@
             , title: '',
             render: renderHint, type: '', curPos: token.start + 5, hint: hintFunc,
             tab: true
+        },$cond = {
+            text: 'cond``',
+            textVis: 'cond``'
+            , title: '',
+            render: renderHint, type: '', curPos: token.start + 5, hint: hintFunc,
+            tab: true
+        }, $str = {
+            text: 'str``',
+            textVis: 'str``'
+            , title: '',
+            render: renderHint, type: '', curPos: token.start + 4, hint: hintFunc,
+            tab: true
         };
 
         keywords = keywords.slice();
@@ -1028,8 +1040,10 @@
                         keywords = ActiveFuncNames.slice();
                         keywords.push('true');
                         keywords.push('false')
-                        keywords.push($math)
-                        keywords.push($json)
+                        keywords.unshift($math)
+                        keywords.unshift($json)
+                        keywords.unshift($cond)
+                        keywords.unshift($str)
                     }
                 }
             } else if (token.state.func && (token.type === 'error fieldParam' || /(\(|;\s*)$/.test(editor.getLine(cur.line).slice(0, token.start)))) {

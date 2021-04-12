@@ -868,6 +868,14 @@
                 }
 
 
+                if(this.control.restoring){
+                    $('<button data-action="restore" class="btn btn-sm btn-warning">'+(this.isRestoreView?'Норм режим':'Восстановить')+'</button>')
+                        .width(80)
+                        .css('margin-left', '5px')
+                        .on('click', this.switchRestoreView.bind(this)).appendTo(buttons)
+                }
+
+
                 if (!pcTable.isCreatorView && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length) {
                     pcTable.f.buttons.forEach((name) => {
                         if (pcTable.isReplacedToRowsButtonsField(name)) {

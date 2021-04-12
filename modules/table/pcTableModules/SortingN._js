@@ -5,6 +5,11 @@ App.pcTableMain.prototype.reOrderRows = function (btnId, $direction) {
         return false;
     }
 
+    if(pcTable.isRestoreView){
+        App.notify('Режим восстановления строк. Сортировка отключена');
+        return false;
+    }
+
 
     let idInd;
     let orderingRowIds = [];

@@ -993,6 +993,14 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             } else {
                 let element = $(this);
 
+
+                if(element.is('.edt.val:not(.editing)')){
+                    let field = pcTable._getFieldBytd(element);
+                    if(field.category==='filter'){
+                        pcTable._createEditCell.call(pcTable, element, true)
+                        return;
+                    }
+                }
                 if (element.is('.cell-button') && !element.find('button.button-field').is(':disabled')) {
                     let field = pcTable._getFieldBytd(element);
                     pcTable._buttonClick.call(pcTable, element, field);

@@ -285,6 +285,7 @@
 //=include pcTableModules/TableTreeView._js
 //=include pcTableModules/TablePanelView._js
 //=include pcTableModules/TableRotatedView._js
+//=include pcTableModules/TableRestoreView._js
 
 
     $.extend(App.pcTableMain.prototype, {

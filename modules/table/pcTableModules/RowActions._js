@@ -27,10 +27,12 @@
 
             /*dropdown Панель на id строки*/
 
-            pcTable._container.on('click', '.row_delete, .row_duplicate, .row_refresh, .cycle_refresh', function () {
+            pcTable._container.on('click', '.row_delete, .row_restore, .row_duplicate, .row_refresh, .cycle_refresh', function () {
                 let self = $(this);
                 if (self.is('.row_delete'))
                     pcTable.rows_delete.call(pcTable, $(this).data('tr'));
+                else if (self.is('.row_restore'))
+                    pcTable.rows_restore.call(pcTable, $(this).data('tr'));
                 else if (self.is('.row_duplicate'))
                     pcTable.row_duplicate.call(pcTable, $(this).data('tr'));
                 else if (self.is('.row_refresh'))
@@ -467,7 +469,7 @@
                     }
 
                     this._refreshContentTable(0, false, true);
-                    //this.ScrollClasterized.insertToDOM(undefined, true);
+                    this._container.getNiceScroll().resize();
                 }
 
                 if (json.chdata.order) {
@@ -597,10 +599,14 @@
             }
 
 
-            if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
-                text.append($('<div class="menu-item"><i class="fa fa-times"></i> Удалить</div>').css('color', 'gray'));
+            if (this.isRestoreView) {
+                text.append($('<div class="menu-item row_restore"><i class="fa fa-recycle"></i> Восстановить</div>').attr('data-tr', trId));
             } else {
-                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> Удалить</div>').attr('data-tr', trId));
+                if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
+                    text.append($('<div class="menu-item"><i class="fa fa-times"></i> Удалить</div>').css('color', 'gray'));
+                } else {
+                    text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> Удалить</div>').attr('data-tr', trId));
+                }
             }
 
             let popoverId = App.popNotify({
@@ -968,6 +974,57 @@
                 BootstrapDialog.show({
                     message: $message,
                     title: 'Удаление',
+                    buttons: buttons,
+                    onhidden: function () {
+                        if (checkedRows.length === 1 && checkedRows[0] == checkedOneId) {
+                            pcTable.row_actions_uncheck_all();
+                        }
+                    },
+                    draggable: true
+                })
+            }
+        },
+        rows_restore: function (trId) {
+            let pcTable = this;
+            let checkedRows = this.__getCheckedRowsIds(trId);
+            let checkedOneId = checkedRows.length === 1 ? checkedRows[0] : null;
+            if (checkedRows && checkedRows.length) {
+
+                let $message = 'Точно восстановить ' + checkedRows.length + ' строк?';
+                if (checkedRows.length == 1) {
+                    let item = 'id-' + checkedRows[0];
+                    if (pcTable.mainFieldName != 'id') {
+                        item = pcTable.data[checkedRows[0]][pcTable.mainFieldName];
+                        item = 'id-' + checkedRows[0] + ' "' + (item.v_ && item.v_[0] ? item.v_[0] : item.v) + '"';
+                    }
+                    $message = 'Точно восстановить строку ' + item + '?';
+                }
+
+
+                let buttons = [
+                    {
+                        label: 'Восстановить',
+                        cssClass: 'btn-danger',
+                        action: function (dialogRef) {
+                            dialogRef.close();
+
+                            pcTable.model.restore(checkedRows).then(function (json) {
+                                pcTable.table_modify.call(pcTable, json);
+                            });
+                        }
+                    }, {
+                        label: 'Отмена',
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                        }
+
+                    }
+                ];
+
+
+                BootstrapDialog.show({
+                    message: $message,
+                    title: 'Восстановление',
                     buttons: buttons,
                     onhidden: function () {
                         if (checkedRows.length === 1 && checkedRows[0] == checkedOneId) {
