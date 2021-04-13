@@ -5,7 +5,8 @@ $(function () {
             let $PageContent = $('.page_content');
             let niceScroll = false;
             const setScroll = function () {
-                $div.height(window.innerHeight - 100).niceScroll({
+                let $diff = $('#tables_tabls').length ? 200 : 100;
+                $div.height(window.innerHeight - $diff).niceScroll({
                     cursorwidth: 7,
                     mousescrollstep: 190,
                     mousescroll: 190,

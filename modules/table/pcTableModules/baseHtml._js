@@ -869,7 +869,7 @@
 
 
                 if(this.control.restoring){
-                    $('<button data-action="restore" class="btn btn-sm btn-warning">'+(this.isRestoreView?'Норм режим':'Восстановить')+'</button>')
+                    $('<button data-action="restore" class="btn btn-sm btn-default">'+(this.isRestoreView?'Норм режим':'Восстановить')+'</button>')
                         .width(80)
                         .css('margin-left', '5px')
                         .on('click', this.switchRestoreView.bind(this)).appendTo(buttons)
