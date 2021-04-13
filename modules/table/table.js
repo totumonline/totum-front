@@ -445,6 +445,13 @@
                         let self = $(this);
                         pcTable.creatorIconsPopover(self)
                     })
+                    this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
+                        let self = $(this);
+                        let icons = self.closest('th').find('.creator-icons');
+                        if (!icons.is('[aria-describedby]')) {
+                            pcTable.creatorIconsPopover(icons);
+                        }
+                    })
                 }
                 pcTable._container.on('contextmenu', function (event) {
                     let self = $(event.target);

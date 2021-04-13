@@ -208,7 +208,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 }, 2);
 
                 if (field.linkToSelectTable) {
-                    divWrapper.append(' <a href="' + field.linkToSelectTable.link + '" class="color-primary-primary" style="font-size: 12px" target="_blank">' + field.linkToSelectTable.title + '</a> ')
+                    divWrapper.append('<div class="source-link"><a href="' + field.linkToSelectTable.link + '" style="font-size: 12px" target="_blank">' + field.linkToSelectTable.title + '</a></div>')
                 }
             }
 

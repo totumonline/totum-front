@@ -337,17 +337,18 @@
             let changeTreeSize = function ($setMini) {
                 TreeMinimizerStorage = $setMini;
                 const $mainPage = $('#page-tree');
+                let isTreeOnPageSide = $('#page-tree').length && !($('#main-page').length || $('#tables_tabls').length);
 
                 if ($setMini) {
                     $('body>.page_content').addClass('tree-minifyed');
                     $('#LeftTree').getNiceScroll().resize();
-                    if ($mainPage.length) {
+                    if (isTreeOnPageSide) {
                         $mainPage.append($leftTree);
                         $leftTree.trigger('after_open')
                     }
                 } else {
                     $('body>.page_content').removeClass('tree-minifyed');
-                    if ($mainPage.length) {
+                    if (isTreeOnPageSide) {
                         $('.TreeContainer').append($leftTree);
                         $leftTree.trigger('after_open');
                     }

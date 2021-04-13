@@ -1444,6 +1444,7 @@
                 }
                 hints.style.top = (top = pos.bottom - overlapY) + "px";
             }
+            
             (options.container || window.top.document.body).appendChild(hints);
 
             cm.addKeyMap(this.keyMap = buildKeyMap(options, {
