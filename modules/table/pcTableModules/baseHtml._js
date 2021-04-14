@@ -915,12 +915,11 @@
                 buttons.prepend(comment.text(this.f.tablecomment));
                 setTimeout(function () {
                     let btnsWidth = 0;
-                    comment.parent().find('>span').each(function () {
+                    comment.parent().find('>span,>button').each(function () {
                         btnsWidth += $(this).width() || 0;
                     })
                     btnsWidth += 90;
                     comment.css('width', 'calc(100% - ' + (btnsWidth) + 'px)');
-
                 }, 1);
             }
 
