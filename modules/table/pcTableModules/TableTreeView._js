@@ -108,7 +108,8 @@
                         }).appendTo($divPopoverArrowDown)
                 }
             }
-            td.append(row.t)
+
+            td.append($('<span class="treeRow">').text(row.t).data('treeRow', row.v))
 
 
             tr.append(td)

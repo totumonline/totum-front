@@ -791,8 +791,13 @@
             selector.val(onPage)
 
             selector.on('change', () => {
+                let lastId = 0;
+                let prevLastId = null;
+                if(page >= Math.floor(this.PageData.allCount / this.PageData.onPage)){
+                    prevLastId = -1;
+                }
                 this.PageData.onPage = parseInt(selector.val());
-                this.model.loadPage(this, 0, selector.val());
+                this.model.loadPage(this, lastId, selector.val(), prevLastId);
             });
 
 
@@ -868,8 +873,8 @@
                 }
 
 
-                if(this.control.restoring){
-                    $('<button data-action="restore" class="btn btn-sm btn-default">'+(this.isRestoreView?'Норм режим':'Восстановить')+'</button>')
+                if (this.control.restoring) {
+                    $('<button data-action="restore" class="btn btn-sm btn-default">' + (this.isRestoreView ? 'Норм режим' : 'Восстановить') + '</button>')
                         .width(80)
                         .css('margin-left', '5px')
                         .on('click', this.switchRestoreView.bind(this)).appendTo(buttons)
@@ -2181,19 +2186,19 @@
                     if (field.showMeWidth > 0 && field.category === 'column') {
 
 
-                            if (pcTable.fixedColumn === field.name) {
-                                $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Открепить').addClass('color-warning').appendTo($divPopoverArrowDown)
-                                    .on('click', function () {
-                                        btnDropDown.popover('hide');
-                                        pcTable.fixColumn();
-                                    });
-                            } else if (field.type !== 'button') {
-                                $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Закрепить').appendTo($divPopoverArrowDown)
-                                    .on('click', function () {
-                                        btnDropDown.popover('hide');
-                                        pcTable.fixColumn(field.name);
-                                    });
-                            }
+                        if (pcTable.fixedColumn === field.name) {
+                            $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Открепить').addClass('color-warning').appendTo($divPopoverArrowDown)
+                                .on('click', function () {
+                                    btnDropDown.popover('hide');
+                                    pcTable.fixColumn();
+                                });
+                        } else if (field.type !== 'button') {
+                            $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Закрепить').appendTo($divPopoverArrowDown)
+                                .on('click', function () {
+                                    btnDropDown.popover('hide');
+                                    pcTable.fixColumn(field.name);
+                                });
+                        }
                         if (!pcTable.isTreeView) {
 
                             //sort a-z
@@ -2287,7 +2292,7 @@
                                 $('<tr><td>Нечисл. элементов</td><td>' + format(notNumber, true) + '</td></tr>').appendTo(tbody);
 
 
-                                if(pcTable.isTreeView){
+                                if (pcTable.isTreeView) {
                                     $div.append('<div>Посчитано только по видимым строкам</div>')
                                 }
 

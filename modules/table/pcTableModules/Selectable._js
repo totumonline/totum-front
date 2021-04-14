@@ -556,12 +556,13 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 this.lastSelected = null;
             },
             selectColumn: function (fieldName) {
-                pcTable.dataSortedVisible.forEach((id)=>{
-                    if(typeof id!=='object'){
-                       this.add(id, fieldName, true);
+                pcTable.dataSortedVisible.forEach((id) => {
+                    if (typeof id !== 'object') {
+                        this.add(id, fieldName, true);
                     }
                 })
                 this.summarizer.check();
+                this.multiCheck();
             },
             getEditedData: function (val, fix) {
                 let editedData = {};
@@ -630,7 +631,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 this.ids[fieldName].push(id);
                 if (pcTable.data[id].$tr) {
                     pcTable.data[id].$tr.addClass('selected');
-                    if(selectTd){
+                    if (selectTd) {
                         pcTable._getTdByFieldName(fieldName, pcTable.data[id].$tr).addClass('selected')
                     }
                 }
@@ -698,7 +699,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     })
                 });
                 allIds = Array.from(new Set(allIds));
-                allIds = pcTable.dataSortedVisible.filter(id => allIds.indexOf(id) !== -1);
+                allIds = pcTable.dataSortedVisible.filter(id => allIds.findIndex((_id)=>{
+                    return _id == id;
+                }) !== -1);
                 allFields = Array.from(new Set(allFields));
                 let fields = [];
                 pcTable.fieldCategories.visibleColumns.forEach(function (field) {
@@ -738,7 +741,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                             if (typeof _str === "undefined") _str = "";
 
                             if (typeof _str == 'string' && _str.replace(/\t/g, '').match(/[\s"]/)) {
-                                _str = '"' + _str.replace(/"/g, '""') + '"';
+                                if(allFields.length!==1){
+                                    _str = '"' + _str.replace(/"/g, '""') + '"';
+                                }
                             }
                             result += _str;
                         });
@@ -752,7 +757,6 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             },
             click: function (td, event) {
                 let table = pcTable._table;
-
                 if (td.closest('table').is('.pcTable-filtersTable')) return false;
 
 
@@ -820,18 +824,21 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         let step = 'before';
 
                         pcTable.dataSortedVisible.some(function (_id) {
-                            if (step === 'before') {
-                                if (_id === item.id || _id === selected.lastSelected[1]) {
-                                    step = 'doIt';
+                            if (typeof _id !== "object") {
+                                _id = parseInt(_id);
+                                if (step === 'before') {
+                                    if (_id === item.id || _id === selected.lastSelected[1]) {
+                                        step = 'doIt';
+                                        ids.push(_id);
+
+                                        if (item.id === selected.lastSelected[1]) return true;
+                                    }
+                                } else if (step === 'doIt') {
                                     ids.push(_id);
 
-                                    if (item.id === selected.lastSelected[1]) return true;
-                                }
-                            } else if (step === 'doIt') {
-                                ids.push(_id);
-
-                                if (_id === item.id || _id === selected.lastSelected[1]) {
-                                    return true;//stop
+                                    if (_id === item.id || _id === selected.lastSelected[1]) {
+                                        return true;//stop
+                                    }
                                 }
                             }
                         });
@@ -884,17 +891,20 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                             this.lastSelected = [fieldName, item.id];
                         }
                     }
-                    let SelectedKeys = Object.keys(pcTable.selectedCells.ids);
-                    if (SelectedKeys.length > 1) {
-                        $('table.pcTable-table').addClass('selected-multi');
-                    } else if (SelectedKeys.length === 1 && Object.values(pcTable.selectedCells.ids)[0].length > 1) {
-                        $('table.pcTable-table').removeClass('selected-multi').addClass('selected-column');
-
-                    } else {
-                        $('table.pcTable-table').removeClass('selected-multi').removeClass('selected-column');
-                    }
+                    pcTable.selectedCells.multiCheck();
                 })();
                 this.summarizer.check();
+            },
+            multiCheck: () => {
+                let SelectedKeys = Object.keys(pcTable.selectedCells.ids);
+                if (SelectedKeys.length > 1) {
+                    $('table.pcTable-table').addClass('selected-multi');
+                } else if (SelectedKeys.length === 1 && Object.values(pcTable.selectedCells.ids)[0].length > 1) {
+                    $('table.pcTable-table').removeClass('selected-multi').addClass('selected-column');
+
+                } else {
+                    $('table.pcTable-table').removeClass('selected-multi').removeClass('selected-column');
+                }
             },
             summarizer: {
                 timeout: null,
@@ -994,9 +1004,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 let element = $(this);
 
 
-                if(element.is('.edt.val:not(.editing)')){
+                if (element.is('.edt.val:not(.editing)')) {
                     let field = pcTable._getFieldBytd(element);
-                    if(field.category==='filter'){
+                    if (field.category === 'filter') {
                         pcTable._createEditCell.call(pcTable, element, true)
                         return;
                     }
