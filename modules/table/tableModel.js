@@ -111,7 +111,7 @@
                 if (dataRows) {
                     data_tmp.ids = JSON.stringify(Object.keys(dataRows));
                 }
-                if (offset !== undefined) {
+                if (!('offset' in $data) && offset !== undefined) {
                     data_tmp.offset = offset;
                     data_tmp.onPage = onPage;
                 }
@@ -590,7 +590,7 @@
             }, userButtonsClick: function (hash, index) {
                 return this.__ajax('post', {method: 'userButtonsClick', hash: hash, index: index})
             },
-            loadPage: function (pcTable, lastId, count, prevLastId) {
+            loadPage: function (pcTable, lastId, count, prevLastId, offset) {
                 let _filters = {};
                 if (pcTable && pcTable.filtersString) {
                     _filters.filters = pcTable.filtersString;
@@ -600,6 +600,7 @@
                 return this.__ajax('post', {
                     method: 'loadPage',
                     lastId: lastId,
+                    offset: offset,
                     pageCount: count,
                     prevLastId: prevLastId
                 }, null, null, _filters).then(function (json) {
@@ -632,6 +633,7 @@
                     pcTable._refreshContentTable.call(pcTable, false, true);
                     pcTable.__applyFilters.call(pcTable, true);
                     pcTable.PageData.$block.empty().append(pcTable._paginationCreateBlock.call(pcTable));
+                    pcTable.selectedCells.summarizer.check();
                 })
             }
 

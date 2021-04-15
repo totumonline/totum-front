@@ -660,7 +660,24 @@
                     let pathId, topPathId;
                     if (window.location.pathname.match(/^\/[^\/]+\/\d+\/\d+\/\d+\/\d+$/)) {
                         pathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+).*?$/, '$1');
-                        topPathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+\/[^\/]+).*?$/, '$1');
+                        topPathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+\/[^\/]+).*?$/, '$1') + '/';
+
+                        let data = sessionStorage.getItem('cycles_filter');
+                        if (data) {
+                            data = JSON.parse(data);
+                            if (data.id == this.tableRow.tree_node_id) {
+                                topPathId += '?';
+                                if (data.filter)
+                                    topPathId += 'f='+encodeURIComponent(data.filter);
+                                if(data.onPage){
+                                    if (data.filter)
+                                        topPathId += '&';
+                                    topPathId += 'onPage='+encodeURIComponent(data.onPage);
+                                    topPathId += '&offset='+encodeURIComponent(data.offset);
+                                }
+
+                            }
+                        }
 
                         let addedBack = false;
 
@@ -668,7 +685,7 @@
                             if (br.isCycleTable) {
                                 if (!addedBack) {
                                     if (!br.isOneUserCycle)
-                                        tablsUl.append('<li><a href="/Table/' + topPathId + '/"><i class="fa fa-arrow-left"></a></li>');
+                                        tablsUl.append('<li><a href="/Table/' + topPathId + '"><i class="fa fa-arrow-left"></a></li>');
                                     addedBack = true;
                                 }
                                 if (br.id === ('table' + this.tableRow.id))
@@ -793,7 +810,7 @@
             selector.on('change', () => {
                 let lastId = 0;
                 let prevLastId = null;
-                if(page >= Math.floor(this.PageData.allCount / this.PageData.onPage)){
+                if (page >= Math.floor(this.PageData.allCount / this.PageData.onPage)) {
                     prevLastId = -1;
                 }
                 this.PageData.onPage = parseInt(selector.val());
@@ -814,7 +831,7 @@
                 $block.addClass('ttm-pagination-warning');
                 onpaging.append(' <i class="fa fa-square"></i>');
             }
-
+            this.saveFilterAndPage();
             return $block;
         },
         _pagination() {
@@ -833,11 +850,11 @@
                     }
                 }*/
                 let pageSplit = this.tableRow.pagination.split('/');
-                let pageCount = this.isMobile ? pageSplit[1] : pageSplit[0];
+                let pageCount = parseInt((new URL(document.location)).searchParams.get('onPage') || (this.isMobile ? pageSplit[1] : pageSplit[0]));
                 lastId = pageSplit[2] || null;
 
-                this.PageData.onPage = parseInt(pageCount);
-                this.model.loadPage(this, lastId, pageCount);
+                this.PageData.onPage = pageCount;
+                this.model.loadPage(this, lastId, pageCount, null, (new URL(document.location)).searchParams.get('offset'));
 
                 return this.PageData.$block.empty().append('<i class="fa fa-spinner"></i>');
             }

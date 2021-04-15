@@ -464,6 +464,8 @@
 
                 this._container.append(this._innerContainer);
 
+                this.saveFilterAndPage();
+
                 this.initRowsData()
 
 
@@ -475,6 +477,19 @@
                             pcTable.setWidthes();
                         }, 500);
                     });
+                }
+            },
+            saveFilterAndPage: function () {
+                if (this.tableRow.type === 'cycles') {
+                    if (this.filtersString || this.PageData)
+                        sessionStorage.setItem('cycles_filter', JSON.stringify({
+                            id: this.tableRow.id,
+                            filter: this.filtersString,
+                            offset: this.PageData ? this.PageData.offset : null,
+                            onPage: this.PageData ? this.PageData.onPage : null
+                        }))
+                    else
+                        sessionStorage.removeItem('cycles_filter')
                 }
             },
             refreshArraysFieldCategories: function () {
