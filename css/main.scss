@@ -184,11 +184,13 @@ footer {
   color: $btn-primary-bgcolor;
 }
 
-.color-primary-primary {
-  color: $btn-primary-bgcolor;
-
-  &:hover {
-    color: $btn-primary-primary-bgcolor;
+.source-link {
+  padding-top: 8px;
+  a {
+    color: #656565;
+    &:hover {
+      color: #656565;
+    }
   }
 }
 
@@ -404,6 +406,10 @@ input:not([type="checkbox"]):focus {
   }
 
   color: #000000;
+
+  .notification-table & {
+    display: none;
+  }
 }
 
 .pcTable-tabls {
@@ -1020,7 +1026,8 @@ th {
         background-color: rgb(225, 224, 223);
       }
     }
-    .scroll-top-button, .summarizer{
+
+    .scroll-top-button, .summarizer {
       position: fixed;
       bottom: 20px;
       right: 20px;
@@ -1032,9 +1039,11 @@ th {
       z-index: 100;
       box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
     }
-    .summarizer{
+
+    .summarizer {
       right: 60px;
-      span{
+
+      span {
         font-size: 14px;
       }
     }
@@ -1627,8 +1636,8 @@ th.id .pcTable-filters.for-selected .btn {
   height: auto;
   font-size: 12px;
 
-    border-color: transparent;
-    background-color: #fcfcfc;
+  border-color: transparent;
+  background-color: #fcfcfc;
 }
 
 .InsertPanel .cell-wrapper {
@@ -1643,6 +1652,7 @@ th.id .pcTable-filters.for-selected .btn {
   //font-family: 'Open Sans', serif;
 
   width: 100%;
+
   > .btns .btn {
     border-color: transparent;
 
@@ -1665,8 +1675,9 @@ th.id .pcTable-filters.for-selected .btn {
     border-color: transparent;
     background-color: #fcfcfc;
   }
+
   .form-control.bootstrap-select {
-       box-shadow: none;
+    box-shadow: none;
   }
 
   .btns {
@@ -1783,6 +1794,7 @@ ul.CodeMirror-hints {
     border-radius: 6px;
     border: none;
     color: #000;
+    min-width: 500px;
   }
 
   .alert-warning {
@@ -1795,7 +1807,8 @@ ul.CodeMirror-hints {
       max-width: 99%;
 
     }
-    &.one-column-panel .modal-dialog{
+
+    &.one-column-panel .modal-dialog {
       width: 600px;
     }
 
@@ -2048,15 +2061,18 @@ input {
       font-weight: normal;
 
     }
-    .buttons{
+
+    .buttons {
       text-indent: revert;
       padding: 0;
       padding-top: 5px;
     }
-    button{
+
+    button {
       text-align: center;
       margin-left: 3px;
-      &:first-child{
+
+      &:first-child {
         margin-left: 0;
       }
 
@@ -2064,21 +2080,25 @@ input {
       color: #fff;
       width: 45px;
       text-shadow: none;
-      &.offed{
+
+      &.offed {
         background-color: #fafafa;
         color: #333;
       }
     }
   }
 }
-.totum-edit-codes{
-  .flex{
+
+.totum-edit-codes {
+  .flex {
     display: flex;
     padding-top: 10px;
-    div{
+
+    div {
       padding-left: 20px;
     }
-    label{
+
+    label {
       padding-left: 5px;
       cursor: pointer;
       font-weight: normal;
@@ -2126,6 +2146,7 @@ input {
 @import "pagination";
 @import "tableRotaion";
 @import "treeView";
+@import "tables_tabs";
 @import "panelView";
 @import "mobile";
 

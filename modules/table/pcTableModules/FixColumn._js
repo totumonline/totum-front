@@ -25,9 +25,6 @@
                     let fieldOffset = $th.offset().left;
 
 
-                    console.log(fieldOffset, pcTable._innerContainer.offset().left);
-
-
                     div.width(width);
                     div.css('max-height', pcTable._innerContainer.height());
 
@@ -54,7 +51,12 @@
                                 let cl = tr.clone();
                                 column.append(cl);
                             } else {
-                                column.append($(tr.find('td')[i]).clone(true));
+                                let td = $(tr.find('td')[i]);
+                                if(td.length){
+                                    column.append(td.clone(true));
+                                }else{
+                                    column.append('<td></td>');
+                                }
                             }
                         })
                         let clTh = $('<th class="top-head"></th>').text($th.find('.cell-title').clone().children().remove().end().text()).height($th.outerHeight());

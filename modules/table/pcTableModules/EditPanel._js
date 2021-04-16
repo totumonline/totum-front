@@ -208,7 +208,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 }, 2);
 
                 if (field.linkToSelectTable) {
-                    divWrapper.append(' <a href="' + field.linkToSelectTable.link + '" class="color-primary-primary" style="font-size: 12px" target="_blank">' + field.linkToSelectTable.title + '</a> ')
+                    divWrapper.append('<div class="source-link"><a href="' + field.linkToSelectTable.link + '" style="font-size: 12px" target="_blank">' + field.linkToSelectTable.title + '</a></div>')
                 }
             }
 
@@ -543,7 +543,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (field.type === 'button' && EditPanelFunc.pcTable) {
                 cell.on('click', function () {
-                    EditPanelFunc.pcTable._buttonClick.call(EditPanelFunc.pcTable, cell, field, item);
+                    EditPanelFunc.pcTable._buttonClick(cell, field, item).then(()=>{
+                        if(field.closeIframeAfterClick){
+                            EditPanelFunc.close();
+                        }
+                    });
                 });
             } else {
                 if (field.CodeActionOnClick && !divWrapper.find('.edit-btn').length) {

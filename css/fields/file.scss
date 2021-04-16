@@ -108,6 +108,11 @@
 
 .InsertPanel {
   [data-field-type="file"] {
+    .ttm--panel-data {
+      .panel-preview{
+        overflow: auto;
+      }
+    }
     .panel-preview, .ttm--panel-data {
       max-height: 200px;
       overflow: auto;

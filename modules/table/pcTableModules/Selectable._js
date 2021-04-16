@@ -555,6 +555,15 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 this.ids = {};
                 this.lastSelected = null;
             },
+            selectColumn: function (fieldName) {
+                pcTable.dataSortedVisible.forEach((id) => {
+                    if (typeof id !== 'object') {
+                        this.add(id, fieldName, true);
+                    }
+                })
+                this.summarizer.check();
+                this.multiCheck();
+            },
             getEditedData: function (val, fix) {
                 let editedData = {};
                 let isMulti = false;
@@ -615,13 +624,16 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
                 });
             },
-            add: function (id, fieldName) {
+            add: function (id, fieldName, selectTd) {
                 if (!this.ids[fieldName]) {
                     this.ids[fieldName] = [];
                 }
                 this.ids[fieldName].push(id);
                 if (pcTable.data[id].$tr) {
                     pcTable.data[id].$tr.addClass('selected');
+                    if (selectTd) {
+                        pcTable._getTdByFieldName(fieldName, pcTable.data[id].$tr).addClass('selected')
+                    }
                 }
             },
             selectPanelDestroy: function () {
@@ -687,7 +699,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     })
                 });
                 allIds = Array.from(new Set(allIds));
-                allIds = pcTable.dataSortedVisible.filter(id => allIds.indexOf(id) !== -1);
+                allIds = pcTable.dataSortedVisible.filter(id => allIds.findIndex((_id)=>{
+                    return _id == id;
+                }) !== -1);
                 allFields = Array.from(new Set(allFields));
                 let fields = [];
                 pcTable.fieldCategories.visibleColumns.forEach(function (field) {
@@ -727,7 +741,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                             if (typeof _str === "undefined") _str = "";
 
                             if (typeof _str == 'string' && _str.replace(/\t/g, '').match(/[\s"]/)) {
-                                _str = '"' + _str.replace(/"/g, '""') + '"';
+                                if(allFields.length!==1){
+                                    _str = '"' + _str.replace(/"/g, '""') + '"';
+                                }
                             }
                             result += _str;
                         });
@@ -741,7 +757,6 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             },
             click: function (td, event) {
                 let table = pcTable._table;
-
                 if (td.closest('table').is('.pcTable-filtersTable')) return false;
 
 
@@ -809,18 +824,21 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         let step = 'before';
 
                         pcTable.dataSortedVisible.some(function (_id) {
-                            if (step === 'before') {
-                                if (_id === item.id || _id === selected.lastSelected[1]) {
-                                    step = 'doIt';
+                            if (typeof _id !== "object") {
+                                _id = parseInt(_id);
+                                if (step === 'before') {
+                                    if (_id === item.id || _id === selected.lastSelected[1]) {
+                                        step = 'doIt';
+                                        ids.push(_id);
+
+                                        if (item.id === selected.lastSelected[1]) return true;
+                                    }
+                                } else if (step === 'doIt') {
                                     ids.push(_id);
 
-                                    if (item.id === selected.lastSelected[1]) return true;
-                                }
-                            } else if (step === 'doIt') {
-                                ids.push(_id);
-
-                                if (_id === item.id || _id === selected.lastSelected[1]) {
-                                    return true;//stop
+                                    if (_id === item.id || _id === selected.lastSelected[1]) {
+                                        return true;//stop
+                                    }
                                 }
                             }
                         });
@@ -873,17 +891,20 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                             this.lastSelected = [fieldName, item.id];
                         }
                     }
-                    let SelectedKeys = Object.keys(pcTable.selectedCells.ids);
-                    if (SelectedKeys.length > 1) {
-                        $('table.pcTable-table').addClass('selected-multi');
-                    } else if (SelectedKeys.length === 1 && Object.values(pcTable.selectedCells.ids)[0].length > 1) {
-                        $('table.pcTable-table').removeClass('selected-multi').addClass('selected-column');
-
-                    } else {
-                        $('table.pcTable-table').removeClass('selected-multi').removeClass('selected-column');
-                    }
+                    pcTable.selectedCells.multiCheck();
                 })();
                 this.summarizer.check();
+            },
+            multiCheck: () => {
+                let SelectedKeys = Object.keys(pcTable.selectedCells.ids);
+                if (SelectedKeys.length > 1) {
+                    $('table.pcTable-table').addClass('selected-multi');
+                } else if (SelectedKeys.length === 1 && Object.values(pcTable.selectedCells.ids)[0].length > 1) {
+                    $('table.pcTable-table').removeClass('selected-multi').addClass('selected-column');
+
+                } else {
+                    $('table.pcTable-table').removeClass('selected-multi').removeClass('selected-column');
+                }
             },
             summarizer: {
                 timeout: null,
@@ -897,30 +918,36 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                     let selFields = Object.keys(pcTable.selectedCells.ids);
                     let numberField;
-                    if (selFields.length && selFields.every((field) => {
-                        if (!numberField) {
-                            numberField = pcTable.fields[field];
-                        } else {
-                            if (pcTable.fields[field].dectimalPlaces && pcTable.fields[field].dectimalPlaces > numberField.dectimalPlaces) {
-                                numberField = pcTable.fields[field];
-                            }
-                        }
+                    if (selFields.length) {
 
-                        return pcTable.fields[field].type === 'number';
-                    })) {
+                        let allNumbers = selFields.every((field) => {
+                            if (!numberField) {
+                                numberField = pcTable.fields[field];
+                            } else {
+                                if (pcTable.fields[field].dectimalPlaces && pcTable.fields[field].dectimalPlaces > numberField.dectimalPlaces) {
+                                    numberField = pcTable.fields[field];
+                                }
+                            }
+                            return pcTable.fields[field].type === 'number';
+                        })
+
                         let count = 0;
                         let summ = 0;
                         selFields.forEach((field) => {
                             pcTable.selectedCells.ids[field].forEach((id) => {
                                 count++;
-                                if (pcTable.data[id][field].v !== null) {
+                                if (allNumbers && pcTable.data[id][field].v !== null) {
                                     summ += parseFloat(pcTable.data[id][field].v);
                                 }
                             })
                         })
                         let spans = pcTable.selectedCells.summarizer.element.find('span');
 
-                        spans[1].innerHTML = numberField.numberFormat(summ, numberField.dectimalPlaces || 0, '.');
+                        if (allNumbers) {
+                            spans[1].innerHTML = numberField.numberFormat(summ, numberField.dectimalPlaces || 0, '.');
+                        } else {
+                            spans[1].innerHTML = '-';
+                        }
                         spans[0].innerHTML = count;
 
                         if (!pcTable.selectedCells.summarizer.status) {
@@ -976,6 +1003,14 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             } else {
                 let element = $(this);
 
+
+                if (element.is('.edt.val:not(.editing)')) {
+                    let field = pcTable._getFieldBytd(element);
+                    if (field.category === 'filter') {
+                        pcTable._createEditCell.call(pcTable, element, true)
+                        return;
+                    }
+                }
                 if (element.is('.cell-button') && !element.find('button.button-field').is(':disabled')) {
                     let field = pcTable._getFieldBytd(element);
                     pcTable._buttonClick.call(pcTable, element, field);

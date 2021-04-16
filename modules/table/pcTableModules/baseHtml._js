@@ -83,7 +83,7 @@
                 .append(this._createRowsTitle(rowsParent))
                 .append(this._createFiltersBlock())
                 .append(() => {
-                    if (this.tableRow.pagination && this.tableRow.pagination !== '0/0') {
+                    if (!this.isTreeView && this.tableRow.pagination && this.tableRow.pagination !== '0/0') {
                         return this._pagination();
                     }
                 })
@@ -660,7 +660,24 @@
                     let pathId, topPathId;
                     if (window.location.pathname.match(/^\/[^\/]+\/\d+\/\d+\/\d+\/\d+$/)) {
                         pathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+).*?$/, '$1');
-                        topPathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+\/[^\/]+).*?$/, '$1');
+                        topPathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+\/[^\/]+).*?$/, '$1') + '/';
+
+                        let data = sessionStorage.getItem('cycles_filter');
+                        if (data) {
+                            data = JSON.parse(data);
+                            if (data.id == this.tableRow.tree_node_id) {
+                                topPathId += '?';
+                                if (data.filter)
+                                    topPathId += 'f='+encodeURIComponent(data.filter);
+                                if(data.onPage){
+                                    if (data.filter)
+                                        topPathId += '&';
+                                    topPathId += 'onPage='+encodeURIComponent(data.onPage);
+                                    topPathId += '&offset='+encodeURIComponent(data.offset);
+                                }
+
+                            }
+                        }
 
                         let addedBack = false;
 
@@ -668,7 +685,7 @@
                             if (br.isCycleTable) {
                                 if (!addedBack) {
                                     if (!br.isOneUserCycle)
-                                        tablsUl.append('<li><a href="/Table/' + topPathId + '/"><i class="fa fa-arrow-left"></a></li>');
+                                        tablsUl.append('<li><a href="/Table/' + topPathId + '"><i class="fa fa-arrow-left"></a></li>');
                                     addedBack = true;
                                 }
                                 if (br.id === ('table' + this.tableRow.id))
@@ -791,8 +808,13 @@
             selector.val(onPage)
 
             selector.on('change', () => {
+                let lastId = 0;
+                let prevLastId = null;
+                if (page >= Math.floor(this.PageData.allCount / this.PageData.onPage)) {
+                    prevLastId = -1;
+                }
                 this.PageData.onPage = parseInt(selector.val());
-                this.model.loadPage(this, 0, selector.val());
+                this.model.loadPage(this, lastId, selector.val(), prevLastId);
             });
 
 
@@ -809,7 +831,7 @@
                 $block.addClass('ttm-pagination-warning');
                 onpaging.append(' <i class="fa fa-square"></i>');
             }
-
+            this.saveFilterAndPage();
             return $block;
         },
         _pagination() {
@@ -828,11 +850,11 @@
                     }
                 }*/
                 let pageSplit = this.tableRow.pagination.split('/');
-                let pageCount = this.isMobile ? pageSplit[1] : pageSplit[0];
+                let pageCount = parseInt((new URL(document.location)).searchParams.get('onPage') || (this.isMobile ? pageSplit[1] : pageSplit[0]));
                 lastId = pageSplit[2] || null;
 
-                this.PageData.onPage = parseInt(pageCount);
-                this.model.loadPage(this, lastId, pageCount);
+                this.PageData.onPage = pageCount;
+                this.model.loadPage(this, lastId, pageCount, null, (new URL(document.location)).searchParams.get('offset'));
 
                 return this.PageData.$block.empty().append('<i class="fa fa-spinner"></i>');
             }
@@ -862,9 +884,17 @@
             }
             if (this.fieldCategories.column.length) {
 
-                if (this.control.adding && !this.f.blockadd) {
+                if (this.isInsertable()) {
                     let insButtons = pcTable._getInsertButtons();
                     buttons.append(insButtons);
+                }
+
+
+                if (this.control.restoring) {
+                    $('<button data-action="restore" class="btn btn-sm btn-default">' + (this.isRestoreView ? 'Норм режим' : 'Восстановить') + '</button>')
+                        .width(80)
+                        .css('margin-left', '5px')
+                        .on('click', this.switchRestoreView.bind(this)).appendTo(buttons)
                 }
 
 
@@ -907,12 +937,11 @@
                 buttons.prepend(comment.text(this.f.tablecomment));
                 setTimeout(function () {
                     let btnsWidth = 0;
-                    comment.parent().find('>span').each(function () {
+                    comment.parent().find('>span,>button').each(function () {
                         btnsWidth += $(this).width() || 0;
                     })
                     btnsWidth += 90;
                     comment.css('width', 'calc(100% - ' + (btnsWidth) + 'px)');
-
                 }, 1);
             }
 
@@ -2171,7 +2200,8 @@
                         }
 
                     }
-                    if (field.showMeWidth > 0 && field.category === 'column' && !pcTable.isTreeView) {
+                    if (field.showMeWidth > 0 && field.category === 'column') {
+
 
                         if (pcTable.fixedColumn === field.name) {
                             $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Открепить').addClass('color-warning').appendTo($divPopoverArrowDown)
@@ -2186,27 +2216,39 @@
                                     pcTable.fixColumn(field.name);
                                 });
                         }
+                        if (!pcTable.isTreeView) {
 
+                            //sort a-z
+                            {
+                                let btn = $('<div class="menu-item">');
+                                btn.append('<i class="fa fa-sort-alpha-asc"></i> Сортировать А-Я');
+                                $divPopoverArrowDown.append(btn)
+                                btn.on('click', function () {
+                                    pcTable.sort(field, 1);
+                                })
+                            }
+                            //sort z-a
+                            {
+                                let btn = $('<div class="menu-item">');
+                                btn.append('<i class="fa fa-sort-alpha-desc"></i> Сортировать Я-А');
+                                $divPopoverArrowDown.append(btn);
+                                btn.on('click', function () {
+                                    pcTable.sort(field, -1);
+                                })
+                            }
 
-                        //sort a-z
-                        {
-                            let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-sort-alpha-asc"></i> Сортировать А-Я');
-                            $divPopoverArrowDown.append(btn)
-                            btn.on('click', function () {
-                                pcTable.sort(field, 1);
-                            })
                         }
-                        //sort z-a
+
+                        //select column
                         {
                             let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-sort-alpha-desc"></i> Сортировать Я-А');
+                            btn.append('<i class="fa fa-hand-pointer-o"></i> Выделить');
                             $divPopoverArrowDown.append(btn);
                             btn.on('click', function () {
-                                pcTable.sort(field, -1);
+                                pcTable.selectedCells.empty();
+                                pcTable.selectedCells.selectColumn(field.name)
                             })
                         }
-
 
                         //Математические операции
                         if (field.category === 'column' && field.type === 'number') {
@@ -2219,21 +2261,23 @@
                                 let summ = 0, count = 0, max = null, min = null, notNumber = 0;
                                 let error = false;
                                 pcTable.dataSortedVisible.some(function (id) {
-                                    try {
-                                        let BigVal = Big(pcTable.data[id][field.name].v);
+                                    if (typeof id !== 'object') {
+                                        try {
+                                            let BigVal = Big(pcTable.data[id][field.name].v);
 
-                                        summ = Big(summ).plus(BigVal);
-                                        ++count;
-                                        if (max === null) max = BigVal;
-                                        else {
-                                            if (BigVal.gt(max)) max = BigVal;
+                                            summ = Big(summ).plus(BigVal);
+                                            ++count;
+                                            if (max === null) max = BigVal;
+                                            else {
+                                                if (BigVal.gt(max)) max = BigVal;
+                                            }
+                                            if (min === null) min = BigVal;
+                                            else {
+                                                if (BigVal.lt(min)) min = BigVal;
+                                            }
+                                        } catch (e) {
+                                            ++notNumber;
                                         }
-                                        if (min === null) min = BigVal;
-                                        else {
-                                            if (BigVal.lt(min)) min = BigVal;
-                                        }
-                                    } catch (e) {
-                                        ++notNumber;
                                     }
                                 });
 
@@ -2265,6 +2309,10 @@
                                 $('<tr><td>Нечисл. элементов</td><td>' + format(notNumber, true) + '</td></tr>').appendTo(tbody);
 
 
+                                if (pcTable.isTreeView) {
+                                    $div.append('<div>Посчитано только по видимым строкам</div>')
+                                }
+
                                 let title = field.title + (field.unitType ? ', ' + field.unitType : '');
                                 if (pcTable.isMobile) {
                                     App.mobilePanel(title, $div)
@@ -2291,6 +2339,8 @@
                                 }
                             })
                         }
+
+
                     }
 
                     //linkToSelectTable
@@ -2313,9 +2363,7 @@
                         container: pcTable._container,
                         placement: 'auto bottom'
                     });
-                    btnDropDown.on('click', function () {
-                        let btn = $(this);
-
+                    btnDropDown.on('click', () => {
                         if (field.category === 'column' && pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
                             if ($divPopoverArrowDown.find('.column-dropdown').length === 0)
                                 $divPopoverArrowDown.append('<div class="column-dropdown">По текущей странице </div>');
@@ -2323,14 +2371,18 @@
                             $divPopoverArrowDown.find('.column-dropdown').remove();
                         }
 
-                        if (!btn.data('bs.popover').tip().hasClass('in')) {
-                            btn.popover('show');
+                        if (!btnDropDown.data('bs.popover').tip().hasClass('in')) {
+                            btnDropDown.popover('show');
                             setTimeout(function () {
-                                pcTable._container.one('click', function () {
-                                    btn.popover('hide');
-                                });
+                                /* pcTable._container.one('click', function () {
+                                     btn.popover('hide');
+                                 });*/
+                                pcTable.closeCallbacks.push(() => {
+                                    btnDropDown.popover('hide');
+                                })
                             }, 20);
                         }
+
                     });
                     return btnDropDown;
 
@@ -2366,7 +2418,7 @@
             let $addBtn = $();
             if (!text && this.PageData && this.PageData.loading) {
                 text = 'Подождите, таблица загружается';
-            } else if (this.control.adding && !this.f.blockadd) {
+            } else if (this.isInsertable()) {
                 $addBtn = $('<button class="btn btn-warning btn-xxs">Добавить строку</button>').width(120)
                     .on('click', () => {
                         this.__$rowsButtons.find('[data-action="add"]:first').click();

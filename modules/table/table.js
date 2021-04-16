@@ -285,6 +285,7 @@
 //=include pcTableModules/TableTreeView._js
 //=include pcTableModules/TablePanelView._js
 //=include pcTableModules/TableRotatedView._js
+//=include pcTableModules/TableRestoreView._js
 
 
     $.extend(App.pcTableMain.prototype, {
@@ -444,6 +445,13 @@
                         let self = $(this);
                         pcTable.creatorIconsPopover(self)
                     })
+                    this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
+                        let self = $(this);
+                        let icons = self.closest('th').find('.creator-icons');
+                        if (!icons.is('[aria-describedby]')) {
+                            pcTable.creatorIconsPopover(icons);
+                        }
+                    })
                 }
                 pcTable._container.on('contextmenu', function (event) {
                     let self = $(event.target);
@@ -456,6 +464,8 @@
 
                 this._container.append(this._innerContainer);
 
+                this.saveFilterAndPage();
+
                 this.initRowsData()
 
 
@@ -467,6 +477,19 @@
                             pcTable.setWidthes();
                         }, 500);
                     });
+                }
+            },
+            saveFilterAndPage: function () {
+                if (this.tableRow.type === 'cycles') {
+                    if (this.filtersString || this.PageData)
+                        sessionStorage.setItem('cycles_filter', JSON.stringify({
+                            id: this.tableRow.id,
+                            filter: this.filtersString,
+                            offset: this.PageData ? this.PageData.offset : null,
+                            onPage: this.PageData ? this.PageData.onPage : null
+                        }))
+                    else
+                        sessionStorage.removeItem('cycles_filter')
                 }
             },
             refreshArraysFieldCategories: function () {
@@ -994,8 +1017,17 @@
                     this.openedPanels[id].close();
                 }
 
-                ['dataSorted', 'dataSortedVisible', '__checkedRows'].some(function (array) {
-                    let ind = this[array].indexOf(id);
+                ['dataSorted', 'dataSortedVisible', '__checkedRows'].forEach(function (array) {
+                    let ind;
+                    this[array].forEach((v, k) => {
+                        if (v.toString() === id.toString()) {
+                            ind = k
+                        } else if (typeof v === 'object') {
+                            if (v.row && v.row.id.toString() === id.toString())
+                                ind = k
+                        }
+                    })
+
                     if (ind !== -1) {
                         this[array].splice(ind, 1);
                     }

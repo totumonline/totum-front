@@ -306,7 +306,7 @@
 
                             if (!subFunc()) return error();
 
-                            let varName = stream.string.substring(stream.start + 1, stream.pos).replace(/^([shc]\.)?([a-z0-9_]+)$/, '$2');
+                            let varName = stream.string.substring(stream.start + 1, stream.pos).replace(/^([shcl]\.)?([a-z0-9_]+)$/, '$2');
 
                             if (varName !== 'n' && !/^[0-9a-z_]{2,}/.test(varName.replace(/\[.*/g, ''))) {
                                 classes += ' tmp-error'
@@ -338,7 +338,7 @@
 
                             if (stream.peek() === '#') {
                                 stream.next();
-                                while (/[a-z0-9_]/.test(stream.peek()) && stream.next()) {
+                                while (/[a-zA-Z0-9_]/.test(stream.peek()) && stream.next()) {
                                 }
                                 if (!subFunc()) return error();
                                 return 'code-var'
@@ -711,6 +711,18 @@
             , title: '',
             render: renderHint, type: '', curPos: token.start + 5, hint: hintFunc,
             tab: true
+        },$cond = {
+            text: 'cond``',
+            textVis: 'cond``'
+            , title: '',
+            render: renderHint, type: '', curPos: token.start + 5, hint: hintFunc,
+            tab: true
+        }, $str = {
+            text: 'str``',
+            textVis: 'str``'
+            , title: '',
+            render: renderHint, type: '', curPos: token.start + 4, hint: hintFunc,
+            tab: true
         };
 
         keywords = keywords.slice();
@@ -928,6 +940,7 @@
                         type: 'item-code-var'
                     },
                     {text: "$#nh", title: 'Текущий хост-name', render: renderHint, type: 'item-code-var'},
+                    {text: "$#duplicatedId", title: 'Ид дублированной строки', render: renderHint, type: 'item-code-var'},
                 ];
 
                 const funcSort = function (firsts) {
@@ -1027,8 +1040,10 @@
                         keywords = ActiveFuncNames.slice();
                         keywords.push('true');
                         keywords.push('false')
-                        keywords.push($math)
-                        keywords.push($json)
+                        keywords.unshift($math)
+                        keywords.unshift($json)
+                        keywords.unshift($cond)
+                        keywords.unshift($str)
                     }
                 }
             } else if (token.state.func && (token.type === 'error fieldParam' || /(\(|;\s*)$/.test(editor.getLine(cur.line).slice(0, token.start)))) {
@@ -1429,6 +1444,7 @@
                 }
                 hints.style.top = (top = pos.bottom - overlapY) + "px";
             }
+            
             (options.container || window.top.document.body).appendChild(hints);
 
             cm.addKeyMap(this.keyMap = buildKeyMap(options, {

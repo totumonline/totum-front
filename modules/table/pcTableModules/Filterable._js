@@ -98,6 +98,7 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
         this._refreshContentTable(false, true);
         this._headCellIdButtonsState();
     }
+    this.selectedCells.summarizer.check();
     App.fullScreenProcesses.hide();
 };
 App.pcTableMain.prototype.__applyFiltersToItem = function (item, notAttachIt) {
@@ -175,7 +176,7 @@ App.pcTableMain.prototype.addValueToFilters = function (fieldName, valObj) {
 };
 App.pcTableMain.prototype.isValInFilters = function (fieldName, valObj) {
     const pcTable = this;
-    if (!pcTable.filters[fieldName]) pcTable.filters[fieldName] = [];
+    if (!pcTable.filters[fieldName]) return false;
     let field = pcTable.fields[fieldName];
     let val = field.getFilterDataByValue.call(field, valObj);
 

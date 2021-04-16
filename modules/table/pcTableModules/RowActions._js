@@ -27,10 +27,12 @@
 
             /*dropdown Панель на id строки*/
 
-            pcTable._container.on('click', '.row_delete, .row_duplicate, .row_refresh, .cycle_refresh', function () {
+            pcTable._container.on('click', '.row_delete, .row_restore, .row_duplicate, .row_refresh, .cycle_refresh', function () {
                 let self = $(this);
                 if (self.is('.row_delete'))
                     pcTable.rows_delete.call(pcTable, $(this).data('tr'));
+                else if (self.is('.row_restore'))
+                    pcTable.rows_restore.call(pcTable, $(this).data('tr'));
                 else if (self.is('.row_duplicate'))
                     pcTable.row_duplicate.call(pcTable, $(this).data('tr'));
                 else if (self.is('.row_refresh'))
@@ -113,40 +115,51 @@
 
 
             if (shiftKey) {
+
+                const findIndex = (checkI) => {
+                    return (i) => {
+                        if (typeof i !== 'object') return i.toString() === checkI.toString()
+                    }
+                }
+
                 let idsToCheck = [];
 
                 let lastInd;
 
-                if (LastCheckAction.id && (!item.$checked) === LastCheckAction.isCheck && (lastInd = pcTable.dataSortedVisible.indexOf(LastCheckAction.id)) !== -1) {
-                    let nowInd = pcTable.dataSortedVisible.indexOf(item.id);
+                if (LastCheckAction.id && (!item.$checked) === LastCheckAction.isCheck && (lastInd = pcTable.dataSortedVisible.findIndex(findIndex(LastCheckAction.id))) !== -1) {
+                    let nowInd = pcTable.dataSortedVisible.findIndex(findIndex(item.id));
                     if (lastInd < nowInd) {
                         idsToCheck = pcTable.dataSortedVisible.slice(lastInd + 1, nowInd + 1);
                     } else {
                         idsToCheck = pcTable.dataSortedVisible.slice(nowInd, lastInd);
                     }
-
-
                 } else {
                     pcTable.dataSortedVisible.some(function (id) {
-                        if (pcTable.data[id].$checked) idsToCheck = [];
-                        else {
-                            idsToCheck.push(id);
-                        }
-                        if (id === item.id) {
-                            return true;
+                        if (typeof id !== 'object') {
+                            if (pcTable.data[id].$checked) idsToCheck = [];
+                            else {
+                                idsToCheck.push(id);
+                            }
+                            if (id == item.id) {
+                                return true;
+                            }
                         }
                     });
                 }
                 if (!item.$checked) {
 
                     idsToCheck.forEach(function (id) {
-                        pcTable.__checkedRows.push(id);
-                        pcTable.row_actions_check(pcTable.data[id], true);
+                        if (typeof id !== 'object') {
+                            pcTable.__checkedRows.push(id);
+                            pcTable.row_actions_check(pcTable.data[id], true);
+                        }
                     });
                 } else {
                     idsToCheck.forEach(function (id) {
-                        pcTable.__checkedRows.splice(pcTable.__checkedRows.indexOf(id), 1);
-                        pcTable.row_actions_uncheck(pcTable.data[id], true);
+                        if (typeof id !== 'object') {
+                            pcTable.__checkedRows.splice(pcTable.__checkedRows.indexOf(id), 1);
+                            pcTable.row_actions_uncheck(pcTable.data[id], true);
+                        }
                     });
                 }
                 this._headCellIdButtonsState();
@@ -317,8 +330,6 @@
                 let addedRows = [];
 
                 if (json.chdata.rows) {
-
-
                     if (json.refresh && json.chdata.rows) {
                         Object.keys(pcTable.data).forEach(function (id) {
                             if (json.chdata.rows[id] === undefined) {
@@ -328,9 +339,20 @@
                     }
 
                     if (json.chdata.tree) {
+                        let ids = {};
                         json.chdata.tree.forEach((tv, i) => {
                             this.getTreeBranch(tv, i);
+                            ids[tv.v] = true;
                         })
+
+                        if (json.refresh) {
+                            Object.keys(this.treeIndex).forEach((id) => {
+                                if (id && !ids[id]) {
+                                    this.removeTreeBranch(id);
+                                    this.treeRefresh = true;
+                                }
+                            })
+                        }
                     }
 
 
@@ -339,6 +361,7 @@
                         if (item === undefined) {
                             addedRows.push(v);
                         } else {
+
                             pcTable.refreshRow(item.$tr, item, v);
                         }
                     });
@@ -414,7 +437,9 @@
 
                         }
                     }
-                    pcTable.selectedCells.summarizer.check();
+                    if (pcTable.selectedCells) {
+                        pcTable.selectedCells.summarizer.check();
+                    }
                 }
 
                 if (deleted.length) {
@@ -444,7 +469,7 @@
                     }
 
                     this._refreshContentTable(0, false, true);
-                    //this.ScrollClasterized.insertToDOM(undefined, true);
+                    this._container.getNiceScroll().resize();
                 }
 
                 if (json.chdata.order) {
@@ -574,10 +599,14 @@
             }
 
 
-            if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
-                text.append($('<div class="menu-item"><i class="fa fa-times"></i> Удалить</div>').css('color', 'gray'));
+            if (this.isRestoreView) {
+                text.append($('<div class="menu-item row_restore"><i class="fa fa-recycle"></i> Восстановить</div>').attr('data-tr', trId));
             } else {
-                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> Удалить</div>').attr('data-tr', trId));
+                if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
+                    text.append($('<div class="menu-item"><i class="fa fa-times"></i> Удалить</div>').css('color', 'gray'));
+                } else {
+                    text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> Удалить</div>').attr('data-tr', trId));
+                }
             }
 
             let popoverId = App.popNotify({
@@ -749,18 +778,17 @@
                             let newCheckedRows = [];
 
                             pcTable.dataSortedVisible.forEach(function (idObj) {
-                                let id = idObj;
-                                if(typeof idObj === 'object' && idObj.row){
-                                    id = idObj.row.id
+                                let id = parseInt(idObj);
+                                if (typeof idObj === 'object' && idObj.row) {
+                                    id = parseInt(idObj.row.id)
                                 }
                                 if (checkedRows.indexOf(id) !== -1) {
                                     newCheckedRows.push(id);
                                 }
                             });
-                            checkedRows = newCheckedRows;
 
                             const duplicate = function (dialogRef) {
-                                pcTable.model.duplicate(checkedRows, unic_replaces, trId).then(function (json) {
+                                pcTable.model.duplicate(newCheckedRows, unic_replaces, trId).then(function (json) {
                                     pcTable.table_modify.call(pcTable, json, trId);
                                     if (dialogRef)
                                         dialogRef.close();
@@ -795,8 +823,8 @@
                                     $head.append($('<td></td>').text(field.title));
                                 }
 
-                                for (let i in checkedRows) {
-                                    let id = checkedRows[i];
+                                for (let i in newCheckedRows) {
+                                    let id = newCheckedRows[i];
                                     let row = pcTable.data[id];
                                     let tr = $('<tr>');
 
@@ -946,6 +974,57 @@
                 BootstrapDialog.show({
                     message: $message,
                     title: 'Удаление',
+                    buttons: buttons,
+                    onhidden: function () {
+                        if (checkedRows.length === 1 && checkedRows[0] == checkedOneId) {
+                            pcTable.row_actions_uncheck_all();
+                        }
+                    },
+                    draggable: true
+                })
+            }
+        },
+        rows_restore: function (trId) {
+            let pcTable = this;
+            let checkedRows = this.__getCheckedRowsIds(trId);
+            let checkedOneId = checkedRows.length === 1 ? checkedRows[0] : null;
+            if (checkedRows && checkedRows.length) {
+
+                let $message = 'Точно восстановить ' + checkedRows.length + ' строк?';
+                if (checkedRows.length == 1) {
+                    let item = 'id-' + checkedRows[0];
+                    if (pcTable.mainFieldName != 'id') {
+                        item = pcTable.data[checkedRows[0]][pcTable.mainFieldName];
+                        item = 'id-' + checkedRows[0] + ' "' + (item.v_ && item.v_[0] ? item.v_[0] : item.v) + '"';
+                    }
+                    $message = 'Точно восстановить строку ' + item + '?';
+                }
+
+
+                let buttons = [
+                    {
+                        label: 'Восстановить',
+                        cssClass: 'btn-danger',
+                        action: function (dialogRef) {
+                            dialogRef.close();
+
+                            pcTable.model.restore(checkedRows).then(function (json) {
+                                pcTable.table_modify.call(pcTable, json);
+                            });
+                        }
+                    }, {
+                        label: 'Отмена',
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                        }
+
+                    }
+                ];
+
+
+                BootstrapDialog.show({
+                    message: $message,
+                    title: 'Восстановление',
                     buttons: buttons,
                     onhidden: function () {
                         if (checkedRows.length === 1 && checkedRows[0] == checkedOneId) {

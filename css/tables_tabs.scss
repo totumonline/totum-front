@@ -1,0 +1,30 @@
+#tables_tabls {
+  iframe {
+    width: 100%;
+    height: calc(100vh - 130px);
+
+  }
+
+  .nav-tabs > li > a {
+    color: #555 !important;
+  }
+
+  padding-left: 40px;
+  padding-right: 40px;
+
+  #main-page {
+    padding-top: 20px;
+  }
+
+  .nav-tabs {
+    border-bottom-color: transparent;
+    >li>a:hover{
+      border-color: transparent;
+    }
+    >li.active>a{
+      border-color: transparent;
+      background-color: #fafafa;
+    }
+  }
+
+}
