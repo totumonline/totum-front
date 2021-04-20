@@ -515,6 +515,9 @@
                 case 'text':
                     dialogs.push(showText(data[1], model));
                     break;
+                case 'json':
+                    dialogs.push(showJson(data[1], model));
+                    break;
                 case 'print':
                     dialogs.push(showPrint(data[1]['body'], data[1]['styles']));
                     break;
@@ -756,6 +759,11 @@
 
     function showText(data, model) {
         dialog(data['title'], data['text'], data.width, data.refresh, null, model)
+    }
+    function showJson(data, model) {
+        let div=$('<div>');
+        new JSONEditor(div.get(0), {mode: "view"}, data['json'])
+        dialog(data['title'], div, data.width, data.refresh, null, model)
     }
 
     function showNotificationTable(data, closeMe) {

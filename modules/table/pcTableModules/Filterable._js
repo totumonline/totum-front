@@ -98,7 +98,7 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
         this._refreshContentTable(false, true);
         this._headCellIdButtonsState();
     }
-    this.selectedCells.summarizer.check();
+    this.selectedCells && this.selectedCells.summarizer.check();
     App.fullScreenProcesses.hide();
 };
 App.pcTableMain.prototype.__applyFiltersToItem = function (item, notAttachIt) {

@@ -668,12 +668,12 @@
                             if (data.id == this.tableRow.tree_node_id) {
                                 topPathId += '?';
                                 if (data.filter)
-                                    topPathId += 'f='+encodeURIComponent(data.filter);
-                                if(data.onPage){
+                                    topPathId += 'f=' + encodeURIComponent(data.filter);
+                                if (data.onPage) {
                                     if (data.filter)
                                         topPathId += '&';
-                                    topPathId += 'onPage='+encodeURIComponent(data.onPage);
-                                    topPathId += '&offset='+encodeURIComponent(data.offset);
+                                    topPathId += 'onPage=' + encodeURIComponent(data.onPage);
+                                    topPathId += '&offset=' + encodeURIComponent(data.offset);
                                 }
 
                             }
@@ -1287,8 +1287,10 @@
                 _footersSubTable.appendTo(scrollWrapper);
                 return _footersSubTable;
             } else {
-                this._footersSubTable.replaceWith(_footersSubTable);
-                this._footersSubTable = _footersSubTable;
+                if (this._footersSubTable) {
+                    this._footersSubTable.replaceWith(_footersSubTable);
+                    this._footersSubTable = _footersSubTable;
+                }
             }
 
             if (pcTable.isMobile) {
