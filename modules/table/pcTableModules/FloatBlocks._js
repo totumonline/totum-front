@@ -113,6 +113,7 @@
                 platemh = false;
                 sectionField = field;
                 blocktitle = {};
+                formatsFromSection = {};
 
 
                 let sectionParams = {};
@@ -432,6 +433,29 @@
 
                 let td = pcTable._createCell(pcTable.data_params, field.field).appendTo(tdWrapper);
 
+                if (pcTable.isCreatorView) {
+                    let extraHeight = 33;
+                    if (!field.field.isNoTitles) {
+                        extraHeight = 68;
+                    }
+                    if (field.format.maxheight) {
+                        field.format.maxheight = parseInt(field.format.maxheight) + extraHeight
+                    }
+                    if (field.format.height) {
+                        field.format.height = parseInt(field.format.height) + extraHeight
+                    }
+
+                } else {
+                    if (!field.field.isNoTitles) {
+                        let extraHeight = 35;
+                        if (field.format.maxheight) {
+                            field.format.maxheight = parseInt(field.format.maxheight) + extraHeight
+                        }
+                        if (field.format.height) {
+                            field.format.height = parseInt(field.format.height) + extraHeight
+                        }
+                    }
+                }
 
                 if (field.format.maxheight) {
                     let style = {'maxHeight': field.format.maxheight};

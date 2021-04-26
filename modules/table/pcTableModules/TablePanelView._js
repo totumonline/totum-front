@@ -131,7 +131,7 @@
                     if (!td.isAttached()) {
                         setTimeout(addProgress, 50);
                     } else {
-                        let progress = Math.round(td.width() * parseInt(format.progress) / 100);
+                        let progress = Math.round(td.outerWidth() * parseInt(format.progress) / 100);
                         td.css('box-shadow', 'inset ' + progress.toString() + 'px 0px 0 0 ' + format.progresscolor);
                     }
                 };
