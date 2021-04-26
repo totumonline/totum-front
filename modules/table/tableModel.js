@@ -589,6 +589,8 @@
                 return this.__ajax('post', {method: 'loadUserButtons'})
             }, userButtonsClick: function (hash, index) {
                 return this.__ajax('post', {method: 'userButtonsClick', hash: hash, index: index})
+            }, filesUpload: function (files, hash) {
+                return this.__ajax('post', {method: 'filesUpload', "files":JSON.stringify(files), hash:hash});
             },
             loadPage: function (pcTable, lastId, count, prevLastId, offset) {
                 let _filters = {};
