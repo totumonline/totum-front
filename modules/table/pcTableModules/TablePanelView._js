@@ -271,7 +271,7 @@
 
             $(div).find('.kanban').sortable({
                 items: '.panelsView-card',
-                connectWith: this.fields[this.tableRow.panels_view.kanban].editable ? '.kanban' : undefined,
+                connectWith: this.fields[this.tableRow.panels_view.kanban].editable ? '.kanban' : "",
                 stop: (event, ui) => {
                     let $item = $(ui.item);
                     let itemId = $item.data('id');
@@ -433,7 +433,6 @@
 
         let rowsParent = $('<div class="pcTable-rowsWrapper">').appendTo(scrollWrapper);
 
-
         rowsParent
             .append(this._createRowsTitle(rowsParent))
             .append(this._createFiltersBlock())
@@ -536,7 +535,7 @@
         if (this.kanban) {
             let scrollable = this._container;
             let scroll_debounce;
-            let wrapper, cln, attached = false;
+            let wrapper, cln, topButton, attached = false;
             const scrollFunc = () => {
                 wrapper = wrapper || this._container.find('.kanbanWrapper.pcTable-floatBlock');
                 let offset = wrapper.offset();
@@ -553,14 +552,20 @@
                             let knb = $("<div class='kanban'>").width(exs.width()).append(exs.find('.kanban-title').clone())
                             cln.append(knb)
                         })
+                        let pcTable = this;
+                        topButton=$('<button class="scroll-top-button"><i class="fa fa-arrow-up"></i></button>').on('click', function () {
+                            pcTable._container.scrollTop(pcTable._container.find('.pcTable-rowsWrapper').offset().top - pcTable.scrollWrapper.offset().top);
+                        });
                     }
                     if (!attached) {
                         attached = true;
                         this._innerContainer.append(cln)
+                        this._innerContainer.append(topButton)
                     }
                 } else if (attached) {
                     attached = false;
                     cln.detach();
+                    topButton.detach();
                 }
             };
             scrollable.on('scroll', () => {

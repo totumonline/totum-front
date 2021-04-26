@@ -2144,61 +2144,63 @@
                             btn.appendTo($divPopoverArrowDown);
 
 
-                            //ширина
-                            btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-arrows-h"></i> Ширина поля');
-                            btn.on('click', function () {
-                                btnDropDown.popover('hide');
-                                let div = $('<div><input type="number" class="form-control" value="' + field.showMeWidth + '" style="padding-left: 2px;"/></div>');
-                                let btns = [
-                                    {
-                                        label: 'Применить',
-                                        action: function (dialog) {
-                                            let width = parseInt(div.find('input').val());
-                                            dialog.close();
-                                            field.pcTable.setColumnWidth.call(field.pcTable, field.name, width);
+                            if (field.category !== 'column' || !pcTable.isRotatedView) {
+                                //ширина
+                                btn = $('<div class="menu-item">');
+                                btn.append('<i class="fa fa-arrows-h"></i> Ширина поля');
+                                btn.on('click', function () {
+                                    btnDropDown.popover('hide');
+                                    let div = $('<div><input type="number" class="form-control" value="' + field.showMeWidth + '" style="padding-left: 2px;"/></div>');
+                                    let btns = [
+                                        {
+                                            label: 'Применить',
+                                            action: function (dialog) {
+                                                let width = parseInt(div.find('input').val());
+                                                dialog.close();
+                                                field.pcTable.setColumnWidth.call(field.pcTable, field.name, width);
 
-                                        }
-                                    },
-                                    {
-                                        label: 'Отмена',
-                                        action: function (dialog) {
-                                            dialog.close()
-                                        }
-                                    }
-                                ];
-                                if (pcTable.isCreatorView) {
-                                    btns.splice(0, 0, {
-                                        label: 'По умолчанию',
-                                        cssClass: 'btn-m btn-danger',
-                                        action: function (dialog) {
-                                            let width = parseInt(div.find('input').val());
-                                            dialog.close();
-                                            field.pcTable.setColumnWidth.call(field.pcTable, field.name, width, field.id);
-                                        }
-                                    })
-                                }
-                                BootstrapDialog.show({
-                                    message: div,
-                                    /*cssClass: 'edit-row-panel',*/
-                                    title: 'Ширина поля ' + field.title,
-                                    onshown: function (dialog) {
-                                        let inp = div.find('input');
-                                        inp.focus();
-                                        inp.on('keydown', function (event) {
-                                            if (event.keyCode === 13) {
-                                                field.pcTable.setColumnWidth.call(field.pcTable, field.name, parseInt(div.find('input').val()));
+                                            }
+                                        },
+                                        {
+                                            label: 'Отмена',
+                                            action: function (dialog) {
                                                 dialog.close()
                                             }
-                                        });
-                                        dialog.$modalDialog.width(500);
-                                    },
-                                    buttons: btns,
-                                    draggable: true
-                                })
+                                        }
+                                    ];
+                                    if (pcTable.isCreatorView) {
+                                        btns.splice(0, 0, {
+                                            label: 'По умолчанию',
+                                            cssClass: 'btn-m btn-danger',
+                                            action: function (dialog) {
+                                                let width = parseInt(div.find('input').val());
+                                                dialog.close();
+                                                field.pcTable.setColumnWidth.call(field.pcTable, field.name, width, field.id);
+                                            }
+                                        })
+                                    }
+                                    BootstrapDialog.show({
+                                        message: div,
+                                        /*cssClass: 'edit-row-panel',*/
+                                        title: 'Ширина поля ' + field.title,
+                                        onshown: function (dialog) {
+                                            let inp = div.find('input');
+                                            inp.focus();
+                                            inp.on('keydown', function (event) {
+                                                if (event.keyCode === 13) {
+                                                    field.pcTable.setColumnWidth.call(field.pcTable, field.name, parseInt(div.find('input').val()));
+                                                    dialog.close()
+                                                }
+                                            });
+                                            dialog.$modalDialog.width(500);
+                                        },
+                                        buttons: btns,
+                                        draggable: true
+                                    })
 
-                            });
-                            btn.appendTo($divPopoverArrowDown);
+                                });
+                                btn.appendTo($divPopoverArrowDown);
+                            }
                         }
 
                     }
@@ -2211,7 +2213,7 @@
                                     btnDropDown.popover('hide');
                                     pcTable.fixColumn();
                                 });
-                        } else if (field.type !== 'button') {
+                        } else if (field.type !== 'button' && !pcTable.isRotatedView) {
                             $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Закрепить').appendTo($divPopoverArrowDown)
                                 .on('click', function () {
                                     btnDropDown.popover('hide');
