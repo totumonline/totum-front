@@ -386,6 +386,57 @@
         let props;
         datas.forEach(function (data) {
             switch (data[0]) {
+                case 'fileUpload':
+                    let inputFile = $('<input type="file" ' + (data[1].limit > 1 ? 'multiple' : '') + ' accept="' + data[1].type + '" style="display:none">').appendTo('body').click();
+                    inputFile.on('change', function () {
+                        let promices = [];
+                        if (this.files.length > data[1].limit) {
+                            App.notify('Превышен лимит файлов для закачки');
+                        } else {
+
+                            for (var i = 0; i < this.files.length; i++) {
+                                let file = this.files.item(i);
+                                promices.push(new Promise((resolve, reject) => {
+                                    var reader = new FileReader();
+                                    reader.onloadend = function () {
+                                        resolve({"name": file.name, "base64": btoa(reader.result)});
+                                    }
+                                    reader.readAsBinaryString(file);
+                                }))
+                            }
+
+                            Promise.all(promices).then((fileArr) => {
+                                model.filesUpload(fileArr, data[1].hash).then(() => {
+                                    if (data[1].refresh) {
+                                        model.refresh(null, data[1].refresh)
+                                    }
+                                })
+                            })
+                        }
+                    });
+                    break;
+                case 'files':
+                    data[1].files.forEach((file) => {
+                        var sliceSize = 512;
+                        var byteCharacters = atob(file.string);
+                        var byteArrays = [];
+
+                        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                            var slice = byteCharacters.slice(offset, offset + sliceSize);
+                            var byteNumbers = new Array(slice.length);
+
+                            for (var i = 0; i < slice.length; i++) {
+                                byteNumbers[i] = slice.charCodeAt(i);
+                            }
+                            var byteArray = new Uint8Array(byteNumbers);
+                            byteArrays.push(byteArray);
+                        }
+
+
+                        let blob = new Blob(byteArrays, {type: file.type});
+                        saveAs(blob, file.name);
+                    })
+                    break;
                 case 'input':
                     let input, Dialog;
                     let html = $('<div>').html(data[1].html);
@@ -393,9 +444,9 @@
                         input = html.find('#ttmInput');
                     } else {
                         input = $('<input type="text" class="form-control" id="ttmInput">');
-                        if (data[1].type){
+                        if (data[1].type) {
                             input.attr('type', data[1].type)
-                            if(data[1].type==='password'){
+                            if (data[1].type === 'password') {
                                 input.attr('autocomplete', "off")
                             }
                         }
@@ -412,10 +463,9 @@
 
                     let save = function () {
                         model.inputClick(data[1].hash, input.val()).then(function () {
-                            if(data[1].close && wnd && wnd.closeMe){
+                            if (data[1].close && wnd && wnd.closeMe) {
                                 window.closeMe();
-                            }
-                            else if (data[1].refresh) {
+                            } else if (data[1].refresh) {
                                 model.refresh(null, data[1].refresh)
                             }
                             Dialog.close();
@@ -460,10 +510,9 @@
                                 label: btn.text,
                                 action: function (dialog) {
                                     model.buttonsClick(data[1].hash, i).then(function () {
-                                        if(data[1].close && wnd && wnd.closeMe){
+                                        if (data[1].close && wnd && wnd.closeMe) {
                                             window.closeMe();
-                                        }
-                                        else if (data[1].buttons[i].refresh) {
+                                        } else if (data[1].buttons[i].refresh) {
                                             model.refresh(null, data[1].buttons[i].refresh)
                                         }
                                         dialog.close();
@@ -640,7 +689,7 @@
         const showPanel = function () {
             let panel = panels.shift();
 
-            let data = {}, fixed= {};
+            let data = {}, fixed = {};
             if (panel.id) {
                 data.id = panel.id;
             } else if (panel.field) {
@@ -760,8 +809,9 @@
     function showText(data, model) {
         dialog(data['title'], data['text'], data.width, data.refresh, null, model)
     }
+
     function showJson(data, model) {
-        let div=$('<div>');
+        let div = $('<div>');
         new JSONEditor(div.get(0), {mode: "view"}, data['json'])
         dialog(data['title'], div, data.width, data.refresh, null, model)
     }
@@ -800,9 +850,9 @@
             }
         }
 
-        let src = '/Table/0/' + data.table_id + '?sess_hash=' + data.sess_hash+'&iframe=1';
+        let src = '/Table/0/' + data.table_id + '?sess_hash=' + data.sess_hash + '&iframe=1';
         if (window.location.pathname !== '/' && !/^\/Table\//.test(window.location.pathname))
-            src = data.table_id + '?sess_hash=' + data.sess_hash+'&iframe=1';
+            src = data.table_id + '?sess_hash=' + data.sess_hash + '&iframe=1';
 
         let $iframe = $('<iframe style="width: 100%; height: ' + (height || "80vh") + '; border: none;" src="' + src + '">');
         $('body').append($iframe);
