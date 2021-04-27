@@ -538,7 +538,11 @@
                             }
 
                             Promise.all(promices).then((fileArr) => {
-                                model.filesUpload(fileArr, data[1].hash)
+                                model.filesUpload(fileArr, data[1].hash).then(()=>{
+                                    if(data[1].refresh){
+                                        model.refresh(null, data[1].refresh)
+                                    }
+                                })
                             })
                         }
                     });
