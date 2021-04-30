@@ -555,8 +555,9 @@
             if (!this.isAnonim && !pcTable.beforeSpaceHide)
                 csv.append(this._getFavoriteStar());
 
+
             if (this.tableRow.panels_view) {
-                if (this.tableRow.panels_view.state === 'both' && !pcTable.isMobile && window === window.top) {
+                if (this.tableRow.panels_view.state === 'both' && !pcTable.isMobile && window === window.top && pcTable.panels!=='off') {
                     let btn;
                     if (this.viewType !== 'panels') {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
@@ -1139,7 +1140,7 @@
                     pcTable.filterData[v.name] = $.extend(true, {}, pcTable.data_params[v.name]);
                 });
 
-                pcTable.model.addFiltersData({'filters': pcTable.filtersString});
+                pcTable.model.addExtraData({'filters': pcTable.filtersString});
             }
 
             let changed = [];

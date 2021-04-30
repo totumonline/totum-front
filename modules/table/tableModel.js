@@ -41,7 +41,7 @@
                 offset = _offset;
                 onPage = _onPage
             },
-            addFiltersData: function (filters) {
+            addExtraData: function (filters) {
                 "use strict";
                 extraData = $.extend(true, {}, extraData, filters);
             },

@@ -516,6 +516,7 @@
     App.pcTableMain.prototype._renderTablePanelView = function () {
 
         this.loadFilters();
+        this.model.addExtraData({'panelsView':true})
 
         this._renderTable = render.bind(this);
         this._getRowCard = getRowCard.bind(this);
