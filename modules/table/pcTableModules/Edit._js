@@ -611,13 +611,25 @@ $.extend(App.pcTableMain.prototype, {
                     item = $.extend(true, {}, item);
                     if (isAdded) {
 
-                        if (field.multiple) {
-                            item[field.name].v = field.getEditVal(input);
-                            item[field.name].v.push(Object.keys(data.json.chdata.rows)[0]);
+                        let addVal;
+                        if (field.selectTableBaseField) {
+                            addVal = data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]][field.selectTableBaseField].v;
                         } else {
-                            item[field.name].v = Object.keys(data.json.chdata.rows)[0];
+                            addVal = Object.keys(data.json.chdata.rows)[0];
                         }
 
+
+                        if (field.multiple) {
+                            item[field.name].v = field.getEditVal(input);
+                            item[field.name].v.push(addVal);
+                        } else {
+                            item[field.name].v = addVal;
+                        }
+
+                    } else if (field.selectTableBaseField) {
+                        if (!field.multiple) {
+                            item[field.name].v = data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]][field.selectTableBaseField].v;
+                        }
                     }
 
                     if (!isAdded && field.category === 'column') {
@@ -630,6 +642,7 @@ $.extend(App.pcTableMain.prototype, {
                             pcTable.data_params[field.name].v_ = viewArray;
                         }
                     };
+
                     inputOld.replaceWith(input = field.getEditElement(inputOld, item[field.name], item, saveClbck, escClbck, blurClbck));
                     onAction = false;
                 })
