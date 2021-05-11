@@ -67,7 +67,7 @@
                 App.showDatas.call(pcTable.model, json.interfaceDatas, null, window);
                 delete json.interfaceDatas;
             }, showPanels: function (json) {
-                App.showPanels(json.panels);
+                App.showPanels(json.panels, pcTable);
                 delete json.panels;
             },
             addPcTable: function (pcTableIn) {
@@ -190,6 +190,12 @@
                             if (json.interfaceDatas && json.interfaceDatas.length > 0) Model.shoInterfaceDatas(json);
                             if (json.panels && json.panels.length > 0) Model.showPanels(json);
                         }
+                        if(json.chdata && json.updated && pcTable.editPanels){
+                            pcTable.editPanels.forEach((panel)=>{
+                                panel.refresh();
+                            })
+                        }
+
                         $d.resolve(json);
                     } else {
                         var errorText = $('<div>').html(json.error.replace(/\[\[(.*?)\]\]/g, '<b>$1</b>'));

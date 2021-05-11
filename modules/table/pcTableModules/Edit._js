@@ -82,7 +82,7 @@ $.extend(App.pcTableMain.prototype, {
         return next;
     },
     _buttonClick: function ($td, field, item) {
-        if ($td.data('clicked')) return false;
+        if ($td.data('clicked')) return Promise.resolve();
 
         return new Promise((resolve, reject) => {
             const func = function () {

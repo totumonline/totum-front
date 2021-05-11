@@ -315,7 +315,7 @@
             let editFieldName = editedObj ? editedObj.data('field') : undefined;
 
 
-            if (pcTable.isPanel) {
+            if (pcTable.isPanel && json.chdata) {
                 delete json.chdata.params;
             }
 

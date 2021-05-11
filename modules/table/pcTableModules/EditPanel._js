@@ -1,4 +1,6 @@
 let panelId = 0;
+
+
 window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertChangesCalcsFields = {}) {
 
     if (window.top !== window) return window.top.EditPanel.call(window.top, pcTable, dialogType, inData, isElseItems, insertChangesCalcsFields);
@@ -9,6 +11,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     EditPanelFunc.panelId = 'panel' + (panelId++);
 
     let isEditFieldPanel = pcTable === 2 || (typeof pcTable === 'object' && pcTable.tableRow.id === 2);
+    let manuallyChanged = {};
 
     let $d = $.Deferred();
 
@@ -76,6 +79,17 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             }
         })
     };
+
+    this.refresh = () => {
+        EditPanelFunc.pcTable.model[checkMethod](this.getDataForPost("manual"), Object.keys(insertChangesCalcsFields)).then(function (json) {
+            Object.keys(json.row).forEach((k) => {
+                if (!(k in manuallyChanged)) {
+                    firstLoad[k] = json.row[k]
+                }
+            })
+            EditPanelFunc.editRow.call(EditPanelFunc, json);
+        })
+    }
 
     this.editRow = function (json) {
 
@@ -424,10 +438,17 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             });
         }
 
+        const onClose = () => {
+            if (this.mainPanelId !== undefined) {
+                pcTable.editPanels.splice(this.mainPanelId, 1);
+            }
+        }
+
         if (!isElseItems) {
 
             EditPanel.close = function () {
                 EditPanel.bootstrapPanel.close();
+                onClose();
             }
 
             buttons.push({
@@ -445,6 +466,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 $(window.top.document.body).trigger('pctable-closed', {'type': 'panel'});
                 EditPanelFunc.resolved = true;
                 EditPanel.bootstrapPanel.close();
+                onClose();
             }
 
             buttons.push({
@@ -543,8 +565,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (field.type === 'button' && EditPanelFunc.pcTable) {
                 cell.on('click', function () {
-                    EditPanelFunc.pcTable._buttonClick(cell, field, item).then(()=>{
-                        if(field.closeIframeAfterClick){
+                    EditPanelFunc.pcTable._buttonClick(cell, field, item).then(() => {
+                        if (field.closeIframeAfterClick) {
                             EditPanelFunc.close();
                         }
                     });
@@ -552,9 +574,6 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             } else {
                 if (field.CodeActionOnClick && !divWrapper.find('.edit-btn').length) {
                     divWrapper.append($('<button class="btn btn-sm btn-default edit-btn" style="width: 100%"><i class="fa fa-hand-pointer-o"></i></button>').on('click', () => {
-                        EditPanelFunc.pcTable.model.refresh = () => {
-                            window.location.reload();
-                        }
                         EditPanelFunc.pcTable.model.dblClick(item.id, field.name).then((json) => {
                         })
                     }))
@@ -628,6 +647,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         }
                     }
                     EditPanelFunc.checkRow(val);
+                    manuallyChanged[field.name] = true;
                 }
             }
             onAction = false;
@@ -761,7 +781,15 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             data.id = EditPanelFunc.editItem.id;
         }
         EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (f) {
-            let editItem = val[f.name] || EditPanelFunc.editItem[f.name];
+            let editItem;
+
+            if (val === 'manual') {
+                if (f.name in manuallyChanged) {
+                    editItem = EditPanelFunc.editItem[f.name];
+                }
+            } else {
+                editItem = val[f.name] || EditPanelFunc.editItem[f.name];
+            }
 
             if (f.type == 'comments') {
                 if (editItem && typeof editItem.v !== 'string')
@@ -840,20 +868,45 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
 
     const _refreshContentTable = () => {
-
+        EditPanelFunc.refresh();
     };
 
+    const checkIsThisTable = (pcTable) => {
+
+        let mainTable = $('#table').data('pctable');
+
+        if (mainTable.tableRow.id === pcTable.tableRow.id && mainTable.tableRow.cycle_id === pcTable.tableRow.cycle_id) {
+            if (this.panelType === 'edit') {
+                if (!mainTable.editPanels) {
+                    mainTable.editPanels = [];
+                }
+                mainTable.editPanels.push(this)
+                this.mainPanelId = mainTable.editPanels.length - 1;
+            }
+        }
+
+        if (mainTable !== pcTable) {
+            pcTable.isPanel = true;
+            EditPanelFunc.pcTable.model.refresh = () => {
+                EditPanelFunc.refresh();
+            }
+        }
+    }
+
     if (typeof EditPanelFunc.pcTable !== 'object') {
+
         App.getPcTableById(EditPanelFunc.pcTable).then(function (pcTable) {
             EditPanelFunc.pcTable = pcTable;
 
-            pcTable.isPanel = true;
+
             pcTable._refreshContentTable = _refreshContentTable;
+
             EditPanelFunc.checkRow({}, true);
 
             if (EditPanelFunc.editItem.id) {
                 pcTable.model.setLoadedTableData({[EditPanelFunc.editItem.id]: {}});
             }
+            checkIsThisTable(pcTable)
         });
     } else if (EditPanelFunc.pcTable[0]) {
         App.getPcTableById(EditPanelFunc.pcTable[0], {sess_hash: EditPanelFunc.pcTable[1]}).then(function (pcTable) {
@@ -861,12 +914,15 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 pcTable.model.setLoadedTableData(EditPanelFunc.pcTable[2]);
             }
             EditPanelFunc.pcTable = pcTable;
-            pcTable.isPanel = true;
+
             pcTable._refreshContentTable = _refreshContentTable;
+
             EditPanelFunc.checkRow({}, true);
+            checkIsThisTable(pcTable)
         });
     } else {
         EditPanelFunc.checkRow({}, true);
+        checkIsThisTable(pcTable)
     }
 
 

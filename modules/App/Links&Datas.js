@@ -681,7 +681,7 @@
         });
         return $d.promise();
     };
-    App.showPanels = function (panels) {
+    App.showPanels = function (panels, InPcTable) {
         if (window.top != window) return window.top.App.showPanels.call(window.top, panels)
 
         let pcTables = {};
@@ -698,7 +698,8 @@
             }
 
             const show = function (pcTable) {
-                (new EditPanel(pcTable.tableRow.id, null, data, panels.length > 0, fixed)).then(function (json, isNext) {
+
+                (new EditPanel(pcTable, null, data, panels.length > 0, fixed)).then(function (json, isNext) {
                     if (json || isNext) {
                         if (panels.length) {
                             showPanel();
@@ -706,8 +707,7 @@
                         }
                     }
                     if (panel.refresh) {
-                        let pcTable = $('#table').data('pctable');
-                        pcTable.model.refresh(null, panel.refresh)
+                        InPcTable.model.refresh(null, panel.refresh)
                     }
                     def.resolve();
                 });

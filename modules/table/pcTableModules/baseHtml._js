@@ -557,7 +557,7 @@
 
 
             if (this.tableRow.panels_view) {
-                if (this.tableRow.panels_view.state === 'both' && !pcTable.isMobile && window === window.top && pcTable.panels!=='off') {
+                if (this.tableRow.panels_view.state === 'both' && !pcTable.isMobile && window === window.top && pcTable.panels !== 'off') {
                     let btn;
                     if (this.viewType !== 'panels') {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
