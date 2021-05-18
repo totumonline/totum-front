@@ -11,7 +11,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     EditPanelFunc.panelId = 'panel' + (panelId++);
 
     let isEditFieldPanel = pcTable === 2 || (typeof pcTable === 'object' && pcTable.tableRow.id === 2);
-    let manuallyChanged = {};
+    let manuallyChanged = {}, closed = false, fieldParamsChanged = false;
 
     let $d = $.Deferred();
 
@@ -30,19 +30,21 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     EditPanelFunc.resolved = false;
     EditPanelFunc.error = {};
 
-    let firstLoad = {};
+    let firstLoad = {}, hash;
 
 
     this.checkRow = async function (val, isFirstLoad) {
         let self = this;
         const Check = () => {
             return new Promise(function (resolve, reject) {
-                EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), Object.keys(insertChangesCalcsFields)).then(function (json) {
+                EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), hash).then(function (json) {
                     if (EditPanelFunc.panelType == 'edit' && isFirstLoad) {
                         firstLoad = $.extend(true, {}, json.row);
                     }
+                    hash = hash || json.hash;
                     EditPanelFunc.editRow.call(EditPanelFunc, json);
                     resolve(EditPanelFunc);
+                    fieldParamsChanged = false;
                 }).fail(reject);
             })
         }
@@ -55,40 +57,51 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     };
     this.saveRow = function (panel, btn) {
         let postData = this.getDataForPost();
-        EditPanelFunc.pcTable.model[saveMethod](postData)
-            .then(function (json) {
-                if (isEditFieldPanel) {
-                    let mainTable = $('#table').data(pcTable_DATA_KEY);
-                    if (mainTable && mainTable.tableRow.id == EditPanelFunc.editItem.table_id.v && postData.data_src.v && postData.data_src.v.width) {
-                        mainTable.setColumnWidth(EditPanelFunc.editItem.name.v, postData.data_src.v.width.Val)
-                    }
-                }
 
-                $d.resolve(json);
-                EditPanelFunc.resolved = true;
-                $(window.top.document.body).trigger('pctable-closed', {
-                    'type': 'panel',
-                    json: json,
-                    method: EditPanelFunc.panelType,
-                    tableId: EditPanelFunc.pcTable.tableRow.id
-                });
-                EditPanelFunc.bootstrapPanel.close();
-            }).fail(function () {
-            if (btn.length && btn.isAttached()) {
-                let btn = panel.$modal.find('.btn-save').prop('disabled', false);
-            }
-        })
+        const save = () => {
+            EditPanelFunc.pcTable.model[saveMethod](this.panelType === 'insert' ? hash : postData)
+                .then(function (json) {
+                    if (isEditFieldPanel) {
+                        let mainTable = $('#table').data(pcTable_DATA_KEY);
+                        if (mainTable && mainTable.tableRow.id == EditPanelFunc.editItem.table_id.v && postData.data_src && postData.data_src.v && postData.data_src.v.width) {
+                            mainTable.setColumnWidth(EditPanelFunc.editItem.name.v, postData.data_src.v.width.Val)
+                        }
+                    }
+
+                    $d.resolve(json);
+                    EditPanelFunc.resolved = true;
+                    $(window.top.document.body).trigger('pctable-closed', {
+                        'type': 'panel',
+                        json: json,
+                        method: EditPanelFunc.panelType,
+                        tableId: EditPanelFunc.pcTable.tableRow.id
+                    });
+                    EditPanelFunc.bootstrapPanel.close();
+                }).fail(function () {
+                if (btn.length && btn.isAttached()) {
+                    let btn = panel.$modal.find('.btn-save').prop('disabled', false);
+                }
+            })
+        };
+
+        if (isEditFieldPanel && this.panelType === 'insert' && fieldParamsChanged) {
+            this.checkRow({}).then(save)
+        } else {
+            save();
+        }
+
+
     };
 
     this.refresh = () => {
-        EditPanelFunc.pcTable.model[checkMethod](this.getDataForPost("manual"), Object.keys(insertChangesCalcsFields)).then(function (json) {
-            Object.keys(json.row).forEach((k) => {
-                if (!(k in manuallyChanged)) {
+        if (!closed) {debugger
+            EditPanelFunc.pcTable.model[checkMethod](this.getDataForPost("manual"), hash).then(function (json) {
+                Object.keys(json.row).forEach((k) => {
                     firstLoad[k] = json.row[k]
-                }
+                })
+                EditPanelFunc.editRow.call(EditPanelFunc, json);
             })
-            EditPanelFunc.editRow.call(EditPanelFunc, json);
-        })
+        }
     }
 
     this.editRow = function (json) {
@@ -138,6 +151,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             let cell = EditPanelFunc.$panel.find('div.cell[data-field-name="' + field.name + '"]');
 
             let Oldval = EditPanelFunc.editItem[field.name];
+
             EditPanelFunc.editItem[field.name] = json.row[field.name];
 
             if (EditPanelFunc.isEditable(field)) isAnyEditableFields = true;
@@ -274,6 +288,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                                 } else {
                                     EditPanelFunc.editItem[field.name].h = true;
                                 }
+                                manuallyChanged[field.name] = true;
                                 EditPanelFunc.checkRow();
                             });
                             button.prop('disabled', false);
@@ -292,6 +307,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         button.addClass('btn-warning').removeClass('btn-default');
                         if (Object.keys(EditPanelFunc.editItem[field.name]).indexOf('c') !== -1 && EditPanelFunc.editItem[field.name].c !== EditPanelFunc.editItem[field.name].v) {
                             button.html('<i class="fa fa-hand-paper-o"></i>');
+
                         }
                     }
                 }
@@ -439,6 +455,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         }
 
         const onClose = () => {
+            closed = true;
             if (this.mainPanelId !== undefined) {
                 pcTable.editPanels.splice(this.mainPanelId, 1);
             }
@@ -564,13 +581,26 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             }
 
             if (field.type === 'button' && EditPanelFunc.pcTable) {
-                cell.on('click', function () {
-                    EditPanelFunc.pcTable._buttonClick(cell, field, item).then(() => {
-                        if (field.closeIframeAfterClick) {
-                            EditPanelFunc.close();
-                        }
-                    });
+
+                cell.off().on('click', () => {
+                    if (this.panelType === 'insert') {
+                        pcTable.model.doAfterProcesses(() => {
+                            pcTable.model.click({
+                                item: hash,
+                                fieldName: field.name
+                            }).then(() => {
+                                this.refresh();
+                            })
+                        })
+                    } else {
+                        EditPanelFunc.pcTable._buttonClick(cell, field, item).then(() => {
+                            if (field.closeIframeAfterClick) {
+                                EditPanelFunc.close();
+                            }
+                        });
+                    }
                 });
+
             } else {
                 if (field.CodeActionOnClick && !divWrapper.find('.edit-btn').length) {
                     divWrapper.append($('<button class="btn btn-sm btn-default edit-btn" style="width: 100%"><i class="fa fa-hand-pointer-o"></i></button>').on('click', () => {
@@ -675,18 +705,21 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         let input = field.getEditElement(cell.data('input'), EditPanelFunc.editItem[field.name], EditPanelFunc.editItem, saveClbck, escClbck, blurClbck, 50 + fieldIndex, false, cell);
 
         if (isEditFieldPanel && field.type === 'fieldParams') {
-            EditPanelFunc.beforeSave = async function (val) {
-                let editValResult = await getEditVal(input);
-                EditPanelFunc.editItem[field.name] = {
-                    v: editValResult
-                };
-                if (val) {
-                    val[field.name] = {
-                        v: editValResult
-                    }
-                    return val;
-                }
+            if (this.panelType === 'insert') {
+                input.find('.jsonForm').on('change', () => fieldParamsChanged = true)
             }
+            EditPanelFunc.beforeSave = async function (val) {
+                    let editValResult = await getEditVal(input);
+                    EditPanelFunc.editItem[field.name] = {
+                        v: editValResult
+                    };
+                    if (val) {
+                        val[field.name] = {
+                            v: editValResult
+                        }
+                        return val;
+                    }
+                }
         }
 
         if (!input.isAttached()) {
@@ -776,6 +809,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         return cell;
     };
     this.getDataForPost = function (val = {}) {
+
         let data = {};
         if (EditPanelFunc.editItem.id) {
             data.id = EditPanelFunc.editItem.id;
@@ -783,7 +817,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (f) {
             let editItem;
 
-            if (val === 'manual') {
+            if (EditPanelFunc.panelType === 'insert') {
+                if (val !== 'manual' && f.name in val) {
+                    editItem = val[f.name] || EditPanelFunc.editItem[f.name];
+                }
+            } else if (val === 'manual') {
                 if (f.name in manuallyChanged) {
                     editItem = EditPanelFunc.editItem[f.name];
                 }
@@ -791,28 +829,28 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 editItem = val[f.name] || EditPanelFunc.editItem[f.name];
             }
 
-            if (f.type == 'comments') {
-                if (editItem && typeof editItem.v !== 'string')
-                    editItem.v = null;
-            }
+            if (editItem) {
+                if (f.type == 'comments') {
+                    if (typeof editItem.v !== 'string')
+                        editItem.v = null;
+                }
 
-            if (editItem && EditPanelFunc.isEditable(f)) {
-                data[f.name] = {};
-                if (EditPanelFunc.panelType === 'edit') {
-                    data[f.name].v = editItem.v;
-                    if (f.code && !f.codeOnlyInAdd) {
-                        data[f.name].h = editItem.h || false;
+                if (EditPanelFunc.isEditable(f)) {
+                    data[f.name] = {};
+                    if (EditPanelFunc.panelType === 'edit') {
+                        data[f.name].v = editItem.v;
+                        if (f.code && !f.codeOnlyInAdd) {
+                            data[f.name].h = editItem.h || false;
+                        }
+                        data[f.name].v = f.getPanelVal.call(f, data[f.name].v, EditPanelFunc.$panel.find('div.cell[data-field-name="' + f.name + '"]').data('input'));
+                    } else {
+                        data[f.name] = editItem.v;
+                        data[f.name] = f.getPanelVal.call(f, data[f.name], EditPanelFunc.$panel.find('div.cell[data-field-name="' + f.name + '"]').data('input'));
                     }
-                    data[f.name].v = f.getPanelVal.call(f, data[f.name].v, EditPanelFunc.$panel.find('div.cell[data-field-name="' + f.name + '"]').data('input'));
-                } else {
-                    data[f.name] = editItem.v;
-                    data[f.name] = f.getPanelVal.call(f, data[f.name], EditPanelFunc.$panel.find('div.cell[data-field-name="' + f.name + '"]').data('input'));
-                }
 
-            } else if (inData[f.name]) {
-                if (EditPanelFunc.panelType === 'insert') {
-                    data[f.name] = inData[f.name].v;
                 }
+            } else if (EditPanelFunc.panelType === 'insert' && !hash && inData[f.name]) {
+                data[f.name] = inData[f.name].v;
             }
         });
         return data;
@@ -876,13 +914,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         let mainTable = $('#table').data('pctable');
 
         if (mainTable.tableRow.id === pcTable.tableRow.id && mainTable.tableRow.cycle_id === pcTable.tableRow.cycle_id) {
-            if (this.panelType === 'edit') {
                 if (!mainTable.editPanels) {
                     mainTable.editPanels = [];
                 }
                 mainTable.editPanels.push(this)
                 this.mainPanelId = mainTable.editPanels.length - 1;
-            }
         }
 
         if (mainTable !== pcTable) {

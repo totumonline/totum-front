@@ -921,6 +921,7 @@
                     {text: "$#nti", title: 'id таблицы', render: renderHint, type: 'item-code-var'},
                     {text: "$#ntn", title: 'NAME таблицы', render: renderHint, type: 'item-code-var'},
                     {text: "$#nth", title: 'HASH врем. таблицы', render: renderHint, type: 'item-code-var'},
+                    {text: "$#ih", title: 'HASH строки добавления', render: renderHint, type: 'item-code-var'},
                     {text: "$#nci", title: 'Cycle расчетной таблицы', render: renderHint, type: 'item-code-var'},
                     {text: "$#nf", title: 'NAME поля', render: renderHint, type: 'item-code-var'},
                     {text: "$#nl", title: 'Новая строка', render: renderHint, type: 'item-code-var'},

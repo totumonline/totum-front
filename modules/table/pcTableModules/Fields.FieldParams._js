@@ -27,6 +27,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
         let saved = false;
         let clback = function () {
+            form.trigger('change');
         };
 
         let firstLoad;
@@ -402,6 +403,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
     },
     __addInput: function (fName, f, Val, item, callback) {
+    
         let field = this;
         var f = f || {};
         var type = f.type;

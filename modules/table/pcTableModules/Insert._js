@@ -1,7 +1,9 @@
 $.extend(App.pcTableMain.prototype, {
     _insertItem: null,
     _insertRow: null,
+    _insertRowActive: false,
     _insertButtons: null,
+    _insertRowHash: null,
     _addButtons: null,
     _insertError: {},
     _currentInsertCellIndex: 0,
@@ -12,18 +14,8 @@ $.extend(App.pcTableMain.prototype, {
         var pcTable = this;
         if (this.control.adding) {
             if (!this._insertRow || !this._insertRow.length) {
-                if (addVars) {
-                    this._insertItem = {};
-
-                    this.fieldCategories.column.forEach(function (field) {
-                        if (addVars[field.name]) {
-                            pcTable._insertItem[field.name] = {v: addVars[field.name]};
-                        }
-                    })
-
-                }
-
-                this._insertRow = this._createInsertRow(null, 0);
+                this._insertRow = this._createInsertRow(null, 0, addVars);
+                this._insertRowActive = true;
                 this._insertButtonsChangeStatuses();
 
                 this._beforebody.prepend(this._insertRow);
@@ -123,13 +115,11 @@ $.extend(App.pcTableMain.prototype, {
 
 
             let doIt = function () {
-                $.each(pcTable._insertItem, function (k, v) {
-                    if (k !== 'n') data[k] = v.v;
-                });
-
-                pcTable.model.add(data).then(function (json) {
+                pcTable._insertRowActive = false;
+                pcTable.model.add(pcTable._insertRowHash).then(function (json) {
                     pcTable.table_modify.call(pcTable, json);
-
+                    pcTable._insertRowHash = null;
+                    pcTable._insertRowActive = true;
                     pcTable._currentInsertCellIndex = 0;
                     switch (isNotClean) {
                         case 'notClean':
@@ -146,6 +136,8 @@ $.extend(App.pcTableMain.prototype, {
 
                 }).always(function () {
                     $d.resolve();
+                }).fail(() => {
+                    pcTable._insertRowActive = true;
                 });
             };
             pcTable.model.doAfterProcesses(doIt);
@@ -234,6 +226,8 @@ $.extend(App.pcTableMain.prototype, {
                 });
                 this._insertRow.remove();
                 this._insertRow = null;
+                this._insertRowHash = null;
+                this._insertRowActive = false;
             }
 
         } else {
@@ -257,17 +251,25 @@ $.extend(App.pcTableMain.prototype, {
 
         if (!pcTable._currentInsertCellIndex) pcTable._currentInsertCellIndex = 0;
         let data = {};
-        $.each(pcTable._insertItem, function (k, v) {
-            if (k !== 'n') data[k] = v.v;
-        });
+        if (savedFieldName) {
+            if (typeof savedFieldName === 'object') {
+                data = savedFieldName
+            } else {
+                data = {[savedFieldName]: pcTable._insertItem[savedFieldName].v};
+            }
+        }
+        /* $.each(pcTable._insertItem, function (k, v) {
+             if (k !== 'n') data[k] = v.v;
+         });*/
 
         let visibleColumnsIndexes = [];
         pcTable.fieldCategories.visibleColumns.forEach(function (field) {
             visibleColumnsIndexes.push(field.name);
         });
 
-        pcTable.model.checkInsertRow(data, Object.keys(this.insertRow.editedFields)).then(function (json) {
-
+        pcTable.model.checkInsertRow(data, pcTable._insertRowHash, this.insertRow.clearField).then(function (json) {
+            pcTable.insertRow.clearField = null;
+            pcTable._insertRowHash = pcTable._insertRowHash || json.hash;
             item = json.row;
             let errors = false;
             let tabi = 2;
@@ -335,7 +337,6 @@ $.extend(App.pcTableMain.prototype, {
         return $row;
     },
     _createInsertCell: function (td, field, row, index, nodeName, parentFunction) {
-
 
         nodeName = nodeName || 'td';
         var td = td || $("<" + nodeName + ">");
@@ -438,6 +439,19 @@ $.extend(App.pcTableMain.prototype, {
                     }
 
                 });
+
+            if (field.type === 'button') {
+                td.find('button').on('click', () => {
+                    pcTable.model.doAfterProcesses(() => {
+                        pcTable.model.click({
+                            item: this._insertRowHash,
+                            fieldName: field.name
+                        }).then(() => {
+                            parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name)
+                        })
+                    })
+                })
+            }
 
             return td;
         }
@@ -548,11 +562,11 @@ $.extend(App.pcTableMain.prototype, {
         if (field.code && !field.codeOnlyInAdd) {
             let hand = td.find('.fa-hand-paper-o');
 
-            if (this.insertRow.editedFields[field.name] && pcTable._insertItem[field.name].h) {
+            if (pcTable._insertItem && pcTable._insertItem[field.name].h) {
                 if (hand.length === 0) {
                     hand = $('<i class="fa fa-hand-paper-o pull-right">').on('click', () => {
-                        delete this.insertRow.editedFields[field.name];
-                        parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex + 1, field.name);
+                        this.insertRow.clearField = field.name;
+                        parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex + 1);
                     });
                     td.prepend(hand).addClass('ins-handed');
                 }

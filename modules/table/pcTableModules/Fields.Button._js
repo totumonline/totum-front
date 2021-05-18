@@ -16,7 +16,7 @@ fieldTypes.button = {
         if (this.category === 'column') {
             if (item.id) {
                 format = $.extend({}, (field.pcTable.f || {}), (item.f || {}), (item[field.name].f || {}));
-            } else {
+            } else if(!this.buttonActiveOnInsert) {
                 format.block = true;
                 if (item[field.name] && item[field.name].f && item[field.name].f.icon) {
                     format.icon = item[field.name].f.icon;

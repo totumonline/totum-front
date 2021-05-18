@@ -51,7 +51,7 @@
                 let model = this;
                 setTimeout(function () {
                     model.getDefferedProcess().then(func);
-                }, 50);
+                }, 170);
             },
             getDefferedProcess: function () {
                 return new Promise((resolve, reject) => {
@@ -190,13 +190,20 @@
                             if (json.interfaceDatas && json.interfaceDatas.length > 0) Model.shoInterfaceDatas(json);
                             if (json.panels && json.panels.length > 0) Model.showPanels(json);
                         }
-                        if(json.chdata && json.updated && pcTable.editPanels){
-                            pcTable.editPanels.forEach((panel)=>{
-                                panel.refresh();
-                            })
-                        }
-
                         $d.resolve(json);
+
+                        setTimeout(() => {
+                            if (json.chdata && json.updated && pcTable.editPanels) {
+                                pcTable.editPanels.forEach((panel) => {
+                                    panel.refresh();
+                                })
+                            }
+                            if(json.chdata && pcTable._insertRowActive){
+                                pcTable._createInsertRow(pcTable._insertRow)
+                            }
+                        }, 10)
+
+
                     } else {
                         var errorText = $('<div>').html(json.error.replace(/\[\[(.*?)\]\]/g, '<b>$1</b>'));
 
@@ -386,8 +393,8 @@
                 "use strict";
                 return this.__ajax('post', {fieldName: fieldName, fieldVal: val, method: 'checkUnic'});
             },
-            add: function (data) {
-                return this.__ajax('post', {data: data, method: 'add'});
+            add: function (hash) {
+                return this.__ajax('post', {hash: hash, method: 'add'});
             },
             getValue: function (data, table_id) {
                 return this.__ajax('post', {data: data, method: 'getValue', table_id: table_id});
@@ -401,7 +408,7 @@
             setTableFavorite: function (status) {
                 return this.__ajax('post', {status: status, method: 'setTableFavorite'});
             },
-            checkInsertRow: function (data, editedFields) {
+            checkInsertRow: function (data, hash, clearField) {
                 var sendData = {};
                 $.each(data, function (k, v) {
                     if (v != undefined) {
@@ -410,7 +417,8 @@
                 });
                 return this.__ajax('post', {
                     data: sendData,
-                    editedFields: JSON.stringify(editedFields),
+                    hash: hash,
+                    clearField: clearField,
                     method: 'checkInsertRow'
                 });
             },
@@ -596,7 +604,7 @@
             }, userButtonsClick: function (hash, index) {
                 return this.__ajax('post', {method: 'userButtonsClick', hash: hash, index: index})
             }, filesUpload: function (files, hash) {
-                return this.__ajax('post', {method: 'filesUpload', "files":JSON.stringify(files), hash:hash});
+                return this.__ajax('post', {method: 'filesUpload', "files": JSON.stringify(files), hash: hash});
             },
             loadPage: function (pcTable, lastId, count, prevLastId, offset) {
                 let _filters = {};
