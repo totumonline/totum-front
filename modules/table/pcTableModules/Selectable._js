@@ -160,7 +160,6 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         }
 
         if (field.selectTable) {
-
             if (field.changeSelectTable) {
                 let divForPanneSelect = $('<div><div class="center"></div></div>');
 
@@ -171,8 +170,28 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         });
                         divForPanneSelect.append($('<div class="panel-buttons">').append(btn)).appendTo(textDiv);
                     }
-                } else if (val.v) {
+                } else if (val.v && !val.v_[1]) {
                     let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Редактировать").on('click', () => {
+                        field.sourceButtonClick(item).then((data) => {
+                            if (data && data.json && data.json.updated) {
+                                pcTable.model.refresh();
+                            }
+                        });
+                    });
+                    divForPanneSelect.append($('<div class="panel-buttons">').append(btn)).appendTo(textDiv);
+                }
+            }else if (field.viewSelectTable){
+                let divForPanneSelect = $('<div><div class="center"></div></div>');
+
+                if (field.multi) {
+                    if (val.v && val.v.length) {
+                        let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Просмотреть").on('click', () => {
+                            field.sourceButtonClick(item);
+                        });
+                        divForPanneSelect.append($('<div class="panel-buttons">').append(btn)).appendTo(textDiv);
+                    }
+                } else if (val.v && !val.v_[1]) {
+                    let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Просмотреть").on('click', () => {
                         field.sourceButtonClick(item).then((data) => {
                             if (data && data.json && data.json.updated) {
                                 pcTable.model.refresh();

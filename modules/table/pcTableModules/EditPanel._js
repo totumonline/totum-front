@@ -94,7 +94,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     };
 
     this.refresh = () => {
-        if (!closed) {debugger
+        if (!closed) {
+            debugger
             EditPanelFunc.pcTable.model[checkMethod](this.getDataForPost("manual"), hash).then(function (json) {
                 Object.keys(json.row).forEach((k) => {
                     firstLoad[k] = json.row[k]
@@ -709,17 +710,17 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 input.find('.jsonForm').on('change', () => fieldParamsChanged = true)
             }
             EditPanelFunc.beforeSave = async function (val) {
-                    let editValResult = await getEditVal(input);
-                    EditPanelFunc.editItem[field.name] = {
+                let editValResult = await getEditVal(input);
+                EditPanelFunc.editItem[field.name] = {
+                    v: editValResult
+                };
+                if (val) {
+                    val[field.name] = {
                         v: editValResult
-                    };
-                    if (val) {
-                        val[field.name] = {
-                            v: editValResult
-                        }
-                        return val;
                     }
+                    return val;
                 }
+            }
         }
 
         if (!input.isAttached()) {
@@ -809,7 +810,9 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         return cell;
     };
     this.getDataForPost = function (val = {}) {
-
+        if(this.readOnly){
+            return EditPanelFunc.editItem.id;
+        }
         let data = {};
         if (EditPanelFunc.editItem.id) {
             data.id = EditPanelFunc.editItem.id;
@@ -909,16 +912,16 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         EditPanelFunc.refresh();
     };
 
-    const checkIsThisTable = (pcTable) => {
+    const checkTable = (pcTable) => {
 
         let mainTable = $('#table').data('pctable');
 
         if (mainTable.tableRow.id === pcTable.tableRow.id && mainTable.tableRow.cycle_id === pcTable.tableRow.cycle_id) {
-                if (!mainTable.editPanels) {
-                    mainTable.editPanels = [];
-                }
-                mainTable.editPanels.push(this)
-                this.mainPanelId = mainTable.editPanels.length - 1;
+            if (!mainTable.editPanels) {
+                mainTable.editPanels = [];
+            }
+            mainTable.editPanels.push(this)
+            this.mainPanelId = mainTable.editPanels.length - 1;
         }
 
         if (mainTable !== pcTable) {
@@ -927,6 +930,14 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 EditPanelFunc.refresh();
             }
         }
+        if (!pcTable.control.editing && data.id) {
+            EditPanelFunc.readOnly = true;
+            checkMethod = 'viewRow';
+        } else if (!pcTable.control.adding && !data.id) {
+            App.notify('Добавление в таблицу запрещено');
+            return false;
+        }
+        return true;
     }
 
     if (typeof EditPanelFunc.pcTable !== 'object') {
@@ -942,7 +953,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             if (EditPanelFunc.editItem.id) {
                 pcTable.model.setLoadedTableData({[EditPanelFunc.editItem.id]: {}});
             }
-            checkIsThisTable(pcTable)
+            checkTable(pcTable)
         });
     } else if (EditPanelFunc.pcTable[0]) {
         App.getPcTableById(EditPanelFunc.pcTable[0], {sess_hash: EditPanelFunc.pcTable[1]}).then(function (pcTable) {
@@ -953,14 +964,16 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             pcTable._refreshContentTable = _refreshContentTable;
 
-            EditPanelFunc.checkRow({}, true);
-            checkIsThisTable(pcTable)
+            if (checkTable(pcTable)) {
+                EditPanelFunc.checkRow({}, true);
+            }
+
         });
     } else {
-        EditPanelFunc.checkRow({}, true);
-        checkIsThisTable(pcTable)
+        if (checkTable(pcTable)) {
+            EditPanelFunc.checkRow({}, true);
+        }
+
     }
-
-
     return $d.promise();
 };

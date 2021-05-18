@@ -431,6 +431,9 @@
                 });
                 return this.__ajax('post', {data: sendData, method: 'checkEditRow'});
             },
+            viewRow: function (id) {
+                return this.__ajax('post', {id: id, method: 'viewRow'});
+            },
             checkTableIsChanged: function () {
                 return this.__ajax('post', {
                     method: 'checkTableIsChanged',
