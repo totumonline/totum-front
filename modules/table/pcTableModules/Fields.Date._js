@@ -61,10 +61,12 @@ fieldTypes.date = {
         const setDateTimePickerDate = function () {
             "use strict";
             let val = $input.val();
-
+            let _format = format;
             if (val) {
-                val = moment(val, format);
-
+                if (!format.match(/Y{4}/) && format.match(/Y{2}/) && val.length - moment().format(format).length === 2) {
+                    _format = _format.replace('YY', 'YYYY')
+                }
+                val = moment(val, _format);
             } else {
                 val = "";
             }
@@ -176,7 +178,7 @@ fieldTypes.date = {
     addDataToFilter: function (filterVals, valObj) {
 
         let hash;
-        let val='Пустое'
+        let val = 'Пустое'
         if (valObj.v === null || valObj.v === '') {
             hash = ''.hashCode();
         } else {
