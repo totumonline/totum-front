@@ -25,6 +25,11 @@
 }
 
 .edit-row-panel {
+  .format-text, .format-comment{
+    padding: 5px;
+    font-size: 12px;
+  }
+
   .cell-wrapper::not([data-name="data_src"]) {
     input[type=checkbox] {
       margin-top: 0;

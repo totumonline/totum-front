@@ -180,7 +180,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 if (field.unitType) {
                     label.text(label.text() + ', ' + field.unitType);
                 }
-                $('<div class="btns pull-right">').prependTo(divWrapper);
+                let $buttons=$('<div class="btns pull-right">').prependTo(divWrapper);
 
 
                 let thisKoeff = getKoeff(field);
@@ -238,6 +238,12 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
                 if (field.linkToSelectTable) {
                     divWrapper.append('<div class="source-link"><a href="' + field.linkToSelectTable.link + '" style="font-size: 12px" target="_blank">' + field.linkToSelectTable.title + '</a></div>')
+                }
+                if (field.help) {
+                    let help=$('<button class="btn btn-sm btn-default"><i class="fa fa-info"></i></button>').on('click', ()=>{
+                        App.notify(field.help, field.title)
+                    })
+                    $buttons.prepend(help)
                 }
             }
 
@@ -611,6 +617,10 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 }
             }
 
+            if(format.comment){
+                span.append($('<div class="comment">').text(format.comment))
+            }
+
             cell.html(span).data('input', null);
 
             return cell;
@@ -806,6 +816,14 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 })
             }
         }
+
+        if(format.text){
+            cell.append($('<div class="format-text">').text(format.text))
+        }
+        if(format.comment){
+            cell.append($('<div class="format-comment">').text(format.comment))
+        }
+
 
         return cell;
     };
