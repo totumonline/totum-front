@@ -198,7 +198,7 @@
                                     panel.refresh();
                                 })
                             }
-                            if(json.chdata && pcTable._insertRowActive){
+                            if (json.chdata && pcTable._insertRowActive) {
                                 pcTable._createInsertRow(pcTable._insertRow)
                             }
                         }, 10)
@@ -301,18 +301,22 @@
                         } else url += '?';
                         url += 'rn=' + Math.round(Math.random() * 100000) + (data_tmp['method'] || '');
                     }
-                    $.ajax({
-                        url: url,
-                        method: $method,
-                        data: data_tmp,
-                        dataType: 'json',
-                        beforeSend: function (jqXHR, settings) {
-                            if (RequestObject) {
-                                RequestObject.jqXHR = jqXHR;
-                            }
+                    if (!RequestObject || !RequestObject.abort) {
+                        $.ajax({
+                            url: url,
+                            method: $method,
+                            data: data_tmp,
+                            dataType: 'json',
+                            beforeSend: function (jqXHR, settings) {
+                                if (RequestObject) {
+                                    RequestObject.jqXHR = jqXHR;
+                                }
 
-                        }
-                    }).then(success).fail(fail)
+                            }
+                        }).then(success).fail(fail)
+                    } else {
+                        fail({statusText: "abort"});
+                    }
                 };
                 ajax();
 
@@ -473,14 +477,14 @@
                 });
                 return this.__ajax('post', {data: sendData, method: 'saveEditRow'});
             },
-            getEditSelect: function (item, fieldName, q, parentid, withLoading) {
+            getEditSelect: function (item, fieldName, q, parentid, withLoading, RequestObject) {
                 var sendData = {};
                 return this.__ajax('post', {
                     data: {item: item, field: fieldName},
                     q: q,
                     parentId: parentid,
                     method: 'getEditSelect'
-                }, undefined, !withLoading);
+                }, RequestObject, !withLoading);
             },
             loadPreviewHtml: function (fieldName, item, val) {
                 return this.__ajax('post', {

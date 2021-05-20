@@ -374,7 +374,12 @@ fieldTypes.text = {
 
             div.text('Редактирование в форме').addClass('edit-in-form');
         } else {
-            div.on('focus click', 'button', function () {
+            div.on('keydown click', function (event) {
+                if(event.key ==='Tab' ){
+                    blurClbk(dialog, event, null, true);
+                    return
+                }
+
                 let _buttons = buttons.splice();
                 _buttons.push(btnsSave);
                 _buttons.push(btnsClose);
@@ -439,8 +444,8 @@ fieldTypes.text = {
     getCellTextInPanel: function (fieldValue, td, item) {
         return this.getPanelTextWithLinks(fieldValue);
     },
-    addPlaceholder(input, placeholder){
-        setTimeout(function (){
+    addPlaceholder(input, placeholder) {
+        setTimeout(function () {
             input.data('editor').setOption('placeholder', placeholder);
             input.data('editor').refresh();
         }, 100)

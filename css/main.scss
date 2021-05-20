@@ -1344,6 +1344,9 @@ th {
 
       td {
         background-color: $btn-warning-bgcolor;
+        &.active{
+          background-color: darken($btn-warning-bgcolor, 20%);
+        }
 
         &.ins-handed {
           input {
@@ -1362,6 +1365,9 @@ th {
 
       td.with-code {
         background-color: $btn-warning-bgcolor;
+        &.active{
+          background-color: darken($btn-warning-bgcolor, 20%);
+        }
 
         input, select, button {
           background-color: $tdWithCodeColor;

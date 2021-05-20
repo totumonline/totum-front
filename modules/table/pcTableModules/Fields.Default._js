@@ -36,9 +36,10 @@ var defaultField = {
 
         var field = this;
         oldValue = oldValue.v;
-        $input.val(oldValue).on('keyup', function (event) {
+        $input.val(oldValue).on('keydown', function (event) {
             switch (event.keyCode) {
                 case 13:
+                case 9:
                     try {
                         $input.data('enterClicked', true);
                         enterClbk($(this), event);
@@ -129,6 +130,10 @@ var defaultField = {
     },
     focusElement: function (input) {
         input.focus();
+        if (input.closest('tr').is('.InsertRow')) {
+            this.pcTable._insertRow.find('.active').removeClass('active');
+            input.closest('td').addClass('active');
+        }
     },
     isDataModified: function (editVal, itemVal) {
         editVal = editVal + '';
@@ -148,17 +153,17 @@ var defaultField = {
     },
     addDataToFilter: function (filterVals, valObj) {
         let hash;
-        let val='Пустое'
+        let val = 'Пустое'
         if (valObj.v === null || valObj.v === '') {
             hash = ''.hashCode();
         } else {
             hash = valObj.v.toString().hashCode();
-            val= typeof valObj.v === "string" ? valObj.v.replace(/"/g, "&quot;") : (valObj.v + ' ')
+            val = typeof valObj.v === "string" ? valObj.v.replace(/"/g, "&quot;") : (valObj.v + ' ')
         }
         filterVals[hash] = val;
     },
     checkIsFiltered: function (fieldVal, filters) {
-        let vals={};
+        let vals = {};
         this.addDataToFilter(vals, fieldVal);
         return filters.some(function (v) {
             return v in vals;
@@ -174,7 +179,7 @@ var defaultField = {
         else if (this.multiple) return 1.5;
         else return 1;
     },
-    getHighCelltext: function (v, td, item){
+    getHighCelltext: function (v, td, item) {
         return (this.getPanelText ? this.getPanelText(v, td, item) : this.getCellText(v, td, item));
     }
 

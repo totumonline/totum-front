@@ -535,6 +535,10 @@
                         field = $.extend({}, defaultField, field);
                     }
 
+                    if (field.type == 'button' && field.buttonActiveOnInsert) {
+                        field.insertable = true;
+                    }
+
                     if (field.showInWebOtherOrd) {
                         field._ord = field.ord;
                         field.ord = field.showInWebOtherOrd;

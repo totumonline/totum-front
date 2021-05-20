@@ -433,8 +433,6 @@ $.extend(App.pcTableMain.prototype, {
                 return;
             }
 
-            let item = pcTable._getItemBytd(td);
-
             let goTo = event && event.altKey ? 'right' : (event && event.shiftKey ? 'down' : false);
 
             if (!field.name in item || !field.isDataModified(editVal, item[field.name].v)) {

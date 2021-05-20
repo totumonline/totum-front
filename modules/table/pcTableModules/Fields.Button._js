@@ -1,5 +1,6 @@
 fieldTypes.button = {
     icon: 'fa-hand-pointer-o',
+    required: false,
     getPanelText: function (fieldValue, td, item) {
         let $btn = this.getCellText(fieldValue, td, item);
         $btn.on('click', () => {
@@ -16,11 +17,13 @@ fieldTypes.button = {
         if (this.category === 'column') {
             if (item.id) {
                 format = $.extend({}, (field.pcTable.f || {}), (item.f || {}), (item[field.name].f || {}));
-            } else if(!this.buttonActiveOnInsert) {
+            } else if (!this.buttonActiveOnInsert) {
                 format.block = true;
                 if (item[field.name] && item[field.name].f && item[field.name].f.icon) {
                     format.icon = item[field.name].f.icon;
                 }
+            } else {
+                format = $.extend({}, (item[field.name].f || {}));
             }
         } else {
             format = $.extend({}, (field.pcTable.f || {}), (item[field.name].f || {}));
@@ -44,7 +47,7 @@ fieldTypes.button = {
                 if (style.td) {
                     td.css(style.td);
                 }
-            } else if (td.is('.button-wrapper')) {
+            } else if (td && td.is('.button-wrapper')) {
                 let css = {};
                 if (format.background) {
                     css.backgroundColor = format.background;
@@ -133,6 +136,40 @@ fieldTypes.button = {
 
 
         return btn;
+    },
+    getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
+        var $input = this.getCellText(undefined, undefined, item);
+        if (typeof tabindex !== 'undefined') $input.attr('tabindex', tabindex);
+
+        let clicked = false;
+        const clickFunc = (event) => {
+            if (clicked) return;
+            clicked = true;
+            let html = $input.html();
+            $input.html('<i class="fa fa-spinner"></i>');
+            this.pcTable.model.doAfterProcesses(() => {
+                this.pcTable.model.click({
+                    item: this.pcTable._insertRowHash,
+                    fieldName: this.name
+                }).then(() => {
+                    $input.html(html);
+                    clicked = false;
+                    enterClbk($input, event, true)
+                })
+            })
+        };
+        $input.on('click', clickFunc).removeClass('btn-xxs').addClass('btn-sm text-edit-button').on('keydown', (event) => {
+            switch (event.key) {
+                case 'Tab':
+                    enterClbk($input, event);
+                    break;
+                case 'Enter':
+                    enterClbk($input, clickFunc);
+                    break;
+            }
+        })
+
+        return $input;
     },
     btnOK: function ($td, item) {
         let btn = $td.find('button.button-field');

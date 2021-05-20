@@ -42,15 +42,20 @@ fieldTypes.date = {
             }
         });
         let timeoutObject;
-
-        $input.on('keyup', function (event) {
+        $input.on('keydown', function (event) {
             if (timeoutObject) clearTimeout(timeoutObject);
-            if (event.keyCode === 13) {
+            if (event.keyCode === 13 || event.keyCode === 9) {
                 setDateTimePickerDate();
+                if (popover && popover.is(':visible')) {
+                    popover.hide();
+                }
                 enterClbk($(this), event);
             } else if (event.keyCode === 27) {
                 escClbk($(this), event);
-            } else if (event.keyCode >= 48) {
+            }
+        })
+        $input.on('keyup', function (event) {
+            if (event.keyCode >= 48) {
                 timeoutObject = setTimeout(function () {
                     setDateTimePickerDate();
                 }, 2000);
@@ -99,10 +104,12 @@ fieldTypes.date = {
 
             } else {
                 $input.on('focus click', function () {
-                    if (!popover) {
-                        popoverId = App.popNotify(cParent, $input);
-                        popover = $('#' + popoverId);
+                    if (popover) {
+                        cdiv.popover('destroy')
                     }
+                    popoverId = App.popNotify(cParent, $input);
+                    popover = $('#' + popoverId);
+
                     calendar.data("DateTimePicker").show();
                     popover.show();
                     setDateTimePickerDate();

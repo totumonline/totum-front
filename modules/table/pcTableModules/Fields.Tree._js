@@ -144,8 +144,13 @@
                 div.text('Редактирование в форме').addClass('edit-in-form');
             } else {
                 let showned = false;
-                div.off().on('focus click', 'button', function () {
+                div.off().on('click keydown', function (ev) {
                     if (showned) return false;
+                    if(ev.key ==='Tab' ){
+                        blurClbk(dialog, ev, null, true);
+                        return
+                    }
+
                     showned = true;
                     let buttonsClick = buttons.slice(0);
                     buttonsClick.push(btnsSave);

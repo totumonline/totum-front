@@ -177,7 +177,16 @@ fieldTypes.select = {
             }
         }
 
-
+        let selectQueries = [];
+        divParent.on('remove', () => {
+            selectQueries.forEach((RequestObject) => {
+                if (RequestObject.jqXHR && RequestObject.jqXHR.abort) {
+                    RequestObject.jqXHR.abort();
+                } else {
+                    RequestObject.abort = true;
+                }
+            })
+        })
         let GetLoadListDeffered = function (q) {
             let def = $.Deferred();
             let itemTmp = {};
@@ -203,7 +212,10 @@ fieldTypes.select = {
                     '    top: 1px;' +
                     '    font-size: 8px;"/>');
             }
-            field.pcTable.model.getEditSelect(itemTmp, field.name, q, null).then(function (json) {
+            let RequestObject = {};
+            selectQueries.push(RequestObject);
+
+            field.pcTable.model.getEditSelect(itemTmp, field.name, q, null, null, RequestObject).then(function (json) {
                 divParent.find('.loading').remove();
 
                 LISTs.innerList = json.list ? json.list : [];
@@ -235,393 +247,419 @@ fieldTypes.select = {
         let iRenered = 0;
         const renderMe = function () {
 
-            if (item[field.name] && item[field.name].replaceViewValue && LISTs.innerIndexed[item[field.name].v]) {
-                item[field.name].replaceViewValue(LISTs.innerIndexed[item[field.name].v]);
-                delete item[field.name].replaceViewValue;
-            }
+                if (item[field.name] && item[field.name].replaceViewValue && LISTs.innerIndexed[item[field.name].v]) {
+                    item[field.name].replaceViewValue(LISTs.innerIndexed[item[field.name].v]);
+                    delete item[field.name].replaceViewValue;
+                }
 
-            let td = divParent.closest('body');
-            if (td && td.length) {
+                let td = divParent.closest('body');
+                if (td && td.length) {
 
-                let $ = td.get(0).ownerDocument == document ? window.$ : window.top.$;
+                    let $ = td.get(0).ownerDocument == document ? window.$ : window.top.$;
 
 
-                const addValues = function (val, q) {
-                    "use strict";
-                    let optgroups = {'Выбранное': $('<optgroup label="Выбранное">'), '': $('<optgroup label="">')};
-                    let checked = optgroups['Выбранное'];
-                    const createOption = function (val, text, deleted, subtext) {
-                        subtext = subtext ? $('<small class="text-muted">').text(subtext) : '';
+                    const addValues = function (val, q) {
+                        "use strict";
+                        let optgroups = {'Выбранное': $('<optgroup label="Выбранное">'), '': $('<optgroup label="">')};
+                        let checked = optgroups['Выбранное'];
+                        const createOption = function (val, text, deleted, subtext) {
+                            subtext = subtext ? $('<small class="text-muted">').text(subtext) : '';
 
-                        let option = $('<option>').attr("value", val);
-                        let content = $('<div>').text((text === null || text === '' ? '[' + val + ']' : text));
-                        if (subtext) {
-                            content.append(subtext);
-                        }
-                        content = content.html();
-
-                        if (deleted) {
-                            option.attr('data-content', '<span class="text" style="text-decoration: line-through">' + content + '</span>');
-                        } else {
-                            let $span = $('<span class="text" >' + content + '</span>');
-                            if (LISTs.isPreview) {
-                                $span.addClass('select-with-preview');
-                                $span.attr('data-id', item.id);
-                                $span.attr('data-field', field.name);
-                                $span.attr('data-val', val);
+                            let option = $('<option>').attr("value", val);
+                            let content = $('<div>').text((text === null || text === '' ? '[' + val + ']' : text));
+                            if (subtext) {
+                                content.append(subtext);
                             }
-                            option.data('content', $span.get(0).outerHTML);
-                        }
-                        return option;
-                    };
+                            content = content.html();
 
-                    let isLikedFunc = function () {
-                        return true;
-                    };
-                    if (q && q !== '') {
-                        let qs = q.toLowerCase().replace('ё', 'е').split(" ");
-                        isLikedFunc = function (v) {
-                            let text = v !== null ? v.toString().toLowerCase().replace('ё', 'е') : "";
-                            return !qs.some(function (q) {
-                                return text.indexOf(q) === -1
-                            })
-                        }
-                    }
-
-                    let vals = {};
-                    let checkedVal;
-
-                    if (val || field.category === 'filter') {
-                        const addCheckedOpts = function (key) {
-
-                            if (key === null) key = "";
-
-                            let v = LISTs.innerIndexed[key], opt;
-                            if (!v) {
-                                opt = createOption(key, key, true, null);
+                            if (deleted) {
+                                option.attr('data-content', '<span class="text" style="text-decoration: line-through">' + content + '</span>');
                             } else {
-                                opt = createOption(key, v[0], false, v[1]);
+                                let $span = $('<span class="text" >' + content + '</span>');
+                                if (LISTs.isPreview) {
+                                    $span.addClass('select-with-preview');
+                                    $span.attr('data-id', item.id);
+                                    $span.attr('data-field', field.name);
+                                    $span.attr('data-val', val);
+                                }
+                                option.data('content', $span.get(0).outerHTML);
                             }
-
-                            checked.append(opt);
-                            vals[key] = 1;
-                            if (v) {
-                                if (!isLikedFunc(v[0])) opt.addClass('hidden');
-                                return true;
-                            } else return false;
+                            return option;
                         };
 
-                        if (field.multiple) {
-
-                            if (Array.isArray(val)) {
-                                val.forEach(addCheckedOpts);
-                                checkedVal = Object.keys(vals);
-                            } else {
-                                if (val !== undefined) {
-                                    addCheckedOpts(val);
-                                    checkedVal = [val];
-                                }
-                            }
-                        } else {
-                            addCheckedOpts(val);
-                            checkedVal = val;
-                        }
-
-                    }
-
-
-                    if (q !== 'onlyVals') {
-
-                        if (!field.multiple) {
-                            if (field.withEmptyVal && field.withEmptyVal.trim() !== '' && field.category !== 'filter') {
-                                optgroups[''].append($('<option>').data('content', field.withEmptyVal).text(""));
-                            }
-                        }
-
-                        for (let i in LISTs.innerList) {
-                            let iList = LISTs.innerList[i];
-                            if (vals[iList] === 1) continue;
-                            let v = LISTs.innerIndexed[iList];
-
-                            if (!LISTs.isSliced) {
-                                if (!isLikedFunc(v[0])) continue;
-                            }
-
-                            let opt = createOption(iList, v[0]);
-                            let groupName = v[1] ? v[1] : '';
-
-                            if (!optgroups[groupName]) {
-                                optgroups[groupName] = $('<optgroup label="' + groupName + '">');
-                            }
-                            optgroups[groupName].append(opt);
-                        }
-                    }
-                    input.empty();
-
-                    Object.keys(optgroups).forEach(function (groupName) {
-                        input.append(optgroups[groupName]);
-                    });
-
-                    if (LISTs.isSliced === true) {
-                        let opt = createOption(0, 'Данные не полны. Воспользуйтесь поиском!');
-                        opt.prop('disabled', true);
-                        opt.css('text-align', 'center');
-                        input.append(opt);
-                    }
-
-                    input.selectpicker('refresh');
-                    input.selectpicker('val', checkedVal);
-                    return checkedVal
-                };
-                if (!($oldParent && $oldParent.data('input'))) {
-                    let onlyElements = false;
-                    const getTitle = function () {
-
-
-                        let title = '-----';
-                        if (field.category === 'filter') {
-                            title = 'Пустое';
-                            if (field.selectFilterWithEmptyText) {
-                                title = field.selectFilterWithEmptyText
-                            }
-                        } else if (field.withEmptyVal && field.withEmptyVal.trim() !== '') title = field.withEmptyVal;
-                        else if (field.multiple && cell && cell.closest('.InsertPanel').length) {
-                            title = "Выберите";
-                            onlyElements = true;
-                        }
-                        return title;
-                    };
-
-                    input = $('<select class="form-control" ' + (field.multiple == true ? 'multiple ' : '') + ' data-size="auto" style="display: none;" name="cell_insert" data-style="btn-sm btn-default" data-width="css-width" data-live-search="true" data-title="' + getTitle() + '">').width(field.width);
-
-                    if (onlyElements) {
-                        input.attr('data-selected-text-format', 'static');
-                    }
-
-                    divParent.append(input);
-                    divParent.append('<div class="text-center mark-loading"></div>');
-                    if (tabindex) input.attr('tabindex', tabindex);
-                    input.data('AppUin', App.getUn());
-                    divParent.data('input', input);
-
-                    input.data('LISTs', LISTs);
-                }
-
-
-                divParent.find('.mark-loading').remove();
-                let container = input.closest('.modal-body').length === 0 ? field.pcTable._container : input.closest('.modal-body');
-                input.data('container', container);
-
-
-                addValues(val);
-
-
-                if (!input.data('is-rendered')) {
-
-                    let searchTimeout;
-
-                    input.data('selectpicker').$searchbox.off().on('click.dropdown.data-api focus.dropdown.data-api touchend.dropdown.data-api', function (e) {
-                        e.stopPropagation();
-                    });
-
-                    let Q = '';
-
-
-                    input.data('selectpicker').$searchbox.on('keyup', function (e) {
-                        if (e.key === 'Escape') {
-                            input.data('selectpicker').$button.click();
+                        let isLikedFunc = function () {
                             return true;
+                        };
+                        if (q && q !== '') {
+                            let qs = q.toLowerCase().replace('ё', 'е').split(" ");
+                            isLikedFunc = function (v) {
+                                let text = v !== null ? v.toString().toLowerCase().replace('ё', 'е') : "";
+                                return !qs.some(function (q) {
+                                    return text.indexOf(q) === -1
+                                })
+                            }
                         }
 
-                        let q = $(this).val();
-                        if (Q !== q) {
-                            Q = q;
-                            if (searchTimeout) {
-                                clearTimeout(searchTimeout)
-                            }
-                            searchTimeout = setTimeout(function () {
-                                if (LISTs.isListForLoad || LISTs.isSliced) {
-                                    GetLoadListDeffered.call(field, q).then(function () {
-                                        addValues.call(field, val, q);
-                                    });
+                        let vals = {};
+                        let checkedVal;
+
+                        if (val || field.category === 'filter') {
+                            const addCheckedOpts = function (key) {
+
+                                if (key === null) key = "";
+
+                                let v = LISTs.innerIndexed[key], opt;
+                                if (!v) {
+                                    opt = createOption(key, key, true, null);
                                 } else {
-                                    addValues.call(field, val, q);
+                                    opt = createOption(key, v[0], false, v[1]);
                                 }
-                            }, 750);
+
+                                checked.append(opt);
+                                vals[key] = 1;
+                                if (v) {
+                                    if (!isLikedFunc(v[0])) opt.addClass('hidden');
+                                    return true;
+                                } else return false;
+                            };
+
+                            if (field.multiple) {
+
+                                if (Array.isArray(val)) {
+                                    val.forEach(addCheckedOpts);
+                                    checkedVal = Object.keys(vals);
+                                } else {
+                                    if (val !== undefined) {
+                                        addCheckedOpts(val);
+                                        checkedVal = [val];
+                                    }
+                                }
+                            } else {
+                                addCheckedOpts(val);
+                                checkedVal = val;
+                            }
+
                         }
-                    });
 
 
-                    let $td = $(field).closest('td, .cell');
+                        if (q !== 'onlyVals') {
 
-                    if (input.closest('.InsertRow, .InsertPanel').length === 0) {
+                            if (!field.multiple) {
+                                if (field.withEmptyVal && field.withEmptyVal.trim() !== '' && field.category !== 'filter') {
+                                    optgroups[''].append($('<option>').data('content', field.withEmptyVal).text(""));
+                                }
+                            }
 
-                        let $selectContainer = input.data('container');
+                            for (let i in LISTs.innerList) {
+                                let iList = LISTs.innerList[i];
+                                if (vals[iList] === 1) continue;
+                                let v = LISTs.innerIndexed[iList];
 
-                        input.on('remove', function () {
-                            $selectContainer.off('click.selectContainer.' + input.data('AppUin'));
-                            $selectContainer.off('keydown.selectContainer.' + input.data('AppUin'));
+                                if (!LISTs.isSliced) {
+                                    if (!isLikedFunc(v[0])) continue;
+                                }
+
+                                let opt = createOption(iList, v[0]);
+                                let groupName = v[1] ? v[1] : '';
+
+                                if (!optgroups[groupName]) {
+                                    optgroups[groupName] = $('<optgroup label="' + groupName + '">');
+                                }
+                                optgroups[groupName].append(opt);
+                            }
+                        }
+                        input.empty();
+
+                        Object.keys(optgroups).forEach(function (groupName) {
+                            input.append(optgroups[groupName]);
                         });
 
-                        $selectContainer.on('click.selectContainer.' + input.data('AppUin'), function (event) {
-                            let target = $(event.target);
-                            if (!target.closest('td').is('.editing') && !target.closest('.bootstrap-select').length) {
-                                blurClbk(divParent, event)
+                        if (LISTs.isSliced === true) {
+                            let opt = createOption(0, 'Данные не полны. Воспользуйтесь поиском!');
+                            opt.prop('disabled', true);
+                            opt.css('text-align', 'center');
+                            input.append(opt);
+                        }
+
+                        input.selectpicker('refresh');
+                        input.selectpicker('val', checkedVal);
+                        return checkedVal
+                    };
+                    if (!($oldParent && $oldParent.data('input'))) {
+                        let onlyElements = false;
+                        const getTitle = function () {
+
+
+                            let title = '-----';
+                            if (field.category === 'filter') {
+                                title = 'Пустое';
+                                if (field.selectFilterWithEmptyText) {
+                                    title = field.selectFilterWithEmptyText
+                                }
+                            } else if (field.withEmptyVal && field.withEmptyVal.trim() !== '') title = field.withEmptyVal;
+                            else if (field.multiple && cell && cell.closest('.InsertPanel').length) {
+                                title = "Выберите";
+                                onlyElements = true;
                             }
-                        });
-                        $selectContainer.on('keydown.selectContainer.' + input.data('AppUin'), function (event) {
+                            return title;
+                        };
 
-                            if (event.keyCode === 27) {
-                                input.data('keyPressed', 'Esc');
-                                escClbk(divParent, event);
-                                return false;
-                            }
-                            if (event.keyCode === 13) {
-                                input.data('enterPressed', true);
+                        input = $('<select class="form-control" ' + (field.multiple == true ? 'multiple ' : '') + ' data-size="auto" style="display: none;" name="cell_insert" data-style="btn-sm btn-default" data-width="css-width" data-live-search="true" data-title="' + getTitle() + '">').width(field.width);
 
-                            }
+                        if (onlyElements) {
+                            input.attr('data-selected-text-format', 'static');
+                        }
 
-                            if (event.keyCode !== 9 && event.keyCode !== 16) {
-                                $td.data('edited')
-                            }
-                            if (event.altKey || event.shiftKey) {
-                                let key = event.altKey ? 'altKey' : (event.shiftKey ? 'shiftKey' : false);
-                                input.data('keyPressed', key);
-                            }
+                        divParent.append(input);
+                        divParent.append('<div class="text-center mark-loading"></div>');
+                        if (tabindex) input.attr('tabindex', tabindex);
+                        input.data('AppUin', App.getUn());
+                        divParent.data('input', input);
 
-                        }).on('keyup', function (event) {
-                            input.removeData('keyPressed');
-                            input.removeData('enterPressed');
-                        });
-
-                        setTimeout(function () {
-                            if (input.data('selectpicker').$bsContainer.offset()['top'] > divParent.find('button').offset()['top']) {
-                                let cdiv = input.closest('td').find('.cdiv')
-                                let popover = cdiv.data('bs.popover');
-
-                                popover.applyPlacement(popover.getCalculatedOffset('top', popover.getPosition(), popover.$tip.width() + 8, popover.$tip.height() + 33), 'top');
-                                popover.$tip.removeClass('bottom').addClass('top')
-                            }
-
-                        }, 10)
+                        input.data('LISTs', LISTs);
                     }
 
-                    input.on('hidden.bs.select', function () {
-                        let changed = input.data('changed');
-                        let event = {};
-                        let keyPressed = input.data('keyPressed');
-                        if (keyPressed) event[keyPressed] = true;
 
-                        if (!field.multiple) {
-                            setTimeout(function () {
-                                "use strict";
-                                enterClbk(divParent, event)
-                            }, 200);
-
-                        } else if (changed && input.closest('td.edt').length === 0) {
-                            enterClbk(divParent, event);
-                        }
-                        input.data('changed', false);
-                    });
-                    input.on('show.bs.select', function () {
-                        addValues(val);
-                    });
-                    input.on('shown.bs.select', function () {
-                        let selectPicker = input.data('selectpicker');
-                        selectPicker.$bsContainer.addClass('pcTable-selectpicker');
-                        if (LISTs.isPreview) {
-                            selectPicker.$bsContainer.addClass('select-with-preview');
-                        }
-
-                        if (selectPicker.$menuInner.height() < 100 && selectPicker.$menuInner.find('li').length > 6) {
-                            selectPicker.$menuInner.height(300)
-                        }
-                        let position = selectPicker.$menu.get(0).getBoundingClientRect();
-                        if (position.right > window.innerWidth - 20) {
-                            let diff = position.right - window.innerWidth + 20;
-                            let width = selectPicker.$menuInner.width();
-                            selectPicker.$menuInner.width(width - diff).css('overflow-x', 'scroll');
-                        } else {
-                            selectPicker.$menuInner.width('auto')
-                        }
+                    divParent.find('.mark-loading').remove();
+                    let container = input.closest('.modal-body').length === 0 ? field.pcTable._container : input.closest('.modal-body');
+                    input.data('container', container);
 
 
-                        if (!selectPicker.cropped) {
-                            selectPicker.cropped = true;
-                            if (input.data('container').is('.pcTable-container')) {
-                                selectPicker.$menuInner.height(selectPicker.$menuInner.height() - 4)
+                    addValues(val);
+
+
+                    if (!input.data('is-rendered')) {
+
+                        let searchTimeout;
+
+                        input.data('selectpicker').$searchbox.off().on('click.dropdown.data-api focus.dropdown.data-api touchend.dropdown.data-api', function (e) {
+                            e.stopPropagation();
+                        });
+
+                        let Q = '';
+
+
+                        input.data('selectpicker').$searchbox.on('keyup', function (e) {
+                            if (e.key === 'Escape') {
+                                input.data('selectpicker').$button.click();
+                                return true;
                             }
-                        }
-                    });
-                    input.on('changed.bs.select', function () {
-                        input.data('changed', true);
-                        let oldVal = [];
-                        if (val && val.forEach) {
-                            val.forEach(function (v) {
-                                oldVal.push(v);
-                            });
-                        }
-                        val = input.val();
 
-
-                        if (field.category === 'filter') {
-                            if (field.multiple) {
-                                let len = val.length;
-
-                                if (oldVal.length > val.length) {
-                                    if (val.length === 0) {
-                                        val.push('*NONE*');
-                                    }
-                                } else {
-                                    let newElement;
-                                    val.some(function (el) {
-                                        if (oldVal.indexOf(el) === -1) {
-                                            newElement = el;
-                                            return true;
-                                        }
-                                    });
-                                    if (['*NONE*', '*ALL*'].indexOf(newElement) !== -1) {
-                                        val = [newElement];
+                            let q = $(this).val();
+                            if (Q !== q) {
+                                Q = q;
+                                if (searchTimeout) {
+                                    clearTimeout(searchTimeout)
+                                }
+                                searchTimeout = setTimeout(function () {
+                                    if (LISTs.isListForLoad || LISTs.isSliced) {
+                                        GetLoadListDeffered.call(field, q).then(function () {
+                                            addValues.call(field, val, q);
+                                        });
                                     } else {
-                                        ['*NONE*', '*ALL*'].some(function (SpecialValue) {
-                                            let SpecialIndex;
-                                            if ((SpecialIndex = val.indexOf(SpecialValue)) !== -1) {
-                                                val.splice(SpecialIndex, 1);
+                                        addValues.call(field, val, q);
+                                    }
+                                }, 750);
+                            }
+                        });
+
+
+                        let $td = $(field).closest('td, .cell');
+
+                        if (input.closest('.InsertRow, .InsertPanel').length === 0) {
+
+                            let $selectContainer = input.data('container');
+
+                            input.on('remove', function () {
+                                $selectContainer.off('click.selectContainer.' + input.data('AppUin'));
+                                $selectContainer.off('keydown.selectContainer.' + input.data('AppUin'));
+                            });
+
+                            $selectContainer.on('click.selectContainer.' + input.data('AppUin'), function (event) {
+                                let target = $(event.target);
+                                if (!target.closest('td').is('.editing') && !target.closest('.bootstrap-select').length) {
+                                    blurClbk(divParent, event)
+                                }
+                            });
+                            $selectContainer.on('keydown.selectContainer.' + input.data('AppUin'), function (event) {
+                                if (event.key === 'Tab') {
+                                    enterClbk(divParent, event);
+                                    return false;
+                                }
+                                if (event.keyCode === 27) {
+                                    input.data('keyPressed', 'Esc');
+                                    escClbk(divParent, event);
+                                    return false;
+                                }
+                                if (event.keyCode === 13) {
+                                    input.data('enterPressed', true);
+
+                                }
+
+                                if (event.keyCode !== 9 && event.keyCode !== 16) {
+                                    $td.data('edited')
+                                }
+                                if (event.altKey || event.shiftKey) {
+                                    let key = event.altKey ? 'altKey' : (event.shiftKey ? 'shiftKey' : false);
+                                    input.data('keyPressed', key);
+                                }
+
+                            }).on('keyup', function (event) {
+                                input.removeData('keyPressed');
+                                input.removeData('enterPressed');
+
+
+                            });
+
+                            setTimeout(function () {
+                                if (input.data('selectpicker').$bsContainer.offset()['top'] > divParent.find('button').offset()['top']) {
+                                    let cdiv = input.closest('td').find('.cdiv')
+                                    let popover = cdiv.data('bs.popover');
+
+                                    popover.applyPlacement(popover.getCalculatedOffset('top', popover.getPosition(), popover.$tip.width() + 8, popover.$tip.height() + 33), 'top');
+                                    popover.$tip.removeClass('bottom').addClass('top')
+                                }
+
+                            }, 10)
+                        } else if (input.closest('.InsertRow').length === 1) {
+                            let $selectContainer = input.data('container');
+                            $selectContainer.on('keydown.selectContainer.' + input.data('AppUin'), function (event) {
+                                if (event.key === 'Tab') {
+                                    if ((input.data('selectpicker').$newElement.get(0).contains(event.originalEvent.target) || input.data('selectpicker').$menu.get(0).contains(event.originalEvent.target))) {
+                                        if (input.data('selectpicker').$menu.is('.open')) {
+                                            input.selectpicker('toggle')
+                                        }
+                                        enterClbk(divParent, event);
+                                    }
+                                    return false;
+                                }
+                            });
+
+                            input.data('selectpicker').$newElement.on('keydown', (ev) => {
+                                if (ev.code === 'Tab') {
+                                    enterClbk(divParent, event);
+                                    ev.stopPropagation();
+                                }
+                            })
+                        }
+
+                        input.on('hidden.bs.select', function () {
+                            let changed = input.data('changed');
+                            let event = {};
+                            let keyPressed = input.data('keyPressed');
+                            if (keyPressed) event[keyPressed] = true;
+
+                            if (!field.multiple) {
+                                setTimeout(function () {
+                                    "use strict";
+                                    enterClbk(divParent, event)
+                                }, 200);
+
+                            } else if (changed && input.closest('td.edt').length === 0) {
+                                enterClbk(divParent, event);
+                            }
+                            input.data('changed', false);
+                        });
+                        input.on('show.bs.select', function () {
+                            addValues(val);
+                        });
+                        input.on('shown.bs.select', function () {
+                            let selectPicker = input.data('selectpicker');
+                            selectPicker.$bsContainer.addClass('pcTable-selectpicker');
+                            if (LISTs.isPreview) {
+                                selectPicker.$bsContainer.addClass('select-with-preview');
+                            }
+
+                            if (selectPicker.$menuInner.height() < 100 && selectPicker.$menuInner.find('li').length > 6) {
+                                selectPicker.$menuInner.height(300)
+                            }
+                            let position = selectPicker.$menu.get(0).getBoundingClientRect();
+                            if (position.right > window.innerWidth - 20) {
+                                let diff = position.right - window.innerWidth + 20;
+                                let width = selectPicker.$menuInner.width();
+                                selectPicker.$menuInner.width(width - diff).css('overflow-x', 'scroll');
+                            } else {
+                                selectPicker.$menuInner.width('auto')
+                            }
+
+
+                            if (!selectPicker.cropped) {
+                                selectPicker.cropped = true;
+                                if (input.data('container').is('.pcTable-container')) {
+                                    selectPicker.$menuInner.height(selectPicker.$menuInner.height() - 4)
+                                }
+                            }
+                        });
+                        input.on('changed.bs.select', function () {
+                            input.data('changed', true);
+                            let oldVal = [];
+                            if (val && val.forEach) {
+                                val.forEach(function (v) {
+                                    oldVal.push(v);
+                                });
+                            }
+                            val = input.val();
+
+
+                            if (field.category === 'filter') {
+                                if (field.multiple) {
+                                    let len = val.length;
+
+                                    if (oldVal.length > val.length) {
+                                        if (val.length === 0) {
+                                            val.push('*NONE*');
+                                        }
+                                    } else {
+                                        let newElement;
+                                        val.some(function (el) {
+                                            if (oldVal.indexOf(el) === -1) {
+                                                newElement = el;
                                                 return true;
                                             }
-                                        })
+                                        });
+                                        if (['*NONE*', '*ALL*'].indexOf(newElement) !== -1) {
+                                            val = [newElement];
+                                        } else {
+                                            ['*NONE*', '*ALL*'].some(function (SpecialValue) {
+                                                let SpecialIndex;
+                                                if ((SpecialIndex = val.indexOf(SpecialValue)) !== -1) {
+                                                    val.splice(SpecialIndex, 1);
+                                                    return true;
+                                                }
+                                            })
+                                        }
+                                    }
+
+                                    if (val.length !== len) {
+                                        input.selectpicker('val', val);
                                     }
                                 }
-
-                                if (val.length !== len) {
-                                    input.selectpicker('val', val);
-                                }
                             }
+
+                        });
+
+                        input.on('remove', function () {
+                            input.data('selectpicker').$bsContainer.remove();
+                            input.data('container')
+                                .off('keydown.selectContainer.' + input.data('AppUin'))
+                                .off('click.selectContainer.' + input.data('AppUin'))
+                        })
+
+                        if (input.closest('.InsertRow, .InsertPanel').length === 0) {
+                            divParent.find('button').click();
                         }
+                    }
 
-                    });
-
-                    input.on('remove', function () {
-                        input.data('selectpicker').$bsContainer.remove();
-                        input.data('container')
-                            .off('keydown.selectContainer.' + input.data('AppUin'))
-                            .off('click.selectContainer.' + input.data('AppUin'))
-                    })
-
-                    if (input.closest('.InsertRow, .InsertPanel').length === 0) {
-                        divParent.find('button').click();
+                } else {
+                    if (iRenered < 50) {
+                        setTimeout(function () {
+                            renderMe(input, val)
+                        }, iRenered * 10 + 1);
+                        iRenered++;
                     }
                 }
-
-            } else {
-                if (iRenered < 50) {
-                    setTimeout(function () {
-                        renderMe(input, val)
-                    }, iRenered * 10 + 1);
-                    iRenered++;
-                }
             }
-        };
+        ;
 
 
         if (!LISTs || LISTs.isListForLoad) {
@@ -634,10 +672,14 @@ fieldTypes.select = {
 
         return divParent;
     },
-    getEditPanelText: function (fieldValue, item) {
-        if (this.multiple)
-            return this.getPanelText(fieldValue.v, null, item)
-    },
+    getEditPanelText:
+
+        function (fieldValue, item) {
+            if (this.multiple)
+                return this.getPanelText(fieldValue.v, null, item)
+        }
+
+    ,
     getPanelText: function (fieldValue, td, item) {
         let field = this;
         let $div = $('<div>');
@@ -691,7 +733,8 @@ fieldTypes.select = {
             }
         }
         return $div.children();
-    },
+    }
+    ,
     getCellText: function (fieldValue, td, item) {
         let field = this;
         let text = '';
@@ -765,7 +808,8 @@ fieldTypes.select = {
             }
         }
         return $div.children();
-    },
+    }
+    ,
     focusElement: function (div) {
         let button = div.find('button');
         let field = this;
@@ -775,15 +819,20 @@ fieldTypes.select = {
             }, 50)
         } else
             button.focus();
-
-    },
+        if (div.closest('tr').is('.InsertRow')) {
+            this.pcTable._insertRow.find('.active').removeClass('active');
+            div.closest('td').addClass('active');
+        }
+    }
+    ,
     isDataModified: function (edited, fromItem) {
 
         if ([null, ''].indexOf(edited) !== -1 && [null, ''].indexOf(fromItem) !== -1) return false;
         if ([null, ''].indexOf(edited) !== -1 || [null, ''].indexOf(fromItem) !== -1) return true;
 
         return !Object.equals(fromItem, edited);
-    },
+    }
+    ,
     checkEditRegExp: function (val) {
         if (!this.warningEditRegExp) return true;
         try {
@@ -794,7 +843,8 @@ fieldTypes.select = {
         } catch (e) {
             return true;
         }
-    },
+    }
+    ,
     addDataToFilter: function (filterVals, valObj) {
 
         const addFiltersData = function (valObjElem) {
@@ -821,7 +871,8 @@ fieldTypes.select = {
             addFiltersData(valObj.v_)
         }
 
-    },
+    }
+    ,
     getElementString: function (val, arrayVal) {
         "use strict";
         let r;
@@ -843,7 +894,9 @@ fieldTypes.select = {
         }
 
         return r;
-    }, sourceButtonClick: function (item, isAdd) {
+    }
+    ,
+    sourceButtonClick: function (item, isAdd) {
         let $d = $.Deferred();
         let ee = {}, field = this, pcTable = this.pcTable;
 

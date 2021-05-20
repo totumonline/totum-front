@@ -104,7 +104,7 @@ $.extend(App.pcTableMain.prototype, {
         if (Object.keys(pcTable._insertError).length) {
             let fieldName = Object.keys(pcTable._insertError)[0];
             let _error = pcTable._insertError[fieldName];
-            App.notify(_error, $('<div>Ошибка в поле </div>').append(' в поле ').append($('<span>').text(pcTable.fields[fieldName].title || pcTable.fields[fieldName].name)));
+            App.notify(_error, $('<div>Ошибка в поле </div>').append($('<span>').text(pcTable.fields[fieldName].title || pcTable.fields[fieldName].name)));
             pcTable._currentInsertCellIndex = pcTable.fieldCategories.visibleColumns.findIndex(function (field) {
                 if (field.name === fieldName) return true
             });
@@ -244,7 +244,17 @@ $.extend(App.pcTableMain.prototype, {
         var item = pcTable._insertItem || (pcTable._insertItem = {});
 
         if (!$row) {
-            this.insertRow = $row = $('<tr class="InsertRow" style="height: 35px;"><td class="id"></td></tr>');
+            this.insertRow = $row = $('<tr class="InsertRow" style="height: 35px;"><td class="id"></td></tr>')
+                .on('click focus', 'input,button,select', function (event) {
+                    let inputElement = $(this);
+                    let active = pcTable._insertRow.find('.active');
+                    if (!active.length || (event.type === 'click' && !inputElement.is('[type="checkbox"]') && active !== $(this).closest('td'))) {
+                        active.removeClass('active');
+                        pcTable._currentInsertCellIndex = $(this).closest('td').data('index');
+                        $(this).closest('td').addClass('active');
+                    }
+                })
+            ;
             this._InsertAddInsertBtnsPanel($row);
             this.insertRow.editedFields = {};
         }
@@ -258,9 +268,6 @@ $.extend(App.pcTableMain.prototype, {
                 data = {[savedFieldName]: pcTable._insertItem[savedFieldName].v};
             }
         }
-        /* $.each(pcTable._insertItem, function (k, v) {
-             if (k !== 'n') data[k] = v.v;
-         });*/
 
         let visibleColumnsIndexes = [];
         pcTable.fieldCategories.visibleColumns.forEach(function (field) {
@@ -286,7 +293,7 @@ $.extend(App.pcTableMain.prototype, {
 
 
                 var td = $row.find('td:eq(' + (index + 1) + ')');
-                let Oldval = pcTable._insertItem[field.name];
+                let Oldval = $.extend(true, {}, pcTable._insertItem[field.name]);
                 let isForce = pcTable._insertItem[field.name] && pcTable._insertItem[field.name].force;
 
                 pcTable._insertItem[field.name] = item[field.name];
@@ -340,6 +347,8 @@ $.extend(App.pcTableMain.prototype, {
 
         nodeName = nodeName || 'td';
         var td = td || $("<" + nodeName + ">");
+
+        td.data('index', index);
         var pcTable = this;
 
         if (field.code) {
@@ -439,20 +448,6 @@ $.extend(App.pcTableMain.prototype, {
                     }
 
                 });
-
-            if (field.type === 'button') {
-                td.find('button').on('click', () => {
-                    pcTable.model.doAfterProcesses(() => {
-                        pcTable.model.click({
-                            item: this._insertRowHash,
-                            fieldName: field.name
-                        }).then(() => {
-                            parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name)
-                        })
-                    })
-                })
-            }
-
             return td;
         }
 
@@ -488,12 +483,14 @@ $.extend(App.pcTableMain.prototype, {
         };
 
 
-        var saveClbck = function ($input, event) {
+        var saveClbck = function ($input, event, refresh) {
+
             var editValResult = getEditVal($input);
-            if (editValResult === null) {
+            pcTable._currentInsertCellIndex = index + 1;
+            if (editValResult === null || refresh) {
+                parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
                 pcTable._insertFocusIt.call(pcTable)
             } else {
-                pcTable._currentInsertCellIndex = index + 1;
                 if (field.isDataModified(editValResult, pcTable._insertItem[field.name].v)) {
                     pcTable.insertRow.editedFields[field.name] = true;
                     pcTable._insertItem[field.name].v = editValResult;
@@ -507,7 +504,12 @@ $.extend(App.pcTableMain.prototype, {
             }
 
         };
-        var blurClbck = function ($input, event) {
+        var blurClbck = function ($input, event, _, setNextIndex) {
+            if (setNextIndex) {
+                pcTable._currentInsertCellIndex = index + (setNextIndex === -1 ? -1 : 1);
+                pcTable._insertFocusIt.call(pcTable);
+            }
+
             setTimeout(function () {
 
                 let td = $input.closest('td');
@@ -515,7 +517,8 @@ $.extend(App.pcTableMain.prototype, {
 
                 let editValResult = getEditVal($input);
                 if (field.isDataModified(editValResult, pcTable._insertItem[field.name].v)) {
-                    pcTable._currentInsertCellIndex++;
+                    pcTable._currentInsertCellIndex = index + 1;
+                    ;
                     pcTable.insertRow.editedFields[field.name] = true;
 
                     pcTable._insertItem[field.name].v = editValResult;
@@ -537,6 +540,8 @@ $.extend(App.pcTableMain.prototype, {
                 pcTable._createInsertCell(td, field, row, index, nodeName, parentFunction);
                 pcTable._colorizeElement(td, pcTable_COLORS.blured);
             }
+            pcTable._currentInsertCellIndex = index + 1;
+            pcTable._insertFocusIt.call(pcTable);
         };
 
         let input = field.getEditElement(td.data('input'), pcTable._insertItem[field.name], pcTable._insertItem, saveClbck, escClbck, blurClbck);
@@ -544,17 +549,6 @@ $.extend(App.pcTableMain.prototype, {
         if (f && f.placeholder && field.addPlaceholder) {
             field.addPlaceholder(input, f.placeholder)
         }
-        td.on('click focus', 'input,button,select', function (event) {
-            setTimeout(() => {
-                pcTable._currentInsertCellIndex = index;
-            }, 200)
-
-        });
-
-
-        td.on('click focus', function () {
-            pcTable._currentInsertCellIndex = index;
-        });
 
         if (!input.isAttached()) {
             td.html(input).data('input', input);
@@ -674,6 +668,8 @@ $.extend(App.pcTableMain.prototype, {
             }
         });
         if (isLastCell) {
+            this.insertRow.find('td.active').removeClass('active');
+
             if (isPanel) {
                 let buttonSave = pcTable._insertPanel.indexedButtons[Object.keys(pcTable._insertPanel.indexedButtons)[0]];
                 buttonSave.focus();
