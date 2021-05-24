@@ -95,7 +95,8 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
 
         let field = this;
         let div = $('<div>');
-        let dialog = $('<div>').css('min-height', 200);
+        let dialog = $('<div>');
+
         let buttons;
         let element = $('<div class="HTMLEditor">');
 
@@ -116,11 +117,17 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                 } catch (e) {
                     window.top.App.modal('Ошибка формата JSON ');
                 }
-                element.css('min-height', 200);
 
                 let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">Вручную</a>').on('click', function () {
                     let div = $('<div>');
-                    let textarea = $('<textarea class="form-control" style="height: 350px;">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
+                    let textarea = $('<textarea class="form-control">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
+
+                    if (window.top.innerHeight > 460) {
+                        dialog.css('min-height', 200);
+                        element.css('min-height', 200);
+                        textarea.height(350)
+                    }
+
                     let title = 'Ручное изменение json-поля', buttons = [
                         {
                             'label': "Сохранить",

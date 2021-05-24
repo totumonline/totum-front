@@ -118,7 +118,7 @@ fieldTypes.text = {
 
         let field = this;
         let div = $('<div>');
-        let dialog = $('<div>').css('min-height', 200);
+        let dialog = $('<div>');
         let buttons;
         let element = $('<div class="HTMLEditor">');
 
@@ -141,11 +141,16 @@ fieldTypes.text = {
                     } catch (e) {
                         window.top.App.modal('Ошибка формата JSON ')
                     }
-                    element.css('min-height', 200);
+
 
                     let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">Вручную</a>').on('click', function () {
                         let div = $('<div>');
-                        let textarea = $('<textarea class="form-control" style="height: 350px;">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
+                        let textarea = $('<textarea class="form-control">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
+                        if (window.innerHeight > 460) {
+                            textarea.css('height', 350)
+                            element.css('min-height', 200);
+                        }
+
                         let buttons = [
                             {
                                 'label': "Сохранить",
@@ -225,10 +230,16 @@ fieldTypes.text = {
                     if (field.pcTable && field.pcTable.tableRow.name === 'tables') {
                         editor.table = item.name.v || item.name;
                     }
-                    editor.getScrollerElement().style.minHeight = '350px';
+
+                    if (window.innerHeight > 585) {
+                        editor.getScrollerElement().style.minHeight = '350px';
+                        dialog.css('min-height', 200)
+                    }
+
                     editor.focus();
 
                 }
+
 
                 element.data('editor', editor);
                 div.data('editor', editor);
@@ -375,7 +386,7 @@ fieldTypes.text = {
             div.text('Редактирование в форме').addClass('edit-in-form');
         } else {
             div.on('keydown click', function (event) {
-                if(event.key ==='Tab' ){
+                if (event.key === 'Tab') {
                     blurClbk(dialog, event, null, true);
                     return
                 }
