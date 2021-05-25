@@ -911,7 +911,7 @@
                     })
                 }
 
-                if (!this.isTreeView) {
+                if (!this.isTreeView || this.fields.tree.treeViewLoad) {
 
                     let btnAdd = $('<button class="btn btn-sm" style="margin-left: 5px;">Сбросить <span class="fa fa-filter"></span></button>').width(82)
                         .on('click', function () {
@@ -1981,7 +1981,7 @@
 
 
             if (field.category === 'column') {
-                if (!pcTable.isTreeView && field.filterable && field.showMeWidth > 0) {
+                if ((!pcTable.isTreeView || pcTable.fields.tree.treeViewLoad) && field.filterable && field.showMeWidth > 0) {
                     $th.addClass('with-filter2');
                     this.__getFilterButton(field.name).appendTo(filterBlock);
                 }

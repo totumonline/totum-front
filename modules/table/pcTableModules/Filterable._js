@@ -66,23 +66,71 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
 
 
     let old = [];
-    if (this.isTreeView) {
-        this.dataSortedVisible.forEach((v) => {
-            if (typeof v != 'object') {
-                old.push(v)
-            }
-        })
-    } else {
+    if (!this.isTreeView) {
         old = this.dataSortedVisible.slice();
     }
     let new_ = [];
     let new_check = [];
 
-    for (let i = 0; i < this.dataSorted.length; i++) {
-        let element = this.dataSorted[i];
-        if (typeof element === 'object') {
-            new_.push(element);
+    if (this.isTreeView) {
+        if (this.filters && Object.keys(this.filters).length) {
+
+            let expands = [];
+            this.dataSorted.forEach((v) => {
+                if (typeof v === 'object' && !v.opened) {
+                    expands.push(v)
+                }
+            })
+            expands.forEach((v) => {
+                this._expandTreeFolderRow(v, true)
+            })
+            for (let i = 0; i < this.dataSorted.length; i++) {
+                let element = this.dataSorted[i];
+                let row = element.row;
+                if (typeof element !== 'object') {
+                    row = this.data[element];
+                }
+                if (row && this.__applyFiltersToItem(row)) {
+                    let parents = [];
+
+
+                    let ip = i - 1;
+                    while (typeof this.dataSorted[ip] !== 'object') {
+                        ip--;
+                    }
+                    let p;
+                    if (typeof element === 'object') {
+                        p = element.p
+                    } else {
+                        parents.push(this.dataSorted[ip]);
+                        p = this.dataSorted[ip].p;
+                    }
+
+                    while (p && ip) {
+                        while (typeof this.dataSorted[ip] !== 'object') {
+                            ip--;
+                        }
+                        if (this.dataSorted[ip] === this.getElementInTree(p)) {
+                            parents.push(this.dataSorted[ip])
+                            p = this.dataSorted[ip].p;
+                        }
+                        ip--;
+                    }
+                    while (parents.length) {
+                        new_.push(parents.pop());
+                    }
+                    new_.push(element);
+                }
+            }
+
         } else {
+            this.dataSorted.forEach((v) => {
+                new_.push(v);
+            })
+        }
+    } else {
+        for (let i = 0; i < this.dataSorted.length; i++) {
+            let element = this.dataSorted[i];
             let item = this.data[element];
             this.__applyFiltersToItem(item);
             if (item.$visible) {
@@ -93,7 +141,7 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
     }
 
 
-    if (forse || JSON.stringify(old) !== JSON.stringify(new_check)) {
+    if (this.isTreeView || forse || JSON.stringify(old) !== JSON.stringify(new_check)) {
         this.dataSortedVisible = new_;
         this._refreshContentTable(false, true);
         this._headCellIdButtonsState();
@@ -101,7 +149,7 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
     this.selectedCells && this.selectedCells.summarizer.check();
     App.fullScreenProcesses.hide();
 };
-App.pcTableMain.prototype.__applyFiltersToItem = function (item, notAttachIt) {
+App.pcTableMain.prototype.__applyFiltersToItem = function (item) {
     let pcTable = this;
     let visible = true;
 
@@ -125,7 +173,7 @@ App.pcTableMain.prototype.__applyFiltersToItem = function (item, notAttachIt) {
                     let field = pcTable._getFieldbyName(fieldName);
                     if (!field.checkIsFiltered(item[fieldName], filterVals)) {
                         visible = false;
-                    }else{
+                    } else {
                         field.checkIsFiltered(item[fieldName], filterVals)
                     }
                     break;
@@ -163,6 +211,7 @@ App.pcTableMain.prototype.__applyFiltersToItem = function (item, notAttachIt) {
     if (!(item.$visible = visible)) {
         this.row_actions_uncheck(item);
     }
+    return item.$visible;
 };
 App.pcTableMain.prototype.addValueToFilters = function (fieldName, valObj) {
     const pcTable = this;
@@ -207,7 +256,7 @@ App.pcTableMain.prototype.removeValueFromFilters = function (fieldName, valObj) 
     }
 
 
-    if(field.$th){
+    if (field.$th) {
         field.$th.find('.btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
     }
     pcTable.__applyFilters.call(pcTable);
@@ -314,6 +363,10 @@ App.pcTableMain.prototype.__addFilterable = function () {
                         vals[_id.toString()] = _id.toString();
                     } else {
                         pcTable.fields[fieldName].addDataToFilter(vals, pcTable.data[_id][fieldName]);
+                    }
+                } else {
+                    if (_id.row) {
+                        pcTable.fields[fieldName].addDataToFilter(vals, _id.row[fieldName]);
                     }
                 }
             });

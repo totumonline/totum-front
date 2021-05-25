@@ -87,7 +87,7 @@
                 $('<div class="menu-item"><i class="fa fa-plus"></i> Добавить ветку</div>')
                     .on('click', () => {
 
-                        let parentField=this.fields.tree.treeViewParentField || "tree";
+                        let parentField = this.fields.tree.treeViewParentField || "tree";
 
                         let obj = {[parentField]: {v: row.v}};
                         new EditPanel(this.fields.tree.selectTable, null, obj, null, {tree: true}).then((json) => {
@@ -279,6 +279,10 @@
             }
         }
     }
+    App.pcTableMain.prototype.getElementInTree = function (treeVal) {
+        return this.treeIndex[treeVal];
+    }
+
     App.pcTableMain.prototype.placeInTree = function (newData, oldItem, openIt) {
         let arr = 'sorted';
 
