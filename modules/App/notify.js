@@ -1,7 +1,7 @@
 (function () {
     App.notify = function ($text, $title, $style) {
 
-        let def=$.Deferred();
+        let def = $.Deferred();
         window.top.BootstrapDialog.show({
             message: $text,
             type: BootstrapDialog.TYPE_DEFAULT,
@@ -25,7 +25,7 @@
                 def.resolve(dialog);
             }
         })
-       return def;
+        return def;
     };
     App.topNotify = function ($text, $title, $style) {
         $style = 'success';
@@ -44,14 +44,14 @@
             inOptions = $text;
             if ($text['element']) element = $text['element'];
             if ($text['timeout']) timeout = $text['timeout'];
-            if ($text['container']) container = $text['container'];
+            if ($text['container'] !== undefined) container = $text['container'];
             if ($text['trigger']) trigger = $text['trigger'];
             if ($text['placement']) placement = $text['placement'];
             if ($text['class']) class_p = $text['class'];
             $text = $text['$text'];
         }
         timeout = timeout || undefined;
-        container = container || element.closest('.pcTable-scrollwrapper, .InsertPanel');
+        container = container === undefined ? element.closest('.pcTable-scrollwrapper, .InsertPanel') : container;
         trigger = trigger || 'manual';
 
         options = $.extend(options, {
@@ -79,7 +79,7 @@
             if (placement === 'bottom') {
                 let top = element.offset().top + element.outerHeight();
                 let popovertop = popover.$tip.offset().top;
-                let containerTop = container.scrollTop() - container.offset().top;
+                let containerTop = container ? container.scrollTop() - container.offset().top : 0;
                 if (popovertop - top > 10) {
                     popover.$tip.css('top', top + 2 + containerTop + (container.is('.InsertPanel') ? $('.modal-dialog').offset().top : 0));
                 }
@@ -89,7 +89,7 @@
         element.popover(options)
         if (trigger == 'manual') {
             element.popover('show');
-            if(class_p){
+            if (class_p) {
                 $('#' + element.attr('aria-describedby')).addClass(class_p);
             }
         }

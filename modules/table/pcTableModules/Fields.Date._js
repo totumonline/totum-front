@@ -103,17 +103,18 @@ fieldTypes.date = {
                 });
 
             } else {
-                $input.on('focus click', function () {
+                const showPopover = function () {
                     if (popover) {
-                        cdiv.popover('destroy')
+                        $input.popover('destroy')
                     }
-                    popoverId = App.popNotify(cParent, $input);
-                    popover = $('#' + popoverId);
+                    popoverId = App.popNotify(cParent, $input, null, false);
+                    popover = $($input.get(0).ownerDocument.getElementById(popoverId));
 
                     calendar.data("DateTimePicker").show();
                     popover.show();
                     setDateTimePickerDate();
-                });
+                };
+                $input.on('focus mouskeydown',  showPopover);
             }
 
         }, 20);

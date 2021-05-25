@@ -474,7 +474,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
         const onClose = () => {
             this.closed = true;
-            if (this.mainPanelId !== undefined) {
+            if (this.mainPanelId !== undefined && pcTable.editPanels) {
                 pcTable.editPanels.splice(this.mainPanelId, 1);
             }
         }
