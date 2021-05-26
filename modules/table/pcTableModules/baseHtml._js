@@ -477,10 +477,9 @@
             }
             let csv = $('<span class="common-table-title">');
 
+            csv.append(this.fieldsHiddingGetButton(true));
 
             if (!pcTable.isMobile) {
-                csv.append(this.fieldsHiddingGetButton(true));
-
                 //Печать
                 {
                     let btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-print"></i></button>')

@@ -495,17 +495,173 @@
                 },
             })
         },
+        fieldsHiddingShowPanelMobile: function () {
+            let pcTable = this;
+            let $fieldsDiv = $('<div class="hidding-form">');
+            let lastCheck, dialog;
+
+            const refreshDefaultEyeGroups = function (setsDiv) {
+
+                setsDiv = setsDiv || $('#defaultEyeGroups'),
+                    sets = pcTable.tableRow.fields_sets || [];
+
+                setsDiv.empty().append('<b>Наборы по умолчанию:</b> ');
+
+                sets.forEach(function (set, i) {
+                    let link = $('<a href="#">').text(set.name).data('index', i);
+                    setsDiv.append(link.wrap('<span>').parent());
+                });
+                setsDiv.off();
+
+                setsDiv.on('click', 'a', function () {
+                    let index = $(this).data('index');
+                    let fields = sets[index]['fields'];
+                    if (Array.isArray(fields)) {
+                        let _fields = {};
+                        fields.forEach(function (fName) {
+                            if (pcTable.fields[fName]) {
+                                _fields[fName] = pcTable.fields[fName].width;
+                            }
+                        });
+                        fields = _fields;
+                    }
+                    pcTable.setVisibleFields.call(pcTable, fields);
+                    dialog.close();
+                });
+            };
+
+            let sets = pcTable.tableRow.fields_sets || [];
+
+            let setsDiv = $('<div class="fieldsHiddenSets" id="defaultEyeGroups">').appendTo($fieldsDiv);
+
+            if (sets && sets.length) {
+                refreshDefaultEyeGroups(setsDiv);
+            }
+
+
+            $fieldsDiv.on('click', 'input[type="checkbox"]', function (event) {
+                let input = $(this);
+                let formDiv = input.closest('.hidding-form');
+                if (event.shiftKey) {
+                    let index = formDiv.find('input').index(input);
+                    let _i = formDiv.find('input').index($(this));
+
+                    formDiv.find('input').each(function (i) {
+                        if ((_i <= i && i < lastCheck) || (_i >= i && i > lastCheck)) {
+                            $(this).prop('checked', input.is(':checked') ? 'checked' : false).trigger('change');
+                        }
+                    });
+
+                } else {
+                    lastCheck = formDiv.find('input').index($(this));
+                }
+            });
+
+            let buttons = [
+                {
+                    label: 'Применить',
+                    action: function (dialogRef) {
+                        let fields = {};
+                        $fieldsDiv.find('input:checked').each(function () {
+                            let input = $(this);
+                            fields[input.attr('name')] = pcTable.fields[input.attr('name')].width;
+                        });
+                        pcTable.setVisibleFields.call(pcTable, fields);
+                        dialogRef.close();
+
+                    }
+                },
+                {
+                    label: 'По умолчанию',
+                    action: function (dialogRef) {
+                        dialogRef.close();
+                        pcTable.setDefaultVisibleFields.call(pcTable);
+
+                    }
+                },
+                {
+                    label: 'Показать все',
+                    action: function (dialogRef) {
+                        dialogRef.close();
+                        let fields = {};
+                        Object.values(pcTable.fields).forEach(function (field) {
+                            fields[field.name] = field.width;
+                        });
+                        pcTable.setVisibleFields.call(pcTable, fields);
+                    }
+                },
+                {
+                    label: 'Отмена',
+                    action: function (dialogRef) {
+                        dialogRef.close();
+                    }
+                }
+
+            ];
+
+            let categories = {'param': 'Хэдер', 'column': 'Колонки', 'footer': 'Футер'};
+            Object.keys(categories).forEach(function (category) {
+
+                if (pcTable.fieldCategories[category] && pcTable.fieldCategories[category].length) {
+
+                    $fieldsDiv.append('<div class="category-name">' + categories[category] + '</div>');
+                    $.each(pcTable.fieldCategories[category], function (k, field) {
+                        let hidden = '';
+                        if (field.hidden) {
+                            hidden = ' (Скрыто по умолчанию)';
+                        }
+                        let fCheckbox = $('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="' + field.name + '" class="form-check-input"> ' + field.title + hidden + '</label></div>');
+                        if (field.showMeWidth) {
+                            fCheckbox.find('input').prop('checked', true);
+                            fCheckbox.attr('data-checked', true);
+                        }
+                        fCheckbox.appendTo($fieldsDiv);
+                    });
+
+                }
+            });
+
+            $fieldsDiv.on('change', 'input[type="checkbox"]', function () {
+                let div = $(this).closest('div');
+                if ($(this).is(':checked')) {
+                    div.attr('data-checked', true);
+                } else {
+                    div.removeAttr('data-checked');
+                }
+            });
+
+
+            dialog = window.top.BootstrapDialog.show({
+                message: $fieldsDiv,
+                title: 'Видимость полей',
+                buttons: buttons,
+                type: null,
+                draggable: true,
+                onshow: function (dialog) {
+                    if (pcTable.isCreatorView) {
+                        dialog.$modalContent.css({
+                            width: "800px",
+                        });
+                    }
+                },
+            })
+        },
         fieldsHiddingGetButton: function (blinkMe) {
             "use strict";
 
             let pcTable = this;
 
             if (!this.___fieldsHiddingShowAllButton) {
-
-                let timeout;
-
                 this.___fieldsHiddingShowAllButton = $('<button class="btn btn-sm"><span class="fa fa-eye-slash"></span></button>')
-                    .on('click', function () {
+
+                if (this.isMobile) {
+                    this.___fieldsHiddingShowAllButton.on('click', function () {
+                        pcTable.fieldsHiddingShowPanelMobile.call(pcTable)
+                    })
+                } else {
+                    let timeout;
+
+                    this.___fieldsHiddingShowAllButton.on('click', function () {
                         pcTable.fieldsHiddingShowPanel.call(pcTable)
                     }).on('contextmenu', function () {
                         if (!pcTable.isCreatorView) {
@@ -522,6 +678,7 @@
                         }
                         return false;
                     });
+                }
             }
 
             let isHidedExtraFields = Object.values(pcTable.fields).some(function (field) {
