@@ -22,7 +22,7 @@
                 return false;
             });
             pcTable._table.on('click', '.DataRow .id button.edit', function () {
-                pcTable.rows_edit.call(pcTable, $(this).closest('tr'))
+                pcTable.rows_edit($(this).closest('tr'))
             });
 
             /*dropdown Панель на id строки*/
@@ -179,7 +179,7 @@
             return this.__checkedRows;
         }
         ,
-        row_actions_check: function (item, isGroupAction) {
+        row_actions_check: function (item, isGroupAction, prepend) {
 
             item.$checked = true;
 
@@ -197,7 +197,11 @@
             }
 
             if (!isGroupAction) {
-                this.__checkedRows.push(item.id);
+                if(prepend){
+                    this.__checkedRows.unshift(item.id);
+                }else{
+                    this.__checkedRows.push(item.id);
+                }
                 this._headCellIdButtonsState();
             }
 
@@ -566,7 +570,7 @@
             let checkedRows = this.row_actions_get_checkedIds();
 
             if ($tr && (checkedRows.indexOf(pcTable._getItemByTr($tr).id) === -1)) {
-                this.row_actions_check(pcTable._getItemByTr($tr));
+                this.row_actions_check(pcTable._getItemByTr($tr), false, true);
                 checkedRows = this.row_actions_get_checkedIds();
             }
             pcTable._row_edit.call(pcTable, checkedRows.slice());
