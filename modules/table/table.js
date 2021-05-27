@@ -527,7 +527,7 @@
                 const initField = function (name, field) {
                     field.pcTable = pcTable;
 
-                    if (withoutCategories.indexOf(field.category) !== -1) return;
+
 
                     if (fieldTypes[field.type]) {
                         field = $.extend({}, defaultField, fieldTypes[field.type], field);
@@ -552,6 +552,8 @@
 
 
                     pcTable.fields[name] = field;
+
+                    if (withoutCategories.indexOf(field.category) !== -1) return;
 
                     if (field.showInWeb) {
                         if (field.category === 'column') {
