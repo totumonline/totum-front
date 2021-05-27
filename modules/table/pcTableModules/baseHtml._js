@@ -2265,24 +2265,31 @@
                                 let summ = 0, count = 0, max = null, min = null, notNumber = 0;
                                 let error = false;
                                 pcTable.dataSortedVisible.some(function (id) {
-                                    if (typeof id !== 'object') {
-                                        try {
-                                            let BigVal = Big(pcTable.data[id][field.name].v);
+                                    let BigVal;
 
-                                            summ = Big(summ).plus(BigVal);
-                                            ++count;
-                                            if (max === null) max = BigVal;
-                                            else {
-                                                if (BigVal.gt(max)) max = BigVal;
+                                    try {
+                                        if (typeof id !== 'object') {
+                                            BigVal = Big(pcTable.data[id][field.name].v);
+                                        } else {
+                                            if (!id.row) {
+                                                return;
                                             }
-                                            if (min === null) min = BigVal;
-                                            else {
-                                                if (BigVal.lt(min)) min = BigVal;
-                                            }
-                                        } catch (e) {
-                                            ++notNumber;
+                                            BigVal = Big(id.row[field.name].v);
                                         }
+                                        summ = Big(summ).plus(BigVal);
+                                        ++count;
+                                        if (max === null) max = BigVal;
+                                        else {
+                                            if (BigVal.gt(max)) max = BigVal;
+                                        }
+                                        if (min === null) min = BigVal;
+                                        else {
+                                            if (BigVal.lt(min)) min = BigVal;
+                                        }
+                                    } catch (e) {
+                                        ++notNumber;
                                     }
+
                                 });
 
 

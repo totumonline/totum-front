@@ -180,7 +180,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     });
                     divForPanneSelect.append($('<div class="panel-buttons">').append(btn)).appendTo(textDiv);
                 }
-            }else if (field.viewSelectTable){
+            } else if (field.viewSelectTable) {
                 let divForPanneSelect = $('<div><div class="center"></div></div>');
 
                 if (field.multi) {
@@ -578,6 +578,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 pcTable.dataSortedVisible.forEach((id) => {
                     if (typeof id !== 'object') {
                         this.add(id, fieldName, true);
+                    }else if(id.row){
+                        this.add(id.row.id, fieldName, true);
                     }
                 })
                 this.summarizer.check();
@@ -718,7 +720,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     })
                 });
                 allIds = Array.from(new Set(allIds));
-                allIds = pcTable.dataSortedVisible.filter(id => allIds.findIndex((_id)=>{
+                allIds = pcTable.dataSortedVisible.filter(id => allIds.findIndex((_id) => {
                     return _id == id;
                 }) !== -1);
                 allFields = Array.from(new Set(allFields));
@@ -760,7 +762,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                             if (typeof _str === "undefined") _str = "";
 
                             if (typeof _str == 'string' && _str.replace(/\t/g, '').match(/[\s"]/)) {
-                                if(allFields.length!==1){
+                                if (allFields.length !== 1) {
                                     _str = '"' + _str.replace(/"/g, '""') + '"';
                                 }
                             }
@@ -843,23 +845,26 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         let step = 'before';
 
                         pcTable.dataSortedVisible.some(function (_id) {
-                            if (typeof _id !== "object") {
+                            if (typeof _id === "object") {
+                                _id = _id.row.id;
+                            } else {
                                 _id = parseInt(_id);
-                                if (step === 'before') {
-                                    if (_id === item.id || _id === selected.lastSelected[1]) {
-                                        step = 'doIt';
-                                        ids.push(_id);
-
-                                        if (item.id === selected.lastSelected[1]) return true;
-                                    }
-                                } else if (step === 'doIt') {
+                            }
+                            if (step === 'before') {
+                                if (_id === item.id || _id === selected.lastSelected[1]) {
+                                    step = 'doIt';
                                     ids.push(_id);
 
-                                    if (_id === item.id || _id === selected.lastSelected[1]) {
-                                        return true;//stop
-                                    }
+                                    if (item.id === selected.lastSelected[1]) return true;
+                                }
+                            } else if (step === 'doIt') {
+                                ids.push(_id);
+
+                                if (_id === item.id || _id === selected.lastSelected[1]) {
+                                    return true;//stop
                                 }
                             }
+
                         });
 
                         step = 'before';
