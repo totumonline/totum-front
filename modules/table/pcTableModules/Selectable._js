@@ -845,7 +845,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         let step = 'before';
 
                         pcTable.dataSortedVisible.some(function (_id) {
-                            if (typeof _id === "object") {
+                            if (typeof _id === "object" && _id.row) {
                                 _id = _id.row.id;
                             } else {
                                 _id = parseInt(_id);

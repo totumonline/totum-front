@@ -810,7 +810,11 @@
             selector.on('change', () => {
                 let lastId = 0;
                 let prevLastId = null;
-                if (page >= Math.floor(this.PageData.allCount / this.PageData.onPage)) {
+
+                if(this.PageData.allCount<=this.PageData.onPage){
+
+                }
+                else if (page >= Math.floor(this.PageData.allCount / this.PageData.onPage)) {
                     prevLastId = -1;
                 }
                 this.PageData.onPage = parseInt(selector.val());
@@ -2548,7 +2552,7 @@
                     if (changed) {
                         $.extend(item, newData);
                         if (this.isTreeView) {
-                            this.placeInTree(item, oldData, true)
+                            this.placeInTree(item, oldData, false)
                         }
                     }
                 }
