@@ -1034,7 +1034,7 @@
                         }
                     })
 
-                    if (ind !== -1) {
+                    if (ind !== undefined) {
                         this[array].splice(ind, 1);
                     }
                 }, this);
