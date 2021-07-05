@@ -6,12 +6,12 @@
             $.extend(this, {
                 isRotatedView: true,
 
-                rowButtonsCalcWidth : function () {
+                rowButtonsCalcWidth: function () {
                     if (!this.isMobile) {
-                        let width=this._table.offset().left + this._table.width() - 80;
-                        if(width<this._innerContainer.width())
+                        let width = this._table.offset().left + this._table.width() - 80;
+                        if (width < this._innerContainer.width())
                             this.__$rowsButtons.width(width)
-                        else{
+                        else {
                             this._innerContainer.width()
                         }
                     }
@@ -19,11 +19,12 @@
                 _addCellId: function (item, $row) {
                     let $tdId = $('<td class="id"></td>');
                     let span = $('<span class="rowName"></span>').appendTo($tdId);
-                    if(this.mainFieldName && this.mainFieldName!=='id' && item[this.mainFieldName] && item[this.mainFieldName].v){
-                            span.text(item[this.mainFieldName].v);
+                    if (this.mainFieldName && this.mainFieldName !== 'id' && item[this.mainFieldName] && item[this.mainFieldName].v) {
+                        span.text(item[this.mainFieldName].v);
                         $('<span class="rowId">' + item['id'] + '</span>').appendTo($tdId);
-                    }else{
+                    } else {
                         span.text(item['id']);
+                        $tdId.addClass('small-rotated-id');
                     }
 
                     $tdId.appendTo($row);
@@ -41,12 +42,11 @@
                     let $th = $('<th class="id"></th>');
                     let panel = $('<div class="pcTable-filters"></div>');
 
-
                     /*******Кнопка показать поле n*****/
                     let OrderClass = 'btn-warning';
 
                     let $btnNHiding = $('<button class="btn btn-default btn-xxs" id="n-expander"><i class="fa fa-sort"></i></button>')
-                        $btnNHiding.prop('disabled', true)
+                    $btnNHiding.prop('disabled', true)
 
                     if (!pcTable.isMobile) {
                         let filterButton = this._getIdFilterButton();
