@@ -611,12 +611,20 @@
                 if (th.closest('.popover').length === 0) {
                     let div = $('<div style="width:200px" class="creator-icons">');
                     div.append($('<div class="full-title">').text(this.fields[th.data('field')].title));
+
+                    let placement='top';
+
+                    if(th.get(0).getBoundingClientRect().top<100){
+                        placement='bottom'
+                    }
+
                     App.popNotify({
                         isParams: true,
                         $text: div,
                         element: th,
                         trigger: 'manual',
-                        placement: 'top'
+                        placement: placement,
+                        container: $('body')
                     });
                     setTimeout(() => {
                         this.closeCallbacks.push(function () {
@@ -720,12 +728,19 @@
                     }
 
 
+                    let placement='top';
+
+                    if(th.get(0).getBoundingClientRect().top<100){
+                        placement='bottom'
+                    }
+
                     App.popNotify({
                         isParams: true,
                         $text: div,
                         element: th,
                         trigger: 'manual',
-                        placement: 'top'
+                        placement: placement,
+                        container: $('body')
                     });
                     setTimeout(() => {
                         this.closeCallbacks.push(function () {
