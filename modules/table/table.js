@@ -440,17 +440,24 @@
                 pcTable._container.on('scroll', closeCallbacksFunc);
                 pcTable._innerContainer.on('scroll', closeCallbacksFunc);
 
+                /*top th panel*/
                 if (this.isCreatorView) {
-                    this._container.on('click contextmenu', '.creator-icons:not([aria-describedby])', function (event) {
+                    this._container.on('click contextmenu', 'th', function (event) {
                         let self = $(this);
                         pcTable.creatorIconsPopover(self)
                     })
-                    this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
+                    /*this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
                         let self = $(this);
                         let icons = self.closest('th').find('.creator-icons');
                         if (!icons.is('[aria-describedby]')) {
                             pcTable.creatorIconsPopover(icons);
                         }
+                        return false;
+                    })*/
+                } else {
+                    this._container.on('click contextmenu', 'th', function (event) {
+                        let self = $(this);
+                        pcTable.workerIconsPopover(self)
                     })
                 }
                 pcTable._container.on('contextmenu', function (event) {
@@ -528,7 +535,6 @@
                     field.pcTable = pcTable;
 
 
-
                     if (fieldTypes[field.type]) {
                         field = $.extend({}, defaultField, fieldTypes[field.type], field);
                     } else {
@@ -600,19 +606,37 @@
                 }
 
             },
-            creatorIconsPopover: async function (icons) {
-                if (icons.closest('.popover').length === 0) {
+            workerIconsPopover: async function (th) {
+                if (th.closest('.popover').length === 0) {
                     let div = $('<div style="width:200px" class="creator-icons">');
+                    div.append($('<div class="full-title">').text(this.fields[th.data('field')].title));
+                    App.popNotify({
+                        isParams: true,
+                        $text: div,
+                        element: th,
+                        trigger: 'manual',
+                        placement: 'top'
+                    });
+                    setTimeout(() => {
+                        this.closeCallbacks.push(function () {
+                            if (th && th.length) th.popover('destroy');
+                        })
+                    }, 200);
+                }
+            },
+            creatorIconsPopover: async function (th) {
+                if (th.closest('.popover').length === 0) {
+                    let div = $('<div style="width:200px" class="creator-icons">');
+                    div.append($('<div class="full-title">').text(this.fields[th.data('field')].title));
 
-
-                    icons.find('i').each(function (i, icon) {
+                    th.find('i').each(function (i, icon) {
                         if (['fa-star', 'fa-star-o', 'fa-cogs'].some((c) => {
                             return $(icon).hasClass(c)
                         })) return;
                         let el = $('<div>').append(icon.outerHTML);
 
                         if (i === 0) {
-                            el.append(' ' + icons.closest('th').find('.field_name').text());
+                            el.append(' ' + th.closest('th').find('.field_name').text());
                         }
 
                         if (icon.title) el.append(' ' + icon.title);
@@ -620,7 +644,7 @@
                     });
 
                     let buttons = [];
-                    let field = this.fields[icons.closest('th').data('field')];
+                    let field = this.fields[th.closest('th').data('field')];
                     let settingsData;
                     const getSettings = async function () {
                         return new Promise((resolve, reject) => {
@@ -686,7 +710,7 @@
                                         App.blink(field.$th.find('.creator-icons i'), 3, "green", 'color');
                                     }, 100)
                                 } else {
-                                    App.blink(icons.find('i'), 3, "green", 'color')
+                                    App.blink(th.find('i'), 3, "green", 'color')
                                 }
 
                             }, () => {
@@ -698,13 +722,13 @@
                     App.popNotify({
                         isParams: true,
                         $text: div,
-                        element: icons,
+                        element: th,
                         trigger: 'manual',
                         placement: 'top'
                     });
                     setTimeout(() => {
                         this.closeCallbacks.push(function () {
-                            if (icons && icons.length) icons.popover('destroy');
+                            if (th && th.length) th.popover('destroy');
                         })
                     }, 200);
                 }

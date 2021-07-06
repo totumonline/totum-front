@@ -189,6 +189,7 @@
                     button.removeData('clicked');
                 }, BUTTONS_TIMEOUT);
                 button.blur();
+                $('body').click();
                 return false;
             })
         },
