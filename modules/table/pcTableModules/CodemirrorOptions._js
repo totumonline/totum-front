@@ -92,7 +92,9 @@
         let div = $('<div style="width:200px" class="function-help">');
         div.append($('<a>').text(name + TOTUMjsFuncs[nameL][0]).attr('href', 'https://docs.totum.online/functions#fn-'+nameL).attr('target', '_blank'));
 
-        let params=$('<div class="func-params">').appendTo(div);
+        let params=$('<div class="func-params">').appendTo(div).on('click', ()=>{
+            return false;
+        });
 
         TOTUMjsFuncs[nameL][2].forEach((f) => {
             let s=$('<span>').text(f);
