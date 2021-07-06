@@ -442,6 +442,7 @@
 
                 /*top th panel*/
                 if (this.isCreatorView) {
+
                     this._container.on('click contextmenu', 'th', function (event) {
                         let self = $(this);
                         pcTable.creatorIconsPopover(self)

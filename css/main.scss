@@ -31,6 +31,21 @@ input.error {
   padding-bottom: 10px;
 }
 
+.function-help{
+  white-space: normal;
+  .req{
+    font-weight: bold;
+  }
+  .multi{
+    text-decoration: underline;
+  }
+  .db{
+    color: orange;
+  }
+  span{
+    padding-right: 5px;
+  }
+}
 .creator-hidden {
   .creator-hidden-block {
     display: none;

@@ -86,6 +86,61 @@
         }
     });
 
+    const funcHelp = async function (name, span) {
+        let nameL = name.toLowerCase();
+
+        let div = $('<div style="width:200px" class="function-help">');
+        div.append($('<a>').text(name + TOTUMjsFuncs[nameL][0]).attr('href', 'https://docs.totum.online/functions#fn-'+nameL).attr('target', '_blank'));
+
+        let params=$('<div class="func-params">').appendTo(div);
+
+        TOTUMjsFuncs[nameL][2].forEach((f) => {
+            let s=$('<span>').text(f);
+            if(TOTUMjsFuncs[nameL][3].indexOf(f)!==-1){
+                s.addClass('req');
+            }
+            if(TOTUMjsFuncs[nameL][4].indexOf(f)!==-1){
+                s.addClass('multi');
+            }
+            if(DbFieldParams.indexOf(f)!==-1){
+                s.addClass('db');
+            }
+
+            params.append(s)
+            params.append(' ')
+
+        })
+
+        App.popNotify({
+            isParams: true,
+            $text: div,
+            element: span,
+            trigger: 'manual',
+            placement: 'top',
+            container: "body"
+        });
+        setTimeout(() => {
+            $('#table').data('pctable').closeCallbacks.push(function () {
+                if (span && span.length) span.popover('destroy');
+            })
+        }, 200);
+    }
+
+
+    CodeMirror.defineInitHook(function (mirror) {
+        try {
+            $(mirror.display.wrapper).on('contextmenu', '.cm-function', function () {
+                let func = $(this).text();
+                func = func.substring(0, func.length - 1)
+                funcHelp(func, $(this));
+
+                return false;
+            })
+        } catch (e) {
+            console.log(e.message)
+        }
+    });
+
 
     const TotumTab = function (cm, alt, shift) {
         var cur = cm.getCursor(), token = cm.getTokenAt(cur);
@@ -538,13 +593,11 @@
                     func = lower.substring(0, lower.indexOf('/'));
                     params = lower.substring(lower.indexOf('/'));
                     delimiter = '/';
-                }
-                else if (lower.indexOf(';') !== -1) {
+                } else if (lower.indexOf(';') !== -1) {
                     func = lower.substring(0, lower.indexOf(';'));
                     params = lower.substring(lower.indexOf(';'));
                     delimiter = ';';
-                }
-                else func = lower.trimRight();
+                } else func = lower.trimRight();
 
 
                 if (func = TOTUMjsFuncs[func]) {
@@ -711,7 +764,7 @@
             , title: '',
             render: renderHint, type: '', curPos: token.start + 5, hint: hintFunc,
             tab: true
-        },$cond = {
+        }, $cond = {
             text: 'cond``',
             textVis: 'cond``'
             , title: '',
@@ -744,8 +797,8 @@
         } else if (token.type === 'error' && token.state.func && token.state.func[2].length && [";", "/"].indexOf(line[token.start]) !== -1) {
             keywords = [];
 
-            start = token.string.substr(0, cur.ch-token.start).replace(/^[;\/]+([a-z_]*).*/, '$1')
-            let end = token.string.substr(cur.ch-token.start ).replace(/^[;\/]+[a-z_]*(.*)/, '$1')
+            start = token.string.substr(0, cur.ch - token.start).replace(/^[;\/]+([a-z_]*).*/, '$1')
+            let end = token.string.substr(cur.ch - token.start).replace(/^[;\/]+[a-z_]*(.*)/, '$1')
 
             token.state.func[2].forEach(function (fName) {
 
@@ -941,7 +994,12 @@
                         type: 'item-code-var'
                     },
                     {text: "$#nh", title: 'Текущий хост-name', render: renderHint, type: 'item-code-var'},
-                    {text: "$#duplicatedId", title: 'Ид дублированной строки', render: renderHint, type: 'item-code-var'},
+                    {
+                        text: "$#duplicatedId",
+                        title: 'Ид дублированной строки',
+                        render: renderHint,
+                        type: 'item-code-var'
+                    },
                 ];
 
                 const funcSort = function (firsts) {
@@ -1139,9 +1197,9 @@
 
             if (isBigOneSave) {
                 event.stopPropagation();
-                if(typeof cm.options.bigOneDialog=== 'function'){
+                if (typeof cm.options.bigOneDialog === 'function') {
                     cm.options.bigOneDialog();
-                }else {
+                } else {
                     cm.options.bigOneDialog.close()
                 }
 
@@ -1445,7 +1503,7 @@
                 }
                 hints.style.top = (top = pos.bottom - overlapY) + "px";
             }
-            
+
             (options.container || window.top.document.body).appendChild(hints);
 
             cm.addKeyMap(this.keyMap = buildKeyMap(options, {
