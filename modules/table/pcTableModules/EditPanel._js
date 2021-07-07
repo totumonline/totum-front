@@ -96,8 +96,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
     this.refresh = () => {
         if (!this.closed) {
-            if(EditPanelFunc.panelType==="edit"){
-                EditPanelFunc.pcTable.model[checkMethod]({id:data.id}).then( (json)=> {
+            if (EditPanelFunc.panelType === "edit") {
+                EditPanelFunc.pcTable.model[checkMethod]({id: data.id}).then((json) => {
                     Object.keys(json.row).forEach((k) => {
                         firstLoad[k] = json.row[k]
                     })
@@ -105,7 +105,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         EditPanelFunc.editRow.call(EditPanelFunc, json);
                     })
                 })
-            }else{
+            } else {
                 EditPanelFunc.pcTable.model[checkMethod](this.getDataForPost("manual"), hash).then(function (json) {
                     Object.keys(json.row).forEach((k) => {
                         firstLoad[k] = json.row[k]
@@ -515,6 +515,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         }
 
         let eventName = 'ctrlS.EditPanel';
+        let scrollEvent = 'scroll.' + EditPanelFunc.panelId;
 
         EditPanel.bootstrapPanel = BootstrapDialog.show({
             type: type || null,
@@ -548,6 +549,26 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 if (Object.keys(dialog.indexedButtons).length === 2) {
                     dialog.indexedButtons[Object.keys(dialog.indexedButtons)[1]].attr('tabindex', 501);
                 }
+                let dubleButtons;
+                let buttons = dialog.$modalFooter.find('button');
+                const getButtons = () => {
+                    dubleButtons = $('<div style="position: fixed; right: ' + (dialog.$modal.width() - dialog.$modalBody.width() - dialog.$modalBody.offset().left - 10) + 'px; bottom: 30px; z-index: 1100">').appendTo(dialog.$modal).append(buttons)
+                }
+                setTimeout(()=>{
+                    if (dialog.$modalFooter.get(0).getBoundingClientRect().top > window.innerHeight - 20) {
+                        getButtons();
+                    }
+                }, 200)
+                dialog.$modal.on(scrollEvent, () => {
+                    if (dialog.$modalFooter.get(0).getBoundingClientRect().top > window.innerHeight - 20) {
+                        if (!dubleButtons)
+                            getButtons();
+                    } else if (dubleButtons) {
+                        dialog.$modalFooter.append(buttons);
+                        dubleButtons.remove();
+                        dubleButtons = null;
+                    }
+                })
             }
 
         })
@@ -610,21 +631,21 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     let html = $input.html();
                     $input.html('<i class="fa fa-spinner"></i>');
                     if (this.panelType === 'insert') {
-                            this.pcTable.model.doAfterProcesses(() => {
-                                this.pcTable.model.click({
-                                    item: hash,
-                                    fieldName: field.name
-                                }).then(() => {
-                                    $input.html(html);
-                                    clicked = false;
-                                    this.refresh();
-                                })
+                        this.pcTable.model.doAfterProcesses(() => {
+                            this.pcTable.model.click({
+                                item: hash,
+                                fieldName: field.name
+                            }).then(() => {
+                                $input.html(html);
+                                clicked = false;
+                                this.refresh();
                             })
+                        })
                     } else {
                         EditPanelFunc.pcTable._buttonClick(cell, field, item).then(() => {
                             if (field.closeIframeAfterClick) {
                                 EditPanelFunc.close();
-                            }else{
+                            } else {
                                 $input.html(html);
                                 clicked = false;
                                 this.refresh();
