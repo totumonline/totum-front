@@ -437,6 +437,16 @@
                     }
                 });
                 $('body').on('click', closeCallbacksFunc);
+
+                window.top.lastCtrl = 0;
+                $('body').on('keydown', (event) => {
+                    if (event.ctrlKey) {
+                        window.top.lastCtrl = Date.now();
+                    }
+                });
+                window.top.wasCtrl = (event) => {
+                    return event.ctrlKey || window.top.lastCtrl > 0 && (Date.now() - window.top.lastCtrl < 500);
+                }
                 pcTable._container.on('scroll', closeCallbacksFunc);
                 pcTable._innerContainer.on('scroll', closeCallbacksFunc);
 
@@ -444,8 +454,12 @@
                 if (this.isCreatorView) {
 
                     this._container.on('click contextmenu', 'th', function (event) {
-                        let self = $(this);
-                        pcTable.creatorIconsPopover(self)
+
+                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON');
+                        else {
+                            let self = $(this);
+                            pcTable.creatorIconsPopover(self)
+                        }
                     })
                     /*this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
                         let self = $(this);
@@ -457,8 +471,11 @@
                     })*/
                 } else {
                     this._container.on('click contextmenu', 'th', function (event) {
-                        let self = $(this);
-                        pcTable.workerIconsPopover(self)
+                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON');
+                        else {
+                            let self = $(this);
+                            pcTable.workerIconsPopover(self)
+                        }
                     })
                 }
                 pcTable._container.on('contextmenu', function (event) {
@@ -612,10 +629,10 @@
                     let div = $('<div style="width:200px" class="creator-icons">');
                     div.append($('<div class="full-title">').text(this.fields[th.data('field')].title));
 
-                    let placement='top';
+                    let placement = 'top';
 
-                    if(th.get(0).getBoundingClientRect().top<100){
-                        placement='bottom'
+                    if (th.get(0).getBoundingClientRect().top < 100) {
+                        placement = 'bottom'
                     }
 
                     App.popNotify({
@@ -728,10 +745,10 @@
                     }
 
 
-                    let placement='top';
+                    let placement = 'top';
 
-                    if(th.get(0).getBoundingClientRect().top<100){
-                        placement='bottom'
+                    if (th.get(0).getBoundingClientRect().top < 100) {
+                        placement = 'bottom'
                     }
 
                     App.popNotify({
@@ -918,7 +935,7 @@
             ,
             _addSave: function () {
                 $('body').on('keyup', function (event) {
-                    if (event.ctrlKey || event.metaKey) {
+                    if (window.top.wasCtrl(event) || event.metaKey) {
                         if (String.fromCharCode(event.which).toLowerCase() === 's' && $('#bigOneCodemirror').length === 0) {
                             $('body').trigger('ctrlS')
                         }

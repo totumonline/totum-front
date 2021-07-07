@@ -538,7 +538,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
                 if (save) {
                     $('body').on(eventName, function (event) {
-                        if ($('.bootstrap-dialog').length === 1) {
+                        if ($('.bootstrap-dialog').length > 0) {
                             $(document.activeElement).blur();
                             save(dialog)
                         }

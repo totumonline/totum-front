@@ -66,7 +66,7 @@
             };
 
             //ctrl-s
-            let isBigOneSave = cm.options.bigOneDialog && event.ctrlKey && (event.keyCode || event.which).toString() === '83';
+            let isBigOneSave = cm.options.bigOneDialog && window.top.wasCtrl(event) && (event.keyCode || event.which).toString() === '83';
 
 
             if (isBigOneSave) {
@@ -77,7 +77,7 @@
                     cm.options.bigOneDialog.close()
                 }
 
-            } else if (event.ctrlKey && (event.keyCode || event.which).toString() === '191') {
+            } else if (window.top.wasCtrl(event) && (event.keyCode || event.which).toString() === '191') {
                 CodeMirror.commentMe(cm);
             }
 
