@@ -9,7 +9,7 @@
 
     let TOTUMjsFuncs = {};
     funcsFromTable.forEach(function (row) {
-        TOTUMjsFuncs[row.name.toLowerCase()] = [row.t, 0, row.p, row.n, row.m];
+        TOTUMjsFuncs[row.name.toLowerCase()] = [row.t, 0, row.p, row.n, row.m, row.name];
     });
     let DbFieldParams = ['where', 'order', 'field', 'sfield', 'bfield', 'tfield', 'preview', 'parent', 'section', 'table', 'filter', 'fieldtitle', 'fieldhide'];
 
@@ -90,7 +90,7 @@
         let nameL = name.toLowerCase();
 
         let div = $('<div style="width:200px" class="function-help">');
-        div.append($('<a>').text(name + TOTUMjsFuncs[nameL][0]).attr('href', 'https://docs.totum.online/functions#fn-'+nameL).attr('target', '_blank'));
+        div.append($('<div class="func-template">').text(name + TOTUMjsFuncs[nameL][0]));
 
         let params=$('<div class="func-params">').appendTo(div).on('click', ()=>{
             return false;
@@ -113,19 +113,23 @@
 
         })
 
+        let btn=$('<a>').attr('href', 'https://docs.totum.online/functions#fn-'+TOTUMjsFuncs[nameL][5]).attr('target', '_blank').html('<button class="btn btn-default btn-sm">Документация</button>')
+        div.append(btn.wrap('<div class="button">').parent())
+
         App.popNotify({
             isParams: true,
             $text: div,
             element: span,
             trigger: 'manual',
-            placement: 'top',
-            container: "body"
+
+            container: $("body")
         });
         setTimeout(() => {
             $('#table').data('pctable').closeCallbacks.push(function () {
                 if (span && span.length) span.popover('destroy');
             })
         }, 200);
+        $('body').click();
     }
 
 

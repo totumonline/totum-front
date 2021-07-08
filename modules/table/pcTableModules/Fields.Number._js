@@ -82,7 +82,7 @@ fieldTypes.number = {
                 val = Math.abs(val);
             }
             let decimals = this.dectimalPlaces || 0;
-console.log(decimals);
+
 
             return prefix + this.numberFormat(parseFloat(val), decimals, dectimalSeparator, thousandthSeparator) + postfix;
         }
