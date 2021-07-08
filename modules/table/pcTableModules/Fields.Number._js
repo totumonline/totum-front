@@ -58,15 +58,33 @@ fieldTypes.number = {
             let options = {};
 
 
-            let dectimalSeparator, thousandthSeparator;
+            let dectimalSeparator, thousandthSeparator, postfix;
             if ('dectimalSeparator' in this) {
-                dectimalSeparator = this.dectimalSeparator
+                dectimalSeparator = this.dectimalSeparator;
+                if (dectimalSeparator.match(/\*\*/)) {
+                    dectimalSeparator = dectimalSeparator.split('**')[val >= 0 ? 0 : 1];
+                }
             }
             if ('thousandthSeparator' in this) {
-                thousandthSeparator = this.thousandthSeparator
+                thousandthSeparator = this.thousandthSeparator;
+                if (thousandthSeparator.match(/\*\*/)) {
+                    thousandthSeparator = thousandthSeparator.split('**')[val >= 0 ? 0 : 1];
+                }
+            }
+            postfix = this.postfix;
+            if (postfix.match(/\*\*/)) {
+                postfix = postfix.split('**')[val >= 0 ? 0 : 1];
             }
 
-            return (val !== null && 'prefix' in this ? this.prefix : '') + this.numberFormat(parseFloat(val), this.dectimalPlaces || 0, dectimalSeparator, thousandthSeparator) + (val !== null && 'postfix' in this ? this.postfix : '');
+            let prefix = this.prefix || '';
+            if (prefix.match(/\*\*/)) {
+                prefix = prefix.split('**')[val >= 0 ? 0 : 1];
+                val = Math.abs(val);
+            }
+            let decimals = this.dectimalPlaces || 0;
+console.log(decimals);
+
+            return prefix + this.numberFormat(parseFloat(val), decimals, dectimalSeparator, thousandthSeparator) + postfix;
         }
         return val;
     }
