@@ -729,7 +729,7 @@
                 let $description = $('<div class="table-description"/>').html(this.tableRow.description);
                 btnAdd.appendTo(csv);
                 let storageKey = 'table_description_switcher' + this.tableRow.id;
-                let switcher = localStorage.getItem(storageKey) || localStorage.setItem(storageKey, '1') || localStorage.getItem(storageKey);
+                let switcher = this.tableRow.description.match('<hide(\/?)>')?'0': (localStorage.getItem(storageKey) || localStorage.setItem(storageKey, '1') || localStorage.getItem(storageKey));
 
                 const handleSwitcher = (switch_) => {
                     if (switch_) {
