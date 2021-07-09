@@ -1434,7 +1434,9 @@
 
             pcTable.__sectionsCloses = pcTable.__sectionsCloses || JSON.parse(localStorage.getItem('sectionCloses') || '{}');
 
-            if (pcTable.__sectionsCloses[storageKey]) sectionDiv.addClass('closed');
+            if (pcTable.__sectionsCloses[storageKey]) {
+                sectionDiv.addClass('closed');
+            }
             $('<span class="btn-i"><i class="fa"></i></span>')
                 .prependTo(title);
             title.on('click', 'i, span', function () {

@@ -931,8 +931,7 @@ th {
         }
       }
     }
-
-    &.sec-no-titles {
+    &:not(.closed).sec-no-titles {
       .pcTable-floatInner > div {
         td {
           &.cell-button {
@@ -961,7 +960,7 @@ th {
       }
     }
 
-    &:not(.sectionWithPannels) .pcTable-sectionTitle {
+    &:not(.sectionWithPannels):not(.closed) .pcTable-sectionTitle {
       padding-bottom: 5px;
     }
   }
