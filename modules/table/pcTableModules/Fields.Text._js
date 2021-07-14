@@ -17,7 +17,7 @@ fieldTypes.text = {
     getValue: function (value, item, isModulPanel) {
         "use strict";
 
-        if (isModulPanel || (typeof value === 'string' && value.length < this.viewTextMaxLength)) {
+        if (isModulPanel || (typeof value === 'string' && value.length < this.viewTextMaxLength && !this.notLoaded)) {
             let def = $.Deferred();
             setTimeout(function () {
 
@@ -78,7 +78,7 @@ fieldTypes.text = {
         fieldValue = fieldValue.toString();
         let field = this;
 
-        if (fieldValue.length <= this.viewTextMaxLength) return field.getPanelTextWithLinks(fieldValue, false).data('text', fieldValue);
+        if (fieldValue.length <= this.viewTextMaxLength && !this.notLoaded) return field.getPanelTextWithLinks(fieldValue, false).data('text', fieldValue);
 
         let def = $.Deferred();
 
@@ -206,7 +206,7 @@ fieldTypes.text = {
 
                     let el = $('<div>').appendTo(element);
                     let options = {
-                        value: json.value.toString(),
+                        value: (json.value || '').toString(),
                         mode: mode,
                         minHeight: '150px',
                         readOnly: false,
