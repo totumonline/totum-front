@@ -428,6 +428,23 @@
                                     if (codes.indexOf(input.attr('name')) !== -1) {
                                         input.prop('checked', 'checked');
                                     }
+                                    if(codes.indexOf("flds")!==-1 && input.attr('name')!=="flds"){
+                                        input.prop('disabled', true);
+                                    }
+                                });
+                                $div.on('change', 'input[name="flds"]', function () {
+                                        let val = $(this).is(':checked')
+                                        $div.find('input').each((i, inp) => {
+                                            inp = $(inp)
+                                            if (inp.attr('name') !== 'flds') {
+                                                if (val) {
+                                                    inp.prop( "disabled", true )
+                                                    inp.prop( "checked", false )
+                                                }else{
+                                                    inp.prop( "disabled", false )
+                                                }
+                                            }
+                                        })
                                 });
 
                                 $div.on('click', 'button', function () {
@@ -729,7 +746,7 @@
                 let $description = $('<div class="table-description"/>').html(this.tableRow.description);
                 btnAdd.appendTo(csv);
                 let storageKey = 'table_description_switcher' + this.tableRow.id;
-                let switcher = this.tableRow.description.match('<hide(\/?)>')?'0': (localStorage.getItem(storageKey) || localStorage.setItem(storageKey, '1') || localStorage.getItem(storageKey));
+                let switcher = this.tableRow.description.match('<hide(\/?)>') ? '0' : (localStorage.getItem(storageKey) || localStorage.setItem(storageKey, '1') || localStorage.getItem(storageKey));
 
                 const handleSwitcher = (switch_) => {
                     if (switch_) {
@@ -812,10 +829,9 @@
                 let lastId = 0;
                 let prevLastId = null;
 
-                if(this.PageData.allCount<=this.PageData.onPage){
+                if (this.PageData.allCount <= this.PageData.onPage) {
 
-                }
-                else if (page >= Math.floor(this.PageData.allCount / this.PageData.onPage)) {
+                } else if (page >= Math.floor(this.PageData.allCount / this.PageData.onPage)) {
                     prevLastId = -1;
                 }
                 this.PageData.onPage = parseInt(selector.val());
