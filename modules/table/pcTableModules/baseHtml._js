@@ -1994,6 +1994,8 @@
                                 }
                             }, 120);
                         }
+                        $('body').trigger('click')
+                        return false;
                     });
 
 
