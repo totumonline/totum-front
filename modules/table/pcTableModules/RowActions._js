@@ -262,6 +262,14 @@
 
         }
         ,
+        getRemoveTitle:function (type) {
+            switch (type){
+                case "forTimer": return this.tableRow.deleting === 'hide'?'Скрытие':'Удаление';
+                case "lower": return this.tableRow.deleting === 'hide'?'скрыть':'удалить';
+                default: return this.tableRow.deleting === 'hide'?'Скрыть':'Удалить';
+            }
+
+        },
         row_actions_panel_show: function ($tdId) {
             let $tr = $tdId.closest('tr');
             let item = this._getItemByTr($tr);
@@ -288,10 +296,11 @@
                 text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> Пересчитать</div>').attr('data-tr', trId));
             }
 
+
             if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
-                text.append($('<div class="menu-item"><i class="fa fa-times"></i> Удалить</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-times"></i> '+this.getRemoveTitle()+'</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> Удалить</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> '+this.getRemoveTitle()+'</div>').attr('data-tr', trId));
             }
 
             let dialog = App.mobilePanel(item[this.mainFieldName].v || 'id: ' + trId, text);
@@ -607,9 +616,9 @@
                 text.append($('<div class="menu-item row_restore"><i class="fa fa-recycle"></i> Восстановить</div>').attr('data-tr', trId));
             } else {
                 if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
-                    text.append($('<div class="menu-item"><i class="fa fa-times"></i> Удалить</div>').css('color', 'gray'));
+                    text.append($('<div class="menu-item"><i class="fa fa-times"></i> '+this.getRemoveTitle()+'</div>').css('color', 'gray'));
                 } else {
-                    text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> Удалить</div>').attr('data-tr', trId));
+                    text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> '+this.getRemoveTitle()+'</div>').attr('data-tr', trId));
                 }
             }
 
@@ -934,22 +943,22 @@
             let checkedOneId = checkedRows.length === 1 ? checkedRows[0] : null;
             if (checkedRows && checkedRows.length) {
 
-                let $message = 'Точно удалить ' + checkedRows.length + ' строк?';
-                let $messageTimer = 'Удаление ' + checkedRows.length + ' строк?';
+                let $message = 'Точно '+this.getRemoveTitle("lower")+' ' + checkedRows.length + ' строк?';
+                let $messageTimer = this.getRemoveTitle("forTimer")+' ' + checkedRows.length + ' строк?';
                 if (checkedRows.length == 1) {
                     let item = 'id-' + checkedRows[0];
                     if (pcTable.mainFieldName != 'id') {
                         item = pcTable.data[checkedRows[0]][pcTable.mainFieldName];
                         item = 'id-' + checkedRows[0] + ' "' + (item.v_ && item.v_[0] ? item.v_[0] : item.v) + '"';
                     }
-                    $message = 'Точно удалить строку ' + item + '?';
-                    $messageTimer = 'Удаление строки ' + item + '?';
+                    $message = 'Точно '+this.getRemoveTitle("lower")+' строку ' + item + '?';
+                    $messageTimer = this.getRemoveTitle("forTimer")+' строки ' + item + '?';
                 }
 
 
                 let buttons = [
                     {
-                        label: 'Удалить',
+                        label: this.getRemoveTitle(),
                         cssClass: 'btn-danger',
                         action: function (dialogRef) {
                             dialogRef.close();
@@ -977,7 +986,7 @@
 
                 BootstrapDialog.show({
                     message: $message,
-                    title: 'Удаление',
+                    title: this.getRemoveTitle("forTimer"),
                     buttons: buttons,
                     onhidden: function () {
                         if (checkedRows.length === 1 && checkedRows[0] == checkedOneId) {
