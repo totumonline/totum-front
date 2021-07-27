@@ -655,7 +655,7 @@
                     let div = $('<div style="width:200px" class="creator-icons">');
                     div.append($('<div class="full-title">').text(this.fields[th.data('field')].title));
 
-                    th.find('i').each(function (i, icon) {
+                    th.find('i:not(.fa-caret-down):not(.fa-info)').each(function (i, icon) {
                         if (['fa-star', 'fa-star-o', 'fa-cogs'].some((c) => {
                             return $(icon).hasClass(c)
                         })) return;
