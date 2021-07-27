@@ -418,6 +418,7 @@ $.extend(App.pcTableMain.prototype, {
             isFromButton = isFromButton || false;
             if (!isFromButton) {
                 if (isGroupSelected) {
+                    pcTable._removeEditCell();
                     return false;
                 }
             }
