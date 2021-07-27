@@ -72,8 +72,10 @@ fieldTypes.number = {
                 }
             }
             postfix = this.postfix;
-            if (postfix.match(/\*\*/)) {
+            if (postfix && postfix.match(/\*\*/)) {
                 postfix = postfix.split('**')[val >= 0 ? 0 : 1];
+            } else {
+                postfix = '';
             }
 
             let prefix = this.prefix || '';
