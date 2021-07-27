@@ -378,18 +378,27 @@
                             break;
                         case '@':
                             stream.next();
-                            let nS;
-                            while (/[a-z0-9_.]/.test(nS = stream.peek()) && stream.next()) {
+                            if (stream.peek() === '$') {
+                                stream.next();
+                                while (/[a-zA-Z0-9_]/.test(stream.peek()) && stream.next()) {
+                                }
+                                if (!subFunc()) return error();
+                                return 'global-var'
+
+                            }else {
+                                let nS;
+                                while (/[a-z0-9_.]/.test(nS = stream.peek()) && stream.next()) {
+                                }
+                                if (!subFunc()) return error();
+
+                                let string = stream.string.substring(stream.start + 1, stream.pos)
+
+                                if (/^[a-z0-9_]{3,}\.[a-z0-9_]{2,}(\[\[?([a-zA-Z0-9_\$\#]+|"[^"]+"|'[^']+')\]?\])*$/i.test(string)) {
+                                    return "db_name";
+                                }
                             }
-                            if (!subFunc()) return error();
+                                return error();
 
-                            let string = stream.string.substring(stream.start + 1, stream.pos)
-
-                            if (/^[a-z0-9_]{3,}\.[a-z0-9_]{2,}(\[\[?([a-zA-Z0-9_\$\#]+|"[^"]+"|'[^']+')\]?\])*$/i.test(string)) {
-                                return "db_name";
-                            }
-
-                            return error();
                             break;
                         case '$':
                             stream.next();
