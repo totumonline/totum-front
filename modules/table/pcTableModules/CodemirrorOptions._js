@@ -402,6 +402,14 @@
                             break;
                         case '$':
                             stream.next();
+                            if (stream.peek() === '@') {
+                                stream.next();
+                                while (/[a-zA-Z0-9_]/.test(stream.peek()) && stream.next()) {
+                                }
+                                if (!subFunc()) return error();
+                                return 'process-var'
+
+                            }
                             if (stream.peek() === '$') {
                                 stream.next();
                             }

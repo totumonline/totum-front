@@ -197,9 +197,9 @@
             }
 
             if (!isGroupAction) {
-                if(prepend){
+                if (prepend) {
                     this.__checkedRows.unshift(item.id);
-                }else{
+                } else {
                     this.__checkedRows.push(item.id);
                 }
                 this._headCellIdButtonsState();
@@ -262,11 +262,14 @@
 
         }
         ,
-        getRemoveTitle:function (type) {
-            switch (type){
-                case "forTimer": return this.tableRow.deleting === 'hide'?'Скрытие':'Удаление';
-                case "lower": return this.tableRow.deleting === 'hide'?'скрыть':'удалить';
-                default: return this.tableRow.deleting === 'hide'?'Скрыть':'Удалить';
+        getRemoveTitle: function (type) {
+            switch (type) {
+                case "forTimer":
+                    return this.tableRow.deleting === 'hide' ? 'Скрытие' : 'Удаление';
+                case "lower":
+                    return this.tableRow.deleting === 'hide' ? 'скрыть' : 'удалить';
+                default:
+                    return this.tableRow.deleting === 'hide' ? 'Скрыть' : 'Удалить';
             }
 
         },
@@ -298,9 +301,9 @@
 
 
             if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
-                text.append($('<div class="menu-item"><i class="fa fa-times"></i> '+this.getRemoveTitle()+'</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-times"></i> ' + this.getRemoveTitle() + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> '+this.getRemoveTitle()+'</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> ' + this.getRemoveTitle() + '</div>').attr('data-tr', trId));
             }
 
             let dialog = App.mobilePanel(item[this.mainFieldName].v || 'id: ' + trId, text);
@@ -548,6 +551,8 @@
                             }
                         }
                     })
+                    pcTable.applyOrder(json.chdata.f.order)
+
                 }
                 if (App.isEmpty(pcTable.data) && pcTable._content) {
                     pcTable._content.empty().append(this._createNoDataRow());
@@ -556,6 +561,8 @@
                 if (this.treeRefresh) {
                     this.treeApply();
                 }
+
+
             }
 
 
@@ -573,6 +580,22 @@
             }
         }
         ,
+        applyOrder: function (order) {
+            if (order && order.length) {
+                let _order = {};
+                let order_other = [];
+                this.dataSorted.forEach((id) => {
+                    let ind = order.indexOf(id);
+                    if (ind !== -1) {
+                        _order[ind] = id;
+                    } else {
+                        order_other.push(id)
+                    }
+                })
+                this.dataSorted = [...Object.values(_order), ...order_other];
+                this.__applyFilters(true);
+            }
+        },
         rows_edit: function ($tr) {
             "use strict";
             let pcTable = this;
@@ -616,9 +639,9 @@
                 text.append($('<div class="menu-item row_restore"><i class="fa fa-recycle"></i> Восстановить</div>').attr('data-tr', trId));
             } else {
                 if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
-                    text.append($('<div class="menu-item"><i class="fa fa-times"></i> '+this.getRemoveTitle()+'</div>').css('color', 'gray'));
+                    text.append($('<div class="menu-item"><i class="fa fa-times"></i> ' + this.getRemoveTitle() + '</div>').css('color', 'gray'));
                 } else {
-                    text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> '+this.getRemoveTitle()+'</div>').attr('data-tr', trId));
+                    text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> ' + this.getRemoveTitle() + '</div>').attr('data-tr', trId));
                 }
             }
 
@@ -943,16 +966,16 @@
             let checkedOneId = checkedRows.length === 1 ? checkedRows[0] : null;
             if (checkedRows && checkedRows.length) {
 
-                let $message = 'Точно '+this.getRemoveTitle("lower")+' ' + checkedRows.length + ' строк?';
-                let $messageTimer = this.getRemoveTitle("forTimer")+' ' + checkedRows.length + ' строк?';
+                let $message = 'Точно ' + this.getRemoveTitle("lower") + ' ' + checkedRows.length + ' строк?';
+                let $messageTimer = this.getRemoveTitle("forTimer") + ' ' + checkedRows.length + ' строк?';
                 if (checkedRows.length == 1) {
                     let item = 'id-' + checkedRows[0];
                     if (pcTable.mainFieldName != 'id') {
                         item = pcTable.data[checkedRows[0]][pcTable.mainFieldName];
                         item = 'id-' + checkedRows[0] + ' "' + (item.v_ && item.v_[0] ? item.v_[0] : item.v) + '"';
                     }
-                    $message = 'Точно '+this.getRemoveTitle("lower")+' строку ' + item + '?';
-                    $messageTimer = this.getRemoveTitle("forTimer")+' строки ' + item + '?';
+                    $message = 'Точно ' + this.getRemoveTitle("lower") + ' строку ' + item + '?';
+                    $messageTimer = this.getRemoveTitle("forTimer") + ' строки ' + item + '?';
                 }
 
 
