@@ -266,16 +266,32 @@
                         let data = _jsTree.get_node(id);
                         if (type > 0) {
                             _jsTree.select_node(data);
-                            if (data && type === 2) {
+                            if (type === 2) {
+                                if (data.state.loaded === false) {
+                                    _jsTree.load_node(data, (data) => {
+                                        data.children.forEach((id) => {
+                                            select_node(id, type);
+                                        })
+                                    })
+                                } else {
+                                    data.children.forEach((id) => {
+                                        select_node(id, type);
+                                    })
+                                }
+                            }
+                        } else {
+                            _jsTree.deselect_node(data);
+                            if (data.state.loaded === false) {
+                                _jsTree.load_node(data, (data) => {
+                                    data.children.forEach((id) => {
+                                        select_node(id, type);
+                                    })
+                                })
+                            } else {
                                 data.children.forEach((id) => {
                                     select_node(id, type);
                                 })
                             }
-                        } else {
-                            _jsTree.deselect_node(data);
-                            data.children.forEach((id) => {
-                                select_node(id, type);
-                            })
                         }
                     }
 
@@ -299,13 +315,19 @@
                         if (field.multiple) {
                             $icon1 = $('<i class="fa fa-hand-o-down"></i>');
                             $icon.after($icon1);
-                            let rec = 0;
-
                             $icon = $icon1.on('click', () => {
-                                rec = (rec > 1 ? 0 : rec + 1);
-                                data.children.forEach((id) => {
-                                    select_node(id, rec)
-                                })
+                                data.state.cascadeStep = (data.state.cascadeStep > 1 ? 0 : (data.state.cascadeStep || 0) + 1);
+                                if (data.state.loaded === false) {
+                                    this.load_node(data, (data) => {
+                                        data.children.forEach((id) => {
+                                            select_node(id, data.state.cascadeStep)
+                                        })
+                                    })
+                                } else {
+                                    data.children.forEach((id) => {
+                                        select_node(id, data.state.cascadeStep)
+                                    })
+                                }
                                 return false;
                             });
                         }
