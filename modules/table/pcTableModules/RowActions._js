@@ -552,6 +552,7 @@
                         }
                     })
                     pcTable.applyOrder(json.chdata.f.order)
+                    pcTable.applyHideRows(json.chdata.f.hideRows)
 
                 }
                 if (App.isEmpty(pcTable.data) && pcTable._content) {
@@ -593,6 +594,24 @@
                     }
                 })
                 this.dataSorted = [...Object.values(_order), ...order_other];
+                this.__applyFilters(true);
+            }
+        }
+        ,
+        applyHideRows: function (hide) {
+            if (hide && hide.length) {
+                let visible = this.filters['id'] || [];
+                if(!visible.length){
+                    visible = [...this.dataSorted];
+                }
+                let newVisible = [];
+                visible.forEach((id) => {
+                    let ind = hide.indexOf(id);
+                    if (ind === -1) {
+                        newVisible.push(id.toString());
+                    }
+                })
+                this.filters['id'] = newVisible;
                 this.__applyFilters(true);
             }
         },

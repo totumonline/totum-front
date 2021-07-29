@@ -254,6 +254,7 @@
             }
             this._init();
             this.render(config.addVars);
+            this.applyHideRows(this.f.hideRows)
         } else {
             this.initForPanel(config)
         }
