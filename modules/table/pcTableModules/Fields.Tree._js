@@ -146,7 +146,7 @@
                 let showned = false;
                 div.off().on('click keydown', function (ev) {
                     if (showned) return false;
-                    if(ev.key ==='Tab' ){
+                    if (ev.key === 'Tab') {
                         blurClbk(dialog, ev, null, true);
                         return
                     }
@@ -209,6 +209,7 @@
             let plugins = ["themes", 'json_data', 'search'];//, 'massload'
             if (field.multiple) {
                 plugins.push('checkbox');
+
             }
             let $search = $('<div class="tree-search"><input class="form-control" type="text"></div>');
             let $searchInput = $search.find('input');
@@ -256,13 +257,33 @@
             $mes.on("init.jstree", function (e, data) {
                 data.instance.settings.checkbox.cascade = '';
 
-                let c = $.jstree.core.prototype.redraw_node
 
-                if (field.changeSelectTable) {
+                if (field.changeSelectTable || field.multiple) {
+
+                    let c = $mes.jstree(true).redraw_node;
+                    let _jsTree = $mes.jstree(true);
+                    const select_node = (id, type) => {
+                        let data = _jsTree.get_node(id);
+                        if (type > 0) {
+                            _jsTree.select_node(data);
+                            if (data && type === 2) {
+                                data.children.forEach((id) => {
+                                    select_node(id, type);
+                                })
+                            }
+                        } else {
+                            _jsTree.deselect_node(data);
+                            data.children.forEach((id) => {
+                                select_node(id, type);
+                            })
+                        }
+                    }
+
                     $mes.jstree(true).redraw_node = function (node, deep, is_callback, force_render) {
-                        let _node = c.bind(this)(node, deep, is_callback, force_render);
-                        let data = $mes.jstree(true).get_node(node);
-                        let canEdit = true;
+                        let $icon1;
+                        let _node = c.apply(this, arguments);
+                        let data = this.get_node(node);
+                        let canEdit = field.changeSelectTable;
                         let canAdd = field.changeSelectTable === 2 && field.parentName;
                         if (!field.treeAutoTree) {
                             if (!data.original.id.toString().match(/^\d+$/)) {
@@ -275,6 +296,19 @@
                             $mes.jstree(true).refresh(false, true);
                         }
                         let $icon = $(_node).find('>a i:first');
+                        if (field.multiple) {
+                            $icon1 = $('<i class="fa fa-hand-o-down"></i>');
+                            $icon.after($icon1);
+                            let rec = 0;
+
+                            $icon = $icon1.on('click', () => {
+                                rec = (rec > 1 ? 0 : rec + 1);
+                                data.children.forEach((id) => {
+                                    select_node(id, rec)
+                                })
+                                return false;
+                            });
+                        }
                         if (canEdit) {
                             $icon1 = $('<i class="fa fa-edit edit-tree-icon"></i>');
                             $icon.after($icon1);
@@ -315,6 +349,8 @@
                                 return false
                             })
                         }
+
+
                         return _node;
                     };
                 }
@@ -382,9 +418,6 @@
                         "icons": false,
                         'name': 'default'
                     }
-                }
-                , checkbox: {
-                    //  three_state: false,
                 },
                 "plugins": plugins
             });
@@ -462,7 +495,7 @@
                 if (format.expand !== false) {
                     folder.addClass('treeRow');
                     span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
-                }else{
+                } else {
                     folder.css('margin-right', 8)
                 }
 
