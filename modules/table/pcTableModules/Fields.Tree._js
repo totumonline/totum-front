@@ -312,8 +312,9 @@
                             $mes.jstree(true).refresh(false, true);
                         }
                         let $icon = $(_node).find('>a i:first');
-                        if (field.multiple) {
-                            $icon1 = $('<i class="fa fa-hand-o-down"></i>');
+
+                        if (field.multiple && (data.state.loaded===false || !(!data.children || !data.children.length))) {
+                            $icon1 = $('<i class="fa fa-hand-lizard-o jstree-children-manage-lizard"></i>');
                             $icon.after($icon1);
                             $icon = $icon1.on('click', () => {
                                 data.state.cascadeStep = (data.state.cascadeStep > 1 ? 0 : (data.state.cascadeStep || 0) + 1);
