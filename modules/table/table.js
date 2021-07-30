@@ -456,7 +456,7 @@
 
                     this._container.on('click contextmenu', 'th', function (event) {
 
-                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON');
+                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
                         else {
                             let self = $(this);
                             pcTable.creatorIconsPopover(self)
@@ -472,7 +472,7 @@
                     })*/
                 } else {
                     this._container.on('click contextmenu', 'th', function (event) {
-                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON');
+                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
                         else {
                             let self = $(this);
                             pcTable.workerIconsPopover(self)
@@ -656,7 +656,7 @@
                     let div = $('<div style="width:200px" class="creator-icons">');
                     div.append($('<div class="full-title">').text(this.fields[th.data('field')].title));
 
-                    th.find('i:not(.fa-caret-down):not(.fa-info)').each(function (i, icon) {
+                    th.find('i:not(.fa-caret-down):not(.fa-info)').each( (i, icon) =>{
                         if (['fa-star', 'fa-star-o', 'fa-cogs'].some((c) => {
                             return $(icon).hasClass(c)
                         })) return;
@@ -664,6 +664,17 @@
 
                         if (i === 0) {
                             el.append(' ' + th.closest('th').find('.field_name').text());
+                            let btnCopy = $('<button class="btn btn-sm btn-default copy-me" title="Копировать "><i class="fa fa-copy"></i></button>');
+                            btnCopy.on('click', function(){
+                                App.copyMe(th.data('field'));
+                                let button = $(this);
+                                button.width(button.width());
+                                button.html('<i class="fa fa-cog"></i>');
+                                setTimeout(function () {
+                                    button.html('<i class="fa fa-copy"></i>');
+                                }, 1000);
+                                return false;
+                            }).appendTo(el);
                         }
 
                         if (icon.title) el.append(' ' + icon.title);

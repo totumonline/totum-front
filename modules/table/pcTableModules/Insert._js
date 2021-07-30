@@ -511,7 +511,7 @@ $.extend(App.pcTableMain.prototype, {
             }
 
             setTimeout(function () {
-
+                if (!$input) return;
                 let td = $input.closest('td');
                 if (!td.length || !td.closest('tr').length) return false;
 

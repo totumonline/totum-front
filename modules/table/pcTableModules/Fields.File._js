@@ -355,7 +355,14 @@
                 showDialog(div);
                 div.text('Редактирование в форме').addClass('edit-in-form');
             } else {
-                div.on('focus click', 'button', function () {
+                div.on('keydown', function (event) {
+                    if (event.key === 'Tab') {
+                        blurClbk(dialog, event, null, true);
+                        return
+                    }
+                    showDialog($(this).closest('div'))
+                });
+                div.on('focus click keydown', 'button', function () {
                     showDialog($(this).closest('div'))
                 });
 
