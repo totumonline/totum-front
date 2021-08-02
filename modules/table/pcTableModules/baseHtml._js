@@ -428,23 +428,23 @@
                                     if (codes.indexOf(input.attr('name')) !== -1) {
                                         input.prop('checked', 'checked');
                                     }
-                                    if(codes.indexOf("flds")!==-1 && input.attr('name')!=="flds"){
+                                    if (codes.indexOf("flds") !== -1 && input.attr('name') !== "flds") {
                                         input.prop('disabled', true);
                                     }
                                 });
                                 $div.on('change', 'input[name="flds"]', function () {
-                                        let val = $(this).is(':checked')
-                                        $div.find('input').each((i, inp) => {
-                                            inp = $(inp)
-                                            if (inp.attr('name') !== 'flds') {
-                                                if (val) {
-                                                    inp.prop( "disabled", true )
-                                                    inp.prop( "checked", false )
-                                                }else{
-                                                    inp.prop( "disabled", false )
-                                                }
+                                    let val = $(this).is(':checked')
+                                    $div.find('input').each((i, inp) => {
+                                        inp = $(inp)
+                                        if (inp.attr('name') !== 'flds') {
+                                            if (val) {
+                                                inp.prop("disabled", true)
+                                                inp.prop("checked", false)
+                                            } else {
+                                                inp.prop("disabled", false)
                                             }
-                                        })
+                                        }
+                                    })
                                 });
 
                                 $div.on('click', 'button', function () {
@@ -2339,7 +2339,7 @@
 
                                 $('<tr><td>Сумма</td><td>' + format(summ) + '</td></tr>').appendTo(tbody);
                                 $('<tr><td>Кол-во чисел</td><td>' + format(count, true) + '</td></tr>').appendTo(tbody);
-                                $('<tr><td>Среднее</td><td>' + format(Big(summ).div(count).round(field.dectimalPlaces || 0)) + '</td></tr>').appendTo(tbody);
+                                $('<tr><td>Среднее</td><td>' + (count !== 0 ? format(Big(summ).div(count).round(field.dectimalPlaces || 0)) : "null") + '</td></tr>').appendTo(tbody);
                                 $('<tr><td>Максимальное</td><td>' + format(max) + '</td></tr>').appendTo(tbody);
                                 $('<tr><td>Минимальное</td><td>' + format(min) + '</td></tr>').appendTo(tbody);
                                 $('<tr><td>Нечисл. элементов</td><td>' + format(notNumber, true) + '</td></tr>').appendTo(tbody);
