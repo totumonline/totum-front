@@ -132,6 +132,8 @@ $.extend(App.pcTableMain.prototype, {
                             }
                             if (field.closeIframeAfterClick && window.closeMe) {
                                 window.closeMe();
+                            }else if(field.openContextPanel){
+                                $td.trigger("contextmenu")
                             }
                             field.btnOK.call(field, $td, item);
                             resolve(json);
