@@ -264,6 +264,8 @@
             $div.css('marginLeft', _gap)
         }
         sections.forEach((sec) => {
+            if (!sec.fields || !sec.fields.length) return;
+
             //' + (sec.isNoTitles ? 'sec-no-titles' : '') + '
             let sDv = $('<div class="pcTable-section ">').appendTo($paramsBlock);
             let sectionGap = sec.sectionGap;
