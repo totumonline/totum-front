@@ -601,7 +601,7 @@
         applyHideRows: function (hide) {
             if (hide && hide.length) {
                 let visible = this.filters['id'] || [];
-                if(!visible.length){
+                if (!visible.length) {
                     visible = [...this.dataSorted];
                 }
                 let newVisible = [];
@@ -619,11 +619,18 @@
             "use strict";
             let pcTable = this;
             let checkedRows = this.row_actions_get_checkedIds();
-
-            if ($tr && (checkedRows.indexOf(pcTable._getItemByTr($tr).id) === -1)) {
-                this.row_actions_check(pcTable._getItemByTr($tr), false, true);
-                checkedRows = this.row_actions_get_checkedIds();
+            if ($tr) {
+                let id = pcTable._getItemByTr($tr).id;
+                let index = checkedRows.indexOf(id);
+                if (index === -1) {
+                    this.row_actions_check(pcTable._getItemByTr($tr), false, true);
+                    checkedRows = this.row_actions_get_checkedIds();
+                } else {
+                    checkedRows.splice(index, 1);
+                    checkedRows.unshift(id);
+                }
             }
+
             pcTable._row_edit.call(pcTable, checkedRows.slice());
             return false;
         }
