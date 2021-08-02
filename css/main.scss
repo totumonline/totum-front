@@ -130,6 +130,13 @@ input.error {
   padding-right: 20px;
   font-family: "Open Sans";
   line-height: 21px;
+  position: relative;
+
+  .close-table-description{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
 }
 
 #pk .iframed {
@@ -1188,7 +1195,7 @@ th {
   margin-left: $idWidth;
 }
 
-.pcTable-tableText {
+.pcTable-tableText, .table-description {
   &:empty {
     display: none;
   }

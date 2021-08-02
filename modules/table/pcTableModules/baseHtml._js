@@ -744,6 +744,10 @@
             if (this.tableRow.description) {
                 let btnAdd = $('<a class="btn btn-default btn-sm"><i class="fa fa-info"></i></a>');
                 let $description = $('<div class="table-description"/>').html(this.tableRow.description);
+
+                let $btn = $('<button class="btn btn-default btn-sm close-table-description"><i class="fa fa-times"></i></button>')
+                $description.append($btn)
+
                 btnAdd.appendTo(csv);
                 let storageKey = 'table_description_switcher' + this.tableRow.id;
                 let switcher = this.tableRow.description.match('<hide(\/?)>') ? '0' : (localStorage.getItem(storageKey) || localStorage.setItem(storageKey, '1') || localStorage.getItem(storageKey));
@@ -770,6 +774,7 @@
                 handleSwitcher();
 
                 btnAdd.on('click', handleSwitcher);
+                $btn.on('click', handleSwitcher);
 
                 this._beforeSpace.append($description);
             }
