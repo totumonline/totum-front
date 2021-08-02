@@ -21,7 +21,7 @@
           }
         }
         &.with-filter2{
-          padding-right: 40px;
+          padding-right: 45px;
           &.with-help{
             padding-right: 60px;
           }
@@ -53,8 +53,15 @@
           max-height: 50px;
           width: 100%;
           &.small-rotated-id{
-            height: 35px;
-            max-height: 35px;
+            .rowName{
+              text-align: right;
+              font-size: 10px;
+            }
+          }
+          &:not(.small-rotated-id){
+            .rowName{
+              font-weight: bold;
+            }
           }
         }
 

@@ -21,7 +21,7 @@
                     let span = $('<span class="rowName"></span>').appendTo($tdId);
                     if (this.mainFieldName && this.mainFieldName !== 'id' && item[this.mainFieldName] && item[this.mainFieldName].v) {
                         span.text(item[this.mainFieldName].v);
-                        $('<span class="rowId">' + item['id'] + '</span>').appendTo($tdId);
+
                     } else {
                         span.text(item['id']);
                         $tdId.addClass('small-rotated-id');

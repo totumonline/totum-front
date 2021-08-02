@@ -867,7 +867,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             cell.append($('<div class="format-text">').text(format.text))
         }
         if (format.comment) {
-            cell.append($('<div class="format-comment">').text(format.comment))
+            cell.append($('<div class="format-comment">').text(format.comment).prepend('<i class="fa fa-info"></i>'))
         }
 
 

@@ -29,6 +29,11 @@
     padding: 5px;
     font-size: 12px;
   }
+  .format-comment{
+    i{
+      padding-right: 5px;
+    }
+  }
 
   .cell-wrapper::not([data-name="data_src"]) {
     input[type=checkbox] {

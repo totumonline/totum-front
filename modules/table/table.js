@@ -813,12 +813,8 @@
                             }
 
 
-                            let title = '<span style="text-transform:uppercase">' + settings.fieldSettings[codeType].title + '</span>'
-                                + ' | ' + field.title
-                                + ' | ' + field.name
-                                + ' | ' + field.type
-                                + ' | ' + (field.category === 'param' ? 'header' : field.category)
-                                + ' | sort: ' + field.ord;
+                            let title = '<span style="">' + settings.fieldSettings[codeType].title + '</span>'
+                                + ' ' + field.name;
 
 
                             App.totumCodeEdit(
