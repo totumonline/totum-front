@@ -90,8 +90,9 @@
         let nameL = name.toLowerCase();
 
         let div = $('<div style="width:200px" class="function-help">');
-        div.append($('<div class="func-template">').text(name + TOTUMjsFuncs[nameL][0]));
-
+        $('<div class="func-template">').text(name + TOTUMjsFuncs[nameL][0]).appendTo(div).on('click', ()=>{
+            return false;
+        });
         let params=$('<div class="func-params">').appendTo(div).on('click', ()=>{
             return false;
         });

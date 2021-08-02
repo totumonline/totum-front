@@ -446,7 +446,7 @@
                     }
                 });
                 window.top.wasCtrl = (event) => {
-                    return event.ctrlKey || window.top.lastCtrl > 0 && (Date.now() - window.top.lastCtrl < 500);
+                    return event.ctrlKey || (window.top && window.top.lastCtrl > 0 && (Date.now() - window.top.lastCtrl < 500));
                 }
                 pcTable._container.on('scroll', closeCallbacksFunc);
                 pcTable._innerContainer.on('scroll', closeCallbacksFunc);
