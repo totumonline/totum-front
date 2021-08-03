@@ -2466,7 +2466,7 @@
                     });
             }
 
-            text = text || 'Таблица пуста ';
+            text = text || ((this.PageData && this.PageData.allCount)?'Данных на этой странице нет ':'Таблица пуста ');
 
             return $("<tr>").addClass(this.noDataRowClass)
                 .append('<td class="id">')
