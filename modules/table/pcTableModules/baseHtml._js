@@ -2466,8 +2466,13 @@
                     });
             }
 
-            text = text || ((this.PageData && this.PageData.allCount)?'Данных на этой странице нет ':'Таблица пуста ');
-
+            if(text===undefined){
+                if(this.PageData && this.PageData.allCount){
+                    this.model.loadPage(this, null, this.PageData.onPage, null, this.PageData.offset);
+                }else{
+                    text='Таблица пуста ';
+                }
+            }
             return $("<tr>").addClass(this.noDataRowClass)
                 .append('<td class="id">')
                 .append($("<td>").attr("colspan", amountOfFields).append(text).append($addBtn));
