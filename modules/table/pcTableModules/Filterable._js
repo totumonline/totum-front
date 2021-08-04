@@ -275,6 +275,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
 
     this.loadFilters();
 
+    /*!panelView*/
     if (!this.viewType) {
         this._header.on('click', '.pcTable-filters > span button.btn-filter:not(#checkS)', function (event) {
 
@@ -357,19 +358,24 @@ App.pcTableMain.prototype.__addFilterable = function () {
             select.data('container', selectDiv);
 
             var vals = {};
-            Object.values(pcTable.dataSorted).forEach(function (_id) {
-                if (typeof _id !== 'object') {
+
+            if(pcTable.isTreeView){
+                Object.values(pcTable.data).forEach(function (row) {
+                    if (fieldName === 'id') {
+                        vals[row.id.toString()] = row.id.toString();
+                    } else {
+                        pcTable.fields[fieldName].addDataToFilter(vals, row[fieldName]);
+                    }
+                });
+            }else{
+                Object.values(pcTable.dataSorted).forEach(function (_id) {
                     if (fieldName === 'id') {
                         vals[_id.toString()] = _id.toString();
                     } else {
                         pcTable.fields[fieldName].addDataToFilter(vals, pcTable.data[_id][fieldName]);
                     }
-                } else {
-                    if (_id.row) {
-                        pcTable.fields[fieldName].addDataToFilter(vals, _id.row[fieldName]);
-                    }
-                }
-            });
+                });
+            }
 
 
             var filterOptions = {};
