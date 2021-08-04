@@ -420,7 +420,9 @@ $.extend(App.pcTableMain.prototype, {
             isFromButton = isFromButton || false;
             if (!isFromButton) {
                 if (isGroupSelected) {
-                    pcTable._removeEditCell();
+                    if(field.type!=='select' || field.multiple){
+                        pcTable._removeEditCell();
+                    }
                     return false;
                 }
             }
