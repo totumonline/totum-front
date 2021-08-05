@@ -198,9 +198,6 @@
                                     panel.refresh();
                                 })
                             }
-                            if (json.chdata && pcTable._insertRowActive) {
-                                pcTable._createInsertRow(pcTable._insertRow)
-                            }
                         }, 10)
 
 

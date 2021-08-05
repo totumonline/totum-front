@@ -123,6 +123,13 @@ $.extend(App.pcTableMain.prototype, {
                     pcTable._currentInsertCellIndex = 0;
                     switch (isNotClean) {
                         case 'notClean':
+                            let item={};
+                            Object.keys(pcTable._insertItem).forEach((k)=>{
+                                if(typeof pcTable._insertItem[k] === "object" && "v" in pcTable._insertItem[k]){
+                                    item[k]=pcTable._insertItem[k].v;
+                                }
+                            })
+                            pcTable._createInsertRow(pcTable._insertRow, true, item);
                             break;
                         case 'close':
                             pcTable._closeInsertRow();
