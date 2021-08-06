@@ -107,7 +107,7 @@ fieldTypes.date = {
                     if (popover) {
                         $input.popover('destroy')
                     }
-                    popoverId = App.popNotify(cParent, $input, null, false);
+                    popoverId = App.popNotify(cParent, $input, null);
                     popover = $($input.get(0).ownerDocument.getElementById(popoverId));
 
                     calendar.data("DateTimePicker").show();
