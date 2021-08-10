@@ -128,7 +128,7 @@ input.error {
   margin-bottom: 15px;
   font-size: 14px;
   padding-right: 20px;
-  font-family: "Open Sans";
+  font-family: "PTRootUIWeb";
   line-height: 21px;
   position: relative;
 
@@ -426,7 +426,7 @@ input:not([type="checkbox"]):focus {
 
 .pcTable-title {
   font-size: 24px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'PTRootUIWeb', sans-serif;
   font-weight: 500;
   padding-bottom: 4px;
 
@@ -1201,7 +1201,7 @@ th {
   }
 
   font-size: 14px;
-  font-family: 'Open Sans';
+  font-family: 'PTRootUIWeb';
   line-height: 21px;
 
   margin-bottom: 20px;
@@ -1743,6 +1743,7 @@ th.id .pcTable-filters.for-selected .btn {
     margin-bottom: 10px;
     font-weight: 400;
     font-size: 14px;
+    font-family: "PTRootUIWeb";
   }
 
   .form-control {
@@ -1924,7 +1925,7 @@ ul.CodeMirror-hints {
 
 #main-page {
   font-size: 14px;
-  font-family: "Open Sans";
+  font-family: "PTRootUIWeb";
   padding: 0 20px 10px 70px;
   overflow: hidden;
 }

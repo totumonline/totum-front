@@ -452,32 +452,34 @@
                 pcTable._innerContainer.on('scroll', closeCallbacksFunc);
 
                 /*top th panel*/
-                if (this.isCreatorView) {
+                if (this.viewType !== 'panels') {
+                    if (this.isCreatorView) {
 
-                    this._container.on('click contextmenu', 'th', function (event) {
+                        this._container.on('click contextmenu', 'th', function (event) {
 
-                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
-                        else {
+                            if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
+                            else {
+                                let self = $(this);
+                                pcTable.creatorIconsPopover(self)
+                            }
+                        })
+                        /*this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
                             let self = $(this);
-                            pcTable.creatorIconsPopover(self)
-                        }
-                    })
-                    /*this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
-                        let self = $(this);
-                        let icons = self.closest('th').find('.creator-icons');
-                        if (!icons.is('[aria-describedby]')) {
-                            pcTable.creatorIconsPopover(icons);
-                        }
-                        return false;
-                    })*/
-                } else {
-                    this._container.on('click contextmenu', 'th', function (event) {
-                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
-                        else {
-                            let self = $(this);
-                            pcTable.workerIconsPopover(self)
-                        }
-                    })
+                            let icons = self.closest('th').find('.creator-icons');
+                            if (!icons.is('[aria-describedby]')) {
+                                pcTable.creatorIconsPopover(icons);
+                            }
+                            return false;
+                        })*/
+                    } else {
+                        this._container.on('click contextmenu', 'th', function (event) {
+                            if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
+                            else {
+                                let self = $(this);
+                                pcTable.workerIconsPopover(self)
+                            }
+                        })
+                    }
                 }
                 pcTable._container.on('contextmenu', function (event) {
                     let self = $(event.target);
@@ -656,7 +658,7 @@
                     let div = $('<div style="width:200px" class="creator-icons">');
                     div.append($('<div class="full-title">').text(this.fields[th.data('field')].title));
 
-                    th.find('i:not(.fa-caret-down):not(.fa-info)').each( (i, icon) =>{
+                    th.find('i:not(.fa-caret-down):not(.fa-info)').each((i, icon) => {
                         if (['fa-star', 'fa-star-o', 'fa-cogs'].some((c) => {
                             return $(icon).hasClass(c)
                         })) return;
@@ -665,7 +667,7 @@
                         if (i === 0) {
                             el.append(' ' + th.closest('th').find('.field_name').text());
                             let btnCopy = $('<button class="btn btn-sm btn-default copy-me" title="Копировать "><i class="fa fa-copy"></i></button>');
-                            btnCopy.on('click', function(){
+                            btnCopy.on('click', function () {
                                 App.copyMe(th.data('field'));
                                 let button = $(this);
                                 button.width(button.width());
