@@ -28,6 +28,10 @@
   .format-text, .format-comment{
     padding: 5px;
     font-size: 12px;
+    margin-top: 5px;
+  }
+  .format-text + .format-comment{
+    margin-top: 0px;
   }
   .format-comment{
     i{
