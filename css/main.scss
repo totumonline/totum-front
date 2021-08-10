@@ -425,7 +425,7 @@ input:not([type="checkbox"]):focus {
 }
 
 .pcTable-title {
-  font-size: 24px;
+  font-size: 26px;
   font-family: 'PTRootUIWeb', sans-serif;
   font-weight: 500;
   padding-bottom: 4px;
@@ -895,6 +895,8 @@ th {
   position: relative;
 
   .pcTable-sectionTitle {
+    font-family: "PTRootUIWeb";
+    font-weight: 500;
     i, span {
       cursor: pointer
     }
@@ -1024,6 +1026,8 @@ th {
   }
 
   .pcTable-rowsTitle {
+    font-family: PTRootUIWeb;
+    font-weight: 500;
     padding-left: $idWidth - 18;
     padding-top: 10px;
 
@@ -1200,7 +1204,7 @@ th {
     display: none;
   }
 
-  font-size: 14px;
+  font-size: 16px;
   font-family: 'PTRootUIWeb';
   line-height: 21px;
 
@@ -1741,7 +1745,7 @@ th.id .pcTable-filters.for-selected .btn {
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-bottom: 10px;
-    font-weight: 400;
+    font-weight: 500;
     font-size: 14px;
     font-family: "PTRootUIWeb";
   }
