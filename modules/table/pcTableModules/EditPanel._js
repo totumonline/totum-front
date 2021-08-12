@@ -34,11 +34,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     let firstLoad = {}, hash;
 
 
-    this.checkRow = async function (val, isFirstLoad) {
+    this.checkRow = async function (val, isFirstLoad, clearField) {
         let self = this;
         const Check = () => {
             return new Promise(function (resolve, reject) {
-                EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), hash).then(function (json) {
+                EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), hash, clearField).then(function (json) {
                     if (EditPanelFunc.panelType == 'edit' && isFirstLoad) {
                         firstLoad = $.extend(true, {}, json.row);
                     }
@@ -337,7 +337,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     if (hand.length === 0) {
                         hand = $('<button class="btn btn-sm btn-warning handled" tabindex="' + (index * 2 + 2) + '"><i class="fa fa-hand-paper-o pull-right"></button>').on('click', () => {
                             delete insertChangesCalcsFields[field.name];
-                            EditPanelFunc.checkRow();
+                            EditPanelFunc.checkRow(undefined, undefined, field.name);
                         });
                         btns.prepend(hand);
                     }
@@ -684,7 +684,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             } catch (error) {
                 if (field.name === 'name' && isEditFieldPanel) {
                     delete insertChangesCalcsFields['name'];
-                    let editF = await EditPanelFunc.checkRow();
+                    let editF = await EditPanelFunc.checkRow(undefined, undefined, 'name');
                     return editF.editItem['name'].v;
 
                 } else {
