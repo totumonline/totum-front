@@ -174,7 +174,13 @@
                             }
                             if ('allCount' in json && json.allCount !== null && pcTableObj.PageData.allCount !== json.allCount) {
                                 changed = true;
+
+                                if(pcTableObj.tableRow.pagination.match(/desc\s*$/)){
+                                    pcTableObj.PageData.offset+=json.allCount-pcTableObj.PageData.allCount;
+                                }
+
                                 pcTableObj.PageData.allCount = json.allCount
+
                             }
                             if (changed) {
                                 pcTableObj.PageData.$block.empty().append(pcTableObj._paginationCreateBlock.call(pcTableObj))
