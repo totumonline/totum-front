@@ -419,7 +419,7 @@
                 let tdWrapper = $('<div class="td-wrapper">').appendTo(fieldCell);
 
                 if (field.format.titleleft || field.format.titleright) {
-                    fieldCell.css('display', 'grid');
+                    fieldCell.css('display', 'inline-grid');
                     if (pcTable.isCreatorView) {
                         tdWrapper.css('margin-top', '18px')
                     }
