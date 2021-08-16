@@ -11,11 +11,12 @@ body {
 }
 
 td, th {
-  background-clip: padding-box;
+  background-clip: border-box;
 }
- th{
-   cursor: pointer;
- }
+
+th {
+  cursor: pointer;
+}
 
 input.error {
   border-color: $btn-danger-bgcolor;
@@ -31,30 +32,37 @@ input.error {
   padding-bottom: 10px;
 }
 
-.function-help{
+.function-help {
 
-  .func-template{
+  .func-template {
     background-color: #f6f6f6;
     padding: 5px;
     margin-bottom: 5px;
   }
+
   white-space: normal;
-  .req{
+
+  .req {
     font-weight: bold;
   }
-  .multi{
+
+  .multi {
     text-decoration: underline;
   }
-  .db{
+
+  .db {
     color: orange;
   }
-  span{
+
+  span {
     padding-right: 5px;
   }
-  .button{
+
+  .button {
     margin-top: 5px;
   }
 }
+
 .creator-hidden {
   .creator-hidden-block {
     display: none;
@@ -132,7 +140,7 @@ input.error {
   line-height: 21px;
   position: relative;
 
-  .close-table-description{
+  .close-table-description {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -220,8 +228,10 @@ footer {
 
 .source-link {
   padding-top: 8px;
+
   a {
     color: #656565;
+
     &:hover {
       color: #656565;
     }
@@ -879,7 +889,7 @@ th {
 }
 
 @mixin form-control {
-  height: 27px;
+  height: 28px;
   font-size: 12px;
 }
 
@@ -897,6 +907,7 @@ th {
   .pcTable-sectionTitle {
     font-family: "PTRootUIWeb";
     font-weight: 500;
+
     i, span {
       cursor: pointer
     }
@@ -940,6 +951,7 @@ th {
         }
       }
     }
+
     &:not(.closed).sec-no-titles {
       .pcTable-floatInner > div {
         td {
@@ -1380,9 +1392,24 @@ th {
         width: 100%;
       }
 
+
       td {
+        .btn, .btn:active {
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.15),0 1px 1px rgba(0,0,0,0.075)
+        }
+        &.cell-button{
+          padding-top: 1px!important;
+          button{
+            padding: 3px 7px;
+            height: 25px;
+
+          }
+        }
+
+        padding: 3px;
         background-color: $btn-warning-bgcolor;
-        &.active{
+
+        &.active {
           background-color: darken($btn-warning-bgcolor, 20%);
         }
 
@@ -1403,7 +1430,8 @@ th {
 
       td.with-code {
         background-color: $btn-warning-bgcolor;
-        &.active{
+
+        &.active {
           background-color: darken($btn-warning-bgcolor, 20%);
         }
 
@@ -2063,10 +2091,11 @@ input {
   -khtml-user-select: auto;
   user-select: text;
 
-  .full-title{
+  .full-title {
     white-space: normal;
     font-size: 14px;
   }
+
   i {
     margin-left: 3px;
     font-size: 11px;
@@ -2102,7 +2131,8 @@ input {
       color: #ff8585;
       white-space: normal;
     }
-    div:first-child{
+
+    div:first-child {
       color: inherit;
       text-indent: 0;
       margin-left: -10px;
@@ -2146,11 +2176,13 @@ input {
         color: #333;
       }
     }
-    button.copy-me{
+
+    button.copy-me {
       padding: 2px;
       width: 25px;
       margin-left: 10px;
-      i{
+
+      i {
         margin: 0;
       }
     }

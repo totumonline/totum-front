@@ -119,18 +119,18 @@
                             this.treeApply();
                         })
                     }).appendTo($divPopoverArrowDown)
+            }
 
-                if (this.isInsertable()) {
-                    $('<div class="menu-item"><i class="fa fa-th-large"></i> Добавить строку</div>')
-                        .on('click', () => {
+            if (this.isInsertable()) {
+                $('<div class="menu-item"><i class="fa fa-th-large"></i> Добавить строку</div>')
+                    .on('click', () => {
 
 
-                            let obj = {tree: {v: row.v}};
-                            new EditPanel(this, null, obj, null, {tree: true}).then(() => {
-                                this.model.refresh();
-                            })
-                        }).appendTo($divPopoverArrowDown)
-                }
+                        let obj = {tree: {v: row.v}};
+                        new EditPanel(this, null, obj, null, {tree: true}).then(() => {
+                            this.model.refresh();
+                        })
+                    }).appendTo($divPopoverArrowDown)
             }
 
             td.append($('<span class="treeRow">').text(row.t).data('treeRow', row.v))
@@ -350,6 +350,12 @@
                     let oldIndex = this.treeIndex[oldVal][arr].indexOf(bOldVal.toString());
                     if (oldIndex !== -1) {
                         this.treeIndex[oldVal][arr].splice(oldIndex, 1);
+                    }
+                }
+                else if (!newData || newData.tree.v != oldItem.tree.v) {
+                    let oldIndex = this.treeIndex[oldItem.tree.v][arr].indexOf(bOldVal.toString());
+                    if (oldIndex !== -1) {
+                        this.treeIndex[oldItem.tree.v][arr].splice(oldIndex, 1);
                     }
                 }
             } else {
