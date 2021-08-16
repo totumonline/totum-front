@@ -891,6 +891,7 @@ th {
 @mixin form-control {
   height: 28px;
   font-size: 12px;
+
 }
 
 .pcTable-container {
@@ -1013,6 +1014,10 @@ th {
 
   .form-control {
     @include form-control();
+
+  }
+  input.form-control{
+    font-size: 13px;
   }
 
   &.no-fields .innerContainer {
@@ -1185,7 +1190,10 @@ th {
 
 .pcTable-filtersTable {
   border-bottom: 1px solid #f1f1f1;
-
+  i.fa.fa-spinner{
+    margin-top: -5px;
+    display: block;
+  }
 }
 
 .pcTable-hiddenFieldsTables {
