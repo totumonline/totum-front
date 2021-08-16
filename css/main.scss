@@ -1405,6 +1405,13 @@ th {
 
           }
         }
+        .bootstrap-select .btn-sm, .source-add{
+          padding: 3px 7px;
+        }
+        .bootstrap-select.form-control{
+          background-color: transparent;
+          height: auto;
+        }
 
         padding: 3px;
         background-color: $btn-warning-bgcolor;
