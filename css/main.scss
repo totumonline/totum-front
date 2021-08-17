@@ -439,6 +439,7 @@ input:not([type="checkbox"]):focus {
   font-family: 'PTRootUIWeb', sans-serif;
   font-weight: 500;
   padding-bottom: 4px;
+  margin-right: 220px;
 
   .updated {
     padding-top: 6px;
@@ -454,10 +455,6 @@ input:not([type="checkbox"]):focus {
   .notification-table & {
     display: none;
   }
-}
-
-.pcTable-creatorView .pcTable-title {
-  margin-right: 200px;
 }
 
 .pcTable-tabls {
