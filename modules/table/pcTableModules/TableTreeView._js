@@ -124,12 +124,20 @@
             if (this.isInsertable()) {
                 $('<div class="menu-item"><i class="fa fa-th-large"></i> Добавить строку</div>')
                     .on('click', () => {
-
-
-                        let obj = {tree: {v: row.v}};
-                        new EditPanel(this, null, obj, null, {tree: true}).then(() => {
-                            this.model.refresh();
-                        })
+                        if(this.tableRow.type==='cycles'){
+                            this.model.add({}).then( json =>{
+                                if (json.firstTableId) {
+                                    window.location.href = window.location.pathname + '/' + json.chdata.rows[0].id + '/' + json.firstTableId;
+                                } else {
+                                    this.table_modify(json);
+                                }
+                            });
+                        }else{
+                            let obj = {tree: {v: row.v}};
+                            new EditPanel(this, null, obj, null, {tree: true}).then(() => {
+                                this.model.refresh();
+                            })
+                        }
                     }).appendTo($divPopoverArrowDown)
             }
 
