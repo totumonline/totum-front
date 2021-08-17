@@ -408,6 +408,9 @@
 
                 this._container.addClass(this.contanerClass).addClass('pcTable-type-' + this.tableRow.type);
 
+                if (this.isCreatorView) {
+                    this._container.addClass('pcTable-creatorView')
+                }
 
                 let navTopLine = $('#nav-top-line');
                 navTopLine.addClass('pcTable-type-' + this.tableRow.type);
