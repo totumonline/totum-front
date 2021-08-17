@@ -125,7 +125,7 @@
                 $('<div class="menu-item"><i class="fa fa-th-large"></i> Добавить строку</div>')
                     .on('click', () => {
                         if(this.tableRow.type==='cycles'){
-                            this.model.add({}).then( json =>{
+                            this.model.add(null, {tree: row.v}).then( json =>{
                                 if (json.firstTableId) {
                                     window.location.href = window.location.pathname + '/' + json.chdata.rows[0].id + '/' + json.firstTableId;
                                 } else {

@@ -195,26 +195,26 @@ $.extend(App.pcTableMain.prototype, {
         }
         this._insertButtons = $('<span>');
 
-        if (this.viewType === 'panels' || this.isRotatedView || this.isTreeView) {
-            $('<button data-action="add" class="btn btn-sm btn-warning">Добавить</button>')
-                .width(80)
-                .on('click', AddWithPanel)
-                .appendTo(this._insertButtons);
+        const getAddButton = (inner, func, dataAction)=>{
+            return $('<button '+(dataAction?'data-action="'+dataAction+'"':'')+' class="btn btn-sm btn-warning">'+inner+'</button>')
+
+                .appendTo(this._insertButtons)
+                .on('click', func);
+        }
+
+        if (this.isTreeView && this.tableRow.type==='cycles'){
+        }
+        else if (this.viewType === 'panels' || this.isRotatedView || this.isTreeView) {
+            getAddButton('Добавить', AddWithPanel, "add").width(80)
         } else {
             if (this.tableRow.id !== 2) {
-                $('<button data-action="add" class="btn btn-sm btn-warning">Добавить</button>')
-                    .width(80)
-                    .on('click', AddWithRow)
-                    .appendTo(this._insertButtons);
+                getAddButton('Добавить', AddWithRow, "add").width(80)
             }
 
             if (!pcTable.isMobile && this.tableRow.panel) {
-                $('<button class="btn btn-warning btn-sm"><i class="fa fa-th-large"></i></button>')
-                    .on('click', AddWithPanel).appendTo(this._insertButtons)
-                    .css('margin-left', 5);
+                getAddButton('<i class="fa fa-th-large"></i>', AddWithPanel).css('margin-left', 5);
             }
         }
-
         return this._insertButtons;
     },
     _addInsertWithPanel: function (addVars) {

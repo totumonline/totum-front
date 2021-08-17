@@ -400,8 +400,8 @@
                 "use strict";
                 return this.__ajax('post', {fieldName: fieldName, fieldVal: val, method: 'checkUnic'});
             },
-            add: function (hash) {
-                return this.__ajax('post', {hash: hash, method: 'add'});
+            add: function (hash, data) {
+                return this.__ajax('post', {hash: hash, method: 'add', data: data});
             },
             getValue: function (data, table_id) {
                 return this.__ajax('post', {data: data, method: 'getValue', table_id: table_id});
