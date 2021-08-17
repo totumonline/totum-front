@@ -668,7 +668,7 @@
                         let el = $('<div>').append(icon.outerHTML);
 
                         if (i === 0) {
-                            el.append(' ' + th.closest('th').find('.field_name').text());
+                            el.append(' ' + th.data('field'));
                             let btnCopy = $('<button class="btn btn-sm btn-default copy-me" title="Копировать "><i class="fa fa-copy"></i></button>');
                             btnCopy.on('click', function () {
                                 App.copyMe(th.data('field'));
