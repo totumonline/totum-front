@@ -72,6 +72,7 @@
     &.cln {
       position: fixed;
       top: 60px;
+      overflow: hidden;
 
       .kanban-title {
         box-shadow: 0 0 7px 0px #0000000f
