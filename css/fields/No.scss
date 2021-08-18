@@ -60,6 +60,12 @@
   }
 }
 
+.pcTable-table:not(.with-checks) .n .arrow-disabled{
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+
 .pcTable-table.with-checks .n .fa-angle-down:before {
   content: "\f149";
 }

@@ -9,12 +9,35 @@ fieldTypes.n = $.extend({}, fieldTypes.default, {
         let format = item.f || {};
         td.addClass('n');
 
-        if (!item.id || format.block || format.blockorder || item.__inserted){
+        if (!item.id || format.block || format.blockorder || (item.__inserted && !this.pcTable.isTreeView) || this.pcTable.nSortedTreeBlock) {
             return '';
         }
-        
 
-        return $('<span class="btns"><button class="btn btn-xxs btn-default"><i class="fa fa-angle-up"></i></button> <button class="btn btn-xxs btn-default"><i class="fa fa-angle-down"></i></button></span>');
+        let buttons = '<button class="btn btn-xxs btn-default"><i class="fa fa-angle-up"></i></button><button class="btn btn-xxs btn-default"><i class="fa fa-angle-down"></i></button>';
+        if (this.pcTable.isTreeView) {
+
+            if(item.__tree){
+                buttons='';
+            }
+            else if (this.pcTable.nSortedTree===undefined || this.pcTable.nSortedTree === item.tree.v) {
+                let index = this.pcTable.dataSorted.indexOf(item.id + '');
+                buttons = '';
+                if (index >= 1 && typeof this.pcTable.dataSorted[index - 1] !== 'object') {
+                    buttons += '<button class="btn btn-xxs btn-default"><i class="fa fa-angle-up"></i></button>';
+                } else {
+                    buttons += '<button class="btn btn-xxs btn-default arrow-disabled"><i class="fa fa-angle-up"></i></button>';
+                }
+                if (index < (this.pcTable.dataSorted.length - 1) && typeof this.pcTable.dataSorted[index + 1] !== 'object') {
+                    buttons += '<button class="btn btn-xxs btn-default"><i class="fa fa-angle-down"></i></button>';
+                } else {
+                    buttons += '<button class="btn btn-xxs btn-default arrow-disabled"><i class="fa fa-angle-down"></i></button>';
+                }
+            }else{
+                buttons='';
+            }
+        }
+
+        return $('<span class="btns"></span>').html(buttons);
     }
 
 });

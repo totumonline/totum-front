@@ -36,7 +36,7 @@
                                 this.filters[Field.name] = [this.data_params[Field.name].v];
                                 apply = true;
                             }
-                        } else if (this.data_params[Field.name].v.indexOf('*ALL*') === -1 && this.data_params[Field.name].v.indexOf('**NONE**')=== -1) {
+                        } else if (this.data_params[Field.name].v.indexOf('*ALL*') === -1 && this.data_params[Field.name].v.indexOf('**NONE**') === -1) {
                             this.filters[Field.column] = this.data_params[Field.name].v;
                             apply = true;
                         }
@@ -49,6 +49,82 @@
         }, 10)
 
     }
+    App.pcTableMain.prototype._treeFolderRowAddDropdown = function (span, row) {
+        /*actions*/
+        let $divPopoverArrowDown = $('<div>')
+
+        let popover;
+        let dropdown = $('<button class="btn btn-default btn-xxs treeRow"><i class="fa fa-caret-down"></i></button>').popover({
+            html: true,
+            content: $divPopoverArrowDown,
+            trigger: 'manual',
+            container: this._container,
+            placement: 'auto bottom'
+        }).on('click', () => {
+            $('body').trigger('click');
+            dropdown.popover('show');
+            popover = $('#' + dropdown.attr('aria-describedby'));
+            setTimeout(() => {
+                this.closeCallbacks.push(() => {
+                    if (dropdown && dropdown.length) dropdown.popover('hide');
+                })
+            }, 200);
+            return false;
+        }).on('remove', () => {
+            popover.remove();
+        })
+        span.append(dropdown);
+
+        let OpenAll = $('<div class="menu-item"><i class="fa fa-arrows-v"></i> ' + (row.opened ? 'Закрыть' : 'Открыть') + ' все</div>').data('treeRow', row.v)
+            .on('click', () => {
+                this._actionTreeFolderRow(OpenAll, true)
+            })
+            .appendTo($divPopoverArrowDown)
+
+
+        if (this.fields.tree.selectTable && row.v && !this.fields.tree.treeBfield) {
+            $('<div class="menu-item"><i class="fa fa-edit"></i> Редактировать</div>').on('click', () => {
+                let obj = {id: row.v};
+                new EditPanel(this.fields.tree.selectTable, null, obj).then(() => {
+                    this.model.refresh();
+                })
+            }).appendTo($divPopoverArrowDown)
+
+
+            $('<div class="menu-item"><i class="fa fa-plus"></i> Добавить ветку</div>')
+                .on('click', () => {
+
+                    let parentField = this.fields.tree.treeViewParentField || "tree";
+
+                    let obj = {[parentField]: {v: row.v}};
+                    new EditPanel(this.fields.tree.selectTable, null, obj, null, {tree: true}).then((json) => {
+                        this.treeReloadRows.push(Object.keys(json.chdata.rows)[0]);
+                        this.treeApply();
+                    })
+                }).appendTo($divPopoverArrowDown)
+        }
+
+        if (this.isInsertable()) {
+            $('<div class="menu-item"><i class="fa fa-th-large"></i> Добавить строку</div>')
+                .on('click', () => {
+                    if (this.tableRow.type === 'cycles') {
+                        this.model.add(null, {tree: row.v}).then(json => {
+                            if (json.firstTableId) {
+                                window.location.href = window.location.pathname + '/' + json.chdata.rows[0].id + '/' + json.firstTableId;
+                            } else {
+                                this.table_modify(json);
+                            }
+                        });
+                    } else {
+                        let obj = {tree: {v: row.v}};
+                        new EditPanel(this, null, obj, null, {tree: true}).then(() => {
+                            this.model.refresh();
+                        })
+                    }
+                }).appendTo($divPopoverArrowDown)
+        }
+    }
+
     App.pcTableMain.prototype._createTreeFolderRow = function (row, $tr) {
         if (row.row && this.data[row.row.id]) {
             let tree = {...row};
@@ -67,79 +143,7 @@
             let td = $('<td colspan="' + (this.fieldCategories.column.length - 1) + '" class="tree-view-td" style="padding-left: ' + (7 + row.level * 22) + 'px"></td>');
             td.append(span)
 
-            /*actions*/
-            let $divPopoverArrowDown = $('<div>')
-
-            let popover;
-            let dropdown = $('<button class="btn btn-default btn-xxs treeRow"><i class="fa fa-caret-down"></i></button>').popover({
-                html: true,
-                content: $divPopoverArrowDown,
-                trigger: 'manual',
-                container: this._container,
-                placement: 'auto bottom'
-            }).on('click', () => {
-                $('body').trigger('click');
-                dropdown.popover('show');
-                popover = $('#' + dropdown.attr('aria-describedby'));
-                setTimeout(() => {
-                    this.closeCallbacks.push(() => {
-                        if (dropdown && dropdown.length) dropdown.popover('hide');
-                    })
-                }, 200);
-                return false;
-            }).on('remove', () => {
-                popover.remove();
-            })
-            span.append(dropdown);
-
-            let OpenAll = $('<div class="menu-item"><i class="fa fa-arrows-v"></i> ' + (row.opened ? 'Закрыть' : 'Открыть') + ' все</div>').data('treeRow', row.v)
-                .on('click', () => {
-                    this._actionTreeFolderRow(OpenAll, true)
-                })
-                .appendTo($divPopoverArrowDown)
-
-
-            if (this.fields.tree.selectTable && row.v && !this.fields.tree.treeBfield) {
-                $('<div class="menu-item"><i class="fa fa-edit"></i> Редактировать</div>').on('click', () => {
-                    let obj = {id: row.v};
-                    new EditPanel(this.fields.tree.selectTable, null, obj).then(() => {
-                        this.model.refresh();
-                    })
-                }).appendTo($divPopoverArrowDown)
-
-
-                $('<div class="menu-item"><i class="fa fa-plus"></i> Добавить ветку</div>')
-                    .on('click', () => {
-
-                        let parentField = this.fields.tree.treeViewParentField || "tree";
-
-                        let obj = {[parentField]: {v: row.v}};
-                        new EditPanel(this.fields.tree.selectTable, null, obj, null, {tree: true}).then((json) => {
-                            this.treeReloadRows.push(Object.keys(json.chdata.rows)[0]);
-                            this.treeApply();
-                        })
-                    }).appendTo($divPopoverArrowDown)
-            }
-
-            if (this.isInsertable()) {
-                $('<div class="menu-item"><i class="fa fa-th-large"></i> Добавить строку</div>')
-                    .on('click', () => {
-                        if(this.tableRow.type==='cycles'){
-                            this.model.add(null, {tree: row.v}).then( json =>{
-                                if (json.firstTableId) {
-                                    window.location.href = window.location.pathname + '/' + json.chdata.rows[0].id + '/' + json.firstTableId;
-                                } else {
-                                    this.table_modify(json);
-                                }
-                            });
-                        }else{
-                            let obj = {tree: {v: row.v}};
-                            new EditPanel(this, null, obj, null, {tree: true}).then(() => {
-                                this.model.refresh();
-                            })
-                        }
-                    }).appendTo($divPopoverArrowDown)
-            }
+            this._treeFolderRowAddDropdown(span, row)
 
             td.append($('<span class="treeRow">').text(row.t).data('treeRow', row.v))
 
@@ -359,8 +363,7 @@
                     if (oldIndex !== -1) {
                         this.treeIndex[oldVal][arr].splice(oldIndex, 1);
                     }
-                }
-                else if (!newData || newData.tree.v != oldItem.tree.v) {
+                } else if (!newData || newData.tree.v != oldItem.tree.v) {
                     let oldIndex = this.treeIndex[oldItem.tree.v][arr].indexOf(bOldVal.toString());
                     if (oldIndex !== -1) {
                         this.treeIndex[oldItem.tree.v][arr].splice(oldIndex, 1);
@@ -424,6 +427,144 @@
             this.placeInTree(null, row)
         }
     }
+    App.pcTableMain.prototype.reOrderRows = function (btnId, $direction) {
+        let pcTable = this;
+        btnId = btnId.toString();
+        if (pcTable.tableRow.with_order_field && !pcTable.nSorted) {
+            App.notify('Для работы поля порядок перезагрузите таблицу');
+            return false;
+        }
+
+        if (pcTable.isRestoreView) {
+            App.notify('Режим восстановления строк. Сортировка отключена');
+            return false;
+        }
+
+        if (this.nSortedTree !== undefined && this.data[btnId].tree.v != this.nSortedTree) {
+            App.notify('Возможно сортировать только в пределах категории');
+            return false;
+        }
+        this.nSortedTree = this.data[btnId].tree.v;
+        let treeIndexArr = this.treeIndex[this.nSortedTree]['sorted'];
+
+        let idInd;
+        let orderingRowIds = [];
+        if (this.row_actions_get_checkedIds().length === 0) {
+
+
+            orderingRowIds.push(btnId);
+            let btnIndex = treeIndexArr.indexOf(btnId);
+            let indVisBtn = btnIndex + ($direction === 'after' ? 1 : -1);
+            if (!(indVisBtn in treeIndexArr)) return;
+            let idBeforeAfter = treeIndexArr[indVisBtn];
+
+            if (this.data[idBeforeAfter].f && this.data[idBeforeAfter].f.blockorder) {
+                App.notify('Нельзя перемещать строку ' + this.getRowTitle(this.data[idBeforeAfter]));
+                return;
+            }
+            treeIndexArr.splice(btnIndex, 1);
+            idInd = treeIndexArr.indexOf(idBeforeAfter) + ($direction === 'after' ? 1 : 0);
+
+        } else {
+            if (pcTable.row_actions_get_checkedIds().indexOf(btnId) !== -1) {
+                App.notify('В качестве якоря для перемещения нужно выбрать не отмеченную строку');
+                return false;
+            }
+            let idsLength = this.row_actions_get_checkedIds().length;
+
+
+            this.dataSorted.some((id, ind) => {
+                if (idsLength === 0) return true;
+
+                if (typeof id === 'object') {
+                    if (id.row && id.row.$checked) {
+                        this.nSortedTree = undefined;
+                        App.notify('Перемещать можно только вложенные строки');
+                        return true;
+                    }
+                } else if (pcTable.data[id].$checked) {
+                    if (pcTable.data[id].tree.v != this.nSortedTree) {
+                        this.nSortedTree = undefined;
+                        App.notify('Перемещать можно только в пределах одной ветки');
+                        return true;
+                    }
+                    orderingRowIds.push(id);
+                    --idsLength;
+                }
+            });
+
+            orderingRowIds.forEach(function (id) {
+                treeIndexArr.splice(treeIndexArr.indexOf(id), 1);
+            });
+            idInd = treeIndexArr.indexOf(btnId) + ($direction === 'after' ? 1 : 0)
+        }
+
+        treeIndexArr.splice(idInd, 0, ...orderingRowIds);
+        this.ntreeSortedArr = treeIndexArr;
+
+        if (pcTable.tableRow.with_order_field) {
+            this.nReorderedTree = this.nSortedTree;
+            $('table.pcTable-table').addClass('reordered');
+            // pcTable._table.addClass('reordered');
+        }
+
+        pcTable.treeApply();
+
+        pcTable.row_actions_uncheck_all();
+    };
+    App.pcTableMain.prototype.reOrderRowsSave = function () {
+        let pcTable = this;
+        /*if (pcTable.notCorrectOrder) {
+            App.notify('Поля выбраны с промежутками - выберите корректный фильтр');
+            return;
+        }*/
+        pcTable._orderSaveBtn.prop('disabled', true).find('i').attr('class', 'fa fa-cog');
+
+
+        this.model.saveOrder(this.ntreeSortedArr.map((id) => parseInt(id)))
+            .then(function (json) {
+                pcTable.nSortedTree = undefined;
+                pcTable.table_modify(json);
+                pcTable._refreshContentTable(true);
+                pcTable._orderSaveBtn.prop('disabled', false).find('i').attr('class', 'fa fa-save');
+                $('table.pcTable-table').removeClass('reordered');
+
+            });
+
+    };
+
+    const parentStatus = App.pcTableMain.prototype._refreshCheckedStatus;
+
+    App.pcTableMain.prototype._refreshCheckedStatus = function () {
+        parentStatus.call(this);
+        let oldTreeCat = this.nSortedTree;
+        let oldBlock = !!this.nSortedTreeBlock;
+        this.nSortedTreeBlock = false;
+
+        if(!this.__checkedRows.length && !this.nReorderedTree){
+            this.nSortedTree = undefined;
+        }
+
+        this.__checkedRows.some((id) => {
+            if (this.data[id].__tree) {
+                this.nSortedTreeBlock = true;
+                return true;
+            } else if (this.nSortedTree !== undefined) {
+                if (this.data[id].tree.v !== this.nSortedTree) {
+                    this.nSortedTreeBlock = true;
+                    return true;
+                }
+            } else {
+                this.nSortedTree = this.data[id].tree.v;
+            }
+        })
+
+        if(oldTreeCat!=this.nSortedTree || oldBlock!=this.nSortedTreeBlock){
+            this.ScrollClasterized.insertToDOM(null, false, true)
+        }
+
+    }
+
     App.pcTableMain.prototype.getTreeBranch = function (tv) {
         if (tv.v === null)
             tv.v = "";
@@ -464,5 +605,6 @@
         })
         return this.treeIndex[tv.v];
     }
+
 
 })();

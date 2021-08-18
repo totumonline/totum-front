@@ -517,7 +517,8 @@
                 let span = $('<span class="tree-view">').css('padding-left', row.level * 22).append(folder);
                 if (format.expand !== false) {
                     folder.addClass('treeRow');
-                    span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
+                    field.pcTable._treeFolderRowAddDropdown(span, item.__tree)
+                    //span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
                 } else {
                     folder.css('margin-right', 8)
                 }

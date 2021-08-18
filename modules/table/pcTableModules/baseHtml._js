@@ -57,8 +57,9 @@
 
             if (pcTable.isTreeView) {
                 pcTable._connectTreeView.call(pcTable);
-            } else {
-                this.addReOrderRowBind();
+                if(this.fields.tree.treeViewType==='other'){
+                    this.addReOrderRowBind();
+                }
             }
 
 
@@ -1604,7 +1605,7 @@
             let OrderClass = 'btn-warning';
 
             let $btnNHiding = $('<button class="btn btn-default btn-xxs" id="n-expander"><i class="fa fa-sort"></i></button>')
-            if (this.isTreeView) {
+            if (this.isTreeView && this.fields.tree.treeViewType!=='other') {
                 $btnNHiding.prop('disabled', true)
             } else {
                 $btnNHiding.on('click', function () {
