@@ -845,6 +845,7 @@ th {
       padding-top: 20px;
     }
   }
+
 }
 
 
@@ -1593,7 +1594,10 @@ th {
       }
     }
   }
-
+  .pcTable-topButtons{
+    height: 45px;
+    box-sizing: border-box;
+  }
   .pcTable-table tbody {
     th.worker-with-i .pcTable-filters {
       bottom: 9px;
