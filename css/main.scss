@@ -657,7 +657,8 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     background-color: lighten($btn-danger-bgcolor, 20);
   }
   span.cell-title {
-
+    font-family: PTRootUIWeb;
+    font-weight: 600;
     white-space: nowrap;
     color: #4a4a4a;
   }
@@ -2115,7 +2116,9 @@ input {
 
   .full-title {
     white-space: normal;
-    font-size: 14px;
+    font-size: 15px;
+    font-family: PTRootUIWeb;
+    font-weight: 500;
   }
 
   i {
@@ -2270,6 +2273,7 @@ input {
 @import "treeView";
 @import "tables_tabs";
 @import "panelView";
+@import "calcs-table";
 @import "mobile";
 
 

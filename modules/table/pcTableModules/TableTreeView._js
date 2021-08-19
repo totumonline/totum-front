@@ -48,6 +48,144 @@
             }
         }, 10)
 
+
+        this.reOrderRows = function (btnId, $direction) {
+            let pcTable = this;
+            btnId = btnId.toString();
+            if (pcTable.tableRow.with_order_field && !pcTable.nSorted) {
+                App.notify('Для работы поля порядок перезагрузите таблицу');
+                return false;
+            }
+
+            if (pcTable.isRestoreView) {
+                App.notify('Режим восстановления строк. Сортировка отключена');
+                return false;
+            }
+
+            if (this.nSortedTree !== undefined && this.data[btnId].tree.v != this.nSortedTree) {
+                App.notify('Возможно сортировать только в пределах категории');
+                return false;
+            }
+            this.nSortedTree = this.data[btnId].tree.v;
+            let treeIndexArr = this.treeIndex[this.nSortedTree]['sorted'];
+
+            let idInd;
+            let orderingRowIds = [];
+            if (this.row_actions_get_checkedIds().length === 0) {
+
+
+                orderingRowIds.push(btnId);
+                let btnIndex = treeIndexArr.indexOf(btnId);
+                let indVisBtn = btnIndex + ($direction === 'after' ? 1 : -1);
+                if (!(indVisBtn in treeIndexArr)) return;
+                let idBeforeAfter = treeIndexArr[indVisBtn];
+
+                if (this.data[idBeforeAfter].f && this.data[idBeforeAfter].f.blockorder) {
+                    App.notify('Нельзя перемещать строку ' + this.getRowTitle(this.data[idBeforeAfter]));
+                    return;
+                }
+                treeIndexArr.splice(btnIndex, 1);
+                idInd = treeIndexArr.indexOf(idBeforeAfter) + ($direction === 'after' ? 1 : 0);
+
+            } else {
+                if (pcTable.row_actions_get_checkedIds().indexOf(btnId) !== -1) {
+                    App.notify('В качестве якоря для перемещения нужно выбрать не отмеченную строку');
+                    return false;
+                }
+                let idsLength = this.row_actions_get_checkedIds().length;
+
+
+                this.dataSorted.some((id, ind) => {
+                    if (idsLength === 0) return true;
+
+                    if (typeof id === 'object') {
+                        if (id.row && id.row.$checked) {
+                            this.nSortedTree = undefined;
+                            App.notify('Перемещать можно только вложенные строки');
+                            return true;
+                        }
+                    } else if (pcTable.data[id].$checked) {
+                        if (pcTable.data[id].tree.v != this.nSortedTree) {
+                            this.nSortedTree = undefined;
+                            App.notify('Перемещать можно только в пределах одной ветки');
+                            return true;
+                        }
+                        orderingRowIds.push(id);
+                        --idsLength;
+                    }
+                });
+
+                orderingRowIds.forEach(function (id) {
+                    treeIndexArr.splice(treeIndexArr.indexOf(id), 1);
+                });
+                idInd = treeIndexArr.indexOf(btnId) + ($direction === 'after' ? 1 : 0)
+            }
+
+            treeIndexArr.splice(idInd, 0, ...orderingRowIds);
+            this.ntreeSortedArr = treeIndexArr;
+
+            if (pcTable.tableRow.with_order_field) {
+                this.nReorderedTree = this.nSortedTree;
+                $('table.pcTable-table').addClass('reordered');
+                // pcTable._table.addClass('reordered');
+            }
+
+            pcTable.treeApply();
+
+            pcTable.row_actions_uncheck_all();
+        };
+        this.reOrderRowsSave = function () {
+            let pcTable = this;
+            /*if (pcTable.notCorrectOrder) {
+                App.notify('Поля выбраны с промежутками - выберите корректный фильтр');
+                return;
+            }*/
+            pcTable._orderSaveBtn.prop('disabled', true).find('i').attr('class', 'fa fa-cog');
+
+
+            this.model.saveOrder(this.ntreeSortedArr.map((id) => parseInt(id)))
+                .then(function (json) {
+                    pcTable.nSortedTree = undefined;
+                    pcTable.table_modify(json);
+                    pcTable._refreshContentTable(true);
+                    pcTable._orderSaveBtn.prop('disabled', false).find('i').attr('class', 'fa fa-save');
+                    $('table.pcTable-table').removeClass('reordered');
+
+                });
+
+        };
+
+        const parentStatus = App.pcTableMain.prototype._refreshCheckedStatus;
+
+        this._refreshCheckedStatus = function () {
+            parentStatus.call(this);
+            let oldTreeCat = this.nSortedTree;
+            let oldBlock = !!this.nSortedTreeBlock;
+            this.nSortedTreeBlock = false;
+
+            if(!this.__checkedRows.length && !this.nReorderedTree){
+                this.nSortedTree = undefined;
+            }
+
+            this.__checkedRows.some((id) => {
+                if (this.data[id].__tree) {
+                    this.nSortedTreeBlock = true;
+                    return true;
+                } else if (this.nSortedTree !== undefined) {
+                    if (this.data[id].tree.v !== this.nSortedTree) {
+                        this.nSortedTreeBlock = true;
+                        return true;
+                    }
+                } else {
+                    this.nSortedTree = this.data[id].tree.v;
+                }
+            })
+
+            if(oldTreeCat!=this.nSortedTree || oldBlock!=this.nSortedTreeBlock){
+                this.ScrollClasterized.insertToDOM(null, false, true)
+            }
+
+        }
     }
     App.pcTableMain.prototype._treeFolderRowAddDropdown = function (span, row) {
         /*actions*/
@@ -427,143 +565,7 @@
             this.placeInTree(null, row)
         }
     }
-    App.pcTableMain.prototype.reOrderRows = function (btnId, $direction) {
-        let pcTable = this;
-        btnId = btnId.toString();
-        if (pcTable.tableRow.with_order_field && !pcTable.nSorted) {
-            App.notify('Для работы поля порядок перезагрузите таблицу');
-            return false;
-        }
 
-        if (pcTable.isRestoreView) {
-            App.notify('Режим восстановления строк. Сортировка отключена');
-            return false;
-        }
-
-        if (this.nSortedTree !== undefined && this.data[btnId].tree.v != this.nSortedTree) {
-            App.notify('Возможно сортировать только в пределах категории');
-            return false;
-        }
-        this.nSortedTree = this.data[btnId].tree.v;
-        let treeIndexArr = this.treeIndex[this.nSortedTree]['sorted'];
-
-        let idInd;
-        let orderingRowIds = [];
-        if (this.row_actions_get_checkedIds().length === 0) {
-
-
-            orderingRowIds.push(btnId);
-            let btnIndex = treeIndexArr.indexOf(btnId);
-            let indVisBtn = btnIndex + ($direction === 'after' ? 1 : -1);
-            if (!(indVisBtn in treeIndexArr)) return;
-            let idBeforeAfter = treeIndexArr[indVisBtn];
-
-            if (this.data[idBeforeAfter].f && this.data[idBeforeAfter].f.blockorder) {
-                App.notify('Нельзя перемещать строку ' + this.getRowTitle(this.data[idBeforeAfter]));
-                return;
-            }
-            treeIndexArr.splice(btnIndex, 1);
-            idInd = treeIndexArr.indexOf(idBeforeAfter) + ($direction === 'after' ? 1 : 0);
-
-        } else {
-            if (pcTable.row_actions_get_checkedIds().indexOf(btnId) !== -1) {
-                App.notify('В качестве якоря для перемещения нужно выбрать не отмеченную строку');
-                return false;
-            }
-            let idsLength = this.row_actions_get_checkedIds().length;
-
-
-            this.dataSorted.some((id, ind) => {
-                if (idsLength === 0) return true;
-
-                if (typeof id === 'object') {
-                    if (id.row && id.row.$checked) {
-                        this.nSortedTree = undefined;
-                        App.notify('Перемещать можно только вложенные строки');
-                        return true;
-                    }
-                } else if (pcTable.data[id].$checked) {
-                    if (pcTable.data[id].tree.v != this.nSortedTree) {
-                        this.nSortedTree = undefined;
-                        App.notify('Перемещать можно только в пределах одной ветки');
-                        return true;
-                    }
-                    orderingRowIds.push(id);
-                    --idsLength;
-                }
-            });
-
-            orderingRowIds.forEach(function (id) {
-                treeIndexArr.splice(treeIndexArr.indexOf(id), 1);
-            });
-            idInd = treeIndexArr.indexOf(btnId) + ($direction === 'after' ? 1 : 0)
-        }
-
-        treeIndexArr.splice(idInd, 0, ...orderingRowIds);
-        this.ntreeSortedArr = treeIndexArr;
-
-        if (pcTable.tableRow.with_order_field) {
-            this.nReorderedTree = this.nSortedTree;
-            $('table.pcTable-table').addClass('reordered');
-            // pcTable._table.addClass('reordered');
-        }
-
-        pcTable.treeApply();
-
-        pcTable.row_actions_uncheck_all();
-    };
-    App.pcTableMain.prototype.reOrderRowsSave = function () {
-        let pcTable = this;
-        /*if (pcTable.notCorrectOrder) {
-            App.notify('Поля выбраны с промежутками - выберите корректный фильтр');
-            return;
-        }*/
-        pcTable._orderSaveBtn.prop('disabled', true).find('i').attr('class', 'fa fa-cog');
-
-
-        this.model.saveOrder(this.ntreeSortedArr.map((id) => parseInt(id)))
-            .then(function (json) {
-                pcTable.nSortedTree = undefined;
-                pcTable.table_modify(json);
-                pcTable._refreshContentTable(true);
-                pcTable._orderSaveBtn.prop('disabled', false).find('i').attr('class', 'fa fa-save');
-                $('table.pcTable-table').removeClass('reordered');
-
-            });
-
-    };
-
-    const parentStatus = App.pcTableMain.prototype._refreshCheckedStatus;
-
-    App.pcTableMain.prototype._refreshCheckedStatus = function () {
-        parentStatus.call(this);
-        let oldTreeCat = this.nSortedTree;
-        let oldBlock = !!this.nSortedTreeBlock;
-        this.nSortedTreeBlock = false;
-
-        if(!this.__checkedRows.length && !this.nReorderedTree){
-            this.nSortedTree = undefined;
-        }
-
-        this.__checkedRows.some((id) => {
-            if (this.data[id].__tree) {
-                this.nSortedTreeBlock = true;
-                return true;
-            } else if (this.nSortedTree !== undefined) {
-                if (this.data[id].tree.v !== this.nSortedTree) {
-                    this.nSortedTreeBlock = true;
-                    return true;
-                }
-            } else {
-                this.nSortedTree = this.data[id].tree.v;
-            }
-        })
-
-        if(oldTreeCat!=this.nSortedTree || oldBlock!=this.nSortedTreeBlock){
-            this.ScrollClasterized.insertToDOM(null, false, true)
-        }
-
-    }
 
     App.pcTableMain.prototype.getTreeBranch = function (tv) {
         if (tv.v === null)

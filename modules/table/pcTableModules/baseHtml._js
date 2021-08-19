@@ -60,6 +60,8 @@
                 if(this.fields.tree.treeViewType==='other'){
                     this.addReOrderRowBind();
                 }
+            }else{
+                this.addReOrderRowBind();
             }
 
 

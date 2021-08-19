@@ -17,13 +17,16 @@
   .treeRow{
     padding-top: 2px;
     margin-right: 4px;
-
   }
   .fa-arrows-v{
     margin-right: 8px;
   }
   min-width: 50px;
   padding-right: 8px;
+}
+.tree-view-td>.treeRow{
+  font-family: PTRootUIWeb;
+  font-weight: 600;
 }
 .btn.tree-view-td-edit{
   margin-right: 3px;
