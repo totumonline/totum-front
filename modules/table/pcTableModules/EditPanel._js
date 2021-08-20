@@ -515,8 +515,6 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         }
 
         let eventName = 'ctrlS.EditPanel';
-        let scrollEvent = 'scroll.' + EditPanelFunc.panelId;
-
         EditPanel.bootstrapPanel = BootstrapDialog.show({
             type: type || null,
             size: BootstrapDialog.SIZE_WIDE,
@@ -549,26 +547,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 if (Object.keys(dialog.indexedButtons).length === 2) {
                     dialog.indexedButtons[Object.keys(dialog.indexedButtons)[1]].attr('tabindex', 501);
                 }
-                let dubleButtons;
-                let buttons = dialog.$modalFooter.find('button');
-                const getButtons = () => {
-                    dubleButtons = $('<div style="position: fixed; right: ' + (dialog.$modal.width() - dialog.$modalBody.width() - dialog.$modalBody.offset().left - 10) + 'px; bottom: 20px; z-index: 1100">').appendTo(dialog.$modal).append(buttons)
-                }
-                setTimeout(()=>{
-                    if (dialog.$modalFooter.get(0).getBoundingClientRect().top > window.innerHeight - 20) {
-                        getButtons();
-                    }
-                }, 200)
-                dialog.$modal.on(scrollEvent, () => {
-                    if (dialog.$modalFooter.get(0).getBoundingClientRect().top > window.innerHeight - 20) {
-                        if (!dubleButtons)
-                            getButtons();
-                    } else if (dubleButtons) {
-                        dialog.$modalFooter.append(buttons);
-                        dubleButtons.remove();
-                        dubleButtons = null;
-                    }
-                })
+
             }
 
         })
