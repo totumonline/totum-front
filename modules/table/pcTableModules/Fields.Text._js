@@ -343,7 +343,7 @@ fieldTypes.text = {
                     })
 
                 } else {
-                    BootstrapDialog.show({
+                    window.top.BootstrapDialog.show({
                         message: dialog,
                         type: null,
                         title: title,
@@ -351,14 +351,14 @@ fieldTypes.text = {
                         draggable: true,
                         buttons: buttons,
                         onhide: function (dialog) {
-                            $('body').off(eventName);
+                            $(window.top.document).find('body').off(eventName);
                             if (!btnClicked) {
                                 escClbk(div, {});
                             }
                         },
                         onshown: function (dialog) {
                             dialog.$modalContent.position({
-                                of: $('body'),
+                                of: $(window.top.document).find('body'),
                                 my: 'top+50px',
                                 at: 'top'
                             });
@@ -370,7 +370,7 @@ fieldTypes.text = {
                                 width: '100%'
                             });
 
-                            $('body').on(eventName, function (event) {
+                            $(window.top.document).find('body').on(eventName, function (event) {
                                 save(dialog, event);
                                 return false;
                             });
@@ -414,7 +414,7 @@ fieldTypes.text = {
                     })
 
                 } else {
-                    BootstrapDialog.show({
+                    window.top.BootstrapDialog.show({
                         message: dialog,
                         type: null,
                         cssClass: 'fieldparams-edit-panel',
@@ -422,7 +422,7 @@ fieldTypes.text = {
                         buttons: _buttons,
                         draggable: true,
                         onhide: function (event) {
-                            $('body').off(eventName);
+                            $(window.top.document).find('body').off(eventName);
                             escClbk(div, event);
                         },
                         onshown: function (dialog) {
@@ -432,7 +432,7 @@ fieldTypes.text = {
                             dialog.$modalContent.css({
                                 width: 900
                             });
-                            $('body').on(eventName, function (event) {
+                            $(window.top.document).find('body').on(eventName, function (event) {
                                 save(dialog, event);
                                 return false;
                             });

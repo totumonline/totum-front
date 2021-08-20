@@ -66,7 +66,7 @@
                 if (dialog.$modalBody.find('textarea').length === 0) {
                     formFill(dialog);
                 }
-                $('body').on(eventName, function (event) {
+                dialog.$modalContent.closest('body').on(eventName, function (event) {
                     save(dialog, event, false);
                 });
 
@@ -114,7 +114,7 @@
                             onshow: onshown
                         })
                     } else {
-                        BootstrapDialog.show({
+                        window.top.BootstrapDialog.show({
                             message: dialog,
                             type: null,
                             title: title,
@@ -122,14 +122,14 @@
                             draggable: true,
                             buttons: buttons,
                             onhide: function (dialog) {
-                                $('body').off(eventName);
+                                $(window.top.document).find('body').off(eventName);
                                 if (!btnClicked) {
                                     blurClbk(div, {});
                                 }
                             },
                             onshown: function (dialog) {
                                 dialog.$modalContent.position({
-                                    of: $('body'),
+                                    of: $(window.top.document).find('body'),
                                     my: 'top+50px',
                                     at: 'top'
                                 });
@@ -169,7 +169,7 @@
                             onshow: onshown
                         })
                     } else {
-                        BootstrapDialog.show({
+                        window.top.BootstrapDialog.show({
                             message: dialog,
                             type: null,
                             cssClass: 'fieldparams-edit-panel',
@@ -179,7 +179,7 @@
                             buttons: buttonsClick,
                             onhide: function (event) {
                                 showned = false;
-                                $('body').off(eventName);
+                                $(window.top.document).find('body').off(eventName);
                                 escClbk(div, event);
                             },
                             onshow: onshown

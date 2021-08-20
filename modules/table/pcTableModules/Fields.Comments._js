@@ -235,7 +235,7 @@ fieldTypes.comments = {
                         }
                     })
                 } else {
-                    BootstrapDialog.show({
+                    window.top.BootstrapDialog.show({
                         message: dialog,
                         type: null,
                         title: title,
@@ -243,14 +243,14 @@ fieldTypes.comments = {
                         draggable: true,
                         buttons: buttons,
                         onhide: function (dialog) {
-                            $('body').off(eventName);
+                            $(window.top.document).find('body').off(eventName);
                             if (!btnClicked) {
                                 blurClbk(div, {});
                             }
                         },
                         onshown: function (dialog) {
                             dialog.$modalContent.position({
-                                of: $('body'),
+                                of: $(window.top.document).find('body'),
                                 my: 'top+50px',
                                 at: 'top'
                             });
@@ -262,7 +262,7 @@ fieldTypes.comments = {
                                 width: 900
                             });
 
-                            $('body').on(eventName, function (event) {
+                            $(window.top.document).find('body').on(eventName, function (event) {
                                 save(dialog, event, false);
                             });
                         }
@@ -309,7 +309,7 @@ fieldTypes.comments = {
                         }
                     })
                 } else {
-                    BootstrapDialog.show({
+                    window.top.BootstrapDialog.show({
                         message: dialog,
                         type: null,
                         cssClass: 'fieldparams-edit-panel',
@@ -319,7 +319,7 @@ fieldTypes.comments = {
                         buttons: buttonsClick,
                         onhide: function (event) {
                             showned = false;
-                            $('body').off(eventName);
+                            $(window.top.document).find('body').off(eventName);
                             escClbk(div, event);
                         },
                         onshown: function (dialog) {
@@ -332,7 +332,7 @@ fieldTypes.comments = {
                                 width: 900
                             });
 
-                            $('body').on(eventName, function (event) {
+                            $(window.top.document).find('body').on(eventName, function (event) {
                                 save(dialog, event, false);
                             });
 

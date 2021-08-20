@@ -1916,7 +1916,7 @@ ul.CodeMirror-hints {
 
     &.edit-field-panel .modal-dialog {
       .InsertPanel {
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: minmax(0%, 1fr) minmax(0%, 1fr) minmax(0%, 1fr);
         grid-gap: 10px;
       }
     }
