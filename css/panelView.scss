@@ -37,6 +37,8 @@
 
         td {
           width: 100%;
+          background-color: #fafafa;
+          border-color: transparent;
 
           button.button-field {
             height: 100%;
@@ -52,7 +54,7 @@
         th {
           height: 25px;
           color: #9a9a9a;
-
+          font-family: PTRootUIWeb;
           padding: 0 5px
         }
       }
@@ -80,6 +82,8 @@
     }
 
     .kanban-title {
+      font-family: PTRootUIWeb;
+      font-weight: 500;
       padding: 20px;
       font-size: 20px;
       background-color: #f1f1f1;
