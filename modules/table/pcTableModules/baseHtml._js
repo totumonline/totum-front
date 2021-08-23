@@ -1187,7 +1187,7 @@
                 if (!Object.equals(pcTable.data_params[v.name].v, pcTable.filterData[v.name].v)) {
                     changed.push(cell);
                 }
-                if (v.type === 'select' && pcTable.data_params[v.name].v && (pcTable.data_params[v.name].v === '*NONE*' || pcTable.data_params[v.name].v[0] === '*NONE*')) {
+                if (v.type === 'select' && v.column && pcTable.data_params[v.name].v && (pcTable.data_params[v.name].v === '*NONE*' || pcTable.data_params[v.name].v[0] === '*NONE*')) {
                     blocked.push(cell);
                 }
             });

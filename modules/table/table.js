@@ -508,6 +508,10 @@
                             pcTable.setWidthes();
                         }, 500);
                     });
+                }else{
+                    $(window).resize(function () {
+                        window.location.reload();
+                    });
                 }
             },
             saveFilterAndPage: function () {
