@@ -552,7 +552,7 @@
                         }
                     })
                     pcTable.applyOrder(json.chdata.f.order)
-                    pcTable.applyHideRows(json.chdata.f.hideRows)
+                    pcTable.applyHideRows(json.chdata.f.hideRows, json.chdata.f.showRows)
 
                 }
                 if (App.isEmpty(pcTable.data) && pcTable._content) {
@@ -598,16 +598,25 @@
             }
         }
         ,
-        applyHideRows: function (hide) {
-            if (hide && hide.length) {
+        applyHideRows: function (hide, show) {
+            if (hide && hide.length || show && show.length) {
+                hide = hide || [];
+                show = show || [];
+
                 let visible = this.filters['id'] || [];
                 if (!visible.length) {
                     visible = [...this.dataSorted];
+                    show = [];
+                }else{
+                    show.forEach((id)=>{
+                        if(visible.indexOf(id)===-1 || this.dataSorted.indexOf(parseInt(id))!==-1){
+                            visible.push(id.toString());
+                        }
+                    })
                 }
                 let newVisible = [];
                 visible.forEach((id) => {
-                    let ind = hide.indexOf(id);
-                    if (ind === -1) {
+                    if (!hide.some((_id)=> _id.toString()===id.toString())) {
                         newVisible.push(id.toString());
                     }
                 })
