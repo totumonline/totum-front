@@ -659,8 +659,7 @@
                     pcTable._refreshContentTable.call(pcTable, false, true);
                     pcTable.__applyFilters.call(pcTable, true);
                     pcTable.PageData.$block.empty().append(pcTable._paginationCreateBlock.call(pcTable));
-                    pcTable.applyOrder(json.f.order);
-                    pcTable.applyHideRows(json.f.hideRows, json.f.showRows)
+                    pcTable.apptyTableFormats(json.f)
                     pcTable.selectedCells.summarizer.check();
                 })
             }

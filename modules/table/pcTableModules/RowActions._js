@@ -532,28 +532,7 @@
                     }
                 }
                 if (json.chdata.f) {
-                    let newf = json.chdata.f;
-                    ['blockadd', 'buttons', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment'].forEach(function (k) {
-                        if (k in newf || k in pcTable.f) {
-                            if (typeof newf[k] == "object") {
-                                if (!Object.equals(newf[k], pcTable.f[k])) {
-                                    let old = Object.assign({}, pcTable.f[k]);
-                                    pcTable.f[k] = newf[k];
-                                    if (pcTable.__formatFunctions[k]) {
-                                        pcTable.__formatFunctions[k].call(pcTable, newf[k], old);
-                                    }
-                                }
-                            } else if (newf[k] !== pcTable.f[k]) {
-                                pcTable.f[k] = newf[k];
-                                if (pcTable.__formatFunctions[k]) {
-                                    pcTable.__formatFunctions[k].call(pcTable, newf[k]);
-                                }
-                            }
-                        }
-                    })
-                    pcTable.applyOrder(json.chdata.f.order)
-                    pcTable.applyHideRows(json.chdata.f.hideRows, json.chdata.f.showRows)
-
+                    this.apptyTableFormats(json.chdata.f)
                 }
                 if (App.isEmpty(pcTable.data) && pcTable._content) {
                     pcTable._content.empty().append(this._createNoDataRow());
@@ -581,6 +560,28 @@
             }
         }
         ,
+        apptyTableFormats: function (newf){
+            ['blockadd', 'buttons', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment', 'tabletext'].forEach( (k) => {
+                if (k in newf || k in this.f) {
+                    if (typeof newf[k] == "object") {
+                        if (!Object.equals(newf[k], this.f[k])) {
+                            let old = Object.assign({}, this.f[k]);
+                            this.f[k] = newf[k];
+                            if (this.__formatFunctions[k]) {
+                                this.__formatFunctions[k].call(this, newf[k], old);
+                            }
+                        }
+                    } else if (newf[k] !== this.f[k]) {
+                        this.f[k] = newf[k];
+                        if (this.__formatFunctions[k]) {
+                            this.__formatFunctions[k].call(this, newf[k]);
+                        }
+                    }
+                }
+            })
+            this.applyOrder(newf.order)
+            this.applyHideRows(newf.hideRows, newf.showRows)
+        },
         applyOrder: function (order) {
             if (order && order.length) {
                 let _order = {};
@@ -620,7 +621,11 @@
                         newVisible.push(id.toString());
                     }
                 })
-                this.filters['id'] = newVisible;
+                if(newVisible.length === this.dataSorted.length){
+                    delete this.filters['id'];
+                }else{
+                    this.filters['id'] = newVisible;
+                }
                 this.__applyFilters(true);
             }
         },

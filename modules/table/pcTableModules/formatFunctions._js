@@ -19,6 +19,9 @@ App.pcTableMain.prototype.__formatFunctions = {
         this._refreshFootersBlock();
     }, tabletitle: function () {
         this._refreshTitle();
+    },
+    tabletext: function () {
+        this._refreshTableText();
     }
     , text: function () {
         this._refreshTableText();
