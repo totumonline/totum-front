@@ -98,7 +98,7 @@ fieldTypes.button = {
             }
 
 
-            if (format.comment) {
+            if (format.comment && !td.is('.cell')) {
                 let i;
                 i = $('<i class="cell-icon fa fa-info"></i>');
                 btn.prepend(i);
@@ -120,7 +120,7 @@ fieldTypes.button = {
         if (format.text) {
             btn.text(format.text)
         }
-        if (format.comment) {
+        if (format.comment && !td.is('.cell')) {
             let i;
             i = $('<i class="cell-icon fa fa-info"></i>');
             btn.prepend(i);

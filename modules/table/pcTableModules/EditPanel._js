@@ -585,12 +585,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 }
             }
             if (field.type !== "button") {
-                if (format.comment) {
-                    let i;
-                    i = $('<i class="cell-icon fa fa-info"></i>');
-                    span.prepend(i);
-                    i.attr('title', format.comment)
-                } else if (format.icon) {
+               if (format.icon) {
                     span.prepend('<i class="cell-icon fa fa-' + format.icon + '"></i>');
                 }
             } else if (!span.find('button').is(':disabled')) {
@@ -643,7 +638,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             }
 
             if (format.comment) {
-                span.append($('<div class="comment">').text(format.comment))
+                span.append($('<div class="format-comment">').text(format.comment).prepend('<i class="cell-icon fa fa-info"></i>'))
             }
 
             cell.html(span).data('input', null);

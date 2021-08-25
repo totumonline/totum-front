@@ -891,12 +891,6 @@ th {
   }
 }
 
-@mixin form-control {
-  height: 28px;
-  font-size: 12px;
-
-}
-
 .pcTable-container {
 
   padding-right: 5px;
@@ -1016,8 +1010,8 @@ th {
   }
 
   .form-control {
-    @include form-control();
-
+    height: 28px;
+    font-size: 12px;
   }
 
   input.form-control {
@@ -1807,7 +1801,7 @@ th.id .pcTable-filters.for-selected .btn {
   }
 
   .form-control {
-    @include form-control();
+    font-size: 13px;
     height: auto;
   }
 
@@ -1849,7 +1843,7 @@ th.id .pcTable-filters.for-selected .btn {
       height: 28px;
       background-color: #faf9f8;
       border-color: transparent;
-
+      font-size: 12px;
     }
 
     &.with-source-add-button {
