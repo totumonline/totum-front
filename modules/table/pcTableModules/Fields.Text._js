@@ -343,7 +343,7 @@ fieldTypes.text = {
                     })
 
                 } else {
-                    window.top.BootstrapDialog.show({
+                    let Dialog = window.top.BootstrapDialog.show({
                         message: dialog,
                         type: null,
                         title: title,
@@ -377,6 +377,7 @@ fieldTypes.text = {
                         }
 
                     });
+                    div.data('Dialog', Dialog)
                 }
 
 

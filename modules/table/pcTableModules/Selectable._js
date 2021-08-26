@@ -231,7 +231,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         }
 
         //edit
-        if (td.is('.edt')) {
+        if (td.is('.edt, .panel-edt')) {
             mobileButtons.push({
                 label: '<i class="fa fa-pencil-square-o"></i>',
                 action: function (dialog) {
@@ -239,12 +239,26 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     td.dblclick();
                 }
             });
-            $('<button class="btn btn-sm btn-default"><i class="fa fa-pencil-square-o"></i></button>')
-                .on('click', function () {
+            let editButton = $('<button class="btn btn-sm btn-default"><i class="fa fa-pencil-square-o"></i></button>')
+                .appendTo(btns);
+            if(pcTable.viewType==='panels'){
+                editButton.on('click', function () {
+                    pcTable.editSingleFieldInPanel(field, item.id).then((json)=>{
+                        if(json){
+                            pcTable.table_modify(json);
+                        }
+                    }).catch((error)=>{
+                        console.log(error);
+                    });
+                    selectObject.selectPanelDestroy();
+                })
+            }else{
+                editButton.on('click', function () {
                     td.dblclick();
                     return false;
                 })
-                .appendTo(btns);
+            }
+
         }
 
 
@@ -510,7 +524,6 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 if ((td.offset().left - containerOffsetLeft) < panelWidth) {
                     placement = 'bottom';
                 }
-
             }
 
             let params = {

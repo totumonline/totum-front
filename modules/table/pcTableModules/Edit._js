@@ -77,6 +77,7 @@ $.extend(App.pcTableMain.prototype, {
         });
 
     },
+
     goToEditNextCell: function (goTo) {
 
         return next;
@@ -132,7 +133,7 @@ $.extend(App.pcTableMain.prototype, {
                             }
                             if (field.closeIframeAfterClick && window.closeMe) {
                                 window.closeMe();
-                            }else if(field.openContextPanel){
+                            } else if (field.openContextPanel) {
                                 $td.trigger("contextmenu")
                             }
                             field.btnOK.call(field, $td, item);
@@ -179,12 +180,6 @@ $.extend(App.pcTableMain.prototype, {
                 (json) => {
 
                     pcTable.table_modify.call(pcTable, json, undefined, $editObj);
-                    /* if ($editObj.closest('table').length) {
-                         if ($editObj.is('tr.DataRow')) {
-                             pcTable.refreshRow($editObj);
-                         }
-                     }*/
-
                     if (goTo) {
                         goTo();
                     }
@@ -420,7 +415,7 @@ $.extend(App.pcTableMain.prototype, {
             isFromButton = isFromButton || false;
             if (!isFromButton) {
                 if (isGroupSelected) {
-                    if(field.type!=='select' || field.multiple){
+                    if (field.type !== 'select' || field.multiple) {
                         pcTable._removeEditCell();
                     }
                     return false;
@@ -682,5 +677,166 @@ $.extend(App.pcTableMain.prototype, {
             }
         }, 3);
         field.focusElement(input);
+    },
+    editSingleFieldInPanel: function (field, id) {
+        return new Promise((resolve, reject) => {
+            let val = id ? this.data[id][field.name] : this.data_params[field.name];
+            let format = this.getElementFormat(field, id);
+            let td = $('<div>');
+            let item = id ? this.data[id] : this.data_params;
+            let special, editVal;
+
+            let Dialog, input;
+
+            let btns = [
+                {
+                    action: (dialog) => {
+                        save();
+                    },
+                    cssClass: 'btn-warning btn-save',
+                    label: 'Cохранить'
+                }
+            ];
+            if (field.code && !field.codeOnlyInAdd) {
+                if (val.h) {
+                    btns.push({
+                        action: (dialog) => {
+                            special = 'setValuesToDefaults';
+                            editVal = null;
+                            save();
+                        },
+                        cssClass: 'btn-warning btn-save',
+                        label: '<i class="fa fa-eraser"></i>'
+                    })
+                } else {
+                    btns.push({
+                        action: (dialog) => {
+                            editVal = val.v;
+                            save();
+                        },
+                        cssClass: 'btn-warning btn-save',
+                        label: '<i class="fa fa-hand-rock-o"></i>'
+                    })
+                }
+
+            }
+
+
+            btns.push({
+                action: (dialog) => {
+                    dialog.close();
+                },
+                cssClass: '',
+                label: '<i class="fa fa-times"></i>'
+            })
+
+
+            const save = (confirmed) => {
+                if (editVal === undefined) {
+                    try {
+                        editVal = field.getEditVal(input);
+                    } catch (error) {
+                        let notify = $('#' + App.popNotify(error, td, 'default'));
+                        notify.css('z-index', 1000);
+                        return;
+                    }
+                    if (!field.isDataModified(editVal, val.v)) {
+                        Dialog.close();
+                        return;
+                    }
+                }
+                if (!confirmed && (field.warningEditPanel) && field.checkEditRegExp.call(field, editVal)) {
+                    App.confirmation((field.warningEditText || 'Точно изменить?'), {
+                        'ОК': function (_dialog) {
+                            save(true);
+                            _dialog.close();
+                        },
+                        'Отменить': function (_dialog) {
+                            revert();
+                            _dialog.close();
+                        }
+                    }, 'Предупреждение при изменении');
+                    return;
+                }
+
+                App.fullScreenProcesses.showCog();
+                let editedData = {};
+                editedData[field.name] = editVal;
+
+                let EdData = {};
+                if (!item.id) {
+                    EdData['params'] = editedData;
+                } else {
+                    EdData[item.id] = editedData;
+                }
+                if (special) {
+                    EdData[special] = true;
+                }
+                this.model.save(EdData)
+                    .then(
+                        (json) => {
+                            resolve(json)
+                            Dialog.close();
+                        }
+                    ).always(() => {
+                    App.fullScreenProcesses.hideCog();
+                });
+            };
+
+            const dialogShow = () => {
+                Dialog = window.top.BootstrapDialog.show({
+                    message: td,
+                    type: null,
+                    title: format.title || field.title,
+                    cssClass: 'fieldparams-edit-panel',
+                    draggable: true,
+                    buttons: btns,
+                    onhidden: () => {
+                        resolve();
+                    }
+                });
+            };
+
+            switch (field.type) {
+                case 'tree':
+                case 'text':
+                case 'listRow':
+                    /*Показать широкое окно*/
+
+                    input = field.getEditElement(td, val, id ? this.data[id] : this.data_params, () => {
+                        save()
+                    }, () => {
+                    }, () => {
+                    }, 1, true);
+                    td.append(input);
+                    setTimeout(() => {
+                        Dialog = input.data('Dialog');
+                        let saveBtn = Dialog.getButtons()[0].action;
+                        btns[0].action=(dialog, event, notEnter)=>{
+                            saveBtn(dialog, event, notEnter);
+                            save();
+                        }
+
+                        Dialog.setButtons(btns)
+
+                    }, 2)
+                    //dialogShow();
+                    break;
+                default:
+                    /*Показать окно с полем*/
+
+                    input = field.getEditElement(td, val, id ? this.data[id] : this.data_params, () => {
+                        save()
+                    }, () => {
+                    }, () => {
+                    });
+                    td.append(input);
+
+                    dialogShow();
+                    input.focus();
+                    break;
+            }
+        })
     }
+
 });

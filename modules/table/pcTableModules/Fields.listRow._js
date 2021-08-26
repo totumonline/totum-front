@@ -96,6 +96,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
         let field = this;
         let div = $('<div>');
         let dialog = $('<div>');
+        let Dialog;
 
         let buttons;
         let element = $('<div class="HTMLEditor">');
@@ -266,7 +267,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                         }
                     })
                 } else {
-                    window.top.BootstrapDialog.show({
+                    Dialog = window.top.BootstrapDialog.show({
                         message: dialog,
                         type: null,
                         title: title,
@@ -301,7 +302,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
 
                     });
                 }
-
+                div.data('Dialog', Dialog)
 
             }, 1);
 

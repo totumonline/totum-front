@@ -74,6 +74,10 @@
 
                 td.attr('data-field-type', Field.type).addClass('nonowrap');
 
+                if(Field.editable && Field.pcTable.control.editing && !format.block){
+                    td.addClass('panel-edt');
+                }
+
                 if (format.showhand !== false && data[field.field].h) {
                     let val = data[field.field], $hand;
                     if (val.c !== undefined && val.v != val.c) {
@@ -565,6 +569,7 @@
                         attached = true;
                         this._innerContainer.append(cln)
                         this._innerContainer.append(topButton)
+
                         cln.scrollLeft(this._innerContainer.scrollLeft())
                     }
                 } else if (attached) {
@@ -584,7 +589,9 @@
             this._innerContainer.on('scroll', ()=>{
                 clearTimeout(scroll_horizontal_debounce);
                 scroll_horizontal_debounce = setTimeout(()=>{
-                    cln.scrollLeft(this._innerContainer.scrollLeft())
+                    if(cln){
+                        cln.scrollLeft(this._innerContainer.scrollLeft())
+                    }
                 }, 50)
             })
 

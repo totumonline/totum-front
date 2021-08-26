@@ -3020,6 +3020,15 @@
                     });
                 });
             });
+        },
+        getElementFormat: function (field, id) {
+            let item;
+            if(id){
+                item=this.data[id];
+            }else{
+                item=this.data_params;
+            }
+            return $.extend({}, (this.f || {}), (item.f || {}), (item[field.name].f || {}));
         }
     })
     ;

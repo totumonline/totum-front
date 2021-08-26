@@ -12,6 +12,7 @@
             let dialog = div.data('dialog') || $('<div>').css('min-height', 200);
             div.data('dialog', dialog);
             let buttons, btn;
+            let Dialog;
 
             oldValueParam = oldValueParam.v || '';
 
@@ -114,7 +115,7 @@
                             onshow: onshown
                         })
                     } else {
-                        window.top.BootstrapDialog.show({
+                        Dialog=window.top.BootstrapDialog.show({
                             message: dialog,
                             type: null,
                             title: title,
@@ -137,6 +138,7 @@
                             onshow: onshown
 
                         });
+                        div.data('Dialog', Dialog)
                     }
                 }, 1);
 
