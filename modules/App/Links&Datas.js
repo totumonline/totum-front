@@ -812,8 +812,21 @@
 
     function showJson(data, model) {
         let div = $('<div>');
-        new JSONEditor(div.get(0), {mode: "view"}, data['json'])
-        dialog(data['title'], div, data.width, data.refresh, null, model)
+        let mode = data['hash'] ? {} : {mode: "view"};
+        let editor = new JSONEditor(div.get(0), mode, data['json'])
+        let btns = [];
+        if (data['hash']) {
+            btns.push({
+                'action': (dialog) => {
+                    model.linkJsonClick(data['hash'], JSON.stringify(editor.get()));
+                    dialog.close();
+                },
+                'label': data['buttontext'],
+                cssClass: 'btn-warning btn-save'
+            })
+        }
+
+        dialog(data['title'], div, data.width, data.refresh, null, model, btns)
     }
 
     function showNotificationTable(data, closeMe) {

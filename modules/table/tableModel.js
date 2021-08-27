@@ -599,6 +599,9 @@
             panelButtonsClear: function (hash) {
                 return this.__ajax('post', {method: 'panelButtonsClear', hash: hash})
             },
+            linkJsonClick: function (hash, json) {
+                return this.__ajax('post', {method: 'linkJsonClick', hash: hash, json: json})
+            },
             buttonsClick: function (hash, index) {
                 return this.__ajax('post', {method: 'linkButtonsClick', hash: hash, index: index})
             }, inputClick: function (hash, val) {
