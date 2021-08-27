@@ -235,7 +235,7 @@ fieldTypes.comments = {
                         }
                     })
                 } else {
-                    window.top.BootstrapDialog.show({
+                   let Dialog = window.top.BootstrapDialog.show({
                         message: dialog,
                         type: null,
                         title: title,
@@ -269,7 +269,7 @@ fieldTypes.comments = {
 
                     });
                 }
-
+                div.data('Dialog', Dialog)
 
             }, 1);
 

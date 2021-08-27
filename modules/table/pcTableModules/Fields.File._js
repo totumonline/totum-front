@@ -319,7 +319,7 @@
                         }
                     })
                 } else {
-                    dialog = BootstrapDialog.show({
+                    dialog = window.top.BootstrapDialog.show({
                         message: dialogBody,
                         type: null,
                         cssClass: 'fieldparams-edit-panel',
@@ -345,6 +345,7 @@
 
                         }
                     })
+                    div.data('Dialog', dialog);
                 }
 
 

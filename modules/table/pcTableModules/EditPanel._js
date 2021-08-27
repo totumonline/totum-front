@@ -97,9 +97,16 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     this.refresh = () => {
         if (!this.closed) {
             if (EditPanelFunc.panelType === "edit") {
+
+
+
                 EditPanelFunc.pcTable.model[checkMethod]({id: data.id}).then((json) => {
                     Object.keys(json.row).forEach((k) => {
-                        firstLoad[k] = json.row[k]
+                        if(EditPanelFunc.pcTable.tableRow.id===1 && k === 'panels_view' && !Object.equals(firstLoad[k], json.row[k])){
+                            firstLoad[k]={};
+                        }else{
+                            firstLoad[k] = json.row[k]
+                        }
                     })
                     EditPanelFunc.pcTable.model[checkMethod](this.getDataForPost("manual")).then(function (json) {
                         EditPanelFunc.editRow.call(EditPanelFunc, json);

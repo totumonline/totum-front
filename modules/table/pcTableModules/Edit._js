@@ -788,7 +788,7 @@ $.extend(App.pcTableMain.prototype, {
                     message: td,
                     type: null,
                     title: format.title || field.title,
-                    cssClass: 'fieldparams-edit-panel',
+                    cssClass: 'one-column-panel',
                     draggable: true,
                     buttons: btns,
                     onhidden: () => {
@@ -800,6 +800,8 @@ $.extend(App.pcTableMain.prototype, {
             switch (field.type) {
                 case 'tree':
                 case 'text':
+                case 'file':
+                case 'comments':
                 case 'listRow':
                     /*Показать широкое окно*/
 
@@ -809,6 +811,7 @@ $.extend(App.pcTableMain.prototype, {
                     }, () => {
                     }, 1, true);
                     td.append(input);
+
                     setTimeout(() => {
                         Dialog = input.data('Dialog');
                         let saveBtn = Dialog.getButtons()[0].action;
@@ -820,7 +823,7 @@ $.extend(App.pcTableMain.prototype, {
                         Dialog.setButtons(btns)
 
                     }, 2)
-                    //dialogShow();
+
                     break;
                 default:
                     /*Показать окно с полем*/
