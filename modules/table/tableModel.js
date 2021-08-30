@@ -464,6 +464,13 @@
                     type: type,
                 });
             },
+            seachUserTables:function (searchString, excludeTop) {
+                return this.__ajax('post', {
+                    method: 'seachUserTables',
+                    q: searchString,
+                    et: excludeTop
+                });
+            },
             selectSourceTableAction: function (field_name, data) {
                 return this.__ajax('post', {
                     field_name: field_name,

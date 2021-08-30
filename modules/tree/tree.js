@@ -199,6 +199,76 @@
                 })
             }
 
+            if (!isMobile) {
+
+                let input = $('<input placeholder="Поиск по дереву" class="form-control">');
+                let elseSearch = $('<div id="serverSearch"></div>')
+                $leftTree.before(input);
+                $leftTree.after(elseSearch);
+                input.wrap('<div id="searchArea">');
+
+                let model;
+                const getElseSeach = (q, top) => {
+                    if (!model) {
+                        model = App.models.table('/Table/');
+                        model.addPcTable({model: model});
+                    }
+                    return new Promise((resolve) => {
+                        model.seachUserTables(q, top).then((json) => {
+                            let html = $('<div>');
+                            json.trees.forEach((br) => {
+                                let div = $('<div>').append($('<a>').attr('href', br.href || '/Table/' + br.id).text(br['title']));
+                                if (br.icon) {
+                                    div.prepend('<i class="icon fa fa-' + br.icon + '"></i>')
+                                }
+                                html.append(div);
+                            })
+
+                            json.tables.forEach((tb) => {
+                                let div = $('<div>').append($('<a>').attr('href', '/Table/' + tb.top + '/' + tb.id).text(tb['title']));
+                                if (tb.icon) {
+                                    div.prepend('<i class="icon fa fa-' + tb.icon + '"></i>')
+                                } else {
+                                    let icon = {
+                                        globcalcs: 'calculator',
+                                        calcs: 'calculator',
+                                        tmp: 'clock-o',
+                                        simple: 'table',
+                                        cycles: 'circle-o',
+                                    }[tb.type];
+                                    div.prepend('<i class="icon fa fa-' + icon + '"></i>')
+                                }
+                                html.append(div);
+                            })
+
+                            resolve(html.children())
+                        })
+                    })
+                };
+
+                let timeout;
+                input.on('keyup', () => {
+                    if (timeout) clearTimeout(timeout);
+                    timeout = setTimeout(async () => {
+                        let val = input.val().trim();
+                        $leftTree.jstree(true).show_all();
+                        $leftTree.jstree("search", val);
+                        if (val != "") {
+                            elseSearch.html(await getElseSeach(val, (window.top_branch || (window.location.pathname.match(/\/Table\/(\d+)/) || {1: 0})[1])))
+                        }else{
+                            elseSearch.html('');
+                        }
+                        niceScrollResize();
+                    }, 50)
+                })
+
+                $leftTree.on('search.jstree', function (nodes, str, res) {
+                    if (str.nodes.length === 0) {
+                        $leftTree.jstree(true).hide_all();
+                    }
+                })
+            }
+
             let $scrollTreeBlock = $('#LeftTree');
             let treeScrollPath = () => {
                 return 'tree_scroll_part_' + (window.top_branch || (window.location.pathname.match(/\/Table\/(\d+)/) || {1: 0})[1]);
@@ -231,7 +301,34 @@
                         "table_cycles": App.tableTypes.cycles,
                         "table_data": {"icon": "jstree-file"},
                     },
-                    "plugins": ["types", "themes"]
+                    "plugins": ["types", "themes", "search"],
+                    "search": {
+                        "case_sensitive": false,
+                        "show_only_matches": true,
+                        "search_callback": function (str, node) {
+
+                            //search for all of the words entered
+                            var word, words = [];
+                            var searchFor = str.toLowerCase().replace(/^\s+/g, '').replace(/\s+$/g, '');
+                            if (searchFor.indexOf(' ') >= 0) {
+                                words = searchFor.split(' ');
+                            } else {
+                                words = [searchFor];
+                            }
+                            const checkForStr = (str) => {
+                                for (var i = 0; i < words.length; i++) {
+                                    word = words[i];
+                                    if ((str).toLowerCase().indexOf(word) === -1) {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            };
+                            return checkForStr(node.text || "") || checkForStr(node.original.name || "")
+
+                        }
+
+                    }
                 });
                 niceScrollResize();
             };
