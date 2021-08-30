@@ -255,7 +255,7 @@
                         $leftTree.jstree("search", val);
                         if (val != "") {
                             elseSearch.html(await getElseSeach(val, (window.top_branch || (window.location.pathname.match(/\/Table\/(\d+)/) || {1: 0})[1])))
-                        }else{
+                        } else {
                             elseSearch.html('');
                         }
                         niceScrollResize();
@@ -306,6 +306,8 @@
                         "case_sensitive": false,
                         "show_only_matches": true,
                         "search_callback": function (str, node) {
+
+                            if (node.original.type === 'folder') return false;
 
                             //search for all of the words entered
                             var word, words = [];
