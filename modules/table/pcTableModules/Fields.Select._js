@@ -29,7 +29,7 @@ fieldTypes.select = {
                                         if (['jpg', 'png'].indexOf(file.ext) !== -1) {
                                             $_html.append($('<a href="/fls/' + file.file + '" target="_blank">').html('<img src="/fls/' + file.file + '_thumb.jpg?rand=' + window.imgRand + '"/><br/>'));
                                         }
-                                        $_html.append($('<a href="/fls/' + file.file + '" target="_blank">').text(file.name + ' ' + Math.round(file.size / 1024).toLocaleString('ru-RU') + ' Kb'));
+                                        $_html.append($('<a href="/fls/' + file.file + '" target="_blank">').text(file.name + ' ' + Math.round(file.size / 1024).toLocaleString(App.langLocale) + ' Kb'));
                                     });
                                 }
                                 break;
@@ -43,7 +43,7 @@ fieldTypes.select = {
                             case 'number':
                                 if (preview[2] === 'currency') {
                                     try {
-                                        $_html.text(parseFloat(preview[1]).toLocaleString('ru-RU'));
+                                        $_html.text(parseFloat(preview[1]).toLocaleString(App.lang.locale));
                                     } catch (e) {
                                         $_html.text(preview[1]);
                                     }

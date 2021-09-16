@@ -56,15 +56,21 @@ let path = {
         src: ['./**/css-*.*'],
         dest: './http/css/img/'
     },
+    ru: [
+        'bower_components/moment/locale/ru.js'
+        , 'bower_components/bootstrap-select/dist/js/i18n/defaults-ru_RU.js'
+        , 'i18n/ru.js'
+    ],
+    eng: [
+        , 'i18n/eng.js'
+    ],
     jsLibsMini: {
         src: ['bower_components/jquery/dist/jquery.min.js'
             , 'bower_components/jquery-ui/jquery-ui.min.js'
             , 'bower_components/jquery.cookie/jquery.cookie.js'
             , 'bower_components/bootstrap/dist/js/bootstrap.min.js'
             , 'bower_components/bootstrap-select/dist/js/bootstrap-select.js'
-            , 'bower_components/bootstrap-select/dist/js/i18n/defaults-ru_RU.js'
             , 'bower_components/moment/min/moment.min.js'
-            , 'bower_components/moment/locale/ru.js'
             , 'bower_components/big.js/big.min.js'
             , 'bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js'
             , 'bower_components/jstree/dist/jstree.js'
@@ -170,6 +176,26 @@ gulp.task('QUICK-PROD-DEV', function () {
             }))
             .pipe(gulp.dest(path.jsLibsMini.dest));
     });
+    gulp.task('product:langRu', function () {
+        return gulp.src(path.ru)
+            .pipe(concat('ru.js'))
+            .pipe(uglify().on('error', function (e) {
+                console.log(e);
+            }))
+            .pipe(gulp.dest(path.jsLibsMini.dest));
+    });
+    gulp.task('product:langEng', function () {
+        return gulp.src(path.eng)
+            .pipe(concat('eng.js'))
+            .pipe(uglify().on('error', function (e) {
+                console.log(e);
+            }))
+            .pipe(gulp.dest(path.jsLibsMini.dest));
+    });
+    gulp.task('product:langs', ['product:langRu', 'product:langEng'], function () {
+        return true;
+    });
+
 
     gulp.task('product:cssLibs', ['all:jstreeImgs'], function () {
         return gulp.src(path.cssLibs.src)
@@ -227,7 +253,7 @@ gulp.task('QUICK-PROD-DEV', function () {
             .pipe(gulp.dest(path.htmlTemplate.dest))
     });
 
-    gulp.task('product:http_files', ['product:css', 'product:jsChart', 'product:cssImgs', 'product:imgsLibs', 'product:cssLibs', 'product:fonts', 'product:js', 'product:jsLibs'], function () {
+    gulp.task('product:http_files', ['product:css', 'product:jsChart', 'product:cssImgs', 'product:imgsLibs', 'product:cssLibs', 'product:fonts', 'product:js', 'product:jsLibs', 'product:langs'], function () {
         return gulp.src(path.http.src)/*.pipe(debug())*/
             .pipe(gulp.dest(path.http.dest));
 

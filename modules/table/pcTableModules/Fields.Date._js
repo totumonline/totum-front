@@ -134,7 +134,7 @@ fieldTypes.date = {
             format: format,
             useCurrent: false,
             showClose: false,
-            locale: 'ru',
+            locale: App.lang.localeDatetimepicker,
             sideBySide: true,
             collapse: false
             // defaultDate: moment().format("YYYY-MM-DD 00:00")

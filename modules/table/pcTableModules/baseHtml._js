@@ -2340,7 +2340,7 @@
                                         if (field.dectimalPlaces) {
                                             options.minimumFractionDigits = field.dectimalPlaces;
                                         }
-                                        return parseFloat(num).toLocaleString('ru-RU', options) + unit;
+                                        return parseFloat(num).toLocaleString(App.lang.locale, options) + unit;
                                     }
                                     return num + unit;
                                 };
