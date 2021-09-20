@@ -260,8 +260,11 @@ fieldTypes.select = {
 
                     const addValues = function (val, q) {
                         "use strict";
-                        let optgroups = {'Выбранное': $('<optgroup label="Выбранное">'), '': $('<optgroup label="">')};
-                        let checked = optgroups['Выбранное'];
+                        let optgroups = {
+                            [App.translate('Selected')]: $('<optgroup label="' + App.translate('Selected') + '">'),
+                            '': $('<optgroup label="">')
+                        };
+                        let checked = optgroups[App.translate('Selected')];
                         const createOption = function (val, text, deleted, subtext) {
                             subtext = subtext ? $('<small class="text-muted">').text(subtext) : '';
 
@@ -291,9 +294,14 @@ fieldTypes.select = {
                             return true;
                         };
                         if (q && q !== '') {
-                            let qs = q.toLowerCase().replace('ё', 'е').split(" ");
+                            let [qs] = App.lang.search_prepare_function(q);
+
+                            qs = qs.split(" ");
                             isLikedFunc = function (v) {
-                                let text = v !== null ? v.toString().toLowerCase().replace('ё', 'е') : "";
+                                let text = "";
+                                if (v !== null) {
+                                    [text] = App.lang.search_prepare_function(v.toString());
+                                }
                                 return !qs.some(function (q) {
                                     return text.indexOf(q) === -1
                                 })
@@ -375,7 +383,7 @@ fieldTypes.select = {
                         });
 
                         if (LISTs.isSliced === true) {
-                            let opt = createOption(0, 'Данные не полны. Воспользуйтесь поиском!');
+                            let opt = createOption(0, App.translate('The data is incomplete. Use the search!'));
                             opt.prop('disabled', true);
                             opt.css('text-align', 'center');
                             input.append(opt);
@@ -392,13 +400,13 @@ fieldTypes.select = {
 
                             let title = '-----';
                             if (field.category === 'filter') {
-                                title = 'Пустое';
+                                title = App.translate('Empty');
                                 if (field.selectFilterWithEmptyText) {
                                     title = field.selectFilterWithEmptyText
                                 }
                             } else if (field.withEmptyVal && field.withEmptyVal.trim() !== '') title = field.withEmptyVal;
                             else if (field.multiple && cell && cell.closest('.InsertPanel').length) {
-                                title = "Выберите";
+                                title = App.translate('Select');
                                 onlyElements = true;
                             }
                             return title;
@@ -746,7 +754,7 @@ fieldTypes.select = {
 
         if (listVals) {
             if (field.multiple && listVals.length > 1 && (field.multySelectView == 0)) {
-                $div.append('<span class="select-item">' + listVals.length + ' элементов<span>');
+                $div.append('<span class="select-item">' + App.translate('%s elements', listVals.length) + '<span>');
             } else {
                 if (listVals.length === 0) {
                     $div.append('<span class="select-item">' + this.getElementString(null) + '</span>');
@@ -850,7 +858,7 @@ fieldTypes.select = {
         const addFiltersData = function (valObjElem) {
             let hash;
             let str = valObjElem[0];
-            let val = "Пустое";
+            let val = App.translate('Empty');
             if (str === null || str === '') {
                 hash = ''.hashCode();
             } else {

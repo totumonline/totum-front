@@ -41,7 +41,7 @@
             buttons = [];
 
             let btnsSave = {
-                'label': "Сохранить",
+                'label': App.translate('Save'),
                 cssClass: 'btn-m btn-warning',
                 action: save
             }, btnsClose = {
@@ -115,7 +115,7 @@
                             onshow: onshown
                         })
                     } else {
-                        Dialog=window.top.BootstrapDialog.show({
+                        Dialog = window.top.BootstrapDialog.show({
                             message: dialog,
                             type: null,
                             title: title,
@@ -143,7 +143,7 @@
                 }, 1);
 
 
-                div.text('Редактирование в форме').addClass('edit-in-form');
+                div.text(App.translate('Editing in the form')).addClass('edit-in-form');
             } else {
                 let showned = false;
                 div.off().on('click keydown', function (ev) {
@@ -191,7 +191,7 @@
                 });
 
                 if (div.find('button').length === 0) {
-                    btn = $('<button class="btn btn-default btn-sm text-edit-button">').text('Редактирование в форме');
+                    btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Editing in the form'));
                     if (tabindex) btn.attr('tabindex', tabindex);
 
                     div.append(btn);
@@ -315,7 +315,7 @@
                         }
                         let $icon = $(_node).find('>a i:first');
 
-                        if (field.multiple && (data.state.loaded===false || !(!data.children || !data.children.length))) {
+                        if (field.multiple && (data.state.loaded === false || !(!data.children || !data.children.length))) {
                             $icon1 = $('<i class="fa fa-hand-lizard-o jstree-children-manage-lizard"></i>');
                             $icon.after($icon1);
                             $icon = $icon1.on('click', () => {
@@ -387,8 +387,11 @@
                     search_callback: function (q, title) {
                         if (!title) return false;
 
-                        let qs = q.toLowerCase().replace('ё', 'е').split(" ");
-                        let text = title.text.toLowerCase().replace('ё', 'е');
+                        let qs = q.toLowerCase();
+                        let text = title.text.toLowerCase();
+
+                        [text, qs] = App.lang.search_prepare_function(text, qs);
+                        qs = qs.split(" ");
 
                         return !qs.some(function (q) {
                             return text.indexOf(q) === -1
@@ -540,7 +543,7 @@
                             else if (fieldValue.length === 1) return field.getElementSpan(fieldValue[0], arrayVals[0]);
                             else {
                                 if (field.multySelectView === "0" && !field.FullView) {
-                                    return $('<span class="select-item">' + fieldValue.length + ' эл.<span>')
+                                    return $('<span class="select-item">' + App.translate('%s el.', fieldValue.length) + '<span>')
                                 } else {
                                     let span = $('<span class="select-item">');
                                     fieldValue.forEach((fVal, i) => span.append(field.getElementSpan(fVal, arrayVals[i])));

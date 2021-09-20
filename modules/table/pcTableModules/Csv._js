@@ -35,9 +35,9 @@ $.extend(App.pcTableMain.prototype, {
         let csvImport = function () {
             pcTable.model.csvImport(csv, type, answers, type == 'full' ? [] : fields).then(function (json) {
                 if (json.question) {
-                    App.modal(json.question[1], 'Вопрос про csv-загрузку', {
-                        'Отменить': 'close',
-                        'Загружаем': function (block) {
+                    App.modal(json.question[1], App.translate('Csv-loading question'), {
+                        [App.translate("Cancel")]: 'close',
+                        [App.translate('Load')]: function (block) {
                             "use strict";
                             block.modal('hide')
                             answers[json.question[0]] = 1;
@@ -55,13 +55,13 @@ $.extend(App.pcTableMain.prototype, {
                 $text.append($('<div>').text(pcTable.fields[f].title || pcTable.fields[f].name));
             })
             let dialog = App.confirmation($text, {
-                'Отменить': function (dialog) {
+                [App.translate('Cancel')]: function (dialog) {
                     dialog.close();
-                }, 'Загрузить': (dialog) => {
+                }, [App.translate('Load')]: (dialog) => {
                     csvImport();
                     dialog.close()
                 }
-            }, 'Проверьте соответствие структуры загружаемого файла последовательности полей');
+            }, App.translate('Check matching the structure of the loaded file to the sequence of fields'));
         } else {
             csvImport();
         }

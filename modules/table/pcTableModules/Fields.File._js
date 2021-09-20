@@ -75,7 +75,7 @@
         }
         ,
         getEditVal: function (div) {
-            if (this.required && div.data('val') == '') throw 'Поле должно быть заполнено';
+            if (this.required && div.data('val') == '') throw App.translate('The field must be entered');
             return div.data('val');
         }
         ,
@@ -118,7 +118,7 @@
                 if (file.tmpfile) {
                     addDiv.addClass('addFile');
                     let process = addDiv.find('.progressbar');
-                    process.text('Требуется сохранение элемента для привязки файла');
+                    process.text(App.translate('Required to save the item for file binding'));
                 }
                 return addDiv;
             };
@@ -132,11 +132,11 @@
                 let fileAdd = $('<input type="file" name = "file" ' + (field.multiple ? 'multiple' : '') + ' accept="' + field.accept + '" style="display: block; position: absolute; top: -3000px"/>');//fileInput
 
                 let addForm = $('<div>').appendTo(dialogBody);
-                let btn = $('<button class="btn btn-default btn-sm">Добавить файл' + (field.multiple ? 'ы' : '') + '</button>');
+                let btn = $('<button class="btn btn-default btn-sm">' + App.translate(field.multiple ? 'Adding files' : 'Adding file') + '</button>');
                 addForm.append(btn);
                 btn.wrap('<div class="addFilesButton">');
                 btn.wrap('<div>');
-                let dropZone = $('<div class="ttm-dropzone" id="ttmDropzone">Перетащите сюда файл</div>').insertAfter(btn.parent())
+                let dropZone = $('<div class="ttm-dropzone" id="ttmDropzone">'+App.translate('Drag and drop the file here')+'</div>').insertAfter(btn.parent())
                 dropZone.on('dragenter', () => dropZone.addClass('highlight'))
                 dropZone.on('dragleave', () => dropZone.removeClass('highlight'))
                 dropZone.on('drop', (e) => {
@@ -144,7 +144,7 @@
                     dropZone.removeClass('highlight')
                     if (!dropZone.is('.disabled')) {
                         if (!this.multiple && e.originalEvent.dataTransfer.files.length > 1) {
-                            App.notify('Поле принимает только один файл', 'Ошибка')
+                            App.notify(App.translate('The field accepts only one file'), App.translate('Error'))
                             return false
                         }
                         save(e.originalEvent.dataTransfer.files)
@@ -201,7 +201,7 @@
                             xhr.upload.onprogress = function (event) {
                                 process.css('box-shadow', 'inset ' + Math.round(parseInt(process.width()) * event.loaded / event.total).toString() + 'px 0px 0 0 #85FF82');
                                 if (event.loaded === event.total) {
-                                    process.text('Проверка файла сервером');
+                                    process.text(App.translate('Checking the file with the server'));
                                 }
                             };
 
@@ -213,7 +213,7 @@
                                     try {
                                         let ans = JSON.parse(this.responseText);
                                         if (ans.fname) {
-                                            process.text('Готово');
+                                            process.text(App.translate('Done'));
                                             addDiv.data('file').tmpfile = ans.fname;
                                             return;
                                         }
@@ -222,7 +222,7 @@
                                     }
                                 }
                                 addDiv.data('file', null);
-                                process.text('Ошибка').css({'box-shadow': 'none', 'background-color': '#ffe486'})
+                                process.text(App.translate('Error')).css({'box-shadow': 'none', 'background-color': '#ffe486'})
 
                             };
 
@@ -282,7 +282,7 @@
 
             buttons = [
                 {
-                    'label': "Сохранить",
+                    'label': App.translate('Save'),
                     cssClass: 'btn-m btn-warning',
                     action: save
                 }, {
@@ -296,7 +296,7 @@
                 }
             ];
 
-            let title = 'Форма файлов <b>' + (this.title) + '</b>';
+            let title = App.translate('Files form <b>%s</b>', (this.title));
             let eventName = 'ctrlS.textdialog';
 
             let showDialog = function (div) {
@@ -354,7 +354,7 @@
             if (editNow) {
 
                 showDialog(div);
-                div.text('Редактирование в форме').addClass('edit-in-form');
+                div.text(App.translate('Editing in the form')).addClass('edit-in-form');
             } else {
                 div.on('keydown', function (event) {
                     if (event.key === 'Tab') {
@@ -367,7 +367,7 @@
                     showDialog($(this).closest('div'))
                 });
 
-                let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text('Редактировать поле');
+                let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Edit field'));
                 if (tabindex) btn.attr('tabindex', tabindex);
 
                 div.append(btn);

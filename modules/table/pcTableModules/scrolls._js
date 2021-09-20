@@ -264,7 +264,7 @@
                     if (pcTable.dataSorted.length === 0) {
                         $trs.appendChild(pcTable._createNoDataRow().get(0));
                     } else if (pcTable.dataSortedVisible.length === 0) {
-                        $trs.appendChild(pcTable._createNoDataRow('По условиям фильтрации не выбрана ни одна строка').get(0));
+                        $trs.appendChild(pcTable._createNoDataRow(App.translate('No rows are selected by the filtering conditions')).get(0));
                     } else {
                         for (let i in rows) {
                             let row = rows[i];

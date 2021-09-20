@@ -22,15 +22,15 @@ fieldTypes.json = {
                     var div = $('<div>');
                     var textarea = $('<textarea class="form-control" style="height: 250px;">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
                     div.dialog({
-                        title: 'Содержимое JSON-поля',
+                        title: App.translate('The JSON field content'),
                         width: 500,
                         height: 600,
                         buttons: {
-                            'Сохранить': function () {
+                            [App.translate('Save')]: function () {
                                 editor.setText(textarea.val());
                                 div.dialog('close')
                             },
-                            'Закрыть': function () {
+                            [App.translate('Close')]: function () {
                                 div.dialog('close')
                             }
                         }
@@ -176,7 +176,7 @@ fieldTypes.json = {
 
         if (elseFieldsLength) {
             var input = $('<div class="row elseFields">');
-            let element = $('<select class="selectpicker form-control dropup" data-size="5" data-title="--Выбрать поле--">');
+            let element = $('<select class="selectpicker form-control dropup" data-size="5" data-title="--'+App.translate('Choose the field')+'--">');
 
             if (App.keys(elseFields).length == 1) {
                 $.each(elseFields[App.keys(elseFields)[0]], function (k, fName) {
@@ -194,7 +194,7 @@ fieldTypes.json = {
             }
 
 
-            input.prepend($('<label>').text('Добавить поле'));
+            input.prepend($('<label>').text(App.translate('Add field')));
             element.addClass('form-control');
 
             input.append(element);
@@ -211,7 +211,7 @@ fieldTypes.json = {
 
         buttons = {
 
-            "Сохранить": function () {
+            [App.translate('Save')]: function () {
 
                 var obj = {};
                 var fullJSONEditor = form.find('.fullJSONEditor');
@@ -230,12 +230,12 @@ fieldTypes.json = {
                                 try {
                                     obj[nameField] = element.data('editor').get();
                                     if (!$.isArray(obj[nameField])) {
-                                        throw 'Ошибка структуры поля';
+                                        throw App.translate('Field structure error');
                                     }
                                 }
                                 catch (err) {
-                                    App.notify('Ошибка структуры поля ' + nameField);
-                                    throw 'Ошибка структуры поля';
+                                    App.notify(App.translate('Field %s structure error', nameField));
+                                    throw App.translate('Field structure error');
                                 }
                                 break;
                             case "object":
@@ -243,12 +243,12 @@ fieldTypes.json = {
                                 try {
                                     obj[nameField] = element.data('editor').get();
                                     if (typeof obj[nameField] !== "object") {
-                                        throw 'Ошибка структуры поля';
+                                        throw App.translate('Field structure error');
                                     }
                                 }
                                 catch (err) {
-                                    App.notify('Ошибка структуры поля ' + nameField);
-                                    throw 'Ошибка структуры поля';
+                                    App.notify(App.translate('Field %s structure error', nameField));
+                                    throw App.translate('Field structure error');
                                 }
                                 break;
                             case "html":
@@ -274,9 +274,9 @@ fieldTypes.json = {
                 enterClbk(div, event);
                 dialog.remove();
             },
-            "Закрыть": function () {
+            [App.translate('Close')]: function () {
                 dialog.dialog('close');
-            }, "Редактор": function () {
+            }, [App.translate('Editor')]: function () {
                 var height = form.height();
                 var element = $('<div class="fullJSONEditor">').height(height + 100);
                 var editor = new JSONEditor(element.get(0), {});
@@ -285,15 +285,15 @@ fieldTypes.json = {
                     var div = $('<div>');
                     var textarea = $('<textarea class="form-control" style="height: 250px;">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
                     div.dialog({
-                        title: 'Содержимое JSON-поля',
+                        title: App.translate('The JSON field content'),
                         width: 500,
                         height: height + 100,
                         buttons: {
-                            'Сохранить': function () {
+                            [App.translate('Save')]: function () {
                                 editor.setText(textarea.val());
                                 div.dialog('close')
                             },
-                            'Закрыть': function () {
+                            [App.translate('Close')]: function () {
                                 div.dialog('close')
                             }
                         }
@@ -318,7 +318,7 @@ fieldTypes.json = {
                 },
                 buttons: buttons
             });
-            div.text('Редактирование в форме').addClass('edit-in-form');
+            div.text(App.translate('Editing in the form')).addClass('edit-in-form');
         }
         else {
             div.on('focus click', 'button', function () {
@@ -335,7 +335,7 @@ fieldTypes.json = {
                     buttons: buttons
                 });
             });
-            div.append($('<button class="btn btn-default">').text(oldValueParam ? oldValueParam : 'Редактирование'))
+            div.append($('<button class="btn btn-default">').text(oldValueParam ? oldValueParam : App.translate('Editing')))
         }
 
         return div.data('val', oldValueParam);

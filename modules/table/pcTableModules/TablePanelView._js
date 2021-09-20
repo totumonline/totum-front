@@ -384,7 +384,7 @@
                             }
                         })
                     } else {
-                        $cards.append('<div class="empty-kanban">Нет данных</div>');
+                        $cards.append('<div class="empty-kanban">'+App.translate('No data')+'</div>');
                     }
                 })
                 $div.width(width);
@@ -398,7 +398,7 @@
             }
 
         } else {
-            $div.append('<div class="no-panels">Нет данных</div>');
+            $div.append('<div class="no-panels">'+App.translate('No data')+'</div>');
         }
         setTimeout(() => {
             this._container.getNiceScroll().resize();

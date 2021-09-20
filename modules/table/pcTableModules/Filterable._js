@@ -286,7 +286,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
             let fieldName = th.is('.id') ? 'id' : th.data('field');
 
             let selectDiv = $('<div class="filter-div-button">');
-            let select = $('<select class="selectpicker" data-size="6" multiple title="Выберите значения" data-style="btn-sm btn-default" data-width="css-width" data-live-search="true" data-selected-text-format="count">').appendTo(selectDiv);
+            let select = $('<select class="selectpicker" data-size="6" multiple title="'+App.translate("Select values")+'" data-style="btn-sm btn-default" data-width="css-width" data-live-search="true" data-selected-text-format="count">').appendTo(selectDiv);
 
             const popoverDestroy = function () {
                 try {
@@ -394,15 +394,27 @@ App.pcTableMain.prototype.__addFilterable = function () {
             let chousenVisible = 0;
 
             const randOptions = function (q) {
-                optgroups = {'Выбранное': $('<optgroup label="Выбранное">'), '': $('<optgroup label="">')};
+                optgroups = {[App.translate('Selected')]: $('<optgroup label="'+App.translate('Selected')+'">'), '': $('<optgroup label="">')};
 
                 let isLikedFunc = function () {
                     return true;
                 };
                 if (q && q !== '') {
-                    let qs = q.toLowerCase().replace('ё', 'е').split(" ");
+                    let qs = q;
+
+                    [qs] = App.lang.search_prepare_function(qs);
+
+                    qs=qs.split(" ");
                     isLikedFunc = function (v) {
-                        let text = v !== null ? v.toString().toLowerCase().replace('ё', 'е') : "";
+                        let text;
+                        if(v === null){
+                            text="";
+                        }else{
+                            text = v.toString();
+                            [text] = App.lang.search_prepare_function(text);
+                        }
+
+
                         return !qs.some(function (q) {
                             return text.indexOf(q) === -1
                         })
@@ -416,7 +428,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
 
                     if (filterVal.indexOf(v.toString()) !== -1) {
                         let isVisible = isLikedFunc(k);
-                        optgroups['Выбранное'].append('<option data-content="' + k + '" ' + (isVisible ? '' : 'style="display: none"') + '>' + v + '</option>');
+                        optgroups[App.translate('Selected')].append('<option data-content="' + k + '" ' + (isVisible ? '' : 'style="display: none"') + '>' + v + '</option>');
                         chousenVisible += isVisible ? 1 : 0;
                     } else {
                         if (!isLikedFunc(k)) return true;
@@ -431,12 +443,12 @@ App.pcTableMain.prototype.__addFilterable = function () {
                 });
                 select.empty();
                 if (!chousenVisible) {
-                    optgroups['Выбранное'].attr('label', '');
+                    optgroups[App.translate('Selected')].attr('label', '');
                 }
-                select.append(optgroups['Выбранное']);
+                select.append(optgroups[App.translate('Selected')]);
                 select.append(optgroups['']);
                 if (isCutted) {
-                    select.append('<option data-content="Данные не полны. Пользуйтесь поиском" disabled = disabled style="text-align: center; cursor: pointer">0</option>');
+                    select.append('<option data-content="'+App.translate('The data is incomplete. Use the search!')+'" disabled = disabled style="text-align: center; cursor: pointer">0</option>');
                 }
                 select.data('options', filterOptions);
                 select.selectpicker('val', filterVal);
@@ -471,25 +483,25 @@ App.pcTableMain.prototype.__addFilterable = function () {
 
             let $buttons = $('<div class="buttons" style="position: absolute; bottom: -10px; width: 100%; text-align: center">');
 
-            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">Прим.</span></span>').appendTo($buttons).on('click', function () {
+            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">'+App.translate('ApplyShort')+'</span></span>').appendTo($buttons).on('click', function () {
                 actionIt('setSelectedFilters');
             });
-            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">Инверт.</span></span>').appendTo($buttons).on('click', function () {
+            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">'+App.translate('InvertShort')+'</span></span>').appendTo($buttons).on('click', function () {
                 actionIt('setInvertFilters');
             });
-            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px">Отмен.</span>').appendTo($buttons).on('click', function () {
+            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px">'+App.translate('CancelShort')+'</span>').appendTo($buttons).on('click', function () {
                 actionIt('filterRemove');
             });
 
 
             if (pcTable.fields[fieldName] && pcTable.fields[fieldName].code && !pcTable.fields[fieldName].codeOnlyInAdd) {
-                let h_select = $('<select data-title="Все" data-dropup-auto="false" class="dropup" data-container=".popover" data-style="btn btn-xxs filter-by-hand '
+                let h_select = $('<select data-title="'+App.translate('All')+'" data-dropup-auto="false" class="dropup" data-container=".popover" data-style="btn btn-xxs filter-by-hand '
                     + (pcTable.filters[fieldName + "/h"] ? 'btn-warning' : 'btn-default') + ' ">' +
-                    '<option value="">Все</option>' +
-                    '<option value="n">Без руки</option>' +
-                    '<option value="h">С рукой все</option>' +
-                    '<option value="hf">С рукой как в расчете</option>' + //<i class="fa fa-hand-rock-o pull-right"></i>
-                    '<option value="hc">С рукой отличающиеся</option>' + //<i class="fa fa-hand-paper-o pull-right"></i>
+                    '<option value="">'+App.translate('All')+'</option>' +
+                    '<option value="n">'+App.translate('Without hand')+'</option>' +
+                    '<option value="h">'+App.translate('With hand all')+'</option>' +
+                    '<option value="hf">'+App.translate('With hand equals calc')+'</option>' + //<i class="fa fa-hand-rock-o pull-right"></i>
+                    '<option value="hc">'+App.translate('With hand different')+'</option>' + //<i class="fa fa-hand-paper-o pull-right"></i>
                     '</select>')
                     .appendTo($buttons)
                     .on('change', function () {
@@ -522,7 +534,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
                     selectDiv.height(260)
                 else
                     selectDiv.height(220)
-                $buttons.append('<div class="text-center ttm-paging-danges">Фильтрация по текущей странице</div>');
+                $buttons.append('<div class="text-center ttm-paging-danges">'+App.translate('Filtering by current page')+'</div>');
             } else {
                 if (chousenVisible)
                     selectDiv.height(220)

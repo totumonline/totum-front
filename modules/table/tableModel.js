@@ -123,24 +123,7 @@
                 let Model = this;
                 let success = function (json) {
 
-                    let methods = {
-                        'edit': 'Изменение',
-                        'checkInsertRow': 'Предварительное добавление',
-                        'duplicate': 'Дублирование',
-                        'refresh_rows': 'Пересчет строк',
-                        'loadPage': 'Загрузка страницы',
-
-                        'getTableData': 'Загрузка информации о таблице',
-                        'refresh': 'Обновление данных таблицы',
-                        'checkEditRow': 'Предварительный расчет панели',
-                        'saveEditRow': 'Сохранение панели',
-                        'save': 'Изменение поля',
-                        'click': 'Нажатие кнопки',
-                        'selectSourceTableAction': 'Вызов панели',
-                        'add': 'Добавление строки',
-                        'getEditSelect': 'Загрузка селекта',
-                        'delete': 'Удаление'
-                    };
+                    let methods = App.lang.modelMethods;
 
                     let pcTableObj = $('#table').data('pctable');
                     if (pcTableObj) {
@@ -216,7 +199,7 @@
                                 BootstrapDialog.show({
                                     message: $('<pre style="max-height: ' + ($('body').height() - 200) + 'px; overflow: scroll">').css('font-size', '11px').text(JSON.stringify(json.log, null, 1)),
                                     type: BootstrapDialog.TYPE_DANGER,
-                                    title: 'Лог расчета',
+                                    title: App.translate('Calculate log'),
                                     buttons: [{
                                         'label': null,
                                         icon: 'fa fa-times',
@@ -252,7 +235,7 @@
                     if (obj && obj.status === 200) {
                         if (obj.responseJSON && obj.responseJSON.error) error = obj.responseJSON.error;
                         else {
-                            error = $('<div>Ошибка выполнения операции  </div>');
+                            error = $('<div>'+App.translate('Operation execution error')+'  </div>');
                             if (pcTable && pcTable.isCreatorView) {
                                 error.append('<button class="btn danger-backg btn-xs" data-toggle="collapse" data-target="#notify-texh"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></button>');
                                 error.append($('<div id="notify-texh" class="collapse">').append($('<code>').text(obj.responseText)));
@@ -266,7 +249,7 @@
 
                         } else if (RequestObject && RequestObject.jqXHR) {
                             if (RequestObject.jqXHR.statusText !== "abort") {
-                                error = 'Нет соединения с сервером';
+                                error = App.translate('No server connection');
                                 timeout = 200;
                             }
                         }

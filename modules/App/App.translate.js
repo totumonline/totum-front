@@ -2,7 +2,7 @@
 
     App.translate = function (str, $vars) {
         if (App.lang && App.lang.translates[str]) {
-            str = App.lang[str];
+            str = App.lang.translates[str];
         }
 
         if ($vars) {

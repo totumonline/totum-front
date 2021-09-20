@@ -139,11 +139,11 @@ fieldTypes.text = {
                             editor.setText(json.value);
                         }
                     } catch (e) {
-                        window.top.App.modal('Ошибка формата JSON ')
+                        window.top.App.modal(App.translate('JSON format error'))
                     }
 
 
-                    let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">Вручную</a>').on('click', function () {
+                    let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">'+App.translate('Manually')+'</a>').on('click', function () {
                         let div = $('<div>');
                         let textarea = $('<textarea class="form-control">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
                         if (window.innerHeight > 460) {
@@ -153,14 +153,14 @@ fieldTypes.text = {
 
                         let buttons = [
                             {
-                                'label': "Сохранить",
+                                'label': App.translate('Save'),
                                 cssClass: 'btn-m btn-warning',
                                 action: function (dialog) {
                                     try {
                                         editor.setText(textarea.val());
                                         dialog.close();
                                     } catch (e) {
-                                        window.top.App.modal('Ошибка формата JSON')
+                                        window.top.App.modal(App.translate('JSON format error'))
                                     }
                                 }
                             }, {
@@ -174,12 +174,12 @@ fieldTypes.text = {
                         ];
 
                         if (field.pcTable.isMobile) {
-                            App.mobilePanel('Ручное изменение json-поля', div, {buttons: buttons})
+                            App.mobilePanel(App.translate('Manually changing the json field'), div, {buttons: buttons})
                         } else {
                             BootstrapDialog.show({
                                 message: div,
                                 type: null,
-                                title: 'Ручное изменение json-поля',
+                                title: App.translate('Manually changing the json field'),
                                 buttons: buttons,
                                 cssClass: 'fieldparams-edit-panel',
                                 draggable: true,
@@ -264,7 +264,7 @@ fieldTypes.text = {
         buttons = [];
 
         let btnsSave = {
-            'label': "Сохранить",
+            'label': App.translate('Save'),
             cssClass: 'btn-m btn-warning',
             action: save
         }, btnsClose = {
@@ -279,7 +279,7 @@ fieldTypes.text = {
 
         if (['xml', 'html'].indexOf(field.textType) !== -1) {
             buttons.unshift({
-                label: 'Форматировать',
+                label: App.translate('Format'),
                 action: function () {
                     let editor = element.data('editor');
                     let totalLines = editor.lineCount();
@@ -289,7 +289,7 @@ fieldTypes.text = {
             });
         }
 
-        let title = 'Текст поля <b>' + (this.title) + ', ' + field.textType + '</b>';
+        let title = App.translate('Field <b>%s</b> text',this.title ) + ', <b>' + field.textType + '</b>';
         let eventName = 'ctrlS.textedit';
 
         if (editNow) {
@@ -384,7 +384,7 @@ fieldTypes.text = {
             }, 1);
 
 
-            div.text('Редактирование в форме').addClass('edit-in-form');
+            div.text(App.translate('Editing in the form')).addClass('edit-in-form');
         } else {
             div.on('keydown click', function (event) {
                 if (event.key === 'Tab') {
@@ -442,7 +442,7 @@ fieldTypes.text = {
                 }
             });
 
-            let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text('Редактировать текст');
+            let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Edit text'));
             if (tabindex) btn.attr('tabindex', tabindex);
 
             div.append(btn);

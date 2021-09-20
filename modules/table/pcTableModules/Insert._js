@@ -43,7 +43,7 @@ $.extend(App.pcTableMain.prototype, {
         let panel;
 
         let btns = {};
-        btns[('<span id="saveInsertRow">Сохранить</span>')] =
+        btns[('<span id="saveInsertRow">'+App.translate('Save')+'</span>')] =
             function () {
                 if (!panel.is('.onSaving')) {
                     panel.addClass('onSaving');
@@ -104,7 +104,7 @@ $.extend(App.pcTableMain.prototype, {
         if (Object.keys(pcTable._insertError).length) {
             let fieldName = Object.keys(pcTable._insertError)[0];
             let _error = pcTable._insertError[fieldName];
-            App.notify(_error, $('<div>Ошибка в поле </div>').append($('<span>').text(pcTable.fields[fieldName].title || pcTable.fields[fieldName].name)));
+            App.notify(_error, $('<div>'+App.translate('Error in %s field', $('<span>').text(pcTable.fields[fieldName].title || pcTable.fields[fieldName].name)).html())+'</div>');
             pcTable._currentInsertCellIndex = pcTable.fieldCategories.visibleColumns.findIndex(function (field) {
                 if (field.name === fieldName) return true
             });
@@ -205,10 +205,10 @@ $.extend(App.pcTableMain.prototype, {
         if (this.isTreeView && this.tableRow.type==='cycles'){
         }
         else if (this.viewType === 'panels' || this.isRotatedView || this.isTreeView) {
-            getAddButton('Добавить', AddWithPanel, "add").width(80)
+            getAddButton(App.translate('Add'), AddWithPanel, "add").width(80)
         } else {
             if (this.tableRow.id !== 2) {
-                getAddButton('Добавить', AddWithRow, "add").width(80)
+                getAddButton(App.translate('Add'), AddWithRow, "add").width(80)
             }
 
             if (!pcTable.isMobile && this.tableRow.panel) {

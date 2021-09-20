@@ -259,11 +259,11 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                             try {
                                 val = element.data('editor').get();
                                 if (typeof val !== "object") {
-                                    throw 'Ошибка структуры поля';
+                                    throw App.translate('Field structure error');
                                 }
                             } catch (err) {
-                                App.notify('Ошибка структуры поля ' + nameField);
-                                throw 'Ошибка структуры поля';
+                                App.notify(App.translate('Field %s structure error', nameField));
+                                throw App.translate('Field structure error');
                             }
                             break;
                         case "html":
@@ -307,7 +307,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
         buttons = [
             {
-                'label': "Сохранить",
+                'label': App.translate('Save'),
                 cssClass: 'btn-m btn-warning',
                 action: save
             }, {
@@ -326,7 +326,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             window.top.BootstrapDialog.show({
                 message: dialog,
                 type: BootstrapDialog.TYPE_DANGER,
-                title: 'Параметры поля <b>' + (item.title.v) + '</b>',
+                title: App.translate('Field <b>%s</b> parameters', item.title.v),
                 buttons: buttons,
                 cssClass: 'fieldparams-edit-panel',
                 draggable: true,
@@ -357,43 +357,8 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             });
 
 
-            div.text('Редактирование в форме').addClass('edit-in-form');
+            div.text(App.translate('Editing in the form')).addClass('edit-in-form');
         } else {
-            /*let clicked = false;
-            div.on('focus click', 'button', function () {
-                if (clicked) return;
-                clicked = true;
-
-                var div = $(this).closest('div');
-                window.top.BootstrapDialog.show({
-                    message: dialog,
-                    type: BootstrapDialog.TYPE_DANGER,
-                    cssClass: 'fieldparams-edit-panel',
-                    title: 'Параметры поля <b>' + (item.title.v) + '</b>',
-                    buttons: buttons,
-                    draggable: true,
-                    size: BootstrapDialog.SIZE_WIDE,
-                    onhide: function (event) {
-                        escClbk(div, event);
-                        $('body').off(eventName);
-                        clicked = false;
-                    },
-                    onshown: function (dialog) {
-                        dialog.$modalDialog.width(1000);
-                        dialog.$modalHeader.css('cursor', 'pointer')
-                        formFill(oldValueParam.v);
-                        $('body').on(eventName, function (event) {
-                            save(dialog);
-                        });
-                    }
-                })
-            });
-
-            let btn = $('<button class="btn btn-danger btn-sm text-edit-button">').text('Редактировать параметры');
-            if (tabindex) btn.attr('tabindex', tabindex);
-
-            div.append(btn);*/
-
             formFill(oldValueParam.v)
             div.append(form)
             div.addClass('fieldparams-edit-panel')
@@ -455,7 +420,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             case 'json':
                 element = $('<div class="JSONEditor">').height(500).on('blur', callback);
                 var editor = new JSONEditor(element.get(0), {});
-                var btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">Вручную</a>').on('click', function () {
+                var btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">'+App.translate('Manually')+'</a>').on('click', function () {
                     var div = $('<div>');
                     var textarea = $('<textarea class="form-control" style="height: 250px;">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
 
@@ -463,17 +428,17 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     BootstrapDialog.show({
                         message: div,
                         type: null,
-                        title: 'Ручное изменение json-поля',
+                        title: App.translate('Manually changing the json field'),
                         buttons: [
                             {
-                                'label': "Сохранить",
+                                'label': App.translate('Save'),
                                 cssClass: 'btn-m btn-warning',
                                 action: function (dialog) {
                                     try {
                                         editor.setText(textarea.val());
                                         dialog.close();
                                     } catch (e) {
-                                        window.top.App.modal('Ошибка формата JSON')
+                                        window.top.App.modal(App.translate('JSON format error'))
                                     }
                                 }
                             }, {
@@ -508,7 +473,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 element.find('.jsoneditor-menu').append(btn);
 
                 if (fName === 'chartOptions') {
-                    let btn2 = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">Заполнить настройками по умолчанию</a>');
+                    let btn2 = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">'+App.translate('Fill in by the default settings')+'</a>');
                     btn2.on('click', () => {
                         let vl = $('div[data-name="chartType"] select').val();
 
@@ -709,7 +674,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
         return JSON.stringify(data, null, 2);*/
     },
     getCellText: function (fieldValue) {
-        return 'Настройки поля';
+        return App.translate('Field settings');
     }
 })
 ;

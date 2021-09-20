@@ -4,7 +4,7 @@
 
         let btns = [
             {
-                'label': "Развернуть все",
+                'label': App.translate("Expand All"),
                 cssClass: 'btn-m btn-default',
                 'action': function (dialog) {
                     $mes.jstree("open_all");
@@ -26,7 +26,7 @@
         window.top.BootstrapDialog.show({
             message: $mes,
             type: BootstrapDialog.TYPE_DANGER,
-            title: 'Схема расчета',
+            title: App.translate('Scheme of calculation'),
             buttons: btns,
             draggable: true,
             cssClass: 'log-output',

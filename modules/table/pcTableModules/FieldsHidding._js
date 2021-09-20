@@ -232,7 +232,7 @@
                 setsDiv = setsDiv || $('#defaultEyeGroups'),
                     sets = pcTable.tableRow.fields_sets || [];
 
-                setsDiv.empty().append('<b>Наборы по умолчанию:</b> ');
+                setsDiv.empty().append('<b>' + App.translate('Default sets') + ':</b> ');
 
                 sets.forEach(function (set, i) {
                     let link = $('<a href="#">').text(set.name).data('index', i);
@@ -284,7 +284,7 @@
             if (sets && sets.length) {
                 let setsDiv = $('<div class="fieldsHiddenSets">').appendTo($fieldsDiv);
 
-                setsDiv.append('<b>Наборы:</b> ');
+                setsDiv.append('<b>' + App.translate('Sets') + ':</b> ');
 
                 sets.forEach(function (name) {
                     let link = $('<a href="#">').text(name).data('name', name);
@@ -292,7 +292,7 @@
                     let span = link.parent();
                     span.append($('<button class="btn btn-xxs" data-action="remove"><i class="fa fa-remove"></i></button>').data('name', name));
                     if (pcTable.isCreatorView) {
-                        span.append($('<button class="btn btn-xxs field_name" data-action="addDefaultSet" title="Сохранить как набор по умолчанию"><i class="fa fa-save"></i></button>').data('name', name));
+                        span.append($('<button class="btn btn-xxs field_name" data-action="addDefaultSet" title="' + App.translate('Save as default set') + '"><i class="fa fa-save"></i></button>').data('name', name));
                     }
                 });
                 setsDiv.on('click', '.btn', function () {
@@ -352,7 +352,7 @@
 
             let buttons = [
                 {
-                    label: 'Применить',
+                    label: App.translate('Apply'),
                     action: function (dialogRef) {
                         let fields = {};
                         $fieldsDiv.find('input:checked').each(function () {
@@ -365,7 +365,7 @@
                     }
                 },
                 {
-                    label: 'По умолчанию',
+                    label: App.translate('By default'),
                     action: function (dialogRef) {
                         dialogRef.close();
                         pcTable.setDefaultVisibleFields.call(pcTable);
@@ -373,7 +373,7 @@
                     }
                 },
                 {
-                    label: 'Показать все',
+                    label: App.translate('Show all'),
                     action: function (dialogRef) {
                         dialogRef.close();
                         let fields = {};
@@ -384,7 +384,7 @@
                     }
                 },
                 {
-                    label: 'Создать набор',
+                    label: App.translate('Create a set'),
                     action: function (dialogRef) {
 
                         let fields = {};
@@ -396,14 +396,14 @@
                         dialogRef.close();
 
                         let $divSetName = $('<div></div>');
-                        $divSetName.append('<div style="padding-top: 10px;"><label>Название набора</label><input type="text" id="fieldsSetName" class="form-control"/></div>');
+                        $divSetName.append('<div style="padding-top: 10px;"><label>' + App.translate('Set title') + '/label><input type="text" id="fieldsSetName" class="form-control"/></div>');
                         window.top.BootstrapDialog.show({
                             message: $divSetName,
-                            title: 'Сохранить набор полей',
+                            title: App.translate('Save the fields set'),
                             type: null,
                             buttons: [
                                 {
-                                    label: 'Сохранить',
+                                    label: App.translate('Save'),
                                     action: function (dialog) {
                                         let $input = $divSetName.find('#fieldsSetName');
                                         if ($input.val().trim() === '') {
@@ -429,7 +429,7 @@
 
                 },
                 {
-                    label: 'Отмена',
+                    label: App.translate('Cancel'),
                     action: function (dialogRef) {
                         dialogRef.close();
                     }
@@ -439,7 +439,7 @@
 
             if (pcTable.isCreatorView) {
                 buttons.splice(2, 0, {
-                    label: 'Скрыть адм.поля',
+                    label: App.translate('Hide admin. fields'),
                     action: function (dialogRef) {
                         dialogRef.close();
                         pcTable.hideAdminViewFields.call(pcTable);
@@ -448,7 +448,11 @@
                 })
             }
 
-            let categories = {'param': 'Хэдер', 'column': 'Колонки', 'footer': 'Футер'};
+            let categories = {
+                'param': App.translate('Header'),
+                'column': App.translate('Columns'),
+                'footer': App.translate('Footer')
+            };
             Object.keys(categories).forEach(function (category) {
 
                 if (pcTable.fieldCategories[category] && pcTable.fieldCategories[category].length) {
@@ -457,7 +461,7 @@
                     $.each(pcTable.fieldCategories[category], function (k, field) {
                         let hidden = '';
                         if (field.hidden) {
-                            hidden = ' (Скрыто по умолчанию)';
+                            hidden = ' (' + App.translate('Hidden by default') + ')';
                         }
                         let fCheckbox = $('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="' + field.name + '" class="form-check-input"> ' + field.title + hidden + '</label> <input type="number" placeholder="' + field.width + '" value="' + (field.showMeWidth && field.showMeWidth !== field.width ? field.showMeWidth : field.width) + '"/></div>');
                         if (field.showMeWidth) {
@@ -482,7 +486,7 @@
 
             dialog = window.top.BootstrapDialog.show({
                 message: $fieldsDiv,
-                title: 'Видимость полей',
+                title: App.translate('Fields visibility'),
                 buttons: buttons,
                 type: null,
                 draggable: true,
@@ -505,7 +509,7 @@
                 setsDiv = setsDiv || $('#defaultEyeGroups'),
                     sets = pcTable.tableRow.fields_sets || [];
 
-                setsDiv.empty().append('<b>Наборы по умолчанию:</b> ');
+                setsDiv.empty().append('<b>' + App.translate('Default sets') + ':</b> ');
 
                 sets.forEach(function (set, i) {
                     let link = $('<a href="#">').text(set.name).data('index', i);
@@ -559,7 +563,7 @@
 
             let buttons = [
                 {
-                    label: 'Применить',
+                    label: App.translate('Apply'),
                     action: function (dialogRef) {
                         let fields = {};
                         $fieldsDiv.find('input:checked').each(function () {
@@ -572,7 +576,7 @@
                     }
                 },
                 {
-                    label: 'По умолчанию',
+                    label: App.translate('By default'),
                     action: function (dialogRef) {
                         dialogRef.close();
                         pcTable.setDefaultVisibleFields.call(pcTable);
@@ -580,7 +584,7 @@
                     }
                 },
                 {
-                    label: 'Показать все',
+                    label: App.translate('Show all'),
                     action: function (dialogRef) {
                         dialogRef.close();
                         let fields = {};
@@ -591,7 +595,7 @@
                     }
                 },
                 {
-                    label: 'Отмена',
+                    label: App.translate('Cancel'),
                     action: function (dialogRef) {
                         dialogRef.close();
                     }
@@ -599,7 +603,11 @@
 
             ];
 
-            let categories = {'param': 'Хэдер', 'column': 'Колонки', 'footer': 'Футер'};
+            let categories = {
+                'param': App.translate('Header'),
+                'column': App.translate('Columns'),
+                'footer': App.translate('Footer')
+            };
             Object.keys(categories).forEach(function (category) {
 
                 if (pcTable.fieldCategories[category] && pcTable.fieldCategories[category].length) {
@@ -608,7 +616,7 @@
                     $.each(pcTable.fieldCategories[category], function (k, field) {
                         let hidden = '';
                         if (field.hidden) {
-                            hidden = ' (Скрыто по умолчанию)';
+                            hidden = ' ('+App.translate('Hidden by default')+')';
                         }
                         let fCheckbox = $('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="' + field.name + '" class="form-check-input"> ' + field.title + hidden + '</label></div>');
                         if (field.showMeWidth) {
@@ -633,7 +641,7 @@
 
             dialog = window.top.BootstrapDialog.show({
                 message: $fieldsDiv,
-                title: 'Видимость полей',
+                title: App.translate('Fields visibility'),
                 buttons: buttons,
                 type: null,
                 draggable: true,

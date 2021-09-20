@@ -57,10 +57,10 @@
 
             if (pcTable.isTreeView) {
                 pcTable._connectTreeView.call(pcTable);
-                if(this.fields.tree.treeViewType==='other'){
+                if (this.fields.tree.treeViewType === 'other') {
                     this.addReOrderRowBind();
                 }
-            }else{
+            } else {
                 this.addReOrderRowBind();
             }
 
@@ -196,66 +196,6 @@
                 return false;
             })
         },
-        _clicksToCodeView: function () {
-            let pcTable = this;
-            this._container.on('click', 'th .roles', function () {
-                    let img = $(this);
-                    if (img.hasClass('.fa-sun-o') || img.hasClass('fa-certificate')) {
-
-                        let field = pcTable._getFieldBytd(img.closest('th'));
-
-                        let newCodemirrorDiv = $('<div class="HTMLEditor" id="bigOneCodemirror" style="height: 100%;"></div>');
-
-                        let editorMax;
-
-                        BootstrapDialog.show({
-                            message: newCodemirrorDiv,
-                            type: null,
-                            title: 'Просмотр кода поля ' + field.title,
-
-                            cssClass: 'fieldparams-edit-panel',
-                            draggable: true,
-                            onhide: function (event) {
-                                mirror.setValue(editorMax.getValue());
-                            },
-
-                            onshow: function (dialog) {
-                                dialog.$modalHeader.css('cursor', 'pointer');
-                                dialog.$modalContent.css({
-                                    width: "90vw",
-                                    minHeight: "90vh"
-                                });
-
-                            },
-                            onshown: function (dialog) {
-                                editorMax = CodeMirror(newCodemirrorDiv.get(0), {
-                                    mode: 'totum',
-                                    value: field.code[0],
-                                    theme: 'eclipse',
-                                    lineNumbers: true,
-                                    indentWithTabs: true,
-                                    autoCloseTags: true,
-                                    bigOneDialog: dialog,
-                                    readOnly: true
-                                });
-
-                                if (mirror.table) editorMax.table = mirror.table;
-
-                                let minheight = Math.round(dialog.$modalContent.height() - dialog.$modalHeader.outerHeight() - 40);
-                                editorMax.getScrollerElement().style.minHeight = minheight + 'px';
-                                newCodemirrorDiv.find('.CodeMirror').css('min-heught', minheight);
-                                editorMax.focus();
-                                dialog.$modalContent.position({
-                                    my: 'center top',
-                                    at: 'center top+30px',
-                                    of: window
-                                });
-                            }
-                        })
-                    }
-                }
-            )
-        },
         _seeCalcucatedValData: function () {
             var pcTable = this;
             this._container.on('mouseover', 'td .fa-hand-paper-o', function () {
@@ -286,7 +226,7 @@
                             if (typeof cellText === 'object') cellText = cellText.text();
                         }
                     }
-                    notify.append($('<div>Расчетное значение: </div>').append($('<code>').text(cellText)));
+                    notify.append($('<div>' + App.translate('Calculated value') + ': </div>').append($('<code>').text(cellText)));
 
                     hand.one('mouseout', function () {
                         if (notify.length) {
@@ -375,7 +315,7 @@
                     }
 
 
-                    let btn = $('<button class="btn btn-danger btn-sm"><i class="fa" style="width: 12px"></i> Показать логи</button>')
+                    let btn = $('<button class="btn btn-danger btn-sm"><i class="fa" style="width: 12px"></i> ' + App.translate('Show logs') + '</button>')
                         .appendTo(LogButtons)
                         .on('click', function () {
                             let $div;
@@ -408,12 +348,12 @@
                             } else {
 
                                 $div = $('<div>');
-                                $div.append('<div><input type="checkbox" name="c"/> Код</div>');
-                                $div.append('<div><input type="checkbox" name="a"/> Код-действия</div>');
-                                $div.append('<div><input type="checkbox" name="s"/> Селекты</div>');
-                                $div.append('<div><input type="checkbox" name="f"/> Форматирование</div>');
+                                $div.append('<div><input type="checkbox" name="c"/> ' + App.translate('Code') + '</div>');
+                                $div.append('<div><input type="checkbox" name="a"/> ' + App.translate('Action code') + '</div>');
+                                $div.append('<div><input type="checkbox" name="s"/> ' + App.translate('Selects') + '</div>');
+                                $div.append('<div><input type="checkbox" name="f"/> ' + App.translate('Formating') + '</div>');
 
-                                let $times = $('<div><input type="checkbox" name="flds"/> Время расчета полей </div>');
+                                let $times = $('<div><input type="checkbox" name="flds"/> ' + App.translate('Fields calculation time') + ' </div>');
                                 $div.append($times)
                                 if (pcTable.FieldLOGS && pcTable.FieldLOGS.length) {
                                     pcTable.FieldLOGS.forEach((log) => {
@@ -425,7 +365,7 @@
                                 }
 
 
-                                $div.append('<div style="padding-top: 10px;"><button class="btn btn-sm btn-default">Применить</button></div>');
+                                $div.append('<div style="padding-top: 10px;"><button class="btn btn-sm btn-default">' + App.translate('Apply') + '</button></div>');
                                 $div.find('input').each(function (i, input) {
                                     input = $(input);
                                     if (codes.indexOf(input.attr('name')) !== -1) {
@@ -471,11 +411,11 @@
 
                     if (codes.length > 0) img.addClass('fa-check-square-o'); else img.addClass('fa-square-o');
 
-                    let btnLog = $('<button class="btn btn-danger btn-sm">Лог</button>').appendTo(LogButtons);
+                    let btnLog = $('<button class="btn btn-danger btn-sm">' + App.translate('Log') + '</button>').appendTo(LogButtons);
                     pcTable.LogButton = btnLog;
                     btnLog.on('click', function () {
                         if (!pcTable.FullLOGS || pcTable.FullLOGS.length === 0) {
-                            App.logOutput('Лог пуст. Включите логирование и перегрузите страницу');
+                            App.logOutput('Log is empty');
                         } else {
                             App.logOutput(pcTable.FullLOGS);
                         }
@@ -510,9 +450,10 @@
                 }
 
                 if (pcTable.withCsvButtons) {
-                    let btn = $('<button class="btn btn-default btn-sm">CSV-экспорт</button>')
+                    let btn = $('<button class="btn btn-default btn-sm">CSV-' + App.translate('export') + '</button>')
                         .on('click', function () {
-                            let $panel = $('<div><div class="menu-item" data-type="full">Полный</div><div class="menu-item"  data-type="rows">Только строки</div></div>')
+                            let $panel = $('<div><div class="menu-item" data-type="full">' + App.translate('Full') + '</div>' +
+                                '<div class="menu-item"  data-type="rows">' + App.translate('Only rows') + '</div></div>')
                             $panel.on('click', '.menu-item', function () {
                                 let type = $(this).is('[data-type="full"]') ? 'full' : 'rows';
                                 $panel.remove();
@@ -541,9 +482,10 @@
                     csv.append(btn);
                 }
                 if (pcTable.withCsvEditButtons && this.control.editing) {
-                    let btn = $('<button class="btn btn-default btn-sm">CSV-импорт</button>')
+                    let btn = $('<button class="btn btn-default btn-sm">CSV-' + App.translate('import') + '</button>')
                         .on('click', function () {
-                            let $panel = $('<div><div class="menu-item" data-type="full">Полный</div><div class="menu-item"  data-type="rows">Только строки</div></div>')
+                            let $panel = $('<div><div class="menu-item" data-type="full">' + App.translate('Full') + '</div>' +
+                                '<div class="menu-item"  data-type="rows">' + App.translate('Only rows') + '</div></div>')
                             $panel.on('click', '.menu-item', function () {
                                 let type = $(this).is('[data-type="full"]') ? 'full' : 'rows';
                                 $panel.remove();
@@ -600,10 +542,11 @@
 
             if (this.isCreatorView && this.isMain) {
                 let creatorPart = $('<div class="creator-buttons">');
-                $('<button class="btn btn-default btn-xxs field_name copy_me" data-copied-text="Скопировано"/>').text(this.tableRow.name).appendTo(creatorPart);
+                $('<button class="btn btn-default btn-xxs field_name copy_me" data-copied-text="' + App.translate('Copied') + '"/>').text(this.tableRow.name).appendTo(creatorPart);
 
 
-                $('<button class="btn btn-danger btn-xxs" title="Редактировать настройки таблицы"/>').html('<i class="fa fa-pencil-square-o"></i>').on('click', function () {
+                $('<button class="btn btn-danger btn-xxs" title="' + App.translate('Edit table settings') + '"/>')
+                    .html('<i class="fa fa-pencil-square-o"></i>').on('click', function () {
                     (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {id: pcTable.tableRow.id})).then(function (json) {
                         if (json) window.location.reload(true);
                     });
@@ -611,25 +554,25 @@
 
 
                 let filters = {'fl_name': [this.tableRow.id]};
-                $('<a href="/Table/' + this.Tables.branchId + '/' + this.Tables.id + '/?' + $.param({f: filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Открыть список таблиц"/>').html('<i class="fa fa-external-link"></i>').appendTo(creatorPart);
+                $('<a href="/Table/' + this.Tables.branchId + '/' + this.Tables.id + '/?' + $.param({f: filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="' + App.translate('Open Tables') + '"/>').html('<i class="fa fa-external-link"></i>').appendTo(creatorPart);
 
 
                 filters = {'f_table_categories': this.tableRow.category, 'f_table': this.tableRow.id};
                 if (this.tableRow.__version) {
                     filters.fl_version = this.tableRow.__version
                 }
-                $('<a href="/Table/' + this.Tables.branchId + '/' + this.TableFields.id + '/?' + $.param({f: filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Открыть состав таблиц"/>').html('<i class="fa fa-external-link-square"></i>').appendTo(creatorPart);
+                $('<a href="/Table/' + this.Tables.branchId + '/' + this.TableFields.id + '/?' + $.param({f: filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="' + App.translate('Open Tables Fields') + '"/>').html('<i class="fa fa-external-link-square"></i>').appendTo(creatorPart);
 
 
                 if (this.tableRow.type === "calcs") {
                     creatorPart.append(' ');
                     let btnCopyTable = $('<a href="/Table/' + this.TablesVersions.branchId + '/' + this.TablesVersions.id + '?'
-                        + $.param({f: this.calcstable_cycle_version_filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Создание версий таблиц"><i class="fa fa-code-fork"></i></a>');
+                        + $.param({f: this.calcstable_cycle_version_filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="' + App.translate('Creating tables versions') + '"><i class="fa fa-code-fork"></i></a>');
                     creatorPart.append(btnCopyTable);
 
                     creatorPart.append(' ');
                     btnCopyTable = $('<a href="/Table/' + this.TablesCyclesVersions.branchId + '/' + this.TablesCyclesVersions.id + '?'
-                        + $.param({f: this.calcstable_versions_filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="Изменение версий таблиц цикла"><i class="fa fa-random"></i></a>');
+                        + $.param({f: this.calcstable_versions_filters}) + '" target="_blank" class="btn btn-danger btn-xxs" title="' + App.translate('Changing versions of cycle tables') + '"><i class="fa fa-random"></i></a>');
                     creatorPart.append(btnCopyTable);
 
 
@@ -641,7 +584,7 @@
 
 
                 if (this.tableRow.type === "calcs") {
-                    type.append(' / Версия ' + this.tableRow.__version + ' / Цикл ' + this.tableRow.cycle_id)
+                    type.append(App.translate(' / Version %s / Cycle %s', [this.tableRow.__version, this.tableRow.cycle_id]))
                 }
 
                 let btnHideAdd = $('<button class="btn btn-danger btn-sm" id="hide-hell" disabled><i class="fa fa-times"></i></span></button>')
@@ -651,7 +594,7 @@
 
                 creatorPart.appendTo(topButtons);
 
-                let btnAdd = $('<button class="btn btn-danger btn-sm">Добавить поле</span></button>').width(113)
+                let btnAdd = $('<button class="btn btn-danger btn-sm">' + App.translate('Add field') + '/span></button>').width(113)
                     .on('click', function () {
                         let data = {
                             table_id: {v: pcTable.tableRow.id}, data_src: {v: pcTable_default_field_data_src}
@@ -849,12 +792,12 @@
 
             $block.append(first)
             $block.append(before)
-            $block.append('<span class="ttm-pages">' + (page + 1) + ' из ' + allPages + '</span>')
+            $block.append('<span class="ttm-pages">' + App.translate('%s from %s', [(page + 1), allPages]) + '</span>')
             $block.append(after)
             $block.append(last)
 
             $block.append(onpaging)
-            onpaging.append(' из ' + allCount)
+            onpaging.append(App.translate('%s from %s', ['', allCount]))
 
             if (allPages > 1) {
                 $block.addClass('ttm-pagination-warning');
@@ -920,7 +863,7 @@
 
 
                 if (this.control.restoring) {
-                    $('<button data-action="restore" class="btn btn-sm btn-default">' + (this.isRestoreView ? 'Норм режим' : 'Восстановить') + '</button>')
+                    $('<button data-action="restore" class="btn btn-sm btn-default">' + App.translate(this.isRestoreView ? 'Normal mode' : 'Restore') + '</button>')
                         .width(80)
                         .css('margin-left', '5px')
                         .on('click', this.switchRestoreView.bind(this)).appendTo(buttons)
@@ -941,7 +884,7 @@
 
                 if (!this.isTreeView || this.fields.tree.treeViewLoad) {
 
-                    let btnAdd = $('<button class="btn btn-sm" style="margin-left: 5px;">Сбросить <span class="fa fa-filter"></span></button>').width(82)
+                    let btnAdd = $('<button class="btn btn-sm" style="margin-left: 5px;">' + App.translate('Reset') + ' <span class="fa fa-filter"></span></button>').width(82)
                         .on('click', function () {
                             setTimeout(function () {
                                 pcTable.filtersEmpty.call(pcTable)
@@ -961,7 +904,7 @@
 
             if (this.f.tablecomment) {
                 let comment = $('<div class="pcTable-tableComment">').on('click', function () {
-                    App.panel('Комментарий строчной части таблицы', pcTable.f.tablecomment)
+                    App.panel(App.translate('Comment of the table rows part'), pcTable.f.tablecomment)
                 });
                 buttons.prepend(comment.text(this.f.tablecomment));
                 setTimeout(function () {
@@ -1004,10 +947,8 @@
                 if (!this.isAnonim)
                     dt = moment(this.model.tableData.updated.dt, 'YYY-MM-DD HH:mm').format('DD.MM HH:mm') + ' (code: ' + this.model.tableData.updated.code + ')';
                 let updatedDiv = $('<div class="small">').text(dt);
-                if (this.tableRow["__blocked"]) {
-                    updatedDiv.append('<div class="">Блокирована' + (this.tableRow["license_error"] ? ': ' + this.tableRow["license_error"] : '') + '</div>');
-                } else if (this.control.editing === false) {
-                    updatedDiv.append('<div class="">Только чтение</div>');
+                if (this.control.editing === false) {
+                    updatedDiv.append('<div class="">' + App.translate('Read only') + '</div>');
                 }
                 this._beforeSpace_title.find('.updated').html(updatedDiv);
             }
@@ -1072,7 +1013,9 @@
 
             if (pcTable.fieldCategories.filter.length) {
 
-                this.___createClosedSection(this._filtersBlock, $('<div class="pcTable-sectionTitle"><span>Фильтры</span></div>').appendTo(this._filtersBlock), 'flt');
+                this.___createClosedSection(this._filtersBlock,
+                    $('<div class="pcTable-sectionTitle"><span>' + App.translate('Filters') + '</span></div>')
+                        .appendTo(this._filtersBlock), 'flt');
 
                 this._filtersBlock.addClass('pcTable-filtersTables');
 
@@ -1607,7 +1550,7 @@
             let OrderClass = 'btn-warning';
 
             let $btnNHiding = $('<button class="btn btn-default btn-xxs" id="n-expander"><i class="fa fa-sort"></i></button>')
-            if (this.isTreeView && this.fields.tree.treeViewType!=='other') {
+            if (this.isTreeView && this.fields.tree.treeViewType !== 'other') {
                 $btnNHiding.prop('disabled', true)
             } else {
                 $btnNHiding.on('click', function () {
@@ -1858,19 +1801,19 @@
                     let title = '';
                     if (field.CodeActionOnAdd) {
                         if (title !== '') title += "\n";
-                        title += 'При добавлении';
+                        title += App.translate('On adding');
                     }
                     if (field.CodeActionOnChange) {
                         if (title !== '') title += "\n";
-                        title += 'При изменении';
+                        title += App.translate('On changing');
                     }
                     if (field.CodeActionOnDelete) {
                         if (title !== '') title += "\n";
-                        title += 'При удалении';
+                        title += App.translate('On deleting');
                     }
                     if (field.type === 'button' || field.CodeActionOnClick) {
                         if (title !== '') title += "\n";
-                        title += 'При клике';
+                        title += App.translate('On click');
                     }
                     if (title === "") {
                         star.removeClass('fa-star').addClass('fa-star-o');
@@ -1904,13 +1847,13 @@
                     } else if (!field.insertable) {
                         if (field.category === "column") {
                             if (!field.editable) {
-                                creatorIcons.append($('<i class="fa fa-lock roles h"></i>').attr('title', 'Добавление и редактирование запрещено'));
+                                creatorIcons.append($('<i class="fa fa-lock roles h"></i>').attr('title', App.translate('Adding and editing is disallowed')));
                                 lockInHead = true;
                             } else {
-                                creatorIcons.append($('<i class="fa fa-plus roles h"></i>').attr('title', 'Добавление запрещено'));
+                                creatorIcons.append($('<i class="fa fa-plus roles h"></i>').attr('title', App.translate('Adding is disallowed')));
                             }
                         } else if (!field.editable) {
-                            creatorIcons.append($('<i class="fa fa-lock roles h"></i>').attr('title', 'Редактирование запрещено'));
+                            creatorIcons.append($('<i class="fa fa-lock roles h"></i>').attr('title', App.translate('Editing is disallowed')));
                             lockInHead = true;
                         }
                     }
@@ -1918,7 +1861,7 @@
                     if (field.editRoles) {
                         creatorIcons.append($('<i class="fa fa-pencil roles h"></i>').attr('title', getRoles(field.editRoles)));
                     } else if (!field.editable && !lockInHead) {
-                        creatorIcons.append($('<i class="fa fa-pencil roles h"></i>').attr('title', 'Редактирование запрещено'));
+                        creatorIcons.append($('<i class="fa fa-pencil roles h"></i>').attr('title', App.translate('Editing is disallowed')));
                     }
 
                     if (field.logRoles) {
@@ -1960,7 +1903,7 @@
                 let closeLimit;
                 if (pcTable.isMobile) {
                     span_help.on('click', function () {
-                        App.mobilePanel('Поле ' + field.title, field.help);
+                        App.mobilePanel(App.translate('Field %s', field.title), field.help);
                     })
                 } else
                     span_help.on('click open close', function (event) {
@@ -2046,7 +1989,7 @@
 
                     if (pcTable.isCreatorView) {
                         let btn = $('<div class="menu-item color-danger">');
-                        btn.append('<i class="fa fa-pencil-square-o"></i> Изменить');
+                        btn.append('<i class="fa fa-pencil-square-o"></i> ' + App.translate('Change'));
                         $divPopoverArrowDown.append(btn);
 
 
@@ -2060,7 +2003,7 @@
 
 
                         btn = $('<div class="menu-item color-danger">');
-                        btn.append('<i class="fa fa-clone"></i> Дублировать');
+                        btn.append('<i class="fa fa-clone"></i> ' + App.translate('Duplicate'));
                         $divPopoverArrowDown.append(btn);
                         btn.on('click', function () {
 
@@ -2082,7 +2025,7 @@
                         });
 
                         btn = $('<div class="menu-item color-danger">');
-                        btn.append('<i class="fa fa-plus"></i> Вставить после');
+                        btn.append('<i class="fa fa-plus"></i> ' + App.translate('Insert after'));
                         $divPopoverArrowDown.append(btn);
                         btn.on('click', function () {
                             App.getPcTableById(2, {afterField: field.ord}).then(function (pcTableTable) {
@@ -2100,7 +2043,7 @@
 
                         if (field.category === 'param' || (field.category === 'footer' && field.column == "")) {
                             btn = $('<div class="menu-item color-danger">');
-                            btn.append('<i class="fa fa-hand-scissors-o"></i> Секция');
+                            btn.append('<i class="fa fa-hand-scissors-o"></i> ' + App.translate('Section'));
                             $divPopoverArrowDown.append(btn);
                             btn.on('click', () => {
                                 this.__editSectionTitle(field)
@@ -2109,7 +2052,7 @@
 
 
                         btn = $('<div class="menu-item color-danger">');
-                        btn.append('<i class="fa fa-refresh"></i> Изменить NAME');
+                        btn.append('<i class="fa fa-refresh"></i> ' + App.translate('Change NAME'));
                         $divPopoverArrowDown.append(btn);
                         btn.on('click', function () {
                             pcTable.model.renameField(field.name);
@@ -2117,7 +2060,7 @@
 
 
                         btn = $('<div class="menu-item color-danger">');
-                        btn.append('<i class="fa fa-times"></i> Удалить');
+                        btn.append('<i class="fa fa-times"></i> ' + App.translate('Delete'));
                         $divPopoverArrowDown.append(btn);
                         btn.on('click', function () {
 
@@ -2126,14 +2069,14 @@
 
                             BootstrapDialog.show({
                                 type: BootstrapDialog.TYPE_DANGER,
-                                title: 'Удалить поле ' + title + ' из таблицы ' + pcTable.tableRow.title + '?',
+                                title: App.translate('Delete field %s from table %s?', [title, pcTable.tableRow.title]),
                                 buttons: [
                                     {
                                         action: function (panel, event) {
                                             "use strict";
                                             panel.close();
                                             App.getPcTableById(2).then(function (pcTableFields) {
-                                                App.panelTimer('Удаление поля ' + title + ' из таблицы ' + pcTable.tableRow.title, pcTableFields.tableRow.delete_timer, function () {
+                                                App.panelTimer(App.translate('Deleting field %s from table %s?', [title, pcTable.tableRow.title]), pcTableFields.tableRow.delete_timer, function () {
                                                     pcTableFields.model.delete(field.id).then(function () {
                                                         window.location.reload(true);
                                                     })
@@ -2141,13 +2084,13 @@
                                             });
                                         },
                                         cssClass: 'btn-warning',
-                                        label: 'Удалить'
+                                        label: App.translate('Delete')
                                     },
                                     {
                                         action: function (panel) {
                                             panel.close();
                                         },
-                                        label: 'Отмена'
+                                        label: App.translate('Cancel')
                                     }
                                 ],
                                 draggable: true
@@ -2162,13 +2105,13 @@
                         if (!pcTable.isMobile) {
                             let btn = $('<div class="menu-item">');
                             if (field.showMeWidth) {
-                                btn.append('<i class="fa fa-eye-slash"></i> Скрыть');
+                                btn.append('<i class="fa fa-eye-slash"></i> ' + App.translate('Hide'));
                                 btn.on('click', function () {
                                     btnDropDown.popover('hide');
                                     pcTable.fieldsHiddingHide.call(pcTable, field.name);
                                 });
                             } else {
-                                btn.append('<i class="fa fa-eye-slash"></i> Показать');
+                                btn.append('<i class="fa fa-eye-slash"></i> ' + App.translate('Show'));
                                 btn.on('click', function () {
                                     btnDropDown.popover('hide');
                                     pcTable.setColumnWidth.call(pcTable, field.name, field.width, field.id);
@@ -2180,13 +2123,13 @@
                             if (field.category !== 'column' || !pcTable.isRotatedView) {
                                 //ширина
                                 btn = $('<div class="menu-item">');
-                                btn.append('<i class="fa fa-arrows-h"></i> Ширина поля');
+                                btn.append('<i class="fa fa-arrows-h"></i> ' + App.translate('Field width'));
                                 btn.on('click', function () {
                                     btnDropDown.popover('hide');
                                     let div = $('<div><input type="number" class="form-control" value="' + field.showMeWidth + '" style="padding-left: 2px;"/></div>');
                                     let btns = [
                                         {
-                                            label: 'Применить',
+                                            label: App.translate('Apply'),
                                             action: function (dialog) {
                                                 let width = parseInt(div.find('input').val());
                                                 dialog.close();
@@ -2195,7 +2138,7 @@
                                             }
                                         },
                                         {
-                                            label: 'Отмена',
+                                            label: App.translate('Cancel'),
                                             action: function (dialog) {
                                                 dialog.close()
                                             }
@@ -2203,7 +2146,7 @@
                                     ];
                                     if (pcTable.isCreatorView) {
                                         btns.splice(0, 0, {
-                                            label: 'По умолчанию',
+                                            label: App.translate('By default'),
                                             cssClass: 'btn-m btn-danger',
                                             action: function (dialog) {
                                                 let width = parseInt(div.find('input').val());
@@ -2215,7 +2158,7 @@
                                     BootstrapDialog.show({
                                         message: div,
                                         /*cssClass: 'edit-row-panel',*/
-                                        title: 'Ширина поля ' + field.title,
+                                        title: App.translate('Field %s width', field.title),
                                         onshown: function (dialog) {
                                             let inp = div.find('input');
                                             inp.focus();
@@ -2241,13 +2184,13 @@
 
 
                         if (pcTable.fixedColumn === field.name) {
-                            $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Открепить').addClass('color-warning').appendTo($divPopoverArrowDown)
+                            $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> ' + App.translate('Unpin')).addClass('color-warning').appendTo($divPopoverArrowDown)
                                 .on('click', function () {
                                     btnDropDown.popover('hide');
                                     pcTable.fixColumn();
                                 });
                         } else if (field.type !== 'button' && !pcTable.isRotatedView) {
-                            $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> Закрепить').appendTo($divPopoverArrowDown)
+                            $('<div class="menu-item">').append('<i class="fa fa-thumb-tack"></i> ' + App.translate('Pin')).appendTo($divPopoverArrowDown)
                                 .on('click', function () {
                                     btnDropDown.popover('hide');
                                     pcTable.fixColumn(field.name);
@@ -2258,7 +2201,7 @@
                             //sort a-z
                             {
                                 let btn = $('<div class="menu-item">');
-                                btn.append('<i class="fa fa-sort-alpha-asc"></i> Сортировать А-Я');
+                                btn.append('<i class="fa fa-sort-alpha-asc"></i> ' + App.translate('Sort A-Z'));
                                 $divPopoverArrowDown.append(btn)
                                 btn.on('click', function () {
                                     pcTable.sort(field, 1);
@@ -2267,7 +2210,7 @@
                             //sort z-a
                             {
                                 let btn = $('<div class="menu-item">');
-                                btn.append('<i class="fa fa-sort-alpha-desc"></i> Сортировать Я-А');
+                                btn.append('<i class="fa fa-sort-alpha-desc"></i> ' + App.translate('Sort Z-A'));
                                 $divPopoverArrowDown.append(btn);
                                 btn.on('click', function () {
                                     pcTable.sort(field, -1);
@@ -2279,7 +2222,7 @@
                         //select column
                         {
                             let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-hand-pointer-o"></i> Выделить');
+                            btn.append('<i class="fa fa-hand-pointer-o"></i> ' + App.translate('Select'));
                             $divPopoverArrowDown.append(btn);
                             btn.on('click', function () {
                                 pcTable.selectedCells.empty();
@@ -2290,7 +2233,7 @@
                         //Математические операции
                         if (field.category === 'column' && field.type === 'number') {
                             let btn = $('<div class="menu-item">');
-                            btn.append('<i class="fa fa-diamond"></i> Математические операции');
+                            btn.append('<i class="fa fa-diamond"></i> ' + App.translate('Math operations'));
                             $divPopoverArrowDown.append(btn);
                             btn.on('click', function () {
                                 let $div = $('<div>');
@@ -2326,7 +2269,7 @@
                                 });
 
 
-                                let table = $('<table class="totum-math-operations"><thead><tr><th>Операция</th><th>Значение</th></tr></thead>').appendTo($div),
+                                let table = $('<table class="totum-math-operations"><thead><tr><th>' + App.translate('Operation') + '</th><th>' + App.translate('Value') + '</th></tr></thead>').appendTo($div),
                                     tbody = $('<tbody>').appendTo(table);
 
                                 let format = function (num, notUnit) {
@@ -2345,16 +2288,16 @@
                                     return num + unit;
                                 };
 
-                                $('<tr><td>Сумма</td><td>' + format(summ) + '</td></tr>').appendTo(tbody);
-                                $('<tr><td>Кол-во чисел</td><td>' + format(count, true) + '</td></tr>').appendTo(tbody);
-                                $('<tr><td>Среднее</td><td>' + (count !== 0 ? format(Big(summ).div(count).round(field.dectimalPlaces || 0)) : "null") + '</td></tr>').appendTo(tbody);
-                                $('<tr><td>Максимальное</td><td>' + format(max) + '</td></tr>').appendTo(tbody);
-                                $('<tr><td>Минимальное</td><td>' + format(min) + '</td></tr>').appendTo(tbody);
-                                $('<tr><td>Нечисл. элементов</td><td>' + format(notNumber, true) + '</td></tr>').appendTo(tbody);
+                                $('<tr><td>' + App.translate('Summ') + '</td><td>' + format(summ) + '</td></tr>').appendTo(tbody);
+                                $('<tr><td>' + App.translate('Number of numbers') + '</td><td>' + format(count, true) + '</td></tr>').appendTo(tbody);
+                                $('<tr><td>' + App.translate('Average') + '</td><td>' + (count !== 0 ? format(Big(summ).div(count).round(field.dectimalPlaces || 0)) : "null") + '</td></tr>').appendTo(tbody);
+                                $('<tr><td>' + App.translate('Max') + '</td><td>' + format(max) + '</td></tr>').appendTo(tbody);
+                                $('<tr><td>' + App.translate('Min') + '</td><td>' + format(min) + '</td></tr>').appendTo(tbody);
+                                $('<tr><td>' + App.translate('Non-numeric elements') + '</td><td>' + format(notNumber, true) + '</td></tr>').appendTo(tbody);
 
 
                                 if (pcTable.isTreeView) {
-                                    $div.append('<div>Посчитано только по видимым строкам</div>')
+                                    $div.append('<div>' + App.translate('Calculated only by visible rows') + '</div>')
                                 }
 
                                 let title = field.title + (field.unitType ? ', ' + field.unitType : '');
@@ -2410,7 +2353,7 @@
                     btnDropDown.on('click', () => {
                         if (field.category === 'column' && pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
                             if ($divPopoverArrowDown.find('.column-dropdown').length === 0)
-                                $divPopoverArrowDown.append('<div class="column-dropdown">По текущей странице </div>');
+                                $divPopoverArrowDown.append('<div class="column-dropdown">' + App.translate('By current page') + ' </div>');
                         } else {
                             $divPopoverArrowDown.find('.column-dropdown').remove();
                         }
@@ -2441,7 +2384,7 @@
                 if (field.category === 'footer' && field.column && this.fields[field.column] && !pcTable.hidden_fields[field.name]) {
                     width = this.fields[field.column].width;
                 }
-                let btn = $('<div class="btn  btn-xxs field_name copy_me"  tabindex="-1" data-copied-text="Скопировано">')
+                let btn = $('<div class="btn  btn-xxs field_name copy_me"  tabindex="-1" data-copied-text="' + App.translate('Copied') + '">')
                     .text(field.name).appendTo(pcTableCreatorButtonsBlock).css('max-width', width - filterBlockWidth);
             }
             if (!pcTable.isRotatedView && pcTable.isMobile) {
@@ -2461,19 +2404,19 @@
 
             let $addBtn = $();
             if (!text && this.PageData && this.PageData.loading) {
-                text = 'Подождите, таблица загружается';
+                text = App.translate('Wait, the table is loading');
             } else if (this.isInsertable()) {
-                $addBtn = $('<button class="btn btn-warning btn-xxs">Добавить строку</button>').width(120)
+                $addBtn = $('<button class="btn btn-warning btn-xxs">' + App.translate('Add row') + '</button>').width(120)
                     .on('click', () => {
                         this.__$rowsButtons.find('[data-action="add"]:first').click();
                     });
             }
 
-            if(text===undefined){
-                if(this.PageData && this.PageData.allCount){
+            if (text === undefined) {
+                if (this.PageData && this.PageData.allCount) {
                     this.model.loadPage(this, null, this.PageData.onPage, null, this.PageData.offset);
-                }else{
-                    text='Таблица пуста ';
+                } else {
+                    text = App.translate('Table is empty')+' ';
                 }
             }
             return $("<tr>").addClass(this.noDataRowClass)
@@ -2608,7 +2551,7 @@
             let format, editbutton = '';
 
             if (!item[field.name]) {
-                console.log('Не найдено поле ' + field.name);
+                console.log(App.translate('Field % not found', field.name));
                 console.log(item);
             }
 
@@ -2887,7 +2830,7 @@
         }
         ,
         __deleteSection(sectionField) {
-            App.panelTimer("Удаление секции", 5, () => {
+            App.panelTimer(App.translate('Section deleting'), 5, () => {
                 App.getPcTableById(2).then(function (pcTable) {
                     pcTable.model.checkEditRow({id: sectionField.id}).then((json) => {
                         let data_src = json.row.data_src.v;
@@ -2974,11 +2917,11 @@
                     window.top.BootstrapDialog.show({
                         message: dialog,
                         type: BootstrapDialog.TYPE_DANGER,
-                        title: "Редактирование секции",
+                        title: App.translate('Section editing'),
                         cssClass: 'sectionTitle-edit-panel',
                         draggable: true,
                         buttons: [{
-                            label: "Сохранить",
+                            label: App.translate('Save'),
                             action: (dialog) => {
                                 saveSection(editor.getValue())
                                 dialog.close();
@@ -3023,10 +2966,10 @@
         },
         getElementFormat: function (field, id) {
             let item;
-            if(id){
-                item=this.data[id];
-            }else{
-                item=this.data_params;
+            if (id) {
+                item = this.data[id];
+            } else {
+                item = this.data_params;
             }
             return $.extend({}, (this.f || {}), (item.f || {}), (item[field.name].f || {}));
         }

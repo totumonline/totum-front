@@ -14,15 +14,15 @@ var defaultField = {
         var error = false,
             notify;
         if (this.required && (val === undefined || val === '' || val === null)) {
-            notify = 'Поле ' + this.title + ' должно быть заполнено';
+            notify = App.translate('The field %s must be entered', this.title);
             error = true;
         }
 
         if (this.regexp && val !== '') {
             var r = new RegExp(this.regexp);
             if (!r.test(val)) {
-                notify = this.regexpErrorText || 'regexp не проходит - "' + this.regexp + '"';
-                notify = 'Ошибка заполнения поля "' + this.title + '": ' + notify;
+                notify = this.regexpErrorText || App.translate('Value fails regexp validation: "%s"', this.regexp);
+                notify = App.translate('Filled "%s" field  error: %s',[this.title, notify]);
                 error = true;
             }
         }
@@ -119,7 +119,7 @@ var defaultField = {
             res.done(function (data) {
                 def.resolve(checkDiv(data))
             }).fail(function () {
-                def.resolve('Не удалось загрузить данные')
+                def.resolve(App.translate('Failed to load data'))
             });
 
             return def;
@@ -141,7 +141,7 @@ var defaultField = {
 
         editVal === 'null' ? editVal = '' : false;
         itemVal === 'null' ? itemVal = '' : false;
-        itemVal === (this.errorText || 'ОШБК!') ? itemVal = '' : false;
+        itemVal === (this.errorText || App.translate('ERR!')) ? itemVal = '' : false;
         itemVal === 'undefined' ? itemVal = '' : false;
 
         return editVal !== itemVal;
@@ -153,7 +153,7 @@ var defaultField = {
     },
     addDataToFilter: function (filterVals, valObj) {
         let hash;
-        let val = 'Пустое'
+        let val = App.translate('Empty');
         if (valObj.v === null || valObj.v === '') {
             hash = ''.hashCode();
         } else {

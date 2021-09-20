@@ -40,6 +40,6 @@ if (class_exists($controllerClass)) {
     $response = $Controller->doIt($request, true);
     //$Config->getSql()->transactionRollBack();
     die;
-} else die('Не найдено ' . $controllerClass);
+} else die('Not found: ' . $controllerClass);
 
 ?>

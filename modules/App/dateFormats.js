@@ -1,6 +1,6 @@
-(function () {
+$(function () {
     App.dateFormats = {
-        'base': 'DD.MM.YY',
+        'base': App.lang.dateFormat,
         'db': 'YYYY-MM-DD',
         covert: function (date, from, to) {
             return moment(date, from).format(to);
@@ -19,8 +19,9 @@
         }
     };
     App.dateTimeFormats = {
-        'base': 'DD.MM.YY HH:mm',
+        'base': App.lang.dateTimeFormat,
         'db': 'YYYY-MM-DD HH:mm',
+
         covert: function (date, from, to) {
             return moment(date, from).format(to);
         },
@@ -37,5 +38,4 @@
             return moment(date, format).isValid();
         }
     };
-})
-();
+});

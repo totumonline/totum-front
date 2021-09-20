@@ -85,7 +85,7 @@
 
             if (Object.keys(users).length) {
                 let sBtn = $('<div class="select-btn"></div>').appendTo(selectDiv);
-                select = $('<select data-size="' + (UserTables.length ? 13 - UserTables.length - 1 : (isCreatorView?13:11)) + '" class="open" title="Выберите пользователя" data-style="btn-sm btn-default" data-live-search="true" data-width="100%">');
+                select = $('<select data-size="' + (UserTables.length ? 13 - UserTables.length - 1 : (isCreatorView?13:11)) + '" class="open" title="'+App.translate("Select user")+'" data-style="btn-sm btn-default" data-live-search="true" data-width="100%">');
 
                 Object.keys(users).forEach(function (uId) {
                     select.append($('<option>').text(uId).data('content', users[uId]));

@@ -9,7 +9,7 @@ $.extend(App.pcTableMain.prototype, {
             cell.hide();
 
             field = field || this._getFieldBytd(cell);
-            newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">Выполняется</span>');
+            newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">'+App.translate('Running')+'</span>');
 
             let item = cell.closest('.DataRow').length ? this._getItemBytd(cell) : {};
 
@@ -42,7 +42,7 @@ $.extend(App.pcTableMain.prototype, {
 
 
             if (tr.is('.DataRow') && pcTable.isRestoreView) {
-                blockFunc(cell, 'Удалено')
+                blockFunc(cell, App.translate('Deleted'))
             } else {
                 if (cell.is('.edt')) {
                     pcTable._createEditCell.call(pcTable, cell, true)
@@ -58,7 +58,7 @@ $.extend(App.pcTableMain.prototype, {
                             return false;
                         }
 
-                        blockFunc(cell, 'Заблокировано')
+                        blockFunc(cell, App.translate('Blocked'))
 
                     }
                 }
@@ -155,15 +155,15 @@ $.extend(App.pcTableMain.prototype, {
             if (field.warningEditPanel) {
                 let buttons =
                     {
-                        'Ок': function (panel) {
+                        'OK': function (panel) {
                             panel.close();
                             func();
-                        }, 'Отмена': function (panel) {
+                        }, [App.translate('Cancel')]: function (panel) {
                             panel.close();
                         }
                     };
 
-                let dialog = App.confirmation((field.warningEditText || 'Точно изменить?'), buttons, 'Подтверждение');
+                let dialog = App.confirmation((field.warningEditText || App.translate('Surely to change?')), buttons, App.translate('Confirmation'));
 
             } else {
                 func()
@@ -354,16 +354,16 @@ $.extend(App.pcTableMain.prototype, {
         let save = function (editVal, event, confirmed) {
 
             if (!confirmed && (field.warningEditPanel) && field.checkEditRegExp.call(field, editVal)) {
-                App.confirmation((field.warningEditText || 'Точно изменить?'), {
-                    'ОК': function (dialog) {
+                App.confirmation((field.warningEditText || App.translate('Surely to change?')), {
+                    'OK': function (dialog) {
                         save(editVal, event, true);
                         dialog.close();
                     },
-                    'Отменить': function (dialog) {
+                    [App.translate("Cancel")]: function (dialog) {
                         revert();
                         dialog.close();
                     }
-                }, 'Предупреждение при изменении');
+                }, App.translate('Change warning'));
                 return;
             }
 
@@ -466,7 +466,7 @@ $.extend(App.pcTableMain.prototype, {
 
 
 //Сохранить
-        var $btn = $('<button class="btn btn-sm btn-default" data-save="true" data-name="Сохранить"><i class="fa fa-save"></i></button>')
+        var $btn = $('<button class="btn btn-sm btn-default" data-save="true" data-name="'+App.translate('Save')+'"><i class="fa fa-save"></i></button>')
             .data('click', function (event) {
                 onAction = true;
                 saveClbck(input, event, true);
@@ -486,7 +486,7 @@ $.extend(App.pcTableMain.prototype, {
         if (isGroupSelected && (isMultiGroupSelected ? field.editGroupMultiColumns : field.editGroup)) {
 
 
-            $btn = $('<button class="btn btn-sm btn-warning" data-save="true" data-name="Применить к выделенным"><i class="fa fa-database" title="Применить к выделенным"></i></button>');
+            $btn = $('<button class="btn btn-sm btn-warning" data-save="true" data-name="'+App.translate('Apply to selected')+'"><i class="fa fa-database" title="'+App.translate('Apply to selected')+'"></i></button>');
 
             let comboSave = function () {
 
@@ -508,15 +508,15 @@ $.extend(App.pcTableMain.prototype, {
             $btn.data('click', function () {
                 if (field.warningEditPanel) {
                     App.confirmation(field.warningEditText, {
-                        'ОК': function (dialog) {
+                        'OK': function (dialog) {
                             comboSave();
                             dialog.close();
                         },
-                        'Отменить': function (dialog) {
+                        [App.translate("Cancel")]: function (dialog) {
                             revert();
                             dialog.close();
                         }
-                    }, 'Предупреждение при изменении');
+                    }, App.translate('Change warning'));
                     return;
                 }
                 comboSave();
@@ -531,7 +531,7 @@ $.extend(App.pcTableMain.prototype, {
                         return !pcTable.data[id][field].h;
                     })
                 })) {
-                    $btn = $('<button class="btn btn-sm btn-warning" data-name="Фиксировать выделенные"><i class="fa fa-hand-rock-o" title="Фиксировать"></i></button>');
+                    $btn = $('<button class="btn btn-sm btn-warning" data-name="'+App.translate('Fix the selected')+'"><i class="fa fa-hand-rock-o" title="'+App.translate('Fix the selected')+'"></i></button>');
                     $btn.data('click', function () {
                         onAction = true;
                         let selectedTd = pcTable._container.find('td.selected');
@@ -546,7 +546,7 @@ $.extend(App.pcTableMain.prototype, {
                         return pcTable.data[id][field].h;
                     })
                 })) {
-                    $btn = $('<button class="btn btn-sm btn-danger" data-name="Сбросить ручные"><i class="fa fa-eraser" title="Сбросить ручные"></i></button>');
+                    $btn = $('<button class="btn btn-sm btn-danger" data-name="'+App.translate('Reset manuals')+'"><i class="fa fa-eraser" title="'+App.translate('Reset manuals')+'"></i></button>');
                     $btn.data('click', function () {
                         onAction = true;
                         let selectedTd = pcTable._container.find('td.selected');
@@ -560,7 +560,7 @@ $.extend(App.pcTableMain.prototype, {
             }
 
         } else if (item[field.name] && item[field.name].h == true) {
-            $btn = $('<button class="btn btn-sm btn-danger" data-name="Сбросить ручное"><i class="fa fa-eraser" title="Сбросить ручное"></i></button>');
+            $btn = $('<button class="btn btn-sm btn-danger" data-name="'+App.translate('Reset manual')+'"><i class="fa fa-eraser" title="'+App.translate('Reset manual')+'"></i></button>');
             $btn.data('click', function () {
                 onAction = true;
                 td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>');
@@ -574,7 +574,7 @@ $.extend(App.pcTableMain.prototype, {
             });
             editCellsBlock.append($btn)
         } else if (field.code && !field.codeOnlyInAdd && field.category !== 'filter') {
-            $btn = $('<button class="btn btn-sm btn-default" data-name="Фиксировать"><i class="fa fa-hand-rock-o" title="Фиксировать"></i></button>');
+            $btn = $('<button class="btn btn-sm btn-default" data-name="'+App.translate('Pin')+'"><i class="fa fa-hand-rock-o" title="'+App.translate('Pin')+'"></i></button>');
             $btn.data('click', function () {
                 onAction = true;
                 td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>');
@@ -647,11 +647,11 @@ $.extend(App.pcTableMain.prototype, {
                 return false;
             };
 
-            $btn = $('<button class="btn btn-sm btn-primary"><i class="fa fa-edit" title="Изменить в таблице-источнике"></i></button>');
+            $btn = $('<button class="btn btn-sm btn-primary"><i class="fa fa-edit" title="'+App.translate('Change in source table')+'"></i></button>');
             $btn.on('click', sourceBtnClick);
             editCellsBlock.append($btn);
             if (field.changeSelectTable === 2) {
-                $btn = $('<button class="btn btn-sm btn-primary" data-add-button="true"><i class="fa fa-plus" title="Добавить в таблицу-источник"></i></button>');
+                $btn = $('<button class="btn btn-sm btn-primary" data-add-button="true"><i class="fa fa-plus" title="'+App.translate('Add to source table')+'"></i></button>');
                 editCellsBlock.append($btn);
                 $btn.on('click', sourceBtnClick);
             }
@@ -694,7 +694,7 @@ $.extend(App.pcTableMain.prototype, {
                         save();
                     },
                     cssClass: 'btn-warning btn-save',
-                    label: 'Cохранить'
+                    label: App.translate('Save')
                 }
             ];
             if (field.code && !field.codeOnlyInAdd) {
@@ -746,16 +746,16 @@ $.extend(App.pcTableMain.prototype, {
                     }
                 }
                 if (!confirmed && (field.warningEditPanel) && field.checkEditRegExp.call(field, editVal)) {
-                    App.confirmation((field.warningEditText || 'Точно изменить?'), {
-                        'ОК': function (_dialog) {
+                    App.confirmation((field.warningEditText || App.translate('Surely to change?')), {
+                        'OK': function (_dialog) {
                             save(true);
                             _dialog.close();
                         },
-                        'Отменить': function (_dialog) {
+                        [App.translate("Cancel")]: function (_dialog) {
                             revert();
                             _dialog.close();
                         }
-                    }, 'Предупреждение при изменении');
+                    }, App.translate('Change warning'));
                     return;
                 }
 

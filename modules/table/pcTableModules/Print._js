@@ -7,26 +7,26 @@ App.pcTableMain.prototype._print = function () {
     };
 
     if (this.fieldCategories.param.length && this.fieldCategories.param.some(isAnyPrinfField)) {
-        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="params" class="form-check-input" checked="checked"> Параметры</label></div>');
+        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="params" class="form-check-input" checked="checked"> '+App.translate('Parameters')+'</label></div>');
     }
     if (this.fieldCategories.filter.length)
-        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="filters" class="form-check-input" checked="checked"> Фильтры</label></div>');
+        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="filters" class="form-check-input" checked="checked"> '+App.translate('Filters')+'</label></div>');
     if (this.fieldCategories.column.length && this.fieldCategories.column.some(isAnyPrinfField) && this.dataSortedVisible.length) {
-        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="rows" class="form-check-input" checked="checked"> Строчную часть</label></div>');
-        $printSettings.append('<div class="form-check no-bold" style="padding-left: 20px;"><label class="form-check-label"><input type="checkbox" name="with-id" class="form-check-input"> с id</label></div>');
+        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="rows" class="form-check-input" checked="checked"> '+App.translate('Rows part')+'</label></div>');
+        $printSettings.append('<div class="form-check no-bold" style="padding-left: 20px;"><label class="form-check-label"><input type="checkbox" name="with-id" class="form-check-input"> '+App.translate('with id')+'</label></div>');
     }
 
     if (this._footersBlock.find('.val').length) {
-        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="column-footers" class="form-check-input" checked="checked"> Футеры колонок</label></div>');
+        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="column-footers" class="form-check-input" checked="checked"> '+App.translate('Column footers')+'</label></div>');
     }
     if (this._footersSubTable.find('.val').length) {
-        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="other-footers" class="form-check-input" checked="checked"> Футеры вне колонок</label></div>');
+        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="other-footers" class="form-check-input" checked="checked"> '+App.translate('Out of column footers')+'</label></div>');
     }
 
     let pcTable = this;
     let buttons = [
         {
-            label: 'Печать',
+            label: App.translate('Print'),
             action: function (dialogRef) {
                 let settings = [];
                 $printSettings.find('input:checked').each(function () {
@@ -37,7 +37,7 @@ App.pcTableMain.prototype._print = function () {
             }
         },
         {
-            label: 'Отмена',
+            label: App.translate('Cancel'),
             action: function (dialogRef) {
                 dialogRef.close();
             }
@@ -47,7 +47,7 @@ App.pcTableMain.prototype._print = function () {
     window.top.BootstrapDialog.show({
         message: $printSettings,
         type: null,
-        title: 'Печать',
+        title: App.translate('Print'),
         buttons: buttons,
         draggable: true
     })

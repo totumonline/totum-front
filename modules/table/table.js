@@ -23,7 +23,7 @@
         "editRoles": {"isOn": false, "Val": ["1"]},
         "hidden": {"isOn": true, "Val": false},
         "warningEditPanel": {"isOn": true, "Val": false},
-        "warningEditText": {"isOn": false, "Val": "Точно изменить?"},
+        "warningEditText": {"isOn": false, "Val": App.translate('Surely to change?')},
         "warningEditRegExp": {"isOn": false, "Val": "/^someValue$/"},
         "url": {"isOn": true, "Val": false},
         "openIn": {"isOn": false, "Val": "iframe"},
@@ -415,7 +415,7 @@
                 let navTopLine = $('#nav-top-line');
                 navTopLine.addClass('pcTable-type-' + this.tableRow.type);
                 if (this.tableRow.type === 'tmp') {
-                    navTopLine.text('Будьте внимательны - это временная таблица');
+                    navTopLine.text(App.translate('Attention, please - this is a temporary table'));
                 }
 
                 this._innerContainer = $('<div class="innerContainer">');
@@ -508,7 +508,7 @@
                             pcTable.setWidthes();
                         }, 500);
                     });
-                }else{
+                } else {
                     $(window).resize(function () {
                         window.location.reload();
                     });
@@ -673,7 +673,7 @@
 
                         if (i === 0) {
                             el.append(' ' + th.data('field'));
-                            let btnCopy = $('<button class="btn btn-sm btn-default copy-me" title="Копировать "><i class="fa fa-copy"></i></button>');
+                            let btnCopy = $('<button class="btn btn-sm btn-default copy-me" title="'+App.translate('Copy')+' "><i class="fa fa-copy"></i></button>');
                             btnCopy.on('click', function () {
                                 App.copyMe(th.data('field'));
                                 let button = $(this);
@@ -702,7 +702,7 @@
                     }
 
 
-                    let codes = {"code": "Код", "codeAction": "Действ", "codeSelect": "Селект", "format": "Формат"};
+                    let codes = {"code": App.translate('Code'), "codeAction": App.translate('Action'), "codeSelect": App.translate('Select'), "format": App.translate('FormatShort')};
                     let codesKeys = Object.keys(codes);
                     for (let i = 0; i < codesKeys.length; i++) {
                         let name = codesKeys[i];
@@ -990,10 +990,8 @@
                                 } else {
 
                                     $.notify({
-                                        message: '<div id="refresh-notify"><span>Таблица была изменена пользователем <b>' +
-                                            json.username + '</b> в <b>' + App.dateFormats.covert(json.dt, 'YY-MM-DD HH:mm', 'HH:mm DD.MM')
-                                            + '</b> </span><button class="btn btn-warning btn-sm" style="margin-right: 20px;">' +
-                                            'Обновить</button></div>'
+                                        message: '<div id="refresh-notify"><span>'+App.translate('The table was changed by the user <b>%s</b> at <b>%s</b>', [json.username, App.dateFormats.covert(json.dt, 'YY-MM-DD HH:mm', App.lang.timeDateFormatNoYear)])+'</span> <button class="btn btn-warning btn-sm" style="margin-right: 20px;">' +
+                                            App.translate("Refresh") + '</button></div>'
                                     }, {
                                         type: 'warning',
                                         allow_dismiss: false,

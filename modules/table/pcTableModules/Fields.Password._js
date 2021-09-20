@@ -4,7 +4,7 @@ fieldTypes.password = {
         var val=input.val().trim();
         var error = false;
         if (val === undefined || val === '' || val === null) {
-            notify = 'Поле ' + this.title + ' должно быть заполнено';
+            notify = App.translate('The field %s must be entered', this.title);
             error = true;
         }
         if (error) throw notify;
@@ -15,7 +15,7 @@ fieldTypes.password = {
         return '**PASSWORD**';
     },
     getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
-        var $input = $('<input type="password" name="cell_edit" class="form-control"  autocomplete="new-password" autocorrect="off" placeholder="'+(oldValue && oldValue.v?'Поменять пароль':'Новый пароль')+'"/>');
+        var $input = $('<input type="password" name="cell_edit" class="form-control"  autocomplete="new-password" autocorrect="off" placeholder="'+App.translate(oldValue && oldValue.v?'Change the password':'New password')+'"/>');
 
         $input.on('save-me', function (event) {
             enterClbk($(this), event);

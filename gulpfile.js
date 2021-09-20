@@ -138,6 +138,9 @@ gulp.task('DEVELOP', function () {
     gulp.start('product:css');
     gulp.start('dev:fonts');
 
+    watch('./i18n/*.js', function (event, cb) {
+        gulp.start('product:langs');
+    });
     watch([path.js.src, path.js.src_parts, './functions.js'], function (event, cb) {
         gulp.start('product:js');
     });
@@ -182,7 +185,7 @@ gulp.task('QUICK-PROD-DEV', function () {
             .pipe(uglify().on('error', function (e) {
                 console.log(e);
             }))
-            .pipe(gulp.dest(path.jsLibsMini.dest));
+            .pipe(gulp.dest(path.jsLibsMini.dest+'i18n/'));
     });
     gulp.task('product:langEng', function () {
         return gulp.src(path.eng)
@@ -190,7 +193,7 @@ gulp.task('QUICK-PROD-DEV', function () {
             .pipe(uglify().on('error', function (e) {
                 console.log(e);
             }))
-            .pipe(gulp.dest(path.jsLibsMini.dest));
+            .pipe(gulp.dest(path.jsLibsMini.dest+'i18n/'));
     });
     gulp.task('product:langs', ['product:langRu', 'product:langEng'], function () {
         return true;

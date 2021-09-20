@@ -1,7 +1,7 @@
 fieldTypes.n = $.extend({}, fieldTypes.default, {
     name: 'n',
     width: 52,
-    title: 'Порядок',
+    title: App.translate('Order'),
     category: 'column',
     hidden: true,
     showInWeb: true,

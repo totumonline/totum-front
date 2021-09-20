@@ -116,10 +116,10 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                         editor.setText(JSON.stringify(json.value));
                     }
                 } catch (e) {
-                    window.top.App.modal('Ошибка формата JSON ');
+                    window.top.App.modal(App.translate('JSON format error'));
                 }
 
-                let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">Вручную</a>').on('click', function () {
+                let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">'+App.translate('Manually')+'</a>').on('click', function () {
                     let div = $('<div>');
                     let textarea = $('<textarea class="form-control">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
 
@@ -129,16 +129,16 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                         textarea.height(350)
                     }
 
-                    let title = 'Ручное изменение json-поля', buttons = [
+                    let title = App.translate('Manually changing the json field'), buttons = [
                         {
-                            'label': "Сохранить",
+                            'label': App.translate('Save'),
                             cssClass: 'btn-m btn-warning',
                             action: function (dialog) {
                                 try {
                                     editor.setText(textarea.val());
                                     dialog.close();
                                 } catch (e) {
-                                    window.top.App.modal('Ошибка формата JSON')
+                                    window.top.App.modal(App.translate('JSON format error'))
                                 }
                             }
                         }, {
@@ -202,7 +202,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
         buttons = [];
 
         let btnsSave = {
-            'label': "Сохранить",
+            'label': App.translate('Save'),
             cssClass: 'btn-m btn-warning',
             action: save
         }, btnsClose = {
@@ -215,7 +215,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
             }
         };
 
-        let title = 'Текст поля <b>' + (this.title) + '</b>';
+        let title = App.translate('Field <b>%s</b> text', this.title);
         let eventName = 'ctrlS.textedit';
 
         if (editNow) {
@@ -307,7 +307,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
             }, 1);
 
 
-            div.text('Редактирование в форме').addClass('edit-in-form');
+            div.text(App.translate('Editing in the form')).addClass('edit-in-form');
         } else {
             div.on('focus click', 'button', function () {
                 let _buttons = buttons.splice();
@@ -358,7 +358,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
 
             });
 
-            let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text('Редактировать список/json');
+            let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Edit list/json'));
             if (tabindex) btn.attr('tabindex', tabindex);
 
             div.append(btn);

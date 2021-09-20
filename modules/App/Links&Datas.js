@@ -2,6 +2,10 @@
     let iframeNum = 0;
     let dialogOffset = -1;
 
+    const getNotificationPanel = (id, buttonText) => {
+        return '<div id="' + id + '">' + App.translate('__clock_shelve_panel') + ' <button>' + buttonText + '</button></button></div>'
+    }
+
     let notificationManager, _notifications, getNotificationOffset = function (withManager) {
             let offset = {x: 20, y: 70};
             let isMobile = screen.width <= window.MOBILE_MAX_WIDTH;
@@ -52,9 +56,7 @@
                     if ($(this).is('.active')) return false;
                     $(this).addClass('active')
                     clocks = $(this);
-                    $div = $('<div>' +
-                        '<div id="notification_clock_panel_all"><span class="clocks-na">На</span> <input type="number" step="1" value="10" class="form-control"/> <select class="form-control"><option  selected value="1">минут</option><option value="2">часов</option><option value="3">дней</option></select> <button>Отложить все</button></button></div>'
-                        + '</div>');
+                    $div = $('<div>').append(getNotificationPanel('notification_clock_panel_all', App.translate('Shelve all')));
                     $div.on('click', 'button', function () {
                         let num = $div.find('input').val();
                         let select = $div.find('select').val();
@@ -163,7 +165,7 @@
                             },
                             buttons: [
                                 {
-                                    'label': "Обновить",
+                                    'label': App.translate("Refresh"),
                                     cssClass: 'btn-m btn-default',
                                     'action': function () {
                                         $iframe.get(0).contentWindow.location.reload();
@@ -171,7 +173,7 @@
                                     }
                                 },
                                 {
-                                    'label': "Открыть",
+                                    'label': App.translate('Open'),
                                     cssClass: 'btn-m btn-default',
                                     'action': function (dialog) {
                                         openLinkLocation('self');
@@ -179,7 +181,7 @@
                                     }
                                 },
                                 {
-                                    'label': "Вкладка",
+                                    'label': App.translate("Tab"),
                                     cssClass: 'btn-m btn-default',
                                     'action': function (dialog) {
                                         window.open($iframe.get(0).contentWindow.location, '_blank');
@@ -317,14 +319,14 @@
                                 },
                                 buttons: [
                                     {
-                                        'label': "Обновить",
+                                        'label': App.translate("Refresh"),
                                         cssClass: 'btn-m btn-default',
                                         'action': function () {
                                             $iframe.get(0).contentWindow.location.reload();
                                         }
                                     },
                                     {
-                                        'label': "Открыть",
+                                        'label': App.translate('Open'),
                                         cssClass: 'btn-m btn-default',
                                         'action': function (dialog) {
                                             try {
@@ -338,7 +340,7 @@
                                         }
                                     },
                                     {
-                                        'label': "Вкладка",
+                                        'label': App.translate("Tab"),
                                         cssClass: 'btn-m btn-default',
                                         'action': function (dialog) {
                                             window.open($iframe.get(0).contentWindow.location, '_blank');
@@ -391,7 +393,7 @@
                     inputFile.on('change', function () {
                         let promices = [];
                         if (this.files.length > data[1].limit) {
-                            App.notify('Превышен лимит файлов для закачки');
+                            App.notify(App.translate('Upload limit exceeded'));
                         } else {
 
                             for (var i = 0; i < this.files.length; i++) {
@@ -479,10 +481,10 @@
                     props = {
                         buttons: [
                             {
-                                label: (data[1]['button'] || 'Сохранить'), action: save
+                                label: (data[1]['button'] || App.translate('Save')), action: save
                             }
                             , {
-                                label: 'Отмена', action: function (dialog) {
+                                label: App.translate('Cancel'), action: function (dialog) {
                                     dialog.close();
                                 }
                             }
@@ -606,9 +608,7 @@
                     notification.$ele.on('click', '.timer:not(.disabled)', function () {
                         let clocks = $(this);
                         clocks.addClass('disabled');
-                        $div = $('<div>' +
-                            '<div id="notification_clock_panel"><span class="clocks-na">На</span> <input type="number" step="1" value="10" class="form-control"/> <select class="form-control"><option  selected value="1">минут</option><option value="2">часов</option><option value="3">дней</option></select> <button>Отложить</button></button></div>'
-                            + '</div>');
+                        $div = $('<div>').append(getNotificationPanel('notification_clock_panel', App.translate('Shelve')));
                         $div.on('click', 'button', function () {
 
                             let num = $div.find('input').val();
@@ -872,7 +872,7 @@
         let btns = [];
         if ($('#table').data('pctable') && $('#table').data('pctable').isCreatorView) {
             btns.push({
-                'label': "В новой вкладке",
+                'label': App.translate("In a new tab"),
                 cssClass: 'btn-m btn-danger',
                 'action': function (dialog) {
                     let wnd = window.open($iframe.get(0).contentWindow.location, '_blank');

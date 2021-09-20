@@ -8,7 +8,7 @@
             title: title,
             buttons: [
                 {
-                    'label': "Обновить",
+                    'label': App.translate("Refresh"),
                     cssClass: 'btn-m btn-default',
                     'action': function (dialog) {
                         let $iframeNew;
@@ -18,7 +18,7 @@
                     }
                 },
                 {
-                    'label': "Открыть",
+                    'label': App.translate('Open'),
                     cssClass: 'btn-m btn-default',
                     'action': function (dialog) {
                         $('<a>').attr('href', uri).hide().appendTo('body').get(0).click();
@@ -26,7 +26,7 @@
                     }
                 },
                 {
-                    'label': "Вкладка",
+                    'label': App.translate("Tab"),
                     cssClass: 'btn-m btn-default',
                     'action': function (dialog) {
                         let a = $('<a>').attr('href', uri).attr('target', '_blank').hide().appendTo('body')

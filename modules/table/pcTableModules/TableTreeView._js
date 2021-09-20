@@ -53,17 +53,17 @@
             let pcTable = this;
             btnId = btnId.toString();
             if (pcTable.tableRow.with_order_field && !pcTable.nSorted) {
-                App.notify('Для работы поля порядок перезагрузите таблицу');
+                App.notify(App.translate('To operate the order field, reload the table'));
                 return false;
             }
 
             if (pcTable.isRestoreView) {
-                App.notify('Режим восстановления строк. Сортировка отключена');
+                App.notify(App.translate('Rows restore mode. Sorting disabled'));
                 return false;
             }
 
             if (this.nSortedTree !== undefined && this.data[btnId].tree.v != this.nSortedTree) {
-                App.notify('Возможно сортировать только в пределах категории');
+                App.notify(App.translate('It is possible to sort only within a category'));
                 return false;
             }
             this.nSortedTree = this.data[btnId].tree.v;
@@ -81,7 +81,7 @@
                 let idBeforeAfter = treeIndexArr[indVisBtn];
 
                 if (this.data[idBeforeAfter].f && this.data[idBeforeAfter].f.blockorder) {
-                    App.notify('Нельзя перемещать строку ' + this.getRowTitle(this.data[idBeforeAfter]));
+                    App.notify(App.translate('You cannot move the row %s', this.getRowTitle(this.data[idBeforeAfter])));
                     return;
                 }
                 treeIndexArr.splice(btnIndex, 1);
@@ -89,7 +89,7 @@
 
             } else {
                 if (pcTable.row_actions_get_checkedIds().indexOf(btnId) !== -1) {
-                    App.notify('В качестве якоря для перемещения нужно выбрать не отмеченную строку');
+                    App.notify(App.translate('The unchecked row should be selected as the anchor for the move'));
                     return false;
                 }
                 let idsLength = this.row_actions_get_checkedIds().length;
@@ -101,13 +101,13 @@
                     if (typeof id === 'object') {
                         if (id.row && id.row.$checked) {
                             this.nSortedTree = undefined;
-                            App.notify('Перемещать можно только вложенные строки');
+                            App.notify(App.translate('Only nested rows can be moved'));
                             return true;
                         }
                     } else if (pcTable.data[id].$checked) {
                         if (pcTable.data[id].tree.v != this.nSortedTree) {
                             this.nSortedTree = undefined;
-                            App.notify('Перемещать можно только в пределах одной ветки');
+                            App.notify(App.translate('You can only move within one branch'));
                             return true;
                         }
                         orderingRowIds.push(id);
@@ -213,7 +213,7 @@
         })
         span.append(dropdown);
 
-        let OpenAll = $('<div class="menu-item"><i class="fa fa-arrows-v"></i> ' + (row.opened ? 'Закрыть' : 'Открыть') + ' все</div>').data('treeRow', row.v)
+        let OpenAll = $('<div class="menu-item"><i class="fa fa-arrows-v"></i> ' + (row.opened ? App.translate('Close all') : App.translate('Open all')) + '</div>').data('treeRow', row.v)
             .on('click', () => {
                 this._actionTreeFolderRow(OpenAll, true)
             })
@@ -221,7 +221,7 @@
 
 
         if (this.fields.tree.selectTable && row.v && !this.fields.tree.treeBfield) {
-            $('<div class="menu-item"><i class="fa fa-edit"></i> Редактировать</div>').on('click', () => {
+            $('<div class="menu-item"><i class="fa fa-edit"></i> '+App.translate('Edit')+'</div>').on('click', () => {
                 let obj = {id: row.v};
                 new EditPanel(this.fields.tree.selectTable, null, obj).then(() => {
                     this.model.refresh();
@@ -229,7 +229,7 @@
             }).appendTo($divPopoverArrowDown)
 
 
-            $('<div class="menu-item"><i class="fa fa-plus"></i> Добавить ветку</div>')
+            $('<div class="menu-item"><i class="fa fa-plus"></i> '+App.translate('Add a branch')+'</div>')
                 .on('click', () => {
 
                     let parentField = this.fields.tree.treeViewParentField || "tree";
@@ -243,7 +243,7 @@
         }
 
         if (this.isInsertable()) {
-            $('<div class="menu-item"><i class="fa fa-th-large"></i> Добавить строку</div>')
+            $('<div class="menu-item"><i class="fa fa-th-large"></i> '+App.translate('Add a row')+'</div>')
                 .on('click', () => {
                     if (this.tableRow.type === 'cycles') {
                         this.model.add(null, {tree: row.v}).then(json => {
@@ -338,7 +338,7 @@
     App.pcTableMain.prototype._actionTreeFolderRow = function (node, treeRowRecurcive) {
         let treeRow = this.treeIndex[$(node).data('treeRow')];
         if (node) {
-            $(node).closest('td').html('Загрузка');
+            $(node).closest('td').html(App.translate('Loading'));
         }
         if (!treeRow.opened) {
             this._expandTreeFolderRow(treeRow, treeRowRecurcive)

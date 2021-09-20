@@ -1,7 +1,7 @@
 fieldTypes.date = {
     icon: 'fa-calendar-o',
     getEditVal: function (input) {
-        if (this.required && input.val().trim() == '') throw 'Поле должно быть заполнено';
+        if (this.required && input.val().trim() == '') throw App.translate('The field must be entered');
         if (!input.val().trim()) return '';
         let date = input.data('calendar').data('DateTimePicker').date();
 
@@ -186,7 +186,7 @@ fieldTypes.date = {
     addDataToFilter: function (filterVals, valObj) {
 
         let hash;
-        let val = 'Пустое'
+        let val = App.translate('Empty')
         if (valObj.v === null || valObj.v === '') {
             hash = ''.hashCode();
         } else {

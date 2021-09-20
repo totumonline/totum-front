@@ -99,12 +99,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             if (EditPanelFunc.panelType === "edit") {
 
 
-
                 EditPanelFunc.pcTable.model[checkMethod]({id: data.id}).then((json) => {
                     Object.keys(json.row).forEach((k) => {
-                        if(EditPanelFunc.pcTable.tableRow.id===1 && k === 'panels_view' && !Object.equals(firstLoad[k], json.row[k])){
-                            firstLoad[k]={};
-                        }else{
+                        if (EditPanelFunc.pcTable.tableRow.id === 1 && k === 'panels_view' && !Object.equals(firstLoad[k], json.row[k])) {
+                            firstLoad[k] = {};
+                        } else {
                             firstLoad[k] = json.row[k]
                         }
                     })
@@ -378,9 +377,9 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         }
 
                         if (!EditPanelFunc.pcTable.control.editing || (json.row.f.block && !isAnyEditableFields)) {
-                            title = 'Просмотр настроек таблицы <b> ' + itemName + '</b>';
+                            title = App.translate('Viewing table settings') + ': <b> ' + itemName + '</b>';
                         } else {
-                            title = 'Редактирование настроек таблицы <b> ' + itemName + '</b>';
+                            title = App.translate('Editing table settings') + ': <b> ' + itemName + '</b>';
                         }
                         ;
                         break;
@@ -398,9 +397,9 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         }
 
                         if (!EditPanelFunc.pcTable.control.editing || (json.row.f.block && !isAnyEditableFields)) {
-                            title = 'Просмотр поля таблицы ' + EditPanelFunc.editItem.table_name.v + '<b> ' + itemName + '</b>';
+                            title = App.translate('Viewing table field') + ': ' + EditPanelFunc.editItem.table_name.v + '<b> ' + itemName + '</b>';
                         } else {
-                            title = 'Редактирование поля таблицы ' + EditPanelFunc.editItem.table_name.v + ' <b> ' + itemName + '</b>';
+                            title = App.translate('Editing table field') + ': ' + EditPanelFunc.editItem.table_name.v + ' <b> ' + itemName + '</b>';
                         }
                         ;
                         break;
@@ -418,9 +417,9 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         }
 
                         if (!EditPanelFunc.pcTable.control.editing || (json.row.f.block && !isAnyEditableFields)) {
-                            title = 'Просмотр <b> ' + itemName + '</b> таблицы <b>' + EditPanelFunc.pcTable.tableRow.title + '</b>';
+                            title = App.translate('Viewing <b>%s</b> from table <b>%s</b>', [itemName, EditPanelFunc.pcTable.tableRow.title]);
                         } else {
-                            title = 'Редактирование <b> ' + itemName + '</b> таблицы <b>' + EditPanelFunc.pcTable.tableRow.title + '</b>';
+                            title = App.translate('Editing <b>%s</b> from table <b>%s</b>', [itemName, EditPanelFunc.pcTable.tableRow.title]);
                         }
                         ;
                 }
@@ -429,13 +428,13 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             } else {
                 switch (EditPanelFunc.pcTable.tableRow.id) {
                     case 1:
-                        title = 'Добавление таблицы';
+                        title = App.translate('Adding table');
                         break;
                     case 2:
-                        title = 'Добавление поля';
+                        title = App.translate('Adding field');
                         break;
                     default:
-                        title = 'Добавление строки в таблицу <b>' + EditPanelFunc.pcTable.tableRow.title + '</b>';
+                        title = App.translate('Adding row to table') + ' <b>' + EditPanelFunc.pcTable.tableRow.title + '</b>';
                 }
 
             }
@@ -459,7 +458,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     let fName = Object.keys(EditPanelFunc.error)[0];
                     let _error = EditPanelFunc.error[fName];
 
-                    App.notify(_error, $('<div>Ошибка в поле </div>').append(' в поле ').append($('<span>').text(EditPanelFunc.pcTable.fields[fName].title)));
+                    App.notify(_error, $('<div>' + App.translate('Error in %s field', $('<span>').text(EditPanelFunc.pcTable.fields[fName].title).html()) + ' </div>').append());
                     return false;
                 }
                 let btn = panel.$modal.find('.btn-save').prop('disabled', 'disabled');
@@ -475,7 +474,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             buttons.push({
                 action: save,
                 cssClass: 'btn-warning btn-save',
-                label: 'Cохранить'
+                label: App.translate('Save')
             });
         }
 
@@ -592,7 +591,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 }
             }
             if (field.type !== "button") {
-               if (format.icon) {
+                if (format.icon) {
                     span.prepend('<i class="cell-icon fa fa-' + format.icon + '"></i>');
                 }
             } else if (!span.find('button').is(':disabled')) {
@@ -979,7 +978,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             EditPanelFunc.readOnly = true;
             checkMethod = 'viewRow';
         } else if (!pcTable.control.adding && !data.id) {
-            App.notify('Добавление в таблицу запрещено');
+            App.notify(App.translate('Adding to the table is forbidden'));
             return false;
         }
         return true;

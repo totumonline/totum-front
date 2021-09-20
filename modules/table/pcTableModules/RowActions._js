@@ -45,7 +45,7 @@
         },
         _idCheckButton: $('<button class="btn btn-xxs chbox btn-default" data-action="checkbox"><span class="fa fa-square-o"></span></button>')
         ,
-        _checkStatusBar: $('<div class="check-status-bar"><span class="check-mark">✓ </span><span data-name="count_checked_rows">0</span><span class="from-mark"> из </span><span data-name="count_visible_rows">0</span></div>')
+        _checkStatusBar: $('<div class="check-status-bar"><span class="check-mark">✓ </span><span data-name="count_checked_rows">0</span><span class="from-mark">' + App.translate(' from ') + '</span><span data-name="count_visible_rows">0</span></div>')
         ,
         _headCellIdButtonsState: function () {
             "use strict";
@@ -262,14 +262,20 @@
 
         }
         ,
-        getRemoveTitle: function (type) {
+        getRemoveTitle: function (type, cnt) {
             switch (type) {
+                case "question_many":
+                    return this.tableRow.deleting === 'hide' ? App.translate('Surely to hide %s rows?', cnt) : App.translate('Surely to delete %s rows?', cnt);
+                case "question":
+                    return this.tableRow.deleting === 'hide' ? App.translate('Surely to hide the row?', cnt) : App.translate('Surely to delete the row?', cnt);
+                case "forTimer_many":
+                    return this.tableRow.deleting === 'hide' ? App.translate('Hiding %s rows', cnt) : App.translate('Deleting %s rows', cnt);
                 case "forTimer":
-                    return this.tableRow.deleting === 'hide' ? 'Скрытие' : 'Удаление';
+                    return this.tableRow.deleting === 'hide' ? App.translate('Hiding the row %s', cnt) : App.translate('Deleting the row %s', cnt);
                 case "lower":
-                    return this.tableRow.deleting === 'hide' ? 'скрыть' : 'удалить';
+                    return this.tableRow.deleting === 'hide' ? App.translate('Hide').toLowerCase() : App.translate('Delete').toLowerCase();
                 default:
-                    return this.tableRow.deleting === 'hide' ? 'Скрыть' : 'Удалить';
+                    return this.tableRow.deleting === 'hide' ? App.translate('Hide') : App.translate('Delete');
             }
 
         },
@@ -282,21 +288,21 @@
             let text = $('<div id="row-mobile-panel"></div>');
 
             if (this.tableRow.panel !== true) {
-                text.append($('<div class="menu-item"><i class="fa fa-th-large"></i> Открыть панель</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-th-large"></i> ' + App.translate('Open the panel') + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_panel"><i class="fa fa-th-large"></i> Открыть панель</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_panel"><i class="fa fa-th-large"></i> ' + App.translate('Open the panel') + '</div>').attr('data-tr', trId));
             }
 
             if (this.control.duplicating !== true || this.f.blockduplicate || item.f.blockduplicate) {
-                text.append($('<div class="menu-item"><i class="fa fa-clone"></i> Дублировать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-clone"></i> ' + App.translate('Duplicate') + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"></i> Дублировать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"></i> ' + App.translate('Duplicate') + '</div>').attr('data-tr', trId));
             }
 
             if (['calcs', 'globcalcs'].indexOf(this.tableRow.type) !== -1) {
-                text.append($('<div class="menu-item"><i class="fa fa-refresh"></i> Пересчитать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate') + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> Пересчитать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate') + '</div>').attr('data-tr', trId));
             }
 
 
@@ -560,8 +566,8 @@
             }
         }
         ,
-        apptyTableFormats: function (newf){
-            ['blockadd', 'buttons', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment', 'tabletext'].forEach( (k) => {
+        apptyTableFormats: function (newf) {
+            ['blockadd', 'buttons', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment', 'tabletext'].forEach((k) => {
                 if (k in newf || k in this.f) {
                     if (typeof newf[k] == "object") {
                         if (!Object.equals(newf[k], this.f[k])) {
@@ -608,22 +614,22 @@
                 if (!visible.length) {
                     visible = [...this.dataSorted];
                     show = [];
-                }else{
-                    show.forEach((id)=>{
-                        if(visible.indexOf(id)===-1 || this.dataSorted.indexOf(parseInt(id))!==-1){
+                } else {
+                    show.forEach((id) => {
+                        if (visible.indexOf(id) === -1 || this.dataSorted.indexOf(parseInt(id)) !== -1) {
                             visible.push(id.toString());
                         }
                     })
                 }
                 let newVisible = [];
                 visible.forEach((id) => {
-                    if (!hide.some((_id)=> _id.toString()===id.toString())) {
+                    if (!hide.some((_id) => _id.toString() === id.toString())) {
                         newVisible.push(id.toString());
                     }
                 })
-                if(newVisible.length === this.dataSorted.length){
+                if (newVisible.length === this.dataSorted.length) {
                     delete this.filters['id'];
-                }else{
+                } else {
                     this.filters['id'] = newVisible;
                 }
                 this.__applyFilters(true);
@@ -659,24 +665,24 @@
 
 
             if (this.control.duplicating !== true || pcTable.f.blockduplicate || item.f.blockduplicate) {
-                text.append($('<div class="menu-item"><i class="fa fa-clone"></i> Дублировать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-clone"></i> ' + App.translate('Duplicate') + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"></i> Дублировать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"></i> ' + App.translate('Duplicate') + '</div>').attr('data-tr', trId));
             }
 
             if (['calcs', 'globcalcs'].indexOf(pcTable.tableRow.type) !== -1) {
-                text.append($('<div class="menu-item"><i class="fa fa-refresh"></i> Пересчитать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate') + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> Пересчитать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate') + '</div>').attr('data-tr', trId));
             }
 
             if (pcTable.isCreatorView && pcTable.tableRow.type === 'cycles') {
-                text.append($('<div class="menu-item cycle_refresh color-danger"><i class="fa fa-refresh"></i> Пересчитать цикл</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item cycle_refresh color-danger"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate cycle') + '</div>').attr('data-tr', trId));
             }
 
 
             if (this.isRestoreView) {
-                text.append($('<div class="menu-item row_restore"><i class="fa fa-recycle"></i> Восстановить</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_restore"><i class="fa fa-recycle"></i> ' + App.translate('Restore') + '</div>').attr('data-tr', trId));
             } else {
                 if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
                     text.append($('<div class="menu-item"><i class="fa fa-times"></i> ' + this.getRemoveTitle() + '</div>').css('color', 'gray'));
@@ -736,13 +742,8 @@
                         }
                         mainBlockField = ' "' + mainBlockField + '"';
                     }
-                    let $ntf = $("<span>").html('Строка <b>id ' + isBlockedRow.id + '</b>');
-                    if (mainBlockField !== '') {
-                        let b = $ntf.find('b');
-                        b.text(b.text() + mainBlockField);
-                    }
-                    $ntf.append(' заблокирована');
-                    App.notify($ntf, 'Действие не выполнено');
+                    let $ntf = $("<span>").html(App.translate("Row <b>id %s %s</b> is blocked", [isBlockedRow.id, mainBlockField]));
+                    App.notify($ntf, App.translate('Action not executed'));
 
                     return false;
                 }
@@ -770,7 +771,7 @@
             if (checkedRows && checkedRows.length) {
                 let buttons = [
                     {
-                        label: 'Пересчитать',
+                        label: App.translate('Recalculate'),
                         action: function (dialogRef) {
                             pcTable.model.refresh_rows(checkedRows).then(function (json) {
                                 pcTable.table_modify.call(pcTable, json);
@@ -781,7 +782,7 @@
                         }
                     },
                     {
-                        label: 'Отмена',
+                        label: App.translate('Cancel'),
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
@@ -790,8 +791,8 @@
                 ];
 
                 BootstrapDialog.show({
-                    message: 'Точно пересчитать ' + checkedRows.length + ' строк?',
-                    title: 'Пересчет',
+                    message: App.translate('Surely to recalculate %s rows?', checkedRows.length),
+                    title: App.translate('Recalculating'),
                     buttons: buttons,
                     onhidden: function () {
                         if (checkedRows.length === 1 && checkedRows[0] == checkedOneId) {
@@ -809,7 +810,7 @@
             if (checkedRows && checkedRows.length) {
                 let buttons = [
                     {
-                        label: 'Пересчитать',
+                        label: App.translate('Recalculate'),
                         action: function (dialogRef) {
                             pcTable.model.refresh_cycles(checkedRows).then(function (json) {
                                 pcTable.table_modify.call(pcTable, json);
@@ -820,7 +821,7 @@
                         }
                     },
                     {
-                        label: 'Отмена',
+                        label: App.translate('Cancel'),
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
@@ -829,8 +830,8 @@
                 ];
 
                 BootstrapDialog.show({
-                    message: 'Точно пересчитать ' + checkedRows.length + ' циклов?',
-                    title: 'Пересчет',
+                    message: App.translate('Surely to recalculate %s cycles?', checkedRows.length),
+                    title: App.translate('Recalculating'),
                     buttons: buttons,
                     draggable: true
                 })
@@ -845,7 +846,7 @@
             if (checkedRows && checkedRows.length) {
                 let buttons = [
                     {
-                        label: 'Дублировать',
+                        label: App.translate('Duplicate'),
                         cssClass: 'btn-danger',
                         action: function (dialogRef_main) {
                             let unic_replaces = {};
@@ -956,14 +957,14 @@
 
                                 let buttons = [
                                     {
-                                        label: 'Дублировать',
+                                        label: App.translate('Duplicate'),
                                         cssClass: 'btn-m btn-warning',
                                         action: function (dialogRef) {
                                             duplicate(dialogRef);
                                         }
                                     },
                                     {
-                                        label: 'Отмена',
+                                        label: App.translate('Cancel'),
                                         action: function (dialog2) {
                                             dialog2.close();
                                             dialogRef_main.close();
@@ -974,7 +975,7 @@
 
                                 BootstrapDialog.show({
                                     message: $uniqTable,
-                                    title: 'Заполните значения для уникальных полей',
+                                    title: App.translate('Fill in the values for unique fields'),
                                     buttons: buttons,
                                     draggable: true
                                 })
@@ -983,7 +984,7 @@
                             }
                         }
                     }, {
-                        label: 'Отмена',
+                        label: App.translate('Cancel'),
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
@@ -992,8 +993,8 @@
                 ];
 
                 BootstrapDialog.show({
-                    message: 'Точно дублировать ' + checkedRows.length + ' строк?',
-                    title: 'Дублирование',
+                    message: App.translate('Surely to duplicate %s rows?', checkedRows.length),
+                    title: App.translate('Duplicating'),
                     buttons: buttons,
                     draggable: true
                 })
@@ -1006,16 +1007,16 @@
             let checkedOneId = checkedRows.length === 1 ? checkedRows[0] : null;
             if (checkedRows && checkedRows.length) {
 
-                let $message = 'Точно ' + this.getRemoveTitle("lower") + ' ' + checkedRows.length + ' строк?';
-                let $messageTimer = this.getRemoveTitle("forTimer") + ' ' + checkedRows.length + ' строк?';
+                let $message = this.getRemoveTitle("question_many", checkedRows.length);
+                let $messageTimer = this.getRemoveTitle("forTimer_many", checkedRows.length);
                 if (checkedRows.length == 1) {
                     let item = 'id-' + checkedRows[0];
                     if (pcTable.mainFieldName != 'id') {
                         item = pcTable.data[checkedRows[0]][pcTable.mainFieldName];
                         item = 'id-' + checkedRows[0] + ' "' + (item.v_ && item.v_[0] ? item.v_[0] : item.v) + '"';
                     }
-                    $message = 'Точно ' + this.getRemoveTitle("lower") + ' строку ' + item + '?';
-                    $messageTimer = this.getRemoveTitle("forTimer") + ' строки ' + item + '?';
+                    $message = this.getRemoveTitle("question");
+                    $messageTimer = this.getRemoveTitle("forTimer", item);
                 }
 
 
@@ -1038,7 +1039,7 @@
                             }
                         }
                     }, {
-                        label: 'Отмена',
+                        label: App.translate('Cancel'),
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
@@ -1049,7 +1050,7 @@
 
                 BootstrapDialog.show({
                     message: $message,
-                    title: this.getRemoveTitle("forTimer"),
+                    title: $messageTimer,
                     buttons: buttons,
                     onhidden: function () {
                         if (checkedRows.length === 1 && checkedRows[0] == checkedOneId) {
@@ -1066,20 +1067,20 @@
             let checkedOneId = checkedRows.length === 1 ? checkedRows[0] : null;
             if (checkedRows && checkedRows.length) {
 
-                let $message = 'Точно восстановить ' + checkedRows.length + ' строк?';
+                let $message = App.translate('Surely to restore %s rows?', checkedRows.length);
                 if (checkedRows.length == 1) {
                     let item = 'id-' + checkedRows[0];
                     if (pcTable.mainFieldName != 'id') {
                         item = pcTable.data[checkedRows[0]][pcTable.mainFieldName];
                         item = 'id-' + checkedRows[0] + ' "' + (item.v_ && item.v_[0] ? item.v_[0] : item.v) + '"';
                     }
-                    $message = 'Точно восстановить строку ' + item + '?';
+                    $message = App.translate('Surely to restore the row %s?', item);
                 }
 
 
                 let buttons = [
                     {
-                        label: 'Восстановить',
+                        label: App.translate('Restore'),
                         cssClass: 'btn-danger',
                         action: function (dialogRef) {
                             dialogRef.close();
@@ -1089,7 +1090,7 @@
                             });
                         }
                     }, {
-                        label: 'Отмена',
+                        label: App.translate('Cancel'),
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
@@ -1100,7 +1101,7 @@
 
                 BootstrapDialog.show({
                     message: $message,
-                    title: 'Восстановление',
+                    title: App.translate('Restoring'),
                     buttons: buttons,
                     onhidden: function () {
                         if (checkedRows.length === 1 && checkedRows[0] == checkedOneId) {

@@ -167,7 +167,7 @@ fieldTypes.comments = {
         buttons = [];
 
         let btnsSave = {
-            'label': "Сохранить",
+            'label': App.translate('Save'),
             cssClass: 'btn-m btn-warning',
             action: save
         }, btnsClose = {
@@ -180,7 +180,7 @@ fieldTypes.comments = {
             }
         };
 
-        let title = 'Комментарии поля <b>' + (this.title) + '</b>';
+        let title = App.translate('Comments of field')+' <b>' + (this.title) + '</b>';
         let eventName = 'ctrlS.commentdialog';
         let btnClicked = false;
 
@@ -274,7 +274,7 @@ fieldTypes.comments = {
             }, 1);
 
 
-            div.text('Редактирование в форме').addClass('edit-in-form');
+            div.text(App.translate('Editing in the form')).addClass('edit-in-form');
         } else {
             let showned = false;
             div.off().on('click keydown', function (event) {
@@ -343,7 +343,7 @@ fieldTypes.comments = {
             });
 
             if (div.find('button').length === 0) {
-                let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text('Добавить комментарий');
+                let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Add comment'));
                 if (tabindex) btn.attr('tabindex', tabindex);
                 div.append(btn);
             }

@@ -35,7 +35,7 @@
                     window.top.BootstrapDialog.show({
                         message: newCodemirrorDiv,
                         type: null,
-                        title: 'Правка текстового поля',
+                        title: App.translate('Text field editing'),
 
                         cssClass: 'fieldparams-edit-panel',
                         draggable: true,
@@ -114,7 +114,10 @@
 
         })
 
-        let btn=$('<a>').attr('href', 'https://docs.totum.online/functions#fn-'+TOTUMjsFuncs[nameL][5]).attr('target', '_blank').html('<button class="btn btn-default btn-sm">Документация</button>')
+        let btn=$('<a>').attr('href', 'https://docs.totum.online/functions#fn-'+TOTUMjsFuncs[nameL][5])
+            .attr('target', '_blank')
+            .html('<button class="btn btn-default btn-sm">'+App.translate('Documentaion')+'</button>');
+
         div.append(btn.wrap('<div class="button">').parent())
 
         App.popNotify({
@@ -986,43 +989,43 @@
             } else if (token.string.slice(0, 2) === '$#') {
 
                 keywords = [
-                    {text: "$#lc", title: 'Пустой лист', render: renderHint, type: 'item-code-var'},
-                    {text: "$#nd", title: 'дата - Y-m-d', render: renderHint, type: 'item-code-var'}, //, hint: function (cm, data, completion) {}
-                    {text: "$#ndt", title: 'дата-время - Y-m-d H:i', render: renderHint, type: 'item-code-var'},
+                    {text: "$#lc", title: App.translate('empty list'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#nd", title: App.translate('date')+' - Y-m-d', render: renderHint, type: 'item-code-var'}, //, hint: function (cm, data, completion) {}
+                    {text: "$#ndt", title: App.translate('date-time')+' - Y-m-d H:i', render: renderHint, type: 'item-code-var'},
                     {
                         text: "$#ndts",
-                        title: 'дата-время с секундами - Y-m-d H:i:s',
+                        title: App.translate('date-time with secongs')+' - Y-m-d H:i:s',
                         render: renderHint,
                         type: 'item-code-var'
                     },
-                    {text: "$#nu", title: 'id пользователя', render: renderHint, type: 'item-code-var'},
-                    {text: "$#nr", title: 'ids ролей пользователя', render: renderHint, type: 'item-code-var'},
-                    {text: "$#nti", title: 'id таблицы', render: renderHint, type: 'item-code-var'},
-                    {text: "$#ntn", title: 'NAME таблицы', render: renderHint, type: 'item-code-var'},
-                    {text: "$#nth", title: 'HASH врем. таблицы', render: renderHint, type: 'item-code-var'},
-                    {text: "$#ih", title: 'HASH строки добавления', render: renderHint, type: 'item-code-var'},
-                    {text: "$#nci", title: 'Cycle расчетной таблицы', render: renderHint, type: 'item-code-var'},
-                    {text: "$#nf", title: 'NAME поля', render: renderHint, type: 'item-code-var'},
-                    {text: "$#nl", title: 'Новая строка', render: renderHint, type: 'item-code-var'},
-                    {text: "$#tb", title: 'Табуляция', render: renderHint, type: 'item-code-var'},
-                    {text: "$#tpa", title: 'Тип экшена код действия', render: renderHint, type: 'item-code-var'},
-                    {text: "$#ids", title: 'id отмеченных галочками полей', render: renderHint, type: 'item-code-var'},
+                    {text: "$#nu", title: App.translate('user id'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#nr", title: App.translate('user roles ids'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#nti", title: App.translate('table id'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#ntn", title: App.translate('table NAME'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#nth", title: App.translate('temporary table HASH'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#ih", title: App.translate('adding row HASH'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#nci", title: App.translate('calcuated table cycle id'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#nf", title: App.translate('field NAME'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#nl", title: App.translate('new line'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#tb", title: App.translate('tab'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#tpa", title: App.translate('action code action type'), render: renderHint, type: 'item-code-var'},
+                    {text: "$#ids", title: App.translate('the ids of the checked fields'), render: renderHint, type: 'item-code-var'},
                     {
                         text: "$#nfv",
-                        title: 'Значение текущего поля (для селектов/действий/форматов)',
+                        title: App.translate('current field value (for selections/actions/formats)'),
                         render: renderHint,
                         type: 'item-code-var'
                     },
                     {
                         text: "$#onfv",
-                        title: 'Прошлое значение текущего поля',
+                        title: App.translate('past value of the current field'),
                         render: renderHint,
                         type: 'item-code-var'
                     },
-                    {text: "$#nh", title: 'Текущий хост-name', render: renderHint, type: 'item-code-var'},
+                    {text: "$#nh", title: App.translate('current host-name'), render: renderHint, type: 'item-code-var'},
                     {
                         text: "$#duplicatedId",
-                        title: 'Ид дублированной строки',
+                        title: App.translate('duplicated row id'),
                         render: renderHint,
                         type: 'item-code-var'
                     },

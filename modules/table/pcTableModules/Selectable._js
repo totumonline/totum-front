@@ -91,9 +91,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         c = $('<span class="deleted_value">').text(c);
                     }
                 }
-                textDiv.append($('<div><i class="fa fa-hand-paper-o"></i> Расчетное значение: </div>').append(c));
+                textDiv.append($('<div><i class="fa fa-hand-paper-o"></i> '+App.translate('Calculated value')+': </div>').append(c));
             } else
-                textDiv.append('<div><i class="fa fa-hand-grab-o pull-left"></i> Cовпадает с расчетным</div>');
+                textDiv.append('<div><i class="fa fa-hand-grab-o pull-left"></i> '+App.translate('Same as calculated')+'</div>');
         }
 
         let divForPannelFormats = $('<div><div class="center"><i class="fa fa-spinner fa-spin"></i></div></div>');
@@ -165,13 +165,13 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                 if (field.multi) {
                     if (val.v && val.v.length) {
-                        let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Редактировать").on('click', () => {
+                        let btn = $('<button class="btn btn-default btn-xxs"></button>').text(App.translate('Edit')).on('click', () => {
                             field.sourceButtonClick(item);
                         });
                         divForPanneSelect.append($('<div class="panel-buttons">').append(btn)).appendTo(textDiv);
                     }
                 } else if (val.v && !val.v_[1]) {
-                    let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Редактировать").on('click', () => {
+                    let btn = $('<button class="btn btn-default btn-xxs"></button>').text(App.translate('Edit')).on('click', () => {
                         field.sourceButtonClick(item).then((data) => {
                             if (data && data.json && data.json.updated) {
                                 pcTable.model.refresh();
@@ -185,13 +185,13 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                 if (field.multi) {
                     if (val.v && val.v.length) {
-                        let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Просмотреть").on('click', () => {
+                        let btn = $('<button class="btn btn-default btn-xxs"></button>').text(App.translate('View')).on('click', () => {
                             field.sourceButtonClick(item);
                         });
                         divForPanneSelect.append($('<div class="panel-buttons">').append(btn)).appendTo(textDiv);
                     }
                 } else if (val.v && !val.v_[1]) {
-                    let btn = $('<button class="btn btn-default btn-xxs"></button>').text("Просмотреть").on('click', () => {
+                    let btn = $('<button class="btn btn-default btn-xxs"></button>').text(App.translate('View')).on('click', () => {
                         field.sourceButtonClick(item).then((data) => {
                             if (data && data.json && data.json.updated) {
                                 pcTable.model.refresh();
@@ -210,7 +210,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
         //copy
         {
-            btnCopy = $('<button class="btn btn-sm btn-default copy_me" disabled data-copied-text="Скопировано" title="Копировать "><i class="fa fa-copy"></i></button>');
+            btnCopy = $('<button class="btn btn-sm btn-default copy_me" disabled data-copied-text="'+App.translate('Copied')+'" title="'+App.translate('Copy')+' "><i class="fa fa-copy"></i></button>');
             btnCopy.on('click', function () {
                 if (textInner.data('text')) {
                     App.copyMe(textInner.data('text'));
@@ -275,7 +275,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
                 });
 
-                $('<button class="btn btn-sm btn-warning" title="Удалить из фильтра"><i class="fa fa-filter"></i></button>')
+                $('<button class="btn btn-sm btn-warning" title="'+App.translate("Remove from the filter")+'"><i class="fa fa-filter"></i></button>')
                     .on('click', function () {
                         selectObject.selectPanelDestroy();
                         pcTable.removeValueFromFilters.call(pcTable, field.name, val)
@@ -294,7 +294,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
                 });
 
-                $('<button class="btn btn-sm btn-default" title="Добавить в фильтр"><i class="fa fa-filter"></i></button>')
+                $('<button class="btn btn-sm btn-default" title="'+App.translate('Add to the filter')+'"><i class="fa fa-filter"></i></button>')
                     .on('click', function () {
                         selectObject.selectPanelDestroy();
                         pcTable.addValueToFilters.call(pcTable, field.name, val);
@@ -349,7 +349,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             //log
             if (pcTable.tableRow.type !== 'tmp' && field.logButton) {
                 mobileButtons.push({
-                    label: 'Лог',
+                    label: App.translate('Log'),
                     action: function (dialog) {
                         let rowName;
                         if (pcTable.mainFieldName && item.id) {
@@ -360,7 +360,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
                 });
 
-                $('<button class="btn btn-sm btn-default" title="Лог ручных изменений по полю">Лог</button>')
+                $('<button class="btn btn-sm btn-default" title="'+App.translate('Log of field manual changes')+'">'+App.translate('Log')+'</button>')
                     .on('click', function () {
                         let rowName;
                         if (pcTable.mainFieldName && item.id) {
@@ -377,7 +377,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             }
 
             //close
-            $('<button class="btn btn-sm btn-default" title="Закрыть панель"><i class="fa fa-times"></i></button>')
+            $('<button class="btn btn-sm btn-default" title="'+App.translate('Close the panel')+'"><i class="fa fa-times"></i></button>')
                 .on('click', function () {
                     selectObject.selectPanelDestroy();
                     return false;
@@ -1071,7 +1071,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         this._container.on('click', 'th.id .for-selected button', function () {
             let btn = $(this);
             let html = btn.html();
-            btn.text('Скопировано');
+            btn.text(App.translate('Copied'));
             pcTable.selectedCells.copySepected.call(pcTable, btn.data('names'), function () {
                 btn.html(html)
             });

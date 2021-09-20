@@ -95,14 +95,14 @@
                             data.push({
                                 type: 'plus'
                                 , id: 'plus-table' + v.id.substring(4)
-                                , text: 'Таблицу'
+                                , text: App.translate('treeAddTable')
                                 , parent: v.id
                                 , li_attr: {class: "jstree-creatorView"}
                             });
                             data.push({
                                 type: 'plus'
                                 , id: 'plus-folder' + v.id.substring(4)
-                                , text: 'Папку/Ссылку'
+                                , text: App.translate('treeAddFolder')
                                 , parent: v.id
                                 , li_attr: {class: "jstree-creatorView"}
                             });
@@ -112,7 +112,7 @@
                             data.push({
                                 type: 'plus'
                                 , id: 'plus-calcs' + v.parent.substring(4)
-                                , text: 'Таблицу'
+                                , text: App.translate('treeAddTable')
                                 , parent: v.id
                                 , li_attr: {class: "jstree-creatorView"}
                             });
@@ -130,14 +130,14 @@
                 data.push({
                     type: 'plus'
                     , id: 'plus-table' + match[1]
-                    , text: 'Таблицу'
+                    , text: App.translate('treeAddTable')
                     , parent: '#'
                     , li_attr: {class: "jstree-creatorView"}
                 });
                 data.push({
                     type: 'plus'
                     , id: 'plus-folder' + match[1]
-                    , text: 'Папку/Ссылку'
+                    , text: App.translate('treeAddFolder')
                     , parent: '#'
                     , li_attr: {class: "jstree-creatorView"}
                 });
@@ -201,7 +201,7 @@
 
             if (!isMobile) {
 
-                let input = $('<input placeholder="Поиск по дереву" class="form-control">');
+                let input = $('<input placeholder="'+App.translate('Tree search')+'" class="form-control">');
                 let elseSearch = $('<div id="serverSearch"></div>')
                 $leftTree.before(input);
                 $leftTree.after(elseSearch);

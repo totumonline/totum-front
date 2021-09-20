@@ -6,21 +6,21 @@ fieldTypes.number = {
 
         if ((val === undefined || val === '' || val === null)) {
             if (this.required) {
-                throw 'Поле ' + this.title + ' должно быть заполнено';
+                throw App.translate('The field %s must be entered', this.title);
             }
             return '';
         } else if (this.regexp) {
             var r = new RegExp(this.regexp);
             if (!r.test(val)) {
-                let notify = this.regexpErrorText || 'regexp не проходит - "' + this.regexp + '"';
-                notify = 'Ошибка заполнения поля "' + (this.title || this.name) + '": ' + notify;
+                let notify = this.regexpErrorText || App.translate('Value fails regexp validation: "%s"', this.regexp);
+                notify = App.translate('Filled "%s" field  error: %s', [(this.title || this.name), notify]);
                 throw notify;
             }
         }
 
         let valNew = val.replace(/[^\-()\d/*+.,%:\/]/g, '');
         if (!/^(\+|\*|\%|\/|\:)?(\-?[\d]+((\.|\,)[\d]+)?)%?$/.test(valNew)) {
-            throw 'Здесь должно быть число';
+            throw App.translate('There must be a number');
         }
         val = val.replace(/,/, '.');
         return val;

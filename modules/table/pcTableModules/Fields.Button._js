@@ -174,7 +174,7 @@ fieldTypes.button = {
     btnOK: function ($td, item) {
         let btn = $td.find('button.button-field');
         let field = this;
-        btn.text('Выполнено');
+        btn.text(App.translate('Done'));
         $td.data('clicked', true);
 
         setTimeout(function () {
