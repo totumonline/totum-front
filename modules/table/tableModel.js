@@ -291,7 +291,7 @@
                         } else url += '?';
                         url += 'rn=' + Math.round(Math.random() * 100000) + (data_tmp['method'] || '');
                     }
-                    if (!RequestObject || !RequestObject.abort) {
+                    if (!RequestObject || !RequestObject.jqXHR) {
                         $.ajax({
                             url: url,
                             method: $method,
