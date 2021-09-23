@@ -172,6 +172,10 @@
                     }
 
 
+                    if(json.tableChanged){
+                        pcTable.showRefreshButton(json.tableChanged)
+                    }
+
                     if (!json.error) {
                         if (json.reload) window.location.href = window.location.href;
                         else {
@@ -424,12 +428,12 @@
             viewRow: function (id) {
                 return this.__ajax('post', {id: id, method: 'viewRow'});
             },
-            checkTableIsChanged: function () {
+            checkTableIsChanged: function (RequestObject) {
                 return this.__ajax('post', {
                     method: 'checkTableIsChanged',
                     table_id: pcTable.tableRow.id,
-                    cycle_id: pcTable.tableRow.cycle_id
-                });
+                    cycle_id: pcTable.tableRow.cycle_id,
+                }, RequestObject);
             },
             checkForNotifications: function (periodicity, activeNotifications, RequestObject) {
                 return this.__ajax('post', {

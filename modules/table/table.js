@@ -673,7 +673,7 @@
 
                         if (i === 0) {
                             el.append(' ' + th.data('field'));
-                            let btnCopy = $('<button class="btn btn-sm btn-default copy-me" title="'+App.translate('Copy')+' "><i class="fa fa-copy"></i></button>');
+                            let btnCopy = $('<button class="btn btn-sm btn-default copy-me" title="' + App.translate('Copy') + ' "><i class="fa fa-copy"></i></button>');
                             btnCopy.on('click', function () {
                                 App.copyMe(th.data('field'));
                                 let button = $(this);
@@ -702,7 +702,12 @@
                     }
 
 
-                    let codes = {"code": App.translate('Code'), "codeAction": App.translate('Action'), "codeSelect": App.translate('Select'), "format": App.translate('FormatShort')};
+                    let codes = {
+                        "code": App.translate('Code'),
+                        "codeAction": App.translate('Action'),
+                        "codeSelect": App.translate('Select'),
+                        "format": App.translate('FormatShort')
+                    };
                     let codesKeys = Object.keys(codes);
                     for (let i = 0; i < codesKeys.length; i++) {
                         let name = codesKeys[i];
@@ -971,48 +976,64 @@
                 }
             }
             ,
-            checkTableIsChanged: function (timeout) {
-                let pcTable = this;
+            showRefreshButton(tableUpdated) {
+                this.checkTableIsChangedObject.abort();
 
-                if (document.hidden) {
-                    setTimeout(function () {
-                        pcTable.checkTableIsChanged.call(pcTable, timeout);
-                    }, 1000);
-                } else {
-                    pcTable.model.checkTableIsChanged.call(pcTable.model).then(function (json) {
-                        if (json.no || pcTable.model.tableData.updated.code === json.code) {
-                            pcTable.checkTableIsChanged.call(pcTable, timeout);
+                let nft = $.notify({
+                    message: '<div id="refresh-notify"><span>' + App.translate('The table was changed by the user <b>%s</b> at <b>%s</b>', [tableUpdated.username, App.dateFormats.covert(tableUpdated.dt, 'YY-MM-DD HH:mm', App.lang.timeDateFormatNoYear)]) + '</span> <button class="btn btn-warning btn-sm" style="margin-right: 20px;">' +
+                        App.translate("Refresh") + '</button></div>'
+                }, {
+                    type: 'warning',
+                    allow_dismiss: false,
+                    delay: 0
+                });
+                nft.$ele.find('#refresh-notify button').on('click', () => {
+                    this.model.refresh()
+                });
+            }
+            ,
+            checkTableIsChanged: function () {
+                if (!this.checkTableIsChangedObject) {
+                    this.checkTableIsChangedObject = {
+                        abort: ()=>{
+                            if (this.checkTableIsChangedObject.jqXHR && this.checkTableIsChangedObject.jqXHR.abort)
+                                this.checkTableIsChangedObject.jqXHR.abort();
+                            delete this.checkTableIsChangedObject.jqXHR;
+                        }
 
-                        } else {
-                            let checkIsNotAlreadyChanged = function () {
-                                if (pcTable.model.tableData.updated.code === json.code) {
-                                    pcTable.checkTableIsChanged.call(pcTable, timeout);
-                                } else {
-
-                                    $.notify({
-                                        message: '<div id="refresh-notify"><span>'+App.translate('The table was changed by the user <b>%s</b> at <b>%s</b>', [json.username, App.dateFormats.covert(json.dt, 'YY-MM-DD HH:mm', App.lang.timeDateFormatNoYear)])+'</span> <button class="btn btn-warning btn-sm" style="margin-right: 20px;">' +
-                                            App.translate("Refresh") + '</button></div>'
-                                    }, {
-                                        type: 'warning',
-                                        allow_dismiss: false,
-                                        delay: 0
-                                    });
-
-                                    $('#refresh-notify button').on('click', function () {
-                                        pcTable.model.refresh()
-                                    });
-                                }
-                            };
-                            pcTable.model.doAfterProcesses(
-                                function () {
-                                    setTimeout(checkIsNotAlreadyChanged, 200)
-                                }
-                            )
-
+                    };
+                    document.addEventListener("visibilitychange", () => {
+                        switch (document.visibilityState) {
+                            case 'hidden':
+                                this.checkTableIsChangedObject.abort();
+                                break;
+                            case 'visible':
+                                this.checkTableIsChanged();
+                                break;
                         }
                     });
                 }
+                this.checkTableIsChangedObject.abort();
 
+                this.model.checkTableIsChanged(this.checkTableIsChangedObject).then((json) => {
+                    if (json.no || this.model.tableData.updated.code === json.code) {
+                        this.checkTableIsChanged();
+                    } else {
+                        let checkIsNotAlreadyChanged = () => {
+                            if (this.model.tableData.updated.code === json.code) {
+                                this.checkTableIsChanged();
+                            } else {
+                                this.showRefreshButton(json);
+                            }
+                        };
+                        this.model.doAfterProcesses(
+                            function () {
+                                setTimeout(checkIsNotAlreadyChanged, 200)
+                            }
+                        )
+
+                    }
+                });
             }
             ,
             _getTableMainFieldName: function (fields, mainFieldId) {
