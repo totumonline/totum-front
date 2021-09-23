@@ -183,7 +183,7 @@ fieldTypes.select = {
                 if (RequestObject.jqXHR && RequestObject.jqXHR.abort) {
                     RequestObject.jqXHR.abort();
                 } else {
-                    RequestObject.abort = true;
+                    RequestObject.aborted = true;
                 }
             })
         })

@@ -995,10 +995,11 @@
             checkTableIsChanged: function () {
                 if (!this.checkTableIsChangedObject) {
                     this.checkTableIsChangedObject = {
-                        abort: ()=>{
+                        abort: () => {
                             if (this.checkTableIsChangedObject.jqXHR && this.checkTableIsChangedObject.jqXHR.abort)
                                 this.checkTableIsChangedObject.jqXHR.abort();
-                            delete this.checkTableIsChangedObject.jqXHR;
+                            this.checkTableIsChangedObject.aborted = true;
+
                         }
 
                     };
@@ -1013,7 +1014,9 @@
                         }
                     });
                 }
+
                 this.checkTableIsChangedObject.abort();
+                delete this.checkTableIsChangedObject.aborted;
 
                 this.model.checkTableIsChanged(this.checkTableIsChangedObject).then((json) => {
                     if (json.no || this.model.tableData.updated.code === json.code) {

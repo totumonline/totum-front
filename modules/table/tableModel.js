@@ -158,8 +158,8 @@
                             if ('allCount' in json && json.allCount !== null && pcTableObj.PageData.allCount !== json.allCount) {
                                 changed = true;
 
-                                if(pcTableObj.tableRow.pagination.match(/desc\s*$/)){
-                                    pcTableObj.PageData.offset+=json.allCount-pcTableObj.PageData.allCount;
+                                if (pcTableObj.tableRow.pagination.match(/desc\s*$/)) {
+                                    pcTableObj.PageData.offset += json.allCount - pcTableObj.PageData.allCount;
                                 }
 
                                 pcTableObj.PageData.allCount = json.allCount
@@ -172,7 +172,7 @@
                     }
 
 
-                    if(json.tableChanged){
+                    if (json.tableChanged) {
                         pcTable.showRefreshButton(json.tableChanged)
                     }
 
@@ -239,7 +239,7 @@
                     if (obj && obj.status === 200) {
                         if (obj.responseJSON && obj.responseJSON.error) error = obj.responseJSON.error;
                         else {
-                            error = $('<div>'+App.translate('Operation execution error')+'  </div>');
+                            error = $('<div>' + App.translate('Operation execution error') + '  </div>');
                             if (pcTable && pcTable.isCreatorView) {
                                 error.append('<button class="btn danger-backg btn-xs" data-toggle="collapse" data-target="#notify-texh"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></button>');
                                 error.append($('<div id="notify-texh" class="collapse">').append($('<code>').text(obj.responseText)));
@@ -291,7 +291,7 @@
                         } else url += '?';
                         url += 'rn=' + Math.round(Math.random() * 100000) + (data_tmp['method'] || '');
                     }
-                    if (!RequestObject || !RequestObject.jqXHR) {
+                    if (!RequestObject || RequestObject.aborted !== true) {
                         $.ajax({
                             url: url,
                             method: $method,
@@ -451,7 +451,7 @@
                     type: type,
                 });
             },
-            seachUserTables:function (searchString, excludeTop) {
+            seachUserTables: function (searchString, excludeTop) {
                 return this.__ajax('post', {
                     method: 'seachUserTables',
                     q: searchString,
