@@ -978,6 +978,7 @@
             ,
             showRefreshButton(tableUpdated) {
                 this.checkTableIsChangedObject.abort();
+                this.checkTableIsChangedObject.changed = true;
 
                 let nft = $.notify({
                     message: '<div id="refresh-notify"><span>' + App.translate('The table was changed by the user <b>%s</b> at <b>%s</b>', [tableUpdated.username, App.dateFormats.covert(tableUpdated.dt, 'YY-MM-DD HH:mm', App.lang.timeDateFormatNoYear)]) + '</span> <button class="btn btn-warning btn-sm" style="margin-right: 20px;">' +
@@ -988,6 +989,7 @@
                     delay: 0
                 });
                 nft.$ele.find('#refresh-notify button').on('click', () => {
+                    delete this.checkTableIsChangedObject.changed;
                     this.model.refresh()
                 });
             }
@@ -1004,6 +1006,8 @@
 
                     };
                     document.addEventListener("visibilitychange", () => {
+                        if(this.checkTableIsChangedObject.changed) return;
+
                         switch (document.visibilityState) {
                             case 'hidden':
                                 this.checkTableIsChangedObject.abort();
