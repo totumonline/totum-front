@@ -119,7 +119,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                     window.top.App.modal(App.translate('JSON format error'));
                 }
 
-                let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">'+App.translate('Manually')+'</a>').on('click', function () {
+                let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
                     let div = $('<div>');
                     let textarea = $('<textarea class="form-control">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
 
@@ -129,18 +129,19 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                         textarea.height(350)
                     }
 
+                    const saveM = function (dialog) {
+                        try {
+                            editor.setText(textarea.val());
+                            dialog.close();
+                        } catch (e) {
+                            window.top.App.modal(App.translate('JSON format error'))
+                        }
+                    };
                     let title = App.translate('Manually changing the json field'), buttons = [
                         {
                             'label': App.translate('Save'),
                             cssClass: 'btn-m btn-warning',
-                            action: function (dialog) {
-                                try {
-                                    editor.setText(textarea.val());
-                                    dialog.close();
-                                } catch (e) {
-                                    window.top.App.modal(App.translate('JSON format error'))
-                                }
-                            }
+                            action: saveM
                         }, {
                             'label': null,
                             icon: 'fa fa-times',
@@ -156,6 +157,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                             buttons: buttons,
                         })
                     } else {
+                        let eventName = 'ctrlS.Manually';
                         window.top.BootstrapDialog.show({
                             message: div,
                             type: null,
@@ -164,12 +166,15 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                             cssClass: 'fieldparams-edit-panel',
                             buttons: buttons,
                             onhide: function (event) {
-                                // escClbk(div, event);
+                                $('body').off(eventName);
                             },
                             onshown: function (dialog) {
                                 dialog.$modalContent.position({
                                     of: window.top
                                 });
+                                $('body').on(eventName, () => {
+                                    saveM(dialog)
+                                })
                             },
                             onshow: function (dialog) {
                                 dialog.$modalHeader.css('cursor', 'pointer')
@@ -388,10 +393,10 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
         }
         return fieldValue;
     },
-    getHighCelltext(fieldValue, td, item){
+    getHighCelltext(fieldValue, td, item) {
         return this.getCellText(fieldValue);
     },
-    getEditPanelText(fieldValue){
+    getEditPanelText(fieldValue) {
         return this.getCellText(fieldValue.v);
     }
 });

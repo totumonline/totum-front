@@ -31,6 +31,8 @@
 
                     let value = mirror.getValue();
                     let editorMax;
+                    let eventName = 'ctrlS.CodemirrorMax';
+
 
                     window.top.BootstrapDialog.show({
                         message: newCodemirrorDiv,
@@ -41,6 +43,7 @@
                         draggable: true,
                         onhide: function (event) {
                             mirror.setValue(editorMax.getValue());
+                            $('body').off(eventName)
                         },
 
                         onshow: function (dialog) {
@@ -50,8 +53,9 @@
                                 minHeight: "90vh"
                             });
                             dialog.$modalHeader.find('button.close').css('font-size', '16px').html('<i class="fa fa-compress"></i>')
-
-
+                            $('body').on(eventName, () => {
+                                dialog.close()
+                            })
                         },
                         onshown: function (dialog) {
                             editorMax = CodeMirror(newCodemirrorDiv.get(0), {
@@ -90,22 +94,22 @@
         let nameL = name.toLowerCase();
 
         let div = $('<div style="width:200px" class="function-help">');
-        $('<div class="func-template">').text(name + TOTUMjsFuncs[nameL][0]).appendTo(div).on('click', ()=>{
+        $('<div class="func-template">').text(name + TOTUMjsFuncs[nameL][0]).appendTo(div).on('click', () => {
             return false;
         });
-        let params=$('<div class="func-params">').appendTo(div).on('click', ()=>{
+        let params = $('<div class="func-params">').appendTo(div).on('click', () => {
             return false;
         });
 
         TOTUMjsFuncs[nameL][2].forEach((f) => {
-            let s=$('<span>').text(f);
-            if(TOTUMjsFuncs[nameL][3].indexOf(f)!==-1){
+            let s = $('<span>').text(f);
+            if (TOTUMjsFuncs[nameL][3].indexOf(f) !== -1) {
                 s.addClass('req');
             }
-            if(TOTUMjsFuncs[nameL][4].indexOf(f)!==-1){
+            if (TOTUMjsFuncs[nameL][4].indexOf(f) !== -1) {
                 s.addClass('multi');
             }
-            if(DbFieldParams.indexOf(f)!==-1){
+            if (DbFieldParams.indexOf(f) !== -1) {
                 s.addClass('db');
             }
 
@@ -114,9 +118,9 @@
 
         })
 
-        let btn=$('<a>').attr('href', 'https://docs.totum.online/functions#fn-'+TOTUMjsFuncs[nameL][5])
+        let btn = $('<a>').attr('href', 'https://docs.totum.online/functions#fn-' + TOTUMjsFuncs[nameL][5])
             .attr('target', '_blank')
-            .html('<button class="btn btn-default btn-sm">'+App.translate('Documentaion')+'</button>');
+            .html('<button class="btn btn-default btn-sm">' + App.translate('Documentaion') + '</button>');
 
         div.append(btn.wrap('<div class="button">').parent())
 
@@ -391,7 +395,7 @@
                                 if (!subFunc()) return error();
                                 return 'global-var'
 
-                            }else {
+                            } else {
                                 let nS;
                                 while (/[a-z0-9_.]/.test(nS = stream.peek()) && stream.next()) {
                                 }
@@ -403,7 +407,7 @@
                                     return "db_name";
                                 }
                             }
-                                return error();
+                            return error();
 
                             break;
                         case '$':
@@ -990,11 +994,21 @@
 
                 keywords = [
                     {text: "$#lc", title: App.translate('empty list'), render: renderHint, type: 'item-code-var'},
-                    {text: "$#nd", title: App.translate('date')+' - Y-m-d', render: renderHint, type: 'item-code-var'}, //, hint: function (cm, data, completion) {}
-                    {text: "$#ndt", title: App.translate('date-time')+' - Y-m-d H:i', render: renderHint, type: 'item-code-var'},
+                    {
+                        text: "$#nd",
+                        title: App.translate('date') + ' - Y-m-d',
+                        render: renderHint,
+                        type: 'item-code-var'
+                    }, //, hint: function (cm, data, completion) {}
+                    {
+                        text: "$#ndt",
+                        title: App.translate('date-time') + ' - Y-m-d H:i',
+                        render: renderHint,
+                        type: 'item-code-var'
+                    },
                     {
                         text: "$#ndts",
-                        title: App.translate('date-time with secongs')+' - Y-m-d H:i:s',
+                        title: App.translate('date-time with secongs') + ' - Y-m-d H:i:s',
                         render: renderHint,
                         type: 'item-code-var'
                     },
@@ -1002,14 +1016,34 @@
                     {text: "$#nr", title: App.translate('user roles ids'), render: renderHint, type: 'item-code-var'},
                     {text: "$#nti", title: App.translate('table id'), render: renderHint, type: 'item-code-var'},
                     {text: "$#ntn", title: App.translate('table NAME'), render: renderHint, type: 'item-code-var'},
-                    {text: "$#nth", title: App.translate('temporary table HASH'), render: renderHint, type: 'item-code-var'},
+                    {
+                        text: "$#nth",
+                        title: App.translate('temporary table HASH'),
+                        render: renderHint,
+                        type: 'item-code-var'
+                    },
                     {text: "$#ih", title: App.translate('adding row HASH'), render: renderHint, type: 'item-code-var'},
-                    {text: "$#nci", title: App.translate('calcuated table cycle id'), render: renderHint, type: 'item-code-var'},
+                    {
+                        text: "$#nci",
+                        title: App.translate('calcuated table cycle id'),
+                        render: renderHint,
+                        type: 'item-code-var'
+                    },
                     {text: "$#nf", title: App.translate('field NAME'), render: renderHint, type: 'item-code-var'},
                     {text: "$#nl", title: App.translate('new line'), render: renderHint, type: 'item-code-var'},
                     {text: "$#tb", title: App.translate('tab'), render: renderHint, type: 'item-code-var'},
-                    {text: "$#tpa", title: App.translate('action code action type'), render: renderHint, type: 'item-code-var'},
-                    {text: "$#ids", title: App.translate('the ids of the checked fields'), render: renderHint, type: 'item-code-var'},
+                    {
+                        text: "$#tpa",
+                        title: App.translate('action code action type'),
+                        render: renderHint,
+                        type: 'item-code-var'
+                    },
+                    {
+                        text: "$#ids",
+                        title: App.translate('the ids of the checked fields'),
+                        render: renderHint,
+                        type: 'item-code-var'
+                    },
                     {
                         text: "$#nfv",
                         title: App.translate('current field value (for selections/actions/formats)'),
@@ -1022,7 +1056,12 @@
                         render: renderHint,
                         type: 'item-code-var'
                     },
-                    {text: "$#nh", title: App.translate('current host-name'), render: renderHint, type: 'item-code-var'},
+                    {
+                        text: "$#nh",
+                        title: App.translate('current host-name'),
+                        render: renderHint,
+                        type: 'item-code-var'
+                    },
                     {
                         text: "$#duplicatedId",
                         title: App.translate('duplicated row id'),

@@ -49,9 +49,9 @@
                 Dialog.close();
             }
             $('body').on(eventName, () => {
-
                 save();
             });
+
             let buttons = [
                 {
                     action: save,

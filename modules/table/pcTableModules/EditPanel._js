@@ -474,7 +474,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             buttons.push({
                 action: save,
                 cssClass: 'btn-warning btn-save',
-                label: App.translate('Save')
+                label: App.translate('Save')+' Alt+S'
             });
         }
 
@@ -520,7 +520,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
         }
 
-        let eventName = 'ctrlS.EditPanel';
+        let eventName = 'ctrlS.EditPanel' + panelId;
         EditPanel.bootstrapPanel = BootstrapDialog.show({
             type: type || null,
             size: BootstrapDialog.SIZE_WIDE,
@@ -960,7 +960,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
         let mainTable = $('#table').data('pctable');
 
-        if (mainTable.tableRow.id === pcTable.tableRow.id && mainTable.tableRow.cycle_id === pcTable.tableRow.cycle_id) {
+        if (mainTable && mainTable.tableRow.id === pcTable.tableRow.id && mainTable.tableRow.cycle_id === pcTable.tableRow.cycle_id) {
             if (!mainTable.editPanels) {
                 mainTable.editPanels = [];
             }

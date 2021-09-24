@@ -442,15 +442,7 @@
                 });
                 $('body').on('click', closeCallbacksFunc);
 
-                window.top.lastCtrl = 0;
-                $('body').on('keydown', (event) => {
-                    if (event.ctrlKey) {
-                        window.top.lastCtrl = Date.now();
-                    }
-                });
-                window.top.wasCtrl = (event) => {
-                    return event.ctrlKey || (window.top && window.top.lastCtrl > 0 && (Date.now() - window.top.lastCtrl < 500));
-                }
+
                 pcTable._container.on('scroll', closeCallbacksFunc);
                 pcTable._innerContainer.on('scroll', closeCallbacksFunc);
 
@@ -925,7 +917,6 @@
                     }
                     this._addSelectable();
                     this._addEditable();
-                    this._addSave();
 
                     this.row_actions_add();
 
@@ -955,18 +946,6 @@
                 }
 
             ,
-            _addSave: function () {
-                $('body').on('keyup', function (event) {
-                    if (window.top.wasCtrl(event) || event.metaKey) {
-                        if (String.fromCharCode(event.which).toLowerCase() === 's' && $('#bigOneCodemirror').length === 0) {
-                            $('body').trigger('ctrlS')
-                        }
-                    }
-                });
-
-            }
-            ,
-
             reloaded: function () {
 
                 let notify = $('#refresh-notify');
