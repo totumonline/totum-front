@@ -442,12 +442,14 @@
                     $('body>.page_content').addClass('tree-minifyed');
                     $('#LeftTree').getNiceScroll().resize();
                     if (isTreeOnPageSide) {
+                        $mainPage.append($('#branch-title, #searchArea, #serverSearch'));
                         $mainPage.append($leftTree);
                         $leftTree.trigger('after_open')
                     }
                 } else {
                     $('body>.page_content').removeClass('tree-minifyed');
                     if (isTreeOnPageSide) {
+                        $('.TreeContainer').append($('#branch-title, #searchArea, #serverSearch'));
                         $('.TreeContainer').append($leftTree);
                         $leftTree.trigger('after_open');
                     }
