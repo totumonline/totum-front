@@ -978,6 +978,7 @@
             ,
             showRefreshButton(tableUpdated) {
                 this.checkTableIsChangedObject.abort();
+                if (this.checkTableIsChangedObject.changed) return;
                 this.checkTableIsChangedObject.changed = true;
 
                 let nft = $.notify({
@@ -990,7 +991,44 @@
                 });
                 nft.$ele.find('#refresh-notify button').on('click', () => {
                     delete this.checkTableIsChangedObject.changed;
-                    this.model.refresh()
+                    let pagination = undefined;
+                    if (this.PageData) {
+                        if (this.PageData.offset === 0) {
+                            pagination = 'page';
+                        } else if (this.PageData.offset >= Math.ceil(this.PageData.allCount / this.PageData.onPage) * this.PageData.onPage) {
+                            if (Object.keys(this.data).length === this.PageData.onPage)
+                                pagination = -1;
+                            else
+                                pagination = 'page';
+                        }
+
+                    }
+
+                    let func;
+                    if (pagination) {
+                        func = (json) => {
+                            this.applyPage(json.chdata, json.allCount, pagination === -1 ? (json.allCount - this.PageData.onPage) : undefined)
+                            delete json.chdata.rows;
+                            this.table_modify(json);
+                            this.reloaded();
+                        }
+                    }else{
+                        func = (json) => {
+                            this.PageData = {
+                                ...this.PageData, ...{
+                                    offset: json.chdata.offset
+                                    , allCount: json.allCount
+                                    , loading: false
+                                }
+                            }
+                            this.PageData.$block.empty().append(this._paginationCreateBlock());
+
+                            this.table_modify(json);
+                            this.reloaded();
+                        }
+                    }
+
+                    this.model.refresh(func, undefined, pagination, pagination ? true : false);
                 });
             }
             ,
@@ -1006,7 +1044,7 @@
 
                     };
                     document.addEventListener("visibilitychange", () => {
-                        if(this.checkTableIsChangedObject.changed) return;
+                        if (this.checkTableIsChangedObject.changed) return;
 
                         switch (document.visibilityState) {
                             case 'hidden':

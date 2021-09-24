@@ -729,6 +729,44 @@
             return this._beforeSpace;
         },
         __$rowsButtons: null,
+        applyPage: function (data, allCount, offset) {
+            this.rows = data.rows;
+
+            let ids;
+            if (data.rows.length) {
+                ids = {
+                    firstId: data.rows[0].id,
+                    lastId: data.rows[data.rows.length - 1].id,
+
+                }
+            } else {
+                ids = {
+                    firstId: 0,
+                    lastId: 0
+                }
+            }
+
+            if (data.offset === undefined && offset === undefined) {
+                offset = this.PageData.offset;
+            }
+
+            this.PageData = {
+                ...this.PageData, ...{
+                    offset: data.offset === undefined ? offset : data.offset
+                    , allCount: allCount === undefined ? data.allCount : allCount
+                    , loading: false
+                }, ...ids
+            }
+
+            this.initRowsData();
+            this._refreshContentTable(false, true);
+            this.__applyFilters(true);
+            this.PageData.$block.empty().append(this._paginationCreateBlock());
+            if (data.f) {
+                this.apptyTableFormats(data.f)
+            }
+            this.selectedCells.summarizer.check();
+        },
         _paginationCreateBlock: function () {
             let {offset, onPage, allCount} = this.PageData;
 
@@ -740,7 +778,7 @@
             let page = offset === 0 ? 0 : Math.ceil(offset / onPage);
 
 
-            let allPages = Math.ceil(allCount / onPage);
+            let allPages = Math.ceil(allCount / onPage) + (offset % onPage > 0 ? 1 : 0);
             let before, after, first, last;
             if (offset > 0)
                 before = $('<button class="btn btn-default btn-sm"><i class="fa fa-hand-o-left"></i></button>').on('click', () => {
@@ -2416,7 +2454,7 @@
                 if (this.PageData && this.PageData.allCount) {
                     this.model.loadPage(this, null, this.PageData.onPage, null, this.PageData.offset);
                 } else {
-                    text = App.translate('Table is empty')+' ';
+                    text = App.translate('Table is empty') + ' ';
                 }
             }
             return $("<tr>").addClass(this.noDataRowClass)

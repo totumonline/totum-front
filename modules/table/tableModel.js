@@ -528,7 +528,7 @@
             panelsView: function (switcher) {
                 return this.__ajax('post', {method: 'panelsViewCookie', switcher: switcher ? 1 : 0});
             },
-            refresh: function (func, refreshType, withoutIds) {
+            refresh: function (func, refreshType, withoutIds, getList) {
 
                 func = func || function (json) {
                     pcTable.table_modify.call(pcTable, json);
@@ -546,7 +546,8 @@
                     method: 'refresh',
                     tree: tree,
                     recalculate: refreshType === 'recalculate' ? true : null,
-                    withoutIds: withoutIds ? true : null
+                    withoutIds: withoutIds,
+                    getList: getList
                 }).then(function (json) {
                     try {
                         func(json)
@@ -627,37 +628,7 @@
                     pageCount: count,
                     prevLastId: prevLastId
                 }, null, null, _filters).then(function (json) {
-                    pcTable.loadedPage = json.page;
-                    pcTable.rows = json.rows;
-
-                    let ids;
-                    if (json.rows.length) {
-                        ids = {
-                            firstId: json.rows[0].id,
-                            lastId: json.rows[json.rows.length - 1].id,
-
-                        }
-                    } else {
-                        ids = {
-                            firstId: 0,
-                            lastId: 0
-                        }
-                    }
-                    pcTable.PageData = {
-                        ...pcTable.PageData, ...{
-                            offset: json.offset
-                            , allCount: json.allCount
-                            , loading: false
-
-                        }, ...ids
-                    }
-
-                    pcTable.initRowsData.call(pcTable);
-                    pcTable._refreshContentTable.call(pcTable, false, true);
-                    pcTable.__applyFilters.call(pcTable, true);
-                    pcTable.PageData.$block.empty().append(pcTable._paginationCreateBlock.call(pcTable));
-                    pcTable.apptyTableFormats(json.f)
-                    pcTable.selectedCells.summarizer.check();
+                    pcTable.applyPage(json)
                 })
             }
 
