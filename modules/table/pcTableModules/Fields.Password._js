@@ -26,12 +26,14 @@ fieldTypes.password = {
 
         var field = this;
         oldValue=oldValue.v;
-        $input.on('keyup', function (event) {
+        $input.on('keydown', function (event) {
             switch (event.keyCode) {
                 case 13:
+                case 9:
                     try{
                         $input.data('enterClicked', true);
                         enterClbk($(this), event);
+                        return false;
                     }
                     catch (err){
                         $input.data('enterClicked', false);
@@ -41,6 +43,7 @@ fieldTypes.password = {
                     break;
                 case 27:
                     escClbk($(this), event);
+                    return false;
                     break;
             }
         })
