@@ -139,7 +139,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                     };
                     let title = App.translate('Manually changing the json field'), buttons = [
                         {
-                            'label': App.translate('Save'),
+                            'label': App.translate('Save')+' Alt+S',
                             cssClass: 'btn-m btn-warning',
                             action: saveM
                         }, {
@@ -207,7 +207,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
         buttons = [];
 
         let btnsSave = {
-            'label': App.translate('Save'),
+            'label': App.translate('Save')+' Alt+S',
             cssClass: 'btn-m btn-warning',
             action: save
         }, btnsClose = {

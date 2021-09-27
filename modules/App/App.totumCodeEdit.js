@@ -56,7 +56,7 @@
                 {
                     action: save,
                     cssClass: 'btn-warning btn-save',
-                    label: App.translate('Save')
+                    label: App.translate('Save')+' Alt+S'
                 }
 
             ];

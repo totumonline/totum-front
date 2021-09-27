@@ -167,7 +167,7 @@ fieldTypes.comments = {
         buttons = [];
 
         let btnsSave = {
-            'label': App.translate('Save'),
+            'label': App.translate('Save')+' Alt+S',
             cssClass: 'btn-m btn-warning',
             action: save
         }, btnsClose = {
