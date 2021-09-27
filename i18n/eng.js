@@ -42,7 +42,8 @@ App.langs.eng =
             'CancelShort': 'Cancel',
             'ActionShort': 'Action',
             'FormatShort': 'Format',
-            'treeAddTable':'Table',
+            'SelectShort': 'Select',
+            'treeAddTable': 'Table',
             'treeAddFolder':'Folder/Link',
 
         }

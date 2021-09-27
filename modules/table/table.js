@@ -696,8 +696,8 @@
 
                     let codes = {
                         "code": App.translate('Code'),
-                        "codeAction": App.translate('Action'),
-                        "codeSelect": App.translate('Select'),
+                        "codeAction": App.translate('ActionShort'),
+                        "codeSelect": App.translate('SelectShort'),
                         "format": App.translate('FormatShort')
                     };
                     let codesKeys = Object.keys(codes);

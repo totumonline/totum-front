@@ -203,6 +203,7 @@ App.langs.ru =
                 'Code': 'Код',
                 'Action code': 'Код действия',
                 'ActionShort': 'Действ',
+                 'SelectShort':'Селект',
                 'Formating': 'Форматирование',
                 'Selects': 'Селекты',
                 'Select': 'Селект',
