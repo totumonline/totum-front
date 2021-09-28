@@ -147,6 +147,10 @@
 
 @media(max-device-width: 1199px) {
 
+  #pk .alert {
+    min-width: 300px;
+    max-width: 90%;
+  }
   #selectPanelBig, #selectPanel {
     .panel-buttons {
       button {
