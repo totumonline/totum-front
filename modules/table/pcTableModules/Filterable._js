@@ -571,7 +571,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
                         return 'multiincludes';
                     };
 
-                    select.data('selectpicker').$searchbox.focus();
+
 
                     let searchTimeout;
 
@@ -611,6 +611,8 @@ App.pcTableMain.prototype.__addFilterable = function () {
                             actionIt('setSelectedFilters');
                         }
                     });
+
+                    select.data('selectpicker').$searchbox.focus();
                 }
             }, 50);
             pcTable._container.trigger('filterPressed');

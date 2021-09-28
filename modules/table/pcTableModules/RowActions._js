@@ -392,6 +392,10 @@
                             pcTable._content.find('.pcTable-noDataRow').remove();
                         }
                         let reorderRows = [];
+                        if(pcTable.tableRow.order_desc === true){
+                            addedRows = addedRows.reverse();
+                        }
+
                         $.each(addedRows, function (k, v) {
                             v.$visible = true;
                             v.$checked = false;
