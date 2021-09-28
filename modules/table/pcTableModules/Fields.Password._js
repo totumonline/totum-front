@@ -52,8 +52,8 @@ fieldTypes.password = {
             blurClbk($input, event);
             return;
         }
-        $input.one('blur', function (event) {
-            setTimeout(function(){blur(event)}, 50);
+        $input.on('blur', function (event) {
+            blur(event);
         });
         return $input.select();
     },

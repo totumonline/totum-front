@@ -7,6 +7,7 @@ $.extend(App.pcTableMain.prototype, {
     _addButtons: null,
     _insertError: {},
     _currentInsertCellIndex: 0,
+    _InsertFocusFalse: false,
     isInsertable: function () {
         return this.control.adding && !this.f.blockadd && !this.isRestoreView;
     },
@@ -43,7 +44,7 @@ $.extend(App.pcTableMain.prototype, {
         let panel;
 
         let btns = {};
-        btns[('<span id="saveInsertRow">'+App.translate('Save')+'</span>')] =
+        btns[('<span id="saveInsertRow">' + App.translate('Save') + '</span>')] =
             function () {
                 if (!panel.is('.onSaving')) {
                     panel.addClass('onSaving');
@@ -104,7 +105,7 @@ $.extend(App.pcTableMain.prototype, {
         if (Object.keys(pcTable._insertError).length) {
             let fieldName = Object.keys(pcTable._insertError)[0];
             let _error = pcTable._insertError[fieldName];
-            App.notify(_error, $('<div>'+App.translate('Error in %s field', $('<span>').text(pcTable.fields[fieldName].title || pcTable.fields[fieldName].name)).html())+'</div>');
+            App.notify(_error, $('<div>' + App.translate('Error in %s field', $('<span>').text(pcTable.fields[fieldName].title || pcTable.fields[fieldName].name)).html()) + '</div>');
             pcTable._currentInsertCellIndex = pcTable.fieldCategories.visibleColumns.findIndex(function (field) {
                 if (field.name === fieldName) return true
             });
@@ -123,10 +124,10 @@ $.extend(App.pcTableMain.prototype, {
                     pcTable._currentInsertCellIndex = 0;
                     switch (isNotClean) {
                         case 'notClean':
-                            let item={};
-                            Object.keys(pcTable._insertItem).forEach((k)=>{
-                                if(typeof pcTable._insertItem[k] === "object" && "v" in pcTable._insertItem[k]){
-                                    item[k]=pcTable._insertItem[k].v;
+                            let item = {};
+                            Object.keys(pcTable._insertItem).forEach((k) => {
+                                if (typeof pcTable._insertItem[k] === "object" && "v" in pcTable._insertItem[k]) {
+                                    item[k] = pcTable._insertItem[k].v;
                                 }
                             })
                             pcTable._createInsertRow(pcTable._insertRow, true, item);
@@ -195,16 +196,15 @@ $.extend(App.pcTableMain.prototype, {
         }
         this._insertButtons = $('<span>');
 
-        const getAddButton = (inner, func, dataAction)=>{
-            return $('<button '+(dataAction?'data-action="'+dataAction+'"':'')+' class="btn btn-sm btn-warning">'+inner+'</button>')
+        const getAddButton = (inner, func, dataAction) => {
+            return $('<button ' + (dataAction ? 'data-action="' + dataAction + '"' : '') + ' class="btn btn-sm btn-warning">' + inner + '</button>')
 
                 .appendTo(this._insertButtons)
                 .on('click', func);
         }
 
-        if (this.isTreeView && this.tableRow.type==='cycles'){
-        }
-        else if (this.viewType === 'panels' || this.isRotatedView || this.isTreeView) {
+        if (this.isTreeView && this.tableRow.type === 'cycles') {
+        } else if (this.viewType === 'panels' || this.isRotatedView || this.isTreeView) {
             getAddButton(App.translate('Add'), AddWithPanel, "add").width(80)
         } else {
             if (this.tableRow.id !== 2) {
@@ -351,12 +351,29 @@ $.extend(App.pcTableMain.prototype, {
         return $row;
     },
     _createInsertCell: function (td, field, row, index, nodeName, parentFunction) {
-
+        var pcTable = this;
         nodeName = nodeName || 'td';
-        var td = td || $("<" + nodeName + ">");
+        var td = td || $("<" + nodeName + ">").each((i, _td) => {
+            $_td = $(_td);
+            if (field.help) {
+                $_td.on('focus', 'input,button,select', function (event) {
+                    let i = pcTable._table.find('thead th #field-help-' + field.name);
+                    let element = $(event.target);
+                    setTimeout(function () {
+                        i.trigger('open');
+                        element.one('blur remove', function () {
+                            i.trigger('close');
+                        });
+                    }, 120);
+                })
+            }
+            $_td.on('focus', 'input,button,select', () => {
+                this._InsertFocusFalse = Date.now();
+            })
+        });
 
         td.data('index', index);
-        var pcTable = this;
+
 
         if (field.code) {
             td.addClass('with-code');
@@ -456,19 +473,6 @@ $.extend(App.pcTableMain.prototype, {
 
                 });
             return td;
-        }
-
-        if (field.help) {
-            td.on('focus', 'input,button,select', function (event) {
-                let i = pcTable._table.find('thead th #field-help-' + field.name);
-                let element = $(event.target);
-                setTimeout(function () {
-                    i.trigger('open');
-                    element.one('blur remove', function () {
-                        i.trigger('close');
-                    });
-                }, 120);
-            })
         }
 
 
@@ -637,6 +641,9 @@ $.extend(App.pcTableMain.prototype, {
     },
     _insertFocusIt: function (outTimed) {
         let pcTable = this;
+        if (this._InsertFocusFalse && (Date.now() - this._InsertFocusFalse) < 200) {
+            return false;
+        }
         if (!outTimed) {
             setTimeout(function () {
                 pcTable._insertFocusIt.call(pcTable, 1);
