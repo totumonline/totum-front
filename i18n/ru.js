@@ -39,6 +39,7 @@ App.langs.ru =
             },
         "translates":
             {
+                    "PATH-TO-DOCUMENTATION":"http://docs.totum.online/",
                 "Email for cron notifications": "Email для нотификаций крона",
                 "Password": "Пароль",
                 "Login": "Логин",

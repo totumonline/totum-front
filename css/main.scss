@@ -1080,6 +1080,10 @@ th {
       }
     }
 
+    .pcTable-table th:not(.id){
+      background-color: whitesmoke;
+    }
+
     .scroll-top-button, .summarizer {
       position: fixed;
       bottom: 20px;

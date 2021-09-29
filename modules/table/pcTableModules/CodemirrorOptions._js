@@ -506,6 +506,7 @@
                         stream.next();
                         state.inFunction = false;
                         state.functionParam = '';
+                        delete state.func;
                         return 'function';
                     }
 
@@ -574,6 +575,7 @@
 
 
                 }
+
 
 
                 if (stream.peek() === "'") {

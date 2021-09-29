@@ -741,6 +741,10 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         cell.data('firstLoad', firstLoad);
         let input = field.getEditElement(cell.data('input'), EditPanelFunc.editItem[field.name], EditPanelFunc.editItem, saveClbck, escClbck, blurClbck, 50 + fieldIndex, false, cell);
 
+        if (format && format.placeholder && field.addPlaceholder) {
+            field.addPlaceholder(input, format.placeholder)
+        }
+
         if (isEditFieldPanel && field.type === 'fieldParams') {
             if (this.panelType === 'insert') {
                 input.find('.jsonForm').on('change', () => fieldParamsChanged = true)

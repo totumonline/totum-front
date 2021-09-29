@@ -155,7 +155,6 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                             $(this).data('editor').refresh();
                         }
                     });
-
                 };
 
                 async function addfields(fieldType) {
@@ -589,7 +588,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
         if (type === 'checkbox') {
             input.prepend($('<label class="field-param-lable">').html(title)
                 .addClass('form-check-label').prepend(element)
-                .append('<a href="http://docs.totum.online/fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
+                .append('<a href="'+App.translate('PATH-TO-DOCUMENTATION')+'fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
             input.addClass('checkbox');
             $switcher = element;
             if (!element.is(':checked')) {
@@ -598,7 +597,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             }
         } else {
             input.prepend($('<label class="field-param-lable">').html(title)
-                .append('<a href="http://docs.totum.online/fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
+                .append('<a href="'+App.translate('PATH-TO-DOCUMENTATION')+'fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
 
             if (element) {
                 element.data('type', type);
@@ -634,6 +633,11 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                         Val.isOnCheck = true;
                         input.removeClass('disabled');
                         Val.changed();
+                        $(this).closest('div').find('.codeEditor, .HTMLEditor').each(function () {
+                            if ($(this).data('editor')) {
+                                $(this).data('editor').refresh();
+                            }
+                        });
                     }
                 } else {
                     if (Val.isOnCheck !== false) {
