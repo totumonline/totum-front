@@ -35,6 +35,11 @@ App.langs.eng =
             return [string1, string2];
         },
         "translates": {
+            'Creator-tableEditButtons-default_action': 'Action',
+            'Creator-tableEditButtons-on_duplicate': 'Duplicate',
+            'Creator-tableEditButtons-row_format': 'Row format',
+            'Creator-tableEditButtons-table_format': 'Table format',
+
             "PATH-TO-DOCUMENTATION":"http://docs.totum.online/",
             '__clock_shelve_panel': '<span className="clocks-na">For</span> <input type="number" step="1" value="10" className="form-control"/> <select className="form-control"><option  selected value="1">minutes</option><option value="2">hours</option><option value="3">days</option></select>',
             'Log is empty': 'Log is empty. Enable logging and reload the page',

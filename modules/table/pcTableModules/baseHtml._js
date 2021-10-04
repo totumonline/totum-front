@@ -587,6 +587,34 @@
                     type.append(App.translate(' / Version %s / Cycle %s', [this.tableRow.__version, this.tableRow.cycle_id]))
                 }
 
+                const checkIsFilled = (btn, code) => {
+                    if(code===null || code=='' || code.trim()==="=:" || code.trim()==="f1=:"){
+                       btn.css('background-color', 'transparent')
+                    }else{
+                        btn.css('background-color', '#ffedb1')
+                    }
+                }
+
+                [
+                    [App.translate('Creator-tableEditButtons-default_action'), 'default_action', 'action'],
+                    [App.translate('Creator-tableEditButtons-on_duplicate'), 'on_duplicate', 'action'],
+                    [App.translate('Creator-tableEditButtons-row_format'), 'row_format', 'format'],
+                    [App.translate('Creator-tableEditButtons-table_format'), 'table_format', 'format'],
+
+                ].forEach((info)=>{
+                    let btn =  $('<button class="btn btn-danger btn-sm"></button>').text(info[0])
+                        .on('click', function () {
+                            pcTable.editTableCode(info[1], info[2]).then(() => {
+                                App.blink($(this), 3, "green", "color");
+                                checkIsFilled(btn, pcTable.tableRow[info[1]]);
+                            })
+                        }).appendTo(creatorPart);
+                    checkIsFilled(btn, pcTable.tableRow[info[1]]);
+                })
+                
+               
+
+
                 let btnHideAdd = $('<button class="btn btn-danger btn-sm" id="hide-hell" disabled><i class="fa fa-times"></i></span></button>')
                     .on('click', function () {
                         pcTable._hideHell_storage.switchOpened.call(pcTable)

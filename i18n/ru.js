@@ -39,6 +39,11 @@ App.langs.ru =
             },
         "translates":
             {
+                    'Creator-tableEditButtons-default_action': 'Действ.',
+                    'Creator-tableEditButtons-on_duplicate': 'Дублир.',
+                    'Creator-tableEditButtons-row_format': 'Строка',
+                    'Creator-tableEditButtons-table_format': 'Таблица',
+
                     "PATH-TO-DOCUMENTATION":"http://docs.totum.online/",
                 "Email for cron notifications": "Email для нотификаций крона",
                 "Password": "Пароль",

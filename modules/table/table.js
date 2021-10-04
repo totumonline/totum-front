@@ -415,8 +415,8 @@
                 let navTopLine = $('#nav-top-line');
 
                 if (this.tableRow.type === 'tmp' && this.isCreatorView) {
-                        navTopLine.text(App.translate('Attention, please - this is a temporary table'));
-                        navTopLine.addClass('pcTable-type-' + this.tableRow.type);
+                    navTopLine.text(App.translate('Attention, please - this is a temporary table'));
+                    navTopLine.addClass('pcTable-type-' + this.tableRow.type);
                 }
 
                 this._innerContainer = $('<div class="innerContainer">');
@@ -785,6 +785,39 @@
                     }, 200);
                 }
             },
+            editTableCode: function (fieldName, codeType) {
+                return new Promise((resolve, reject) => {
+                    let pcTable = this;
+                    App.getPcTableById(1).then(function (pcTableTable) {
+                        pcTableTable.model.checkEditRow({id: pcTable.tableRow.id}).then(function (json) {
+
+                            let title = '<span style="">' + pcTableTable.fields[fieldName].title + '</span>';
+
+
+                            App.totumCodeEdit(
+                                json.row[fieldName].v, title, pcTable.tableRow.name,
+                                [],
+                                false
+                            )
+                                .then((data) => {
+                                    pcTableTable.model.save({[pcTable.tableRow.id]: {[fieldName]: data.code}}).then(() => {
+                                        pcTable.tableRow[fieldName] = data.code;
+                                        if (codeType === 'format') {
+                                            pcTable.model.refresh();
+                                        }
+                                        resolve();
+                                    }).fail(reject);
+                                }, function (e) {
+                                    console.log(e);
+                                    reject()
+                                })
+
+
+                        });
+                    })
+                })
+
+            },
             editFieldCode: function (fieldName, codeType, settings) {
                 return new Promise((resolve, reject) => {
                     let field = this.fields[fieldName];
@@ -992,7 +1025,7 @@
                             this.table_modify(json);
                             this.reloaded();
                         }
-                    }else{
+                    } else {
                         func = (json) => {
                             this.PageData = {
                                 ...this.PageData, ...{
