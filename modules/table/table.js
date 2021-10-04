@@ -413,9 +413,10 @@
                 }
 
                 let navTopLine = $('#nav-top-line');
-                navTopLine.addClass('pcTable-type-' + this.tableRow.type);
-                if (this.tableRow.type === 'tmp') {
-                    navTopLine.text(App.translate('Attention, please - this is a temporary table'));
+
+                if (this.tableRow.type === 'tmp' && this.isCreatorView) {
+                        navTopLine.text(App.translate('Attention, please - this is a temporary table'));
+                        navTopLine.addClass('pcTable-type-' + this.tableRow.type);
                 }
 
                 this._innerContainer = $('<div class="innerContainer">');

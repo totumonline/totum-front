@@ -594,7 +594,7 @@
 
                 creatorPart.appendTo(topButtons);
 
-                let btnAdd = $('<button class="btn btn-danger btn-sm">' + App.translate('Add field') + '/span></button>').width(113)
+                let btnAdd = $('<button class="btn btn-danger btn-sm">' + App.translate('Add field') + '</span></button>').width(113)
                     .on('click', function () {
                         let data = {
                             table_id: {v: pcTable.tableRow.id}, data_src: {v: pcTable_default_field_data_src}

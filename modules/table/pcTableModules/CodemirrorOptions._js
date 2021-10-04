@@ -577,7 +577,6 @@
                 }
 
 
-
                 if (stream.peek() === "'") {
                     let quote = stream.peek();
                     stream.next();
@@ -642,7 +641,7 @@
                         replaceText = '(';
                         let firstParamCh = 1;
                         let isFirst = true;
-                        params.split(delimiter).forEach(function (str) {
+                        params.split(/[\/;]/).forEach(function (str) {
                             if (str.length === 0) ;
                             else {
                                 if (!isFirst) {
@@ -1145,8 +1144,9 @@
 
                         if (func = TOTUMjsFuncs[match[1].toLowerCase()]) {
                             let oldStart = token.start;
-                            token.start = token.start + token.string.lastIndexOf(match[2]) + 1;
-                            token.string = token.string.slice(token.string.lastIndexOf(match[2]) + 1, cur.ch - oldStart);
+                            let lastIndexOf = token.string.lastIndexOf(";") > token.string.lastIndexOf("/") ? token.string.lastIndexOf(";") : token.string.lastIndexOf("/")
+                            token.start = token.start + lastIndexOf + 1;
+                            token.string = token.string.slice(lastIndexOf + 1, cur.ch - oldStart);
                             token.end = cur.ch;
                             keywords = [];
                             func[2].forEach(function (fName) {
