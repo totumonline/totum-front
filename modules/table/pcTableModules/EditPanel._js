@@ -31,7 +31,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     EditPanelFunc.resolved = false;
     EditPanelFunc.error = {};
 
-    let firstLoad = {}, hash;
+    let firstLoad = {}, hash, loadedContextDataFields = {};
 
 
     this.checkRow = async function (val, isFirstLoad, clearField) {
@@ -182,7 +182,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (cell.length) {
                 if (cell.data('input') && !format.block) {
-                    if (!Oldval || field.isDataModified(EditPanelFunc.editItem[field.name].v, Oldval.v) || field.codeSelectIndividual || (EditPanelFunc.panelType == 'insert' && field.code && !field.codeOnlyInAdd) || field.type === 'fieldParams') {
+                    if (!Oldval || field.isDataModified(EditPanelFunc.editItem[field.name].v, Oldval.v) || field.codeSelectIndividual || (EditPanelFunc.panelType == 'insert' && field.code && !field.codeOnlyInAdd) || field.type === 'fieldParams' || field.name in loadedContextDataFields) {
 
                         EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format);
                     }
@@ -852,12 +852,28 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 cell.append($('<div class="format-comment">').text(format.comment).prepend('<i class="fa fa-info"></i>'))
             }
         }
-        if (field.formatInPanel) {
+        if (field.formatInPanel && EditPanelFunc.editItem.id) {
             let panel = $('<div class="format-panel">').appendTo(cell);
-            panel.append('<a href="">Загрузить что-то</a>').on('click', ()=>{
-                field.pcTable.model.getPanelFormats(field.name, item.id).then((json) => {
-                    field.getPanelFormats(panel, json.panelFormats)
+            let link = $('<a href=""></a>').text(App.translate('Load context data')).appendTo(panel);
+            const loadData = () => {
+                let data = $('<div class="panelView">').appendTo(panel);
+                field.pcTable.model.getPanelFormats(field.name, item.id || hash).then((json) => {
+                    field.getPanelFormats(data, json.panelFormats)
                 })
+                link.text(App.translate('Close context data'));
+                loadedContextDataFields[field.name] = 1;
+            }
+            if (field.name in loadedContextDataFields) {
+                loadData();
+            }
+            link.on('click', () => {
+                if (panel.find('.panelView').length === 0) {
+                    loadData()
+                } else {
+                    link.text(App.translate('Load context data'));
+                    panel.find('.panelView').remove();
+                    delete loadedContextDataFields[field.name];
+                }
                 return false;
             })
         }

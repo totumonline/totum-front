@@ -19,32 +19,36 @@ App.langs.ru =
             })
             return [string1, string2];
         },
-            modelMethods: {
-                    'edit': 'Изменение',
-                    'checkInsertRow': 'Предварительное добавление',
-                    'duplicate': 'Дублирование',
-                    'refresh_rows': 'Пересчет строк',
-                    'loadPage': 'Загрузка страницы',
+        modelMethods: {
+            'edit': 'Изменение',
+            'checkInsertRow': 'Предварительное добавление',
+            'duplicate': 'Дублирование',
+            'refresh_rows': 'Пересчет строк',
+            'loadPage': 'Загрузка страницы',
 
-                    'getTableData': 'Загрузка информации о таблице',
-                    'refresh': 'Обновление данных таблицы',
-                    'checkEditRow': 'Предварительный расчет панели',
-                    'saveEditRow': 'Сохранение панели',
-                    'save': 'Изменение поля',
-                    'click': 'Нажатие кнопки',
-                    'selectSourceTableAction': 'Вызов панели',
-                    'add': 'Добавление строки',
-                    'getEditSelect': 'Загрузка селекта',
-                    'delete': 'Удаление'
-            },
+            'getTableData': 'Загрузка информации о таблице',
+            'refresh': 'Обновление данных таблицы',
+            'checkEditRow': 'Предварительный расчет панели',
+            'saveEditRow': 'Сохранение панели',
+            'save': 'Изменение поля',
+            'click': 'Нажатие кнопки',
+            'selectSourceTableAction': 'Вызов панели',
+            'add': 'Добавление строки',
+            'getEditSelect': 'Загрузка селекта',
+            'delete': 'Удаление'
+        },
         "translates":
             {
-                    'Creator-tableEditButtons-default_action': 'Действ.',
-                    'Creator-tableEditButtons-on_duplicate': 'Дублир.',
-                    'Creator-tableEditButtons-row_format': 'Строка',
-                    'Creator-tableEditButtons-table_format': 'Таблица',
+                'Creator-tableEditButtons-default_action': 'Действ.',
+                'Creator-tableEditButtons-on_duplicate': 'Дублир.',
+                'Creator-tableEditButtons-row_format': 'Строка',
+                'Creator-tableEditButtons-table_format': 'Таблица',
 
-                    "PATH-TO-DOCUMENTATION":"http://docs.totum.online/",
+                'Load context data': 'Загрузить дополнительную информацию',
+                'Close context data': 'Закрыть дополнительную информацию',
+                'Open context data': 'Открыть дополнительную информацию',
+                    
+                "PATH-TO-DOCUMENTATION": "http://docs.totum.online/",
                 "Email for cron notifications": "Email для нотификаций крона",
                 "Password": "Пароль",
                 "Login": "Логин",
@@ -209,7 +213,7 @@ App.langs.ru =
                 'Code': 'Код',
                 'Action code': 'Код действия',
                 'ActionShort': 'Действ',
-                 'SelectShort':'Селект',
+                'SelectShort': 'Селект',
                 'Formating': 'Форматирование',
                 'Selects': 'Селекты',
                 'Select': 'Селект',
@@ -232,8 +236,8 @@ App.langs.ru =
                 'Calculate log': 'Лог расчета',
                 'Log of field manual changes': 'Лог ручных изменений по полю',
                 'Log is empty': 'Лог пуст. Включите логирование и перегрузите страницу',
-                    'Operation execution error':'Ошибка выполнения операции',
-                    'No server connection':'Нет соединения с сервером',
+                'Operation execution error': 'Ошибка выполнения операции',
+                'No server connection': 'Нет соединения с сервером',
                 'export': 'экспорт',
                 'import': 'импорт',
                 'Full': 'Полный',
@@ -394,9 +398,9 @@ App.langs.ru =
                 'You can only move within one branch': 'Перемещать можно только в пределах одной ветки',
                 'Attention, please - this is a temporary table': 'Будьте внимательны - это временная таблица',
                 'The table was changed by the user <b>%s</b> at <b>%s</b>': 'Таблица была изменена пользователем <b>%s</b> в <b>%s</b>',
-                    'treeAddTable':'Таблицу',
-                    'treeAddFolder':'Папку/Ссылку',
-                    'Tree search':'Поиск по дереву'
+                'treeAddTable': 'Таблицу',
+                'treeAddFolder': 'Папку/Ссылку',
+                'Tree search': 'Поиск по дереву'
             }
     }
 ;

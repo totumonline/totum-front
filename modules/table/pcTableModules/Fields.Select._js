@@ -705,6 +705,27 @@ fieldTypes.select = {
                 } else if (listVals.length !== 1) {
                     d.add('select-item');
                 }
+                if (listVals.length !== 1) {
+                    let eye = $('<button class="btn btn-xxs btn-default"><i class="fa fa-eye"></i></button>').on('click', () => {
+
+                        if (eye.data('opened')) {
+                            eye.data('pr').hide();
+                            eye.data('opened', false)
+                        } else {
+                            if (!eye.data('pr')) {
+                                let pr = $('<div>').appendTo(d);
+                                field.loadPreviewPanel(pr, field.name, item, [item[field['name']].v[k]]).then(function () {
+                                });
+                                eye.data('pr', pr)
+                            }else{
+                                eye.data('pr').show()
+                            }
+                            eye.data('opened', true)
+                        }
+                    });
+                    d.prepend(eye)
+                }
+
                 $div.append(d);
             });
         } else {

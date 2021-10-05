@@ -56,7 +56,7 @@ var defaultField = {
             })
             if (panelFormats.hash) {
                 interv = setInterval(() => {
-                    if (!$panel.closest('body').length) {
+                    if (!divForPannelFormats.closest('body').length) {
                         clearInterval(interv);
                         field.pcTable.model.panelButtonsClear(panelFormats.hash);
                     }
