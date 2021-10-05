@@ -22,7 +22,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     this.bootstrapPanel = null;
 
 
-    let checkMethod = data.id ? 'checkEditRowForPanel' : 'checkInsertRow';
+    let checkMethod = data.id ? 'checkEditRow' : 'checkInsertRow';
     let saveMethod = data.id ? 'saveEditRow' : 'add';
     this.panelType = data.id ? 'edit' : 'insert';
     this.editItem = data || {};
@@ -852,12 +852,14 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 cell.append($('<div class="format-comment">').text(format.comment).prepend('<i class="fa fa-info"></i>'))
             }
         }
-
-
-        if (EditPanelFunc.editItem[field.name].p) {
-            let panel = $('<div class="format-panel">');
-            field.getPanelFormats(panel, EditPanelFunc.editItem[field.name].p)
-            cell.append(panel)
+        if (field.formatInPanel) {
+            let panel = $('<div class="format-panel">').appendTo(cell);
+            panel.append('<a href="">Загрузить что-то</a>').on('click', ()=>{
+                field.pcTable.model.getPanelFormats(field.name, item.id).then((json) => {
+                    field.getPanelFormats(panel, json.panelFormats)
+                })
+                return false;
+            })
         }
         return cell;
     };

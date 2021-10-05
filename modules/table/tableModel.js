@@ -416,15 +416,6 @@
                     method: 'checkInsertRow'
                 });
             },
-            checkEditRowForPanel: function (data) {
-                var sendData = {};
-                $.each(data, function (k, v) {
-                    if (v != undefined) {
-                        sendData[k] = v;
-                    }
-                });
-                return this.__ajax('post', {data: sendData, method: 'checkEditRow', panel: true});
-            },
             checkEditRow: function (data) {
                 var sendData = {};
                 $.each(data, function (k, v) {
