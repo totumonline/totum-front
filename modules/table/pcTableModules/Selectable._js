@@ -102,59 +102,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             textDiv.append(divForPannelFormats);
             divForPannelFormats.data('loadFormats', function () {
                 field.pcTable.model.getPanelFormats(field.name, item.id).then((json) => {
-                    divForPannelFormats.empty();
-                    if (json.panelFormats) {
-                        let interv;
-                        json.panelFormats.rows.forEach((frow) => {
-                            switch (frow.type) {
-                                case 'text':
-                                    divForPannelFormats.append($('<div class="panel-text">').text(frow.value));
-                                    break;
-                                case 'html':
-                                    divForPannelFormats.append($('<div class="panel-html">').html(frow.value));
-                                    break;
-                                case 'img':
-                                    divForPannelFormats.append($('<div class="panel-img">').append($('<img>').attr('src', '/fls/' + frow.value + "_thumb.jpg?rand=" + Math.random())));
-                                    break;
-                                case 'buttons':
-                                    if (frow.value && frow.value.forEach) {
-                                        let $buttons = [];
-                                        frow.value.forEach((b) => {
-                                            let btn = $('<button class="btn btn-default btn-xxs">').text(b.text);
-                                            $buttons.push(btn)
-                                            if (b.color) {
-                                                btn.css('color', b.color)
-                                            }
-                                            if (b.background) {
-                                                btn.css('background-color', b.background)
-                                            }
-                                            btn.on('click', function () {
-                                                field.pcTable.selectedCells.empty();
-                                                field.pcTable.selectedCells.selectPanelDestroy();
-
-                                                field.pcTable.model.panelButtonsClick(json.panelFormats.hash, b.ind).then(function (json) {
-                                                    if (b.refresh) {
-                                                        field.pcTable.model.refresh(null, b.refresh)
-                                                    }
-                                                });
-                                            })
-                                        })
-                                        divForPannelFormats.append($('<div class="panel-buttons">').append($buttons));
-                                    }
-                                    break;
-                            }
-
-                        })
-                        if (json.panelFormats.hash) {
-                            interv = setInterval(() => {
-                                if (!$panel.closest('body').length) {
-                                    clearInterval(interv);
-                                    field.pcTable.model.panelButtonsClear(json.panelFormats.hash);
-                                }
-
-                            }, 1000)
-                        }
-                    }
+                    field.getPanelFormats(divForPannelFormats, json.panelFormats)
                 })
             })
         }
