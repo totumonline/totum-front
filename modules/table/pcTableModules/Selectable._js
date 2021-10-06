@@ -336,7 +336,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
         let fieldText = field.getPanelText(val.v, $panel, item);
 
-        if (field.type === 'select' && val['v'] && (!field.multiple || val['v'].length === 1)) {
+        if (field.type === 'select' && field.withPreview && val['v'] && (!field.multiple || val['v'].length === 1)) {
             let _panel = $('<div class="previews">').appendTo(textDiv);
             field.loadPreviewPanel(_panel, field.name, item, val['v']).then(function () {
                 if (divForPannelFormats.data('loadFormats')) {

@@ -67,6 +67,9 @@ fieldTypes.select = {
                         html.append($_html);
                     }
                 );
+                if(json.previews.length===0){
+                    html.text(App.translate('Element preview is empty'))
+                }
                 panel.empty().append(html);
             }
             $def.resolve()
@@ -188,6 +191,7 @@ fieldTypes.select = {
             })
         })
         let GetLoadListDeffered = function (q) {
+            
             let def = $.Deferred();
             let itemTmp = {};
             Object.keys(item).forEach(function (k) {
@@ -681,10 +685,14 @@ fieldTypes.select = {
         return divParent;
     },
     getEditPanelText:
-
         function (fieldValue, item) {
             if (this.multiple)
                 return this.getPanelText(fieldValue.v, null, item)
+            else if(this.withPreview){
+                let panel=$('<div class="loaded-preview">');
+                this.loadPreviewPanel(panel, this.name, item, item[this.name].v)
+                return panel.wrap('<div class="select-val">').parent();
+            }
         }
 
     ,
@@ -705,7 +713,7 @@ fieldTypes.select = {
                 } else if (listVals.length !== 1) {
                     d.add('select-item');
                 }
-                if (listVals.length !== 1) {
+                if (field.withPreview && listVals.length !== 1) {
                     let eye = $('<button class="btn btn-xxs btn-default "><i class="fa fa-eye"></i></button>').on('click', () => {
 
                         if (eye.data('opened')) {
