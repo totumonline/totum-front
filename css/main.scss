@@ -673,7 +673,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
   vertical-align: top;
   &.id {
     @include idClass();
-    padding-top: 8px;
+    padding-top: 0px;
     height: 63px;
   }
 }
@@ -842,7 +842,7 @@ th {
     }
 
     thead th:not(.id) {
-      padding-top: 20px;
+      padding-top: 11px;
     }
   }
 
@@ -890,7 +890,9 @@ th {
     background-color: transparent;
   }
 }
-
+.pcTable-table th:not(.id){
+  background-color: whitesmoke;
+}
 .pcTable-container {
 
   padding-right: 5px;
@@ -1080,9 +1082,7 @@ th {
       }
     }
 
-    .pcTable-table th:not(.id){
-      background-color: whitesmoke;
-    }
+
 
     .scroll-top-button, .summarizer {
       position: fixed;
@@ -1236,6 +1236,10 @@ th {
   padding: 10px 20px;
   margin-right: 20px;
   margin-top: 15px;
+  margin-left: -20px;
+}
+.pcTable-tableText{
+  margin-left: 50px
 }
 
 .pcTable-tableComment {
@@ -1750,6 +1754,17 @@ th.id .pcTable-filters.for-selected .btn {
   //font-family: 'Open Sans', serif;
 
   width: 100%;
+
+  .select-val{
+    @include selectVal();
+    font-size: 13px;
+    padding-left: 10px;
+    .loaded-preview{
+      padding-bottom: 5px;
+      padding-top: 5px;
+      padding-right: 5px;
+    }
+  }
 
   > .btns .btn {
     border-color: transparent;

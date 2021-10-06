@@ -274,10 +274,11 @@
                 try {
                     stream.lineOracle.doc.cm.getValue().split("\n").forEach(function (line) {
                         if (line.trim().length === 0 || line.indexOf('//') === 0) return '';
-                        if (!line.match(/\s*[a-zA-Z_0-9]+\s*=\s*[a-zA-Z0-9_]*:/)) return '';
+                        if (!line.match(/\s*[a-zA-Z_0-9]+\s*(=\s*[a-zA-Z0-9_]*)?:/)) return '';
                         return state.lineNames.push(line.replace(/^\s*~?\s*([a-zA-Z_0-9=]+).*/, '$1'));
                     });
                 } catch (e) {
+                    console.log(e);
 
                 }
 

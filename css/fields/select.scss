@@ -54,6 +54,12 @@
 
   .previews {
     padding-top: 7px;
+    .title{
+      &:not(:first-child){
+        padding-top: 3px;
+      }
+      font-family: PTRootUIWeb;
+    }
   }
 
   &.text {
@@ -82,8 +88,10 @@
   }
 
   .column-name {
-    font-weight: 500
+    font-weight: 500;
+    font-family: PTRootUIWeb;
   }
+
 
   .field-value {
     padding: 5px 0;
@@ -97,6 +105,9 @@
 
     .select-item span {
       display: block;
+    }
+    .select-val{
+      @include selectVal();
     }
   }
 

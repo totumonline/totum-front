@@ -602,7 +602,7 @@
                     [App.translate('Creator-tableEditButtons-table_format'), 'table_format', 'format'],
 
                 ].forEach((info)=>{
-                    let btn =  $('<button class="btn btn-danger btn-sm"></button>').text(info[0])
+                    let btn =  $('<button class="btn btn-danger btn-xxs"></button>').text(info[0])
                         .on('click', function () {
                             pcTable.editTableCode(info[1], info[2]).then(() => {
                                 App.blink($(this), 3, "green", "color");
@@ -615,14 +615,14 @@
                
 
 
-                let btnHideAdd = $('<button class="btn btn-danger btn-sm" id="hide-hell" disabled><i class="fa fa-times"></i></span></button>')
+                let btnHideAdd = $('<button class="btn btn-danger btn-xxs" id="hide-hell" disabled><i class="fa fa-times"></i></span></button>')
                     .on('click', function () {
                         pcTable._hideHell_storage.switchOpened.call(pcTable)
                     }).appendTo(creatorPart);
 
                 creatorPart.appendTo(topButtons);
 
-                let btnAdd = $('<button class="btn btn-danger btn-sm">' + App.translate('Add field') + '</span></button>').width(113)
+                let btnAdd = $('<button class="btn btn-danger btn-xxs">' + App.translate('Add field') + '</span></button>').width(113)
                     .on('click', function () {
                         let data = {
                             table_id: {v: pcTable.tableRow.id}, data_src: {v: pcTable_default_field_data_src}

@@ -698,7 +698,7 @@ fieldTypes.select = {
         if (listVals) {
             $.each(listVals, function (k, val) {
                 "use strict";
-                let d = $('<div>').text(val[0] + (field.multiple && field.unitType ? ' ' + field.unitType : ''));
+                let d = $('<div class="select-val">').text(val[0] + (field.multiple && field.unitType ? ' ' + field.unitType : ''));
 
                 if (val[1]) {
                     d.addClass('deleted_value')
@@ -706,14 +706,14 @@ fieldTypes.select = {
                     d.add('select-item');
                 }
                 if (listVals.length !== 1) {
-                    let eye = $('<button class="btn btn-xxs btn-default"><i class="fa fa-eye"></i></button>').on('click', () => {
+                    let eye = $('<button class="btn btn-xxs btn-default "><i class="fa fa-eye"></i></button>').on('click', () => {
 
                         if (eye.data('opened')) {
                             eye.data('pr').hide();
                             eye.data('opened', false)
                         } else {
                             if (!eye.data('pr')) {
-                                let pr = $('<div>').appendTo(d);
+                                let pr = $('<div class="loaded-preview">').appendTo(d);
                                 field.loadPreviewPanel(pr, field.name, item, [item[field['name']].v[k]]).then(function () {
                                 });
                                 eye.data('pr', pr)
