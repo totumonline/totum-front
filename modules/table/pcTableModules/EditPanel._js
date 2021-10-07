@@ -192,8 +192,14 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             } else {
                 let divWrapper = $('<div class="cell-wrapper" style="position: relative">');
 
+                if (field.panelColor) {
+                    divWrapper.css('background-color', field.panelColor)
+                } else if (field.webRoles && field.webRoles.length === 1 && field.webRoles[0].toString() === "1") {
+                    divWrapper.addClass('admin-see');
+                }
 
-                let label = $('<label>').text(field.title || field.name).prependTo(divWrapper);
+
+                let label = $('<label>').text(field.title).prependTo(divWrapper);
                 if (field.unitType) {
                     label.text(label.text() + ', ' + field.unitType);
                 }
@@ -264,6 +270,17 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 }
             }
 
+
+            let $buttons = cell.parent().find('.btns');
+            let bBtn = $buttons.find('.backgroundButton');
+            if (format.background) {
+                if (!bBtn.length) {
+                    bBtn=$('<button class="backgroundButton btn btn-sm btn-default">').appendTo($buttons)
+                }
+                bBtn.css('background-color', format.background)
+            }else if(bBtn.length){
+                bBtn.remove();
+            }
 
             if (format.hide && format.hide.panel) {
                 cell.parent().css('display', 'none');
@@ -860,7 +877,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             const loadData = () => {
                 let data = $('<div class="panelView">').appendTo(panel);
                 if (isSingleSelectWithPreview) {
-                    let AllForSelect=$('<div class="select-val">').appendTo(data);
+                    let AllForSelect = $('<div class="select-val">').appendTo(data);
                     if (field.formatInPanel) {
                         let format = $('<div>').appendTo(AllForSelect);
                         field.pcTable.model.getPanelFormats(field.name, item.id || hash).then((json) => {
@@ -873,7 +890,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     });
 
 
-                }else{
+                } else {
                     field.pcTable.model.getPanelFormats(field.name, item.id || hash).then((json) => {
                         field.getPanelFormats(data, json.panelFormats)
                     })

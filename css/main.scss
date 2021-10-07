@@ -1754,7 +1754,13 @@ th.id .pcTable-filters.for-selected .btn {
   //font-family: 'Open Sans', serif;
 
   width: 100%;
-
+  .backgroundButton{
+    height: 26px;
+    width: 26px;
+  }
+  &.admin-see {
+    background-color: lighten($btn-danger-bgcolor, 20);
+  }
   .select-val{
     @include selectVal();
     font-size: 13px;
