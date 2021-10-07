@@ -143,7 +143,7 @@ fieldTypes.text = {
                     }
 
 
-                    let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">'+App.translate('Manually')+'</a>').on('click', function () {
+                    let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
                         let div = $('<div>');
                         let textarea = $('<textarea class="form-control">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
                         if (window.innerHeight > 460) {
@@ -153,7 +153,7 @@ fieldTypes.text = {
 
                         let buttons = [
                             {
-                                'label': App.translate('Save')+' Alt+S',
+                                'label': App.translate('Save') + ' Alt+S',
                                 cssClass: 'btn-m btn-warning',
                                 action: function (dialog) {
                                     try {
@@ -264,7 +264,7 @@ fieldTypes.text = {
         buttons = [];
 
         let btnsSave = {
-            'label': App.translate('Save')+' Alt+S',
+            'label': App.translate('Save') + ' Alt+S',
             cssClass: 'btn-m btn-warning',
             action: save
         }, btnsClose = {
@@ -289,7 +289,7 @@ fieldTypes.text = {
             });
         }
 
-        let title = App.translate('Field <b>%s</b> text',this.title ) + ', <b>' + field.textType + '</b>';
+        let title = App.translate('Field <b>%s</b> text', this.title) + ', <b>' + field.textType + '</b>' + this.pcTable._getRowTitleByMainField(item, ' (%s)');
         let eventName = 'ctrlS.textedit';
 
         if (editNow) {

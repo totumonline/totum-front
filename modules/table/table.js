@@ -808,7 +808,6 @@
                                         resolve();
                                     }).fail(reject);
                                 }, function (e) {
-                                    console.log(e);
                                     reject()
                                 })
 
@@ -919,7 +918,6 @@
                                         }).fail(reject);
                                     }).fail(reject);
                                 }, function (e) {
-                                    console.log(e);
                                     reject()
                                 })
 
@@ -1094,16 +1092,33 @@
                 });
             }
             ,
-            _getTableMainFieldName: function (fields, mainFieldId) {
-                let fieldName;
-                Object.keys(fields).some(function (f) {
-                    let field = fields[f];
-                    if (field.id == mainFieldId) {
-                        fieldName = field.name;
-                        return true;
+            _getRowTitleByMainField: function (item, format) {
+                let itemTitle = '';
+                if (item.id) {
+                    let mainField = this.mainFieldName;
+                    if (item[mainField].v_ !== undefined) {
+                        if (typeof item[mainField].v_ === 'array') {
+                            item[mainField].v_.forEach(function (v_, i) {
+                                let d = $('<span>').text(this.fields[mainField].getElementString((item[mainField].v ? item[mainField].v[i] : null), v_));
+                                if (v_[1]) {
+                                    d.addClass('deleted_value')
+                                }
+                                itemTitle = d.html();
+                            })
+                        } else {
+                            itemTitle = $('<div>').text(this.fields[mainField].getElementString(item[mainField].v, item[mainField].v_)).html();
+                        }
+                    } else if (item[mainField].v !== undefined) {
+                        itemTitle = $('<div>').text(item[mainField].v).html();
+                    } else {
+                        itemTitle = 'id: '+item.id;
                     }
-                });
-                return fieldName;
+                }
+
+                if (format && itemTitle) {
+                    itemTitle = format.replace('%s', itemTitle);
+                }
+                return itemTitle;
             }
             ,
             _getFieldbyName: function (fieldName) {

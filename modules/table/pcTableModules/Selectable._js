@@ -31,25 +31,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
         let rowName = '';
         if (field.category === 'column') {
-            rowName = '<span class="id-val">[' + item.id + ']</span>';
-            if (pcTable.tableRow.main_field) {
-                let mainField = pcTable.mainFieldName;
-                if (item[mainField].v_ !== undefined) {
-                    if (typeof item[mainField].v_ === 'array') {
-                        item[mainField].v_.forEach(function (v_, i) {
-                            let d = $('<span>').text(pcTable.fields[mainField].getElementString((item[mainField].v ? item[mainField].v[i] : null), v_));
-                            if (v_[1]) {
-                                d.addClass('deleted_value')
-                            }
-                            rowName += ' ' + d.html();
-                        })
-                    } else {
-                        rowName += ' ' + $('<div>').text(pcTable.fields[mainField].getElementString(item[mainField].v, item[mainField].v_)).html();
-                    }
-                } else {
-                    rowName += ' ' + $('<div>').text(item[mainField].v).html();
-                }
-            }
+            rowName = '<span class="id-val">[' + item.id + ']</span>' + pcTable._getRowTitleByMainField(item, ' %s');
             let columnName = $('<div class="row-name"></div>').html(rowName);
 
             $panel.append(columnName);

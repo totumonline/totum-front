@@ -296,7 +296,7 @@
                 }
             ];
 
-            let title = App.translate('Files form <b>%s</b>', (this.title));
+            let title = App.translate('Files form <b>%s</b>', (this.title)) + this.pcTable._getRowTitleByMainField(item, ' (%s)');
             let eventName = 'ctrlS.textdialog';
 
             let showDialog = function (div) {

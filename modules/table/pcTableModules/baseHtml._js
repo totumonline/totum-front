@@ -929,8 +929,8 @@
 
 
                 if (this.control.restoring) {
-                    $('<button data-action="restore" class="btn btn-sm btn-default">' + App.translate(this.isRestoreView ? 'Normal mode' : 'Restore') + '</button>')
-                        .width(80)
+                    $('<button data-action="restore" class="btn btn-sm btn-warning">' + App.translate(this.isRestoreView ? 'Normal mode' : 'Restore') + '</button>')
+                        .width(95)
                         .css('margin-left', '5px')
                         .on('click', this.switchRestoreView.bind(this)).appendTo(buttons)
                 }

@@ -57,6 +57,13 @@
                     action: save,
                     cssClass: 'btn-warning btn-save',
                     label: App.translate('Save')+' Alt+S'
+                },
+                {
+                    action: ()=>{
+                        Dialog.close();
+                    },
+                    cssClass: 'btn-default btn-save',
+                    label: '<i class="fa fa-times"></i>'
                 }
 
             ];

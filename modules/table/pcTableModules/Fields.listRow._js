@@ -220,7 +220,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
             }
         };
 
-        let title = App.translate('Field <b>%s</b> text', this.title);
+        let title = App.translate('Field <b>%s</b> text', this.title) + this.pcTable._getRowTitleByMainField(item, ' (%s)');
         let eventName = 'ctrlS.textedit';
 
         if (editNow) {

@@ -180,7 +180,7 @@ fieldTypes.comments = {
             }
         };
 
-        let title = App.translate('Comments of field')+' <b>' + (this.title) + '</b>';
+        let title = App.translate('Comments of field')+' <b>' + (this.title) + '</b>' + this.pcTable._getRowTitleByMainField(item, ' (%s)');
         let eventName = 'ctrlS.commentdialog';
         let btnClicked = false;
 
