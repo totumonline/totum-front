@@ -45,8 +45,8 @@ App.langs.ru =
                 'Creator-tableEditButtons-table_format': 'Таблица',
 
                 'Load context data': 'Загрузить дополнительную информацию',
-                'Close context data': 'Закрыть дополнительную информацию',
-                'Open context data': 'Открыть дополнительную информацию',
+                'Close context data': '<b>Закрыть</b> дополнительную информацию',
+                'Open context data': '<b>Открыть</b> дополнительную информацию',
                 'Element preview is empty': 'Превью элемента пусто',
                 "PATH-TO-DOCUMENTATION": "http://docs.totum.online/",
                 "Email for cron notifications": "Email для нотификаций крона",

@@ -852,15 +852,34 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 cell.append($('<div class="format-comment">').text(format.comment).prepend('<i class="fa fa-info"></i>'))
             }
         }
-        if (field.formatInPanel && EditPanelFunc.editItem.id) {
+        let isSingleSelectWithPreview = field.type === 'select' && field.withPreview && EditPanelFunc.editItem[field.name]['v'] && (!field.multiple || EditPanelFunc.editItem[field.name]['v'].length === 1);
+        if ((field.formatInPanel || isSingleSelectWithPreview) && EditPanelFunc.editItem.id) {
+            cell.find('.format-panel').remove();
             let panel = $('<div class="format-panel">').appendTo(cell);
-            let link = $('<a href=""></a>').text(App.translate('Load context data')).appendTo(panel);
+            let link = $('<a href=""></a>').html(App.translate('Open context data')).appendTo(panel);
             const loadData = () => {
                 let data = $('<div class="panelView">').appendTo(panel);
-                field.pcTable.model.getPanelFormats(field.name, item.id || hash).then((json) => {
-                    field.getPanelFormats(data, json.panelFormats)
-                })
-                link.text(App.translate('Close context data'));
+                if (isSingleSelectWithPreview) {
+                    let AllForSelect=$('<div class="select-val">').appendTo(data);
+                    if (field.formatInPanel) {
+                        let format = $('<div>').appendTo(AllForSelect);
+                        field.pcTable.model.getPanelFormats(field.name, item.id || hash).then((json) => {
+                            field.getPanelFormats(format, json.panelFormats)
+                        })
+                    }
+                    let _panel = $('<div class="previews loaded-preview">').appendTo(AllForSelect);
+                    field.loadPreviewPanel(_panel, field.name, item, EditPanelFunc.editItem[field.name]['v']).then(function () {
+
+                    });
+
+
+                }else{
+                    field.pcTable.model.getPanelFormats(field.name, item.id || hash).then((json) => {
+                        field.getPanelFormats(data, json.panelFormats)
+                    })
+                }
+
+                link.html(App.translate('Close context data'));
                 loadedContextDataFields[field.name] = 1;
             }
             if (field.name in loadedContextDataFields) {
@@ -870,7 +889,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 if (panel.find('.panelView').length === 0) {
                     loadData()
                 } else {
-                    link.text(App.translate('Load context data'));
+                    link.html(App.translate('Open context data'));
                     panel.find('.panelView').remove();
                     delete loadedContextDataFields[field.name];
                 }

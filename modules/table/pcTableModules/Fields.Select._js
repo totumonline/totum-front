@@ -688,11 +688,7 @@ fieldTypes.select = {
         function (fieldValue, item) {
             if (this.multiple)
                 return this.getPanelText(fieldValue.v, null, item)
-            else if(this.withPreview){
-                let panel=$('<div class="loaded-preview">');
-                this.loadPreviewPanel(panel, this.name, item, item[this.name].v)
-                return panel.wrap('<div class="select-val">').parent();
-            }
+            
         }
 
     ,
