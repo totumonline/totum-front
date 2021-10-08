@@ -223,7 +223,7 @@
     CodeMirror.defineMode("totum", function () {
         return {
             startState: function () {
-                return {inString: false, isStart: true, inFunction: false, lineName: ''};
+                return {inString: false, isStart: true, inFunction: false, lineName: '', inTotumBlock: false};
             },
             token: function (stream, state) {
 
@@ -271,15 +271,96 @@
                 }
 
                 state.lineNames = [];
-                try {
-                    stream.lineOracle.doc.cm.getValue().split("\n").forEach(function (line) {
-                        if (line.trim().length === 0 || line.indexOf('//') === 0) return '';
-                        if (!line.match(/\s*[a-zA-Z_0-9]+\s*(=\s*[a-zA-Z0-9_]*)?:/)) return '';
-                        return state.lineNames.push(line.replace(/^\s*~?\s*([a-zA-Z_0-9=]+).*/, '$1'));
-                    });
-                } catch (e) {
-                    console.log(e);
+                let codeBlocks = [];
 
+                if (stream.lineStart === 0 && stream.start === 0) {
+                    try {
+                        stream.lineOracle.doc.cm.lineNames = [];
+                        let inCodeBlockNamed = null;
+                        let inCodeBlockType = null;
+                        let inCodeBlockStart = null;
+                        let codeBlockNames = [];
+                        let codeLines = [];
+                        stream.lineOracle.doc.cm.codeBlocks = codeBlocks;
+
+                        stream.lineOracle.doc.cm.getValue().split("\n").forEach(function (line, i) {
+                            let matches;
+                            if (inCodeBlockNamed) {
+                                if (line.trim() === '```') {
+                                    stream.lineOracle.doc.cm.lineNames.push(inCodeBlockNamed);
+                                    codeBlocks.push([inCodeBlockStart, i, inCodeBlockType, inCodeBlockNamed, codeBlockNames]);
+                                    inCodeBlockNamed = null;
+                                    inCodeBlockType = null;
+                                    inCodeBlockStart = null;
+                                    codeBlockNames = [];
+                                } else {
+                                    if (matches = line.match(/^\s*~?\s*([a-zA-Z_0-9]+)\s*(=\s*[a-zA-Z0-9_]*)?:/)) {
+                                        codeBlockNames.push(matches[1]);
+                                    }
+                                }
+                                codeLines.push(i);
+                                return;
+                            }
+                            if (matches = line.match(/^\s*```~?([a-zA-Z_0-9]+):([a-z]+)/)) {
+                                inCodeBlockNamed = matches[1];
+                                inCodeBlockType = matches[2];
+                                inCodeBlockStart = i;
+                                codeLines.push(i);
+                                return;
+                            }
+                            if (line.trim().length === 0 || line.indexOf('//') === 0) return '';
+                            if (!(matches = line.match(/^\s*~?\s*([a-zA-Z_0-9]+)\s*(=\s*[a-zA-Z0-9_]*)?:/))) return '';
+                            return stream.lineOracle.doc.cm.lineNames.push(matches[1]);
+                        });
+
+                        if (codeBlocks.length) {
+                            if (stream.lineOracle.doc.cm.lineColorizeTimer) {
+                                clearTimeout(stream.lineOracle.doc.cm.lineColorizeTimer);
+                            }
+                            stream.lineOracle.doc.cm.lineColorizeTimer = setTimeout(() => {
+
+                                stream.lineOracle.doc.eachLine((line) => {
+                                    let i = stream.lineOracle.doc.getLineNumber(line);
+                                    if (line.bgClass !== 'code-block') {
+                                        if (codeLines.indexOf(i) !== -1) {
+                                            stream.lineOracle.doc.cm.addLineClass(line, 'background', 'code-block')
+                                            stream.lineOracle.doc.cm.addLineClass(line, 'text', 'code-block-text')
+                                        }
+                                    } else {
+                                        if (codeLines.indexOf(i) === -1) {
+                                            stream.lineOracle.doc.cm.removeLineClass(line, 'background', 'code-block')
+                                            stream.lineOracle.doc.cm.removeLineClass(line, 'text', 'code-block-text')
+                                        }
+                                    }
+                                })
+                            }, 10);
+                        }
+
+
+                    } catch (e) {
+                        console.log(e);
+                    }
+                } else {
+                    codeBlocks = stream.lineOracle.doc.cm.codeBlocks;
+                    state.lineNames = stream.lineOracle.doc.cm.lineNames;
+                }
+
+                state.inTotumBlock = false;
+
+                for (var i = 0; i < codeBlocks.length; i++) {
+                    let block = codeBlocks[i];
+                    if (block[0] === stream.lineOracle.line && stream.start === 0) {
+                        stream.skipTo(':');
+                        state.lineName = block[3];
+                        return 'start spec-code';
+                    } else if (block[0] <= stream.lineOracle.line && stream.lineOracle.line <= block[1]) {
+                        if ((block[0] == stream.lineOracle.line || stream.lineOracle.line == block[1] || block[2] !== 'totum')) {
+                            stream.skipToEnd();
+                            return 'spec-code';
+                        }
+                        state.inTotumBlock = true;
+                        state.codeBlock = block;
+                    }
                 }
 
 
@@ -328,7 +409,13 @@
                     if (matchesCount > 1) {
                         classes += " dubbled";
                     }
+                    if (state.inTotumBlock) {
+                        classes += ' totum-block';
+                    }
+
+
                     state.isStart = false;
+
                     return classes;
                 }
                 state.isStart = false;
@@ -446,7 +533,7 @@
                                     varName = varName.substring(1);
                                 }
 
-                                if (state.lineNames.indexOf(varName) === -1) {
+                                if (!state.inTotumBlock && state.lineNames.indexOf(varName) === -1) {
                                     classes += " var-not-in";
                                 }
                                 return classes;
@@ -815,19 +902,20 @@
 
         keywords = keywords.slice();
         if (token.state.isStart || cur.ch === 0) {
-            keywords = [];
-            token.string = token.string.replace(/^[\t]+/, '');
-            let tilda = '';
-            if (/^~/.test(token.string)) {
-                token.string.replace(/^~/, '');
-                tilda = '~';
+            if (!token.state.inTotumBlock) {
+                keywords = [];
+                token.string = token.string.replace(/^[\t]+/, '');
+                let tilda = '';
+                if (/^~/.test(token.string)) {
+                    token.string.replace(/^~/, '');
+                    tilda = '~';
+                }
+                $(editor.getWrapperElement()).find('.cm-var-not-in:not(.cm-totum-block)').each(function () {
+                    let text = $(this).text().replace(/^(\#|\$)?\$/, '').replace(/\[.*/, '');
+
+                    keywords.push({text: tilda + text + ': ', displayText: text});
+                });
             }
-            $(editor.getWrapperElement()).find('.cm-var-not-in').each(function () {
-                let text = $(this).text().replace(/^(\#|\$)?\$/, '').replace(/\[.*/, '');
-
-                keywords.push({text: tilda + text + ': ', displayText: text});
-            });
-
 
         } else if (token.type === 'error' && token.state.func && token.state.func[2].length && [";", "/"].indexOf(line[token.start]) !== -1) {
             keywords = [];
@@ -1102,14 +1190,21 @@
                 token.start = token.start + match[1].length;
                 token.end = cur.ch;
 
-                token.state.lineNames.forEach(function (name) {
-                    if (name.indexOf('=') === -1) {
-                        keywords.push(name);
-                    }
-                });
+                if (token.state.inTotumBlock) {
+                    token.state.codeBlock[4].forEach(function (name) {
+                        if (name.indexOf('=') === -1) {
+                            keywords.push(name);
+                        }
+                    });
+                } else {
+                    token.state.lineNames.forEach(function (name) {
+                        if (name.indexOf('=') === -1) {
+                            keywords.push(name);
+                        }
+                    });
+                }
 
-            } else if (match = token.string.match(/^\#/)) {
-
+            } else if (match = token.string.match(/^\#/) && !token.state.inTotumBlock) {
                 keywords = [];
                 token.string = token.string.slice(1, cur.ch - token.start);
                 token.start = token.start + 1;
@@ -1204,8 +1299,7 @@
 
                 keywords = [
                     'true',
-                    'false'
-
+                    'false', $math, $json, $cond, $str
                 ];
                 if (token.state.functionParam === 'order') {
                     keywords = keywords.concat(['asc', 'desc'])
@@ -1295,8 +1389,9 @@
             let wrapper = $(cm.getWrapperElement());
             let line = cm.getLine(cur.line);
             let startVal = line.substring(0, cur.ch);
+            if (token.inTotumBlock) return false;
 
-            if (/^\s*~?\s*?[a-zA-Z0-9_]+$/.test(startVal)) {
+            if (/^\s*~?(```)?\s*?[a-zA-Z0-9_]+$/.test(startVal)) {
                 name = token.lineName;
             } else {
                 let pos = cur.ch - 1;
@@ -1313,7 +1408,7 @@
             }
 
             if (name) {
-                let regTest = new RegExp('^\s*~?\s*' + name + '\s*:');
+                let regTest = new RegExp('^\s*~?(```)?\s*' + name + '\s*:');
 
                 if (regTest.test(wrapper.find('.cm-start.light').text())) {
                     wrapper.find('.light').removeClass('light');
@@ -1322,15 +1417,15 @@
                     let reg = new RegExp("\\$" + name + '\\b');
 
 
-                    wrapper.find('.cm-variable,.cm-inVars,.cm-spec,.cm-db_name').each(function () {
+                    wrapper.find('.cm-variable,.cm-inVars,.cm-spec,.cm-db_name').filter(':not(.cm-totum-block)').each(function () {
                         let cmVar = $(this);
                         if (cmVar.text().match(reg)) {
                             cmVar.addClass('light');
                         }
                     });
-                    wrapper.find('.cm-start').each(function () {
+                    wrapper.find('.cm-start:not(.cm-totum-block)').each(function () {
                         let cmVar = $(this);
-                        if (cmVar.text().trim().replace('~', '').replace(':', '') === name) {
+                        if (cmVar.text().trim().replace('~', '').replace(':', '').replace('```', '') === name) {
                             cmVar.addClass('light');
                         }
                     })
