@@ -75,11 +75,15 @@ App.pcTableMain.prototype.reOrderRowsSave = function () {
 
     this.model.saveOrder(this.dataSorted)
         .then(function (json) {
+            pcTable.dataSorted.forEach((id)=>{
+                if(pcTable.data[id] && pcTable.data[id].__inserted){
+                    delete pcTable.data[id].__inserted
+                }
+            })
             pcTable.table_modify(json);
             pcTable._orderSaveBtn.prop('disabled', false).find('i').attr('class', 'fa fa-save');
             $('table.pcTable-table').removeClass('reordered');
             //pcTable._table.removeClass('reordered');
-
         });
 
 };

@@ -2526,6 +2526,9 @@
                 let field = this.fieldCategories.visibleColumns[i];
                 let td = $('<td>');
                 $row.append(td.append('<span class="cell-value">').append(field.getCellText(null, td, item)));
+                if(item.__inserted){
+                    td.addClass('just-inserted')
+                }
                 ++i;
             }
 

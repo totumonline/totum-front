@@ -9,7 +9,7 @@ fieldTypes.n = $.extend({}, fieldTypes.default, {
         let format = item.f || {};
         td.addClass('n');
 
-        if (!item.id || format.block || format.blockorder || (item.__inserted && !this.pcTable.isTreeView) || this.pcTable.nSortedTreeBlock) {
+        if (!item.id || format.block || format.blockorder || this.pcTable.nSortedTreeBlock) {
             return '';
         }
 
