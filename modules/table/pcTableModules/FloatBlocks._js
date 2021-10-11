@@ -98,10 +98,6 @@
             if (!pcTable.isCreatorView && pcTable.isReplacedToRowsButtonsField(field.name))
                 return;
 
-            /*if (field.panelColor !== undefined) {
-                panelColor = field.panelColor;
-            } else field.panelColor = panelColor;*/
-
             let lableLowOpacity = false;
             if (field.sectionTitle !== undefined) {
                 sectionWithTitles = {_ALL: true}

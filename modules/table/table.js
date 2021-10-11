@@ -455,8 +455,12 @@
 
                             if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
                             else {
-                                let self = $(this);
-                                pcTable.creatorIconsPopover(self)
+                                let th = $(this);
+                                if (!th.attr('aria-describedby')) {
+                                    setTimeout(() => {
+                                        pcTable.creatorIconsPopover(th)
+                                    })
+                                }
                             }
                         })
                         /*this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
@@ -471,8 +475,12 @@
                         this._container.on('click contextmenu', 'th', function (event) {
                             if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
                             else {
-                                let self = $(this);
-                                pcTable.workerIconsPopover(self)
+                                let th = $(this);
+                                if (!th.attr('aria-describedby')) {
+                                    setTimeout(() => {
+                                        pcTable.workerIconsPopover(th)
+                                    })
+                                }
                             }
                         })
                     }
@@ -628,7 +636,7 @@
 
             },
             workerIconsPopover: async function (th) {
-                if (th.closest('.popover').length === 0) {
+                if (!th.attr('aria-describedby') && this.fields[th.data('field')].title) {
                     let div = $('<div style="width:200px" class="creator-icons">');
                     div.append($('<div class="full-title">').text(this.fields[th.data('field')].title));
 
@@ -646,15 +654,14 @@
                         placement: placement,
                         container: $('body')
                     });
-                    setTimeout(() => {
-                        this.closeCallbacks.push(function () {
-                            if (th && th.length) th.popover('destroy');
-                        })
-                    }, 200);
+
+                    this.closeCallbacks.push(function () {
+                        if (th && th.length) th.popover('destroy');
+                    })
                 }
             },
             creatorIconsPopover: async function (th) {
-                if (th.closest('.popover').length === 0) {
+                if (!th.attr('aria-describedby')) {
                     let div = $('<div style="width:200px" class="creator-icons">');
                     div.append($('<div class="full-title">').text(this.fields[th.data('field')].title));
 
@@ -778,11 +785,9 @@
                         placement: placement,
                         container: $('body')
                     });
-                    setTimeout(() => {
-                        this.closeCallbacks.push(function () {
-                            if (th && th.length) th.popover('destroy');
-                        })
-                    }, 200);
+                    this.closeCallbacks.push(function () {
+                        if (th && th.length) th.popover('destroy');
+                    })
                 }
             },
             editTableCode: function (fieldName, codeType) {
@@ -1111,7 +1116,7 @@
                     } else if (item[mainField].v !== undefined) {
                         itemTitle = $('<div>').text(item[mainField].v).html();
                     } else {
-                        itemTitle = 'id: '+item.id;
+                        itemTitle = 'id: ' + item.id;
                     }
                 }
 

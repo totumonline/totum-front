@@ -277,8 +277,7 @@
             let folder = $('<i class="fa fa-folder' + (row.opened ? '-open' : '') + ' treeRow"></i>').data('treeRow', row.v);
 
             let span = $('<span class="tree-view">').append(folder);
-
-            let td = $('<td colspan="' + (this.fieldCategories.column.length - 1) + '" class="tree-view-td" style="padding-left: ' + (7 + row.level * 22) + 'px"></td>');
+            let td = $('<td colspan="' + (this.fieldCategories.visibleColumns.length) + '" class="tree-view-td" style="padding-left: ' + (7 + row.level * 22) + 'px"></td>');
             td.append(span)
 
             this._treeFolderRowAddDropdown(span, row)
