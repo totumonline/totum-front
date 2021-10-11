@@ -16,7 +16,7 @@
 
 
   &.reordered {
-    .n {
+    .n:not(.just-inserted) {
       background-color: lighten($btn-warning-bgcolor, 9%);
     }
   }
