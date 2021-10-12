@@ -316,7 +316,7 @@
 
                 pcTable.data_params[field.field.name] = pcTable.data_params[field.field.name] || {}
 
-                field.format = pcTable.data_params[field.field.name].f || {};
+                field.format = {...(pcTable.data_params[field.field.name].f || {})};
 
                 Object.keys(sec.formatsFromSection).forEach((k) => {
                     let val = getSectionOrFormatParam(k, field.field.name, sec.formatsFromSection, field.format);
@@ -421,10 +421,10 @@
                     }
 
                     if (field.format.titleleft) {
-                        fieldCell.css('grid-template-columns', field.format.titleleft + ' 1fr')
+                        fieldCell.css('grid-template-columns', field.format.titleleft + ' minmax(0, 1fr)')
                     } else {
                         tdWrapper.prependTo(fieldCell)
-                        fieldCell.css('grid-template-columns', '1fr ' + field.format.titleright)
+                        fieldCell.css('grid-template-columns', 'minmax(0, 1fr) ' + field.format.titleright)
                     }
                 }
 
