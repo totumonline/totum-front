@@ -1030,14 +1030,14 @@
                         }
                     } else {
                         func = (json) => {
-                            this.PageData = {
+                           /*this.PageData = {
                                 ...this.PageData, ...{
                                     offset: json.chdata.offset
                                     , allCount: json.allCount
                                     , loading: false
                                 }
                             }
-                            this.PageData.$block.empty().append(this._paginationCreateBlock());
+                            this.PageData.$block.empty().append(this._paginationCreateBlock());*/
 
                             this.table_modify(json);
                             this.reloaded();
