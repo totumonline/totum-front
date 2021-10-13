@@ -200,6 +200,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
 
                 let label = $('<label>').text(field.title).prependTo(divWrapper);
+
+                if(EditPanelFunc.pcTable.tableRow.id===1){
+                    label.append('<span class="field-param-lable"><a href="'+App.translate('PATH-TO-DOCUMENTATION')+'tables#table-settings-' + field.name + '" target="_blank"><i class="fa fa-question-circle-o"></i></a></span>');
+                }
+
                 if (field.unitType) {
                     label.text(label.text() + ', ' + field.unitType);
                 }
