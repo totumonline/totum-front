@@ -2,7 +2,14 @@
     $.extend(App.pcTableMain.prototype, {
         _renderRotatedView: function () {
             let pcTable = this;
-
+            this._innerContainer.on('click', 'td.id', function () {
+                let $tdId = $(this);
+                if (!$tdId.attr('aria-describedby')) {
+                    setTimeout(() => {
+                        pcTable.workerIconsPopover($tdId, $tdId.find('.rowName').text())
+                    })
+                }
+            })
             $.extend(this, {
                 isRotatedView: true,
 
@@ -18,10 +25,10 @@
                 },
                 _addCellId: function (item, $row) {
                     let $tdId = $('<td class="id"></td>');
+
                     let span = $('<span class="rowName"></span>').appendTo($tdId);
                     if (this.mainFieldName && this.mainFieldName !== 'id' && item[this.mainFieldName] && item[this.mainFieldName].v) {
-                        span.text(item[this.mainFieldName].v);
-
+                        span.html(this.fields[this.mainFieldName].getCellText(item[this.mainFieldName], span, item));
                     } else {
                         span.text(item['id']);
                         $tdId.addClass('small-rotated-id');

@@ -463,7 +463,7 @@
                         if (field.hidden) {
                             hidden = ' (' + App.translate('Hidden by default') + ')';
                         }
-                        let fCheckbox = $('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="' + field.name + '" class="form-check-input"> ' + field.title + hidden + '</label> <input type="number" placeholder="' + field.width + '" value="' + (field.showMeWidth && field.showMeWidth !== field.width ? field.showMeWidth : field.width) + '"/></div>');
+                        let fCheckbox = $('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="' + field.name + '" class="form-check-input"> ' + (field.title || '-') + hidden + '</label> <input type="number" placeholder="' + field.width + '" value="' + (field.showMeWidth && field.showMeWidth !== field.width ? field.showMeWidth : field.width) + '"/></div>');
                         if (field.showMeWidth) {
                             fCheckbox.find('input').prop('checked', true);
                             fCheckbox.attr('data-checked', true);

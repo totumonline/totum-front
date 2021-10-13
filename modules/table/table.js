@@ -635,10 +635,11 @@
                 }
 
             },
-            workerIconsPopover: async function (th) {
-                if (!th.attr('aria-describedby') && this.fields[th.data('field')].title) {
+            workerIconsPopover: async function (th, title) {
+                title = title || this.fields[th.data('field')].title;
+                if (!th.attr('aria-describedby') && title) {
                     let div = $('<div style="width:200px" class="creator-icons">');
-                    div.append($('<div class="full-title">').text(this.fields[th.data('field')].title));
+                    div.append($('<div class="full-title">').text(title || this.fields[th.data('field')].title));
 
                     let placement = 'top';
 
