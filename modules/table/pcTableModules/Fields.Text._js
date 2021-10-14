@@ -227,6 +227,11 @@ fieldTypes.text = {
                             editor.refresh();
                         }, 1);
                     });
+
+                    if (mode === 'totum') {
+                        App.CodemirrorFocusBlur(editor)
+                    }
+
                     if (field.pcTable && field.pcTable.tableRow.name === 'tables') {
                         editor.table = item.name.v || item.name;
                     }

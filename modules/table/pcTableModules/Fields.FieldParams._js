@@ -151,7 +151,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
                 let editorsRefresh = function () {
                     dialog.find('.codeEditor, .HTMLEditor').each(function () {
-                        if ($(this).data('editor')) {
+                        if ($(this).data('editor') && $(this).data('editor').refresh) {
                             $(this).data('editor').refresh();
                         }
                     });
@@ -306,7 +306,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
         buttons = [
             {
-                'label': App.translate('Save')+' Alt+S',
+                'label': App.translate('Save') + ' Alt+S',
                 cssClass: 'btn-m btn-warning',
                 action: save
             }, {
@@ -367,7 +367,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
     },
     __addInput: function (fName, f, Val, item, callback) {
-    
+
         let field = this;
         var f = f || {};
         var type = f.type;
@@ -408,6 +408,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     editor.getScrollerElement().style.minHeight = '150px';
 
                     editor.table = item.table_name && item.table_name.v ? item.table_name.v : null;
+                    App.CodemirrorFocusBlur(editor)
                 })
 
                 break;
@@ -419,7 +420,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             case 'json':
                 element = $('<div class="JSONEditor">').height(500).on('blur', callback);
                 var editor = new JSONEditor(element.get(0), {});
-                var btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">'+App.translate('Manually')+'</a>').on('click', function () {
+                var btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
                     var div = $('<div>');
                     var textarea = $('<textarea class="form-control" style="height: 250px;">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
 
@@ -472,7 +473,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 element.find('.jsoneditor-menu').append(btn);
 
                 if (fName === 'chartOptions') {
-                    let btn2 = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">'+App.translate('Fill in by the default settings')+'</a>');
+                    let btn2 = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Fill in by the default settings') + '</a>');
                     btn2.on('click', () => {
                         let vl = $('div[data-name="chartType"] select').val();
 
@@ -588,7 +589,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
         if (type === 'checkbox') {
             input.prepend($('<label class="field-param-lable">').html(title)
                 .addClass('form-check-label').prepend(element)
-                .append('<a href="'+App.translate('PATH-TO-DOCUMENTATION')+'fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
+                .append('<a href="' + App.translate('PATH-TO-DOCUMENTATION') + 'fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
             input.addClass('checkbox');
             $switcher = element;
             if (!element.is(':checked')) {
@@ -597,7 +598,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             }
         } else {
             input.prepend($('<label class="field-param-lable">').html(title)
-                .append('<a href="'+App.translate('PATH-TO-DOCUMENTATION')+'fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
+                .append('<a href="' + App.translate('PATH-TO-DOCUMENTATION') + 'fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
 
             if (element) {
                 element.data('type', type);

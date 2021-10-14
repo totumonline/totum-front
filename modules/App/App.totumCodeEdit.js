@@ -133,6 +133,8 @@
                     let minheight = Math.round(dialog.$modalContent.height() - dialog.$modalHeader.outerHeight() - 40);
                     editorMax.getScrollerElement().style.minHeight = minheight + 'px';
                     newCodemirrorDiv.find('.CodeMirror').css('min-heught', minheight);
+                    App.CodemirrorFocusBlur(editorMax)
+
                     editorMax.focus();
                     dialog.$modalContent.position({
                         my: 'center top',
