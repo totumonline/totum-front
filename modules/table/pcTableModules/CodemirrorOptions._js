@@ -340,10 +340,9 @@
                     } catch (e) {
                         console.log(e);
                     }
-                } else {
-                    codeBlocks = stream.lineOracle.doc.cm.codeBlocks;
-                    state.lineNames = stream.lineOracle.doc.cm.lineNames;
                 }
+                codeBlocks = stream.lineOracle.doc.cm.codeBlocks;
+                state.lineNames = stream.lineOracle.doc.cm.lineNames;
 
                 state.inTotumBlock = false;
 
@@ -360,6 +359,7 @@
                         }
                         state.inTotumBlock = true;
                         state.codeBlock = block;
+                        state.lineNames = block[4];
                     }
                 }
 
