@@ -2295,6 +2295,14 @@ input {
     padding: 0;
   }
 }
+.modal-footer{
+  .fa-lock{
+    padding: 9px 13px;
+  }
+  .btn:disabled{
+    padding: 0;
+  }
+}
 
 @import "fields/string.scss";
 @import "fields/file.scss";
