@@ -390,6 +390,9 @@ fieldTypes.text = {
 
 
             div.text(App.translate('Editing in the form')).addClass('edit-in-form');
+            setTimeout(() => {
+                div.closest('td').css('background-color', '#ffddb4')
+            })
         } else {
             div.on('keydown click', function (event) {
                 if (event.key === 'Tab') {

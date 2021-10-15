@@ -144,6 +144,9 @@
 
 
                 div.text(App.translate('Editing in the form')).addClass('edit-in-form');
+                setTimeout(() => {
+                    div.closest('td').css('background-color', '#ffddb4')
+                })
             } else {
                 let showned = false;
                 div.off().on('click keydown', function (ev) {
