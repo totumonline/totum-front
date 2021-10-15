@@ -15,11 +15,11 @@
 
                 rowButtonsCalcWidth: function () {
                     if (!this.isMobile) {
-                        let width = this._table.offset().left + this._table.width() - 80;
+                        let width = this._table.width()-80;
                         if (width < this._innerContainer.width())
                             this.__$rowsButtons.width(width)
                         else {
-                            this._innerContainer.width()
+                            this.__$rowsButtons.width(this._innerContainer.width())
                         }
                     }
                 },
@@ -129,7 +129,16 @@
                         }
                     };
                 }
-            })
+            });
+
+                const loadPage = pcTable.model.loadPage;
+                pcTable.model.loadPage = function () {
+                    let r=loadPage.call(this, ...arguments);
+                    r.then(()=>{
+                        pcTable.rowButtonsCalcWidth();
+                    })
+                    return r;
+                };
         }
     })
 })();

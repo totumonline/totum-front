@@ -74,7 +74,7 @@
 
                 td.attr('data-field-type', Field.type).addClass('nonowrap');
 
-                if(Field.editable && Field.pcTable.control.editing && !format.block){
+                if (Field.editable && Field.pcTable.control.editing && !format.block) {
                     td.addClass('panel-edt');
                 }
 
@@ -384,7 +384,7 @@
                             }
                         })
                     } else {
-                        $cards.append('<div class="empty-kanban">'+App.translate('No data')+'</div>');
+                        $cards.append('<div class="empty-kanban">' + App.translate('No data') + '</div>');
                     }
                 })
                 $div.width(width);
@@ -398,10 +398,11 @@
             }
 
         } else {
-            $div.append('<div class="no-panels">'+App.translate('No data')+'</div>');
+            $div.append('<div class="no-panels">' + App.translate('No data') + '</div>');
         }
         setTimeout(() => {
             this._container.getNiceScroll().resize();
+
         })
 
         return $div;
@@ -520,8 +521,9 @@
     App.pcTableMain.prototype._renderTablePanelView = function () {
 
         this.loadFilters();
-        this.model.addExtraData({'panelsView':true})
+        this.model.addExtraData({'panelsView': true})
 
+       
         this._renderTable = render.bind(this);
         this._getRowCard = getRowCard.bind(this);
 
@@ -561,7 +563,7 @@
                             cln.append(knb)
                         })
                         let pcTable = this;
-                        topButton=$('<button class="scroll-top-button"><i class="fa fa-arrow-up"></i></button>').on('click', function () {
+                        topButton = $('<button class="scroll-top-button"><i class="fa fa-arrow-up"></i></button>').on('click', function () {
                             pcTable._container.scrollTop(pcTable._container.find('.pcTable-rowsWrapper').offset().top - pcTable.scrollWrapper.offset().top);
                         });
                     }
@@ -586,10 +588,10 @@
             });
 
             let scroll_horizontal_debounce;
-            this._innerContainer.on('scroll', ()=>{
+            this._innerContainer.on('scroll', () => {
                 clearTimeout(scroll_horizontal_debounce);
-                scroll_horizontal_debounce = setTimeout(()=>{
-                    if(cln){
+                scroll_horizontal_debounce = setTimeout(() => {
+                    if (cln) {
                         cln.scrollLeft(this._innerContainer.scrollLeft())
                     }
                 }, 50)
