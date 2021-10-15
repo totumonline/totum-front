@@ -240,34 +240,18 @@
                 }
 
                 function subFunc() {
-                    let doubleS = false;
-                    while (stream.peek() === '[' && stream.next()) {
-                        if (stream.peek() === '[') {
-                            doubleS = true;
-                            stream.next()
+                    let startSub = stream.pos;
+                    let noSubs = true;
+                    while (stream.peek() === '[' && stream.skipTo(']') && stream.next()) {
+                        noSubs = false;
+                        if(stream.peek() === ']'){
+                            stream.next();
                         }
-                        if (stream.peek() === '"' || stream.peek() === "'") {
-                            let quote = stream.peek();
-                            stream.next()
-                            while ((stream.peek() !== quote) && stream.next()) {
-                            }
-                            stream.next()
-                        } else {
-                            while (/[a-z0-9_A-Z$#@.]/.test(stream.peek()) && stream.next()) {
-                            }
-                        }
-                        if (stream.peek() !== ']') {
-                            return false;
-                        }
-                        stream.next()
                     }
-                    if (doubleS) {
-                        if (stream.peek() !== ']') {
-                            return false;
-                        }
-                        stream.next()
+                    let substring = stream.string.substring(startSub, stream.pos);
+                    if (noSubs || substring.match(/^(\[\[[^\[\]]+\]\]|\[[^\[\]]+\])+$/)) {
+                        return true;
                     }
-                    return true;
                 }
 
                 state.lineNames = [];
@@ -491,7 +475,7 @@
 
                                 let string = stream.string.substring(stream.start + 1, stream.pos)
 
-                                if (/^[a-z0-9_]{3,}\.[a-z0-9_]{2,}(\[\[?([a-zA-Z0-9_\$\#]+|"[^"]+"|'[^']+')\]?\])*$/i.test(string)) {
+                                if (/^[a-z0-9_]{3,}(\.[a-z0-9_]{2,}){1,2}(\[\[?([a-zA-Z0-9_\$\#]+|"[^"]+"|'[^']+')\]?\])*$/i.test(string)) {
                                     return "db_name";
                                 }
                             }
@@ -825,11 +809,11 @@
             lastQuery = Math.floor(Date.now() / 1000);
             AllTables = [];
         }
-        if (AllTables.length === 0 && !tablesQueried) {
+        if (!AllTables || AllTables.length === 0 && !tablesQueried) {
             tablesQueried = true;
             let pcTable = $('#table').data('pctable');
             if (pcTable && pcTable.isCreatorView) {
-                pcTable.model.getAllTables().then(function (json) {
+                pcTable.model.getAllTables().then((json) => {
                     AllTables = json.tables;
                     tablesQueried = false;
                 })
@@ -1008,7 +992,7 @@
                         keywords.push({
                             text: fName + "'",
                             textVis: fName,
-                            title: AllTables[tableName].f[fName],
+                            title: AllTables[tableName].f[fName][0],
                             render: renderHint,
                             type: 'item-string-name', curPos: cur.ch + fName.length + 1,
                             tab: true
@@ -1045,38 +1029,49 @@
                 token.start = token.start + 1;
                 token.end = cur.ch;
 
-                if (matches = token.string.match(/^([a-z_0-9]+)\./)) {
+                if (matches = token.string.match(/^([a-z_0-9]+)\.(([a-z_0-9]+)\.)?/)) {
                     let tName = matches[1];
 
-                    token.start += (tName + '.').length;
-                    token.string = token.string.slice((tName + '.').length);
+                    if (matches[2]) {
+                        token.start += (matches[0]).length;
+                        token.string = token.string.slice((matches[0]).length);
+                    } else {
+                        token.start += (tName + '.').length;
+                        token.string = token.string.slice((tName + '.').length);
+                    }
+                    if (tables[tName]) {
+                        Object.keys(tables[tName]["f"]).forEach(function (fName) {
+                            if (['but', 'cha'].indexOf(tables[tName].f[fName][1]) === -1) {
+                                if (matches[2] && tables[tName].f[fName][2] !== 'c') {
+                                    return;
+                                }
+                                if (tables[tName].f[fName][2] === 'fl') {
+                                    return;
+                                }
 
 
-                    if (tables[tName] && tables[tName]["@"].length) {
-                        tables[tName]["@"].forEach(function (fName) {
-                            keywords.push({
-                                text: fName,
-                                title: tables[tName].f[fName],
-                                render: renderHint,
-                                type: 'item-db_name'
-                            })
+                                keywords.push({
+                                    text: fName,
+                                    title: tables[tName].f[fName][0] + (tables[tName].f[fName][2] === 'c' ? '[]' : ''),
+                                    render: renderHint,
+                                    type: 'item-db_name'
+                                })
+                            }
                         });
                     }
 
                 } else {
 
                     Object.keys(tables).forEach(function (tName) {
-                        if (tables[tName]["@"].length) {
-                            keywords.push({
-                                text: tName + '.',
-                                textVis: tName,
-                                title: tables[tName].t,
-                                render: renderHint,
-                                type: 'item-db_name',
-                                showHint: true,
-                                hint: hintFunc
-                            })
-                        }
+                        keywords.push({
+                            text: tName + '.',
+                            textVis: tName,
+                            title: tables[tName].t,
+                            render: renderHint,
+                            type: 'item-db_name',
+                            showHint: true,
+                            hint: hintFunc
+                        })
                     });
                 }
 
@@ -1219,7 +1214,7 @@
                     Object.keys(AllTables[editor.table].f).forEach(function (fName) {
                         keywords.push({
                             text: fName,
-                            title: AllTables[editor.table].f[fName],
+                            title: AllTables[editor.table].f[fName][0],
                             render: renderHint,
                             type: 'item-db-name'
                         });

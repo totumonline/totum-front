@@ -578,7 +578,7 @@
                 return this.__ajax('post', {method: 'printTable', settings: JSON.stringify(settings)});
             }
             ,
-            getAllTables: function () {
+            getAllTables: async function () {
                 return this.__ajax('post', {method: 'getAllTables'});
             },
             calcFieldsLog: function (data, name) {
