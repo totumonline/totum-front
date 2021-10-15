@@ -26,7 +26,7 @@
             let dubleButtons;
             let buttons = dialog.$modalFooter.find('button');
             const getButtons = () => {
-                dubleButtons = $('<div style="position: fixed; right: ' + (dialog.$modal.width() - dialog.$modalBody.width() - dialog.$modalBody.offset().left - 10) + 'px; bottom: 20px; z-index: 1100">').appendTo(dialog.$modal).append(buttons)
+                dubleButtons = $('<div class="float-footer-buttons" style="right: ' + (dialog.$modal.width() - dialog.$modalBody.width() - dialog.$modalBody.offset().left - 10) + 'px; ">').appendTo(dialog.$modal).append(buttons)
             }
             setTimeout(()=>{
                 if (dialog.$modalFooter.get(0).getBoundingClientRect().top > window.innerHeight - 20) {

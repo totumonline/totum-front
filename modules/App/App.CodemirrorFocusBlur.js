@@ -5,6 +5,7 @@
             if (!btn.is(':disabled')) {
                 btn.width(btn.width());
                 btn.prop('disabled', true)
+
                 let times = btn.find('.fa-times').hide();
                 let btnTimes = $('<span class="fa fa-lock"/>')
                 times.after(btnTimes);

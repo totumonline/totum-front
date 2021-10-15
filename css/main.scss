@@ -777,6 +777,7 @@ th {
 .common-table-title {
   margin-left: 15px;
   white-space: nowrap;
+
   .btn {
     margin-right: 5px;
     margin-top: -3px;
@@ -890,9 +891,11 @@ th {
     background-color: transparent;
   }
 }
-.pcTable-table th:not(.id){
+
+.pcTable-table th:not(.id) {
   background-color: whitesmoke;
 }
+
 .pcTable-container {
 
   padding-right: 5px;
@@ -1083,7 +1086,6 @@ th {
     }
 
 
-
     .scroll-top-button, .summarizer {
       position: fixed;
       bottom: 20px;
@@ -1238,7 +1240,8 @@ th {
   margin-top: 15px;
   margin-left: -20px;
 }
-.pcTable-tableText{
+
+.pcTable-tableText {
   margin-left: 50px
 }
 
@@ -1596,10 +1599,12 @@ th {
       }
     }
   }
-  .pcTable-topButtons{
+
+  .pcTable-topButtons {
     height: 45px;
     box-sizing: border-box;
   }
+
   .pcTable-table tbody {
     th.worker-with-i .pcTable-filters {
       bottom: 9px;
@@ -1754,24 +1759,29 @@ th.id .pcTable-filters.for-selected .btn {
   //font-family: 'Open Sans', serif;
 
   width: 100%;
-  .backgroundButton{
+
+  .backgroundButton {
     height: 26px;
     width: 26px;
   }
+
   &.admin-see {
     background-color: lighten($btn-danger-bgcolor, 20);
   }
-  .select-val{
+
+  .select-val {
     @include selectVal();
     font-size: 13px;
     padding-left: 10px;
-    .loaded-preview{
+
+    .loaded-preview {
       padding-bottom: 5px;
       padding-top: 5px;
       padding-right: 5px;
     }
   }
-  .previews{
+
+  .previews {
     background-color: #fafafa;
   }
 
@@ -2269,6 +2279,22 @@ input {
   opacity: 0.25;
 }
 
+.float-footer-buttons {
+  position: fixed;
+  bottom: 20px;
+  z-index: 1100;
+
+  .btn + .btn {
+    margin-bottom: 0;
+    margin-left: 5px;
+  }
+  .fa-lock{
+    padding: 9px 13px;
+  }
+  .btn:disabled{
+    padding: 0;
+  }
+}
 
 @import "fields/string.scss";
 @import "fields/file.scss";
