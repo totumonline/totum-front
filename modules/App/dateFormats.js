@@ -1,6 +1,6 @@
 $(function () {
     App.dateFormats = {
-        'base': App.lang.dateFormat,
+        'base': App.lang ? App.lang.dateFormat : 'd.m.Y',
         'db': 'YYYY-MM-DD',
         covert: function (date, from, to) {
             return moment(date, from).format(to);
@@ -19,7 +19,7 @@ $(function () {
         }
     };
     App.dateTimeFormats = {
-        'base': App.lang.dateTimeFormat,
+        'base': App.lang ? App.lang.dateTimeFormat : 'd.m.Y H:i',
         'db': 'YYYY-MM-DD HH:mm',
 
         covert: function (date, from, to) {
