@@ -2,9 +2,9 @@
 * TOTUM LOCALIZATION
 * */
 App.langs = App.langs || {};
-App.langs.eng =
+App.langs.en =
     {
-        "locale": "eng-ENG",
+        "locale": "en-EN",
         "localeDatetimepicker": "en",
         "dateFormat":'DD/MM/YY',
         "dateTimeFormat":'DD/MM/YY HH:mm',
