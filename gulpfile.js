@@ -61,8 +61,8 @@ let path = {
         , 'bower_components/bootstrap-select/dist/js/i18n/defaults-ru_RU.js'
         , 'i18n/ru.js'
     ],
-    eng: [
-        , 'i18n/eng.js'
+    en: [
+        , 'i18n/en.js'
     ],
     jsLibsMini: {
         src: ['bower_components/jquery/dist/jquery.min.js'
@@ -188,8 +188,8 @@ gulp.task('QUICK-PROD-DEV', function () {
             .pipe(gulp.dest(path.jsLibsMini.dest+'i18n/'));
     });
     gulp.task('product:langEng', function () {
-        return gulp.src(path.eng)
-            .pipe(concat('eng.js'))
+        return gulp.src(path.en)
+            .pipe(concat('en.js'))
             .pipe(uglify().on('error', function (e) {
                 console.log(e);
             }))
