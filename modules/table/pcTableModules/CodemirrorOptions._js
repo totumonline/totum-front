@@ -619,7 +619,7 @@
                         return '';
                     }
 
-                    if (state.functionParam === 'order' && /[ad]/.test(stream.peek())) {
+                    if ((state.functionParam === 'order' || (state.functionParam === 'key' && state.func[5]==='listSort')) && /[ad]/.test(stream.peek())) {
                         if (stream.string.substring(stream.start, stream.start + 3) === 'asc') {
                             stream.next();
                             stream.next();
