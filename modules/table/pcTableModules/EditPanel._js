@@ -711,14 +711,14 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 onAction = true;
                 let editValResult = await getEditVal($input);
                 if (editValResult === null) {
-                    if (!Object.keys(EditPanelFunc.error).length)
-                        EditPanelFunc.FocusIt.call(EditPanelFunc, fieldIndex);
+                    /*if (!Object.keys(EditPanelFunc.error).length)
+                        EditPanelFunc.FocusIt.call(EditPanelFunc, fieldIndex);*/
 
                 } else {
-                    if (!onBlur) {
+                    /*if (!onBlur) {
 
                         EditPanelFunc.FocusIt.call(EditPanelFunc, fieldIndex + 1);
-                    }
+                    }*/
                     if (field.isDataModified(editValResult, EditPanelFunc.editItem[field.name].v)) {
                         let val = {};
                         val[field.name] = {
