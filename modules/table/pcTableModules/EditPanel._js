@@ -989,9 +989,9 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     };
 
     let focusTimer;
-
+/*
     this.FocusIt = function (focusIndex) {
-        return false;
+
         if (focusTimer) clearTimeout(focusTimer);
         focusTimer = setTimeout(function () {
 
@@ -1020,7 +1020,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 buttonSave.focus();
             }
         }, 50);
-    };
+    };*/
 
 
     const _refreshContentTable = () => {

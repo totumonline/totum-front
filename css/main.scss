@@ -1507,6 +1507,8 @@ th {
 
       td {
         max-height: 35px;
+        background-clip: padding-box;
+
       }
     }
 

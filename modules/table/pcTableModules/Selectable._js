@@ -51,13 +51,12 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         allTextData.append(textDiv).appendTo($panel);
 
         let textInner = textDiv.find('.copytext');
-        if (field.unitType && (val.v) !== null && !(field.type === 'select' && field.multiple)) {
-            if(field.before){
+        if (field.unitType && (val.v) !== null && !(['select', 'tree'].indexOf(field.type) !== -1 && field.multiple)) {
+            if (field.before) {
                 textInner.attr('data-unit-before', field.unitType);
-            }else{
+            } else {
                 textInner.attr('data-unit', field.unitType);
             }
-
         }
 
         if (val.f) {

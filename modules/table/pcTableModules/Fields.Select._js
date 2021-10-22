@@ -793,6 +793,7 @@ fieldTypes.select = {
                 if (listVals.length === 0) {
                     $div.append('<span class="select-item">' + this.getElementString(null) + '</span>');
                 } else {
+
                     $.each(listVals, function (k, val) {
                         "use strict";
                         let d = $('<span>');
@@ -812,6 +813,11 @@ fieldTypes.select = {
                         } else if (listVals.length !== 1) {
                             d.add('select-item');
                         }
+
+                        if (td.is('td') && field.multiSeparator && k > 0) {
+                            $div.append($('<span class="separator">').text(field.multiSeparator));
+                        }
+
                         $div.append(d);
                     });
                 }
@@ -920,8 +926,8 @@ fieldTypes.select = {
         let r, notEmptyVal
         if (val === null || val === undefined) {
             if (!arrayVal || !arrayVal[0]) r = this.withEmptyVal || '';
-        }else{
-            notEmptyVal=true;
+        } else {
+            notEmptyVal = true;
         }
 
         if (r === undefined && (arrayVal[0] === null || arrayVal[0] === '')) {
@@ -934,9 +940,9 @@ fieldTypes.select = {
         }
 
         if (notEmptyVal && this.multiple && this.unitType) {
-            if(this.before){
+            if (this.before) {
                 r = this.unitType + ' ' + r;
-            }else{
+            } else {
                 r += ' ' + this.unitType;
             }
         }
