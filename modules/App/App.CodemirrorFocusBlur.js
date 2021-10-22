@@ -4,6 +4,7 @@
         editor.on('focus', (editor) => {
             if (!btn.is(':disabled')) {
                 btn.width(btn.width());
+                btn.addClass('with-lock')
                 btn.prop('disabled', true)
 
                 let times = btn.find('.fa-times').hide();
