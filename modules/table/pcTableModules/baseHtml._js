@@ -588,9 +588,9 @@
                 }
 
                 const checkIsFilled = (btn, code) => {
-                    if(code===null || code=='' || code.trim()==="=:" || code.trim()==="f1=:"){
-                       btn.css('background-color', 'transparent')
-                    }else{
+                    if (code === null || code == '' || code.trim() === "=:" || code.trim() === "f1=:") {
+                        btn.css('background-color', 'transparent')
+                    } else {
                         btn.css('background-color', '#ffedb1')
                     }
                 }
@@ -601,8 +601,8 @@
                     [App.translate('Creator-tableEditButtons-row_format'), 'row_format', 'format'],
                     [App.translate('Creator-tableEditButtons-table_format'), 'table_format', 'format'],
 
-                ].forEach((info)=>{
-                    let btn =  $('<button class="btn btn-danger btn-xxs"></button>').text(info[0])
+                ].forEach((info) => {
+                    let btn = $('<button class="btn btn-danger btn-xxs"></button>').text(info[0])
                         .on('click', function () {
                             pcTable.editTableCode(info[1], info[2]).then(() => {
                                 App.blink($(this), 3, "green", "color");
@@ -611,8 +611,6 @@
                         }).appendTo(creatorPart);
                     checkIsFilled(btn, pcTable.tableRow[info[1]]);
                 })
-                
-               
 
 
                 let btnHideAdd = $('<button class="btn btn-danger btn-xxs" id="hide-hell" disabled><i class="fa fa-times"></i></span></button>')
@@ -2526,7 +2524,7 @@
                 let field = this.fieldCategories.visibleColumns[i];
                 let td = $('<td>');
                 $row.append(td.append('<span class="cell-value">').append(field.getCellText(null, td, item)));
-                if(item.__inserted){
+                if (item.__inserted) {
                     td.addClass('just-inserted')
                 }
                 ++i;
@@ -2734,8 +2732,17 @@
 
             span.appendTo(td);
 
-            if (!format.text && field.unitType && !isErrorVal && val.v !== null && !('postfix' in field) && !(field.type === 'select' && field.multiple)) {
-                span.attr('data-unit-type', ' ' + field.unitType);
+            if (!format.text && field.unitType && !isErrorVal && val.v !== null && !(['select', 'tree'].indexOf(field.type) > -1 && field.multiple)) {
+                if (field.before) {
+                    if (!('prefix' in field)) {
+                        span.attr('data-unit-type-before', field.unitType + ' ');
+                    }
+
+                } else {
+                    if (!('postfix' in field)) {
+                        span.attr('data-unit-type', ' ' + field.unitType);
+                    }
+                }
             }
 
             if (field.css) {

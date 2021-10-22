@@ -62,7 +62,12 @@
                         td.text(val)
                     }
                     if (Field.unitType && val !== '') {
-                        td.append(' ' + Field.unitType);
+                        if (Field.before) {
+                            td.prepend(Field.unitType + ' ');
+                        } else {
+                            td.append(' ' + Field.unitType);
+                        }
+
                     }
                 }
 
@@ -523,7 +528,7 @@
         this.loadFilters();
         this.model.addExtraData({'panelsView': true})
 
-       
+
         this._renderTable = render.bind(this);
         this._getRowCard = getRowCard.bind(this);
 

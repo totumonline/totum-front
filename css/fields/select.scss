@@ -174,8 +174,14 @@
       &[data-unit]:after {
         content: ' ' attr(data-unit);
       }
+      &[data-unit-before]:before {
+        content: attr(data-unit-before) ' ';
+      }
 
-      &[data-unit] {
+      &[data-unit]{
+        display: inline;
+      }
+      &[data-unit-before] .select-val{
         display: inline;
       }
     }

@@ -621,18 +621,30 @@
         },
         getElementString: function (val, arrayVal) {
             "use strict";
+            let notEmptyVal, r;
             if (val === null || val === undefined) {
                 if (!arrayVal || !arrayVal[0]) return this.withEmptyVal || '';
+            }else{
+                notEmptyVal=true;
             }
 
             if (arrayVal[0] === null || arrayVal[0] === '') {
+                r= '[' + (this.withEmptyVal || '') + ']';
+            }else if (this.FullView) {
+                r= arrayVal[2] || arrayVal[0];
+            }else{
+                r = arrayVal[0];
+            }
 
-                return '[' + (this.withEmptyVal || '') + ']';
+            if (notEmptyVal && this.multiple && this.unitType) {
+                if(this.before){
+                    r = this.unitType + ' ' + r;
+                }else{
+                    r += ' ' + this.unitType;
+                }
             }
-            if (this.FullView) {
-                return arrayVal[2] || arrayVal[0];
-            }
-            return arrayVal[0];
+
+            return r;
         }
     };
 })();

@@ -52,7 +52,12 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
         let textInner = textDiv.find('.copytext');
         if (field.unitType && (val.v) !== null && !(field.type === 'select' && field.multiple)) {
-            textInner.attr('data-unit', field.unitType);
+            if(field.before){
+                textInner.attr('data-unit-before', field.unitType);
+            }else{
+                textInner.attr('data-unit', field.unitType);
+            }
+
         }
 
         if (val.f) {

@@ -1031,14 +1031,14 @@
                         }
                     } else {
                         func = (json) => {
-                           /*this.PageData = {
-                                ...this.PageData, ...{
-                                    offset: json.chdata.offset
-                                    , allCount: json.allCount
-                                    , loading: false
-                                }
-                            }
-                            this.PageData.$block.empty().append(this._paginationCreateBlock());*/
+                            /*this.PageData = {
+                                 ...this.PageData, ...{
+                                     offset: json.chdata.offset
+                                     , allCount: json.allCount
+                                     , loading: false
+                                 }
+                             }
+                             this.PageData.$block.empty().append(this._paginationCreateBlock());*/
 
                             this.table_modify(json);
                             this.reloaded();
@@ -1102,20 +1102,22 @@
                 let itemTitle = '';
                 if (item.id) {
                     let mainField = this.mainFieldName;
-                    if (item[mainField].v_ !== undefined) {
-                        if (typeof item[mainField].v_ === 'array') {
-                            item[mainField].v_.forEach(function (v_, i) {
-                                let d = $('<span>').text(this.fields[mainField].getElementString((item[mainField].v ? item[mainField].v[i] : null), v_));
-                                if (v_[1]) {
-                                    d.addClass('deleted_value')
-                                }
-                                itemTitle = d.html();
-                            })
-                        } else {
-                            itemTitle = $('<div>').text(this.fields[mainField].getElementString(item[mainField].v, item[mainField].v_)).html();
+                    if (item[mainField]) {
+                        if (item[mainField].v_ !== undefined) {
+                            if (typeof item[mainField].v_ === 'array') {
+                                item[mainField].v_.forEach(function (v_, i) {
+                                    let d = $('<span>').text(this.fields[mainField].getElementString((item[mainField].v ? item[mainField].v[i] : null), v_));
+                                    if (v_[1]) {
+                                        d.addClass('deleted_value')
+                                    }
+                                    itemTitle = d.html();
+                                })
+                            } else {
+                                itemTitle = $('<div>').text(this.fields[mainField].getElementString(item[mainField].v, item[mainField].v_)).html();
+                            }
+                        } else if (item[mainField].v !== undefined) {
+                            itemTitle = $('<div>').text(item[mainField].v).html();
                         }
-                    } else if (item[mainField].v !== undefined) {
-                        itemTitle = $('<div>').text(item[mainField].v).html();
                     } else {
                         itemTitle = 'id: ' + item.id;
                     }

@@ -52,7 +52,12 @@ fieldTypes.select = {
                                 }
 
                                 if (preview[3]['unitType']) {
-                                    $_html.append(' ' + preview[3]['unitType']);
+                                    if (field.before) {
+                                        $_html.prepend(preview[3]['unitType'] + ' ');
+                                    } else {
+                                        $_html.append(' ' + preview[3]['unitType']);
+                                    }
+
                                 }
 
                                 break;
@@ -67,7 +72,7 @@ fieldTypes.select = {
                         html.append($_html);
                     }
                 );
-                if(json.previews.length===0){
+                if (json.previews.length === 0) {
                     html.text(App.translate('Element preview is empty'))
                 }
                 panel.empty().append(html);
@@ -191,7 +196,7 @@ fieldTypes.select = {
             })
         })
         let GetLoadListDeffered = function (q) {
-            
+
             let def = $.Deferred();
             let itemTmp = {};
             Object.keys(item).forEach(function (k) {
@@ -688,7 +693,7 @@ fieldTypes.select = {
         function (fieldValue, item) {
             if (this.multiple)
                 return this.getPanelText(fieldValue.v, null, item)
-            
+
         }
 
     ,
@@ -702,7 +707,11 @@ fieldTypes.select = {
         if (listVals) {
             $.each(listVals, function (k, val) {
                 "use strict";
-                let d = $('<div class="select-val">').text(val[0] + (field.multiple && field.unitType ? ' ' + field.unitType : ''));
+                let d = $('<div class="select-val">').text(
+                    (field.multiple && field.unitType && field.before ? field.unitType + ' ' : '')
+                    + val[0] +
+                    (field.multiple && field.unitType && !field.before ? ' ' + field.unitType : '')
+                );
 
                 if (val[1]) {
                     d.addClass('deleted_value')
@@ -721,7 +730,7 @@ fieldTypes.select = {
                                 field.loadPreviewPanel(pr, field.name, item, [item[field['name']].v[k]]).then(function () {
                                 });
                                 eye.data('pr', pr)
-                            }else{
+                            } else {
                                 eye.data('pr').show()
                             }
                             eye.data('opened', true)
@@ -908,9 +917,11 @@ fieldTypes.select = {
     ,
     getElementString: function (val, arrayVal) {
         "use strict";
-        let r;
+        let r, notEmptyVal
         if (val === null || val === undefined) {
             if (!arrayVal || !arrayVal[0]) r = this.withEmptyVal || '';
+        }else{
+            notEmptyVal=true;
         }
 
         if (r === undefined && (arrayVal[0] === null || arrayVal[0] === '')) {
@@ -922,10 +933,13 @@ fieldTypes.select = {
             r = arrayVal[0];
         }
 
-        if (this.multiple && this.unitType) {
-            r += ' ' + this.unitType;
+        if (notEmptyVal && this.multiple && this.unitType) {
+            if(this.before){
+                r = this.unitType + ' ' + r;
+            }else{
+                r += ' ' + this.unitType;
+            }
         }
-
         return r;
     }
     ,

@@ -1116,6 +1116,9 @@ th {
   span[data-unit-type]:after {
     content: attr(data-unit-type);
   }
+  span[data-unit-type-before]:before {
+    content: attr(data-unit-type-before);
+  }
 
   .copy_me {
     text-overflow: ellipsis;

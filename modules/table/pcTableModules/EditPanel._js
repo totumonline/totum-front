@@ -201,8 +201,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
                 let label = $('<label>').text(field.title).prependTo(divWrapper);
 
-                if(EditPanelFunc.pcTable.tableRow.id===1){
-                    label.append('<span class="field-param-lable"><a href="'+App.translate('PATH-TO-DOCUMENTATION')+'tables#table-settings-' + field.name + '" target="_blank"><i class="fa fa-question-circle-o"></i></a></span>');
+                if (EditPanelFunc.pcTable.tableRow.id === 1) {
+                    label.append('<span class="field-param-lable"><a href="' + App.translate('PATH-TO-DOCUMENTATION') + 'tables#table-settings-' + field.name + '" target="_blank"><i class="fa fa-question-circle-o"></i></a></span>');
                 }
 
                 if (field.unitType) {
@@ -280,10 +280,10 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             let bBtn = $buttons.find('.backgroundButton');
             if (format.background) {
                 if (!bBtn.length) {
-                    bBtn=$('<button class="backgroundButton btn btn-sm btn-default">').appendTo($buttons)
+                    bBtn = $('<button class="backgroundButton btn btn-sm btn-default">').appendTo($buttons)
                 }
                 bBtn.css('background-color', format.background)
-            }else if(bBtn.length){
+            } else if (bBtn.length) {
                 bBtn.remove();
             }
 
@@ -620,8 +620,12 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 cell.data('input', span.find('button'))
             }
 
-            if (field.unitType) {
-                span.append(' ' + field.unitType);
+            if (field.unitType && !(['tree', 'select'].indexOf(field.type)!==-1 && field.multiple)) {
+                if (field.before) {
+                    span.prepend(field.unitType + " ");
+                } else {
+                    span.append(' ' + field.unitType);
+                }
             }
 
             if (field.type === 'button' && EditPanelFunc.pcTable) {
