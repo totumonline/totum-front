@@ -2053,7 +2053,7 @@
 
                     if (pcTable.isCreatorView) {
                         let btn = $('<div class="menu-item color-danger">');
-                        btn.append('<i class="fa fa-pencil-square-o"></i> ' + App.translate('Change'));
+                        btn.append('<i class="fa fa-pencil-square-o"></i> ' + App.translate('Edit'));
                         $divPopoverArrowDown.append(btn);
 
 
