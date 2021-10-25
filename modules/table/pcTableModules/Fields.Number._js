@@ -72,8 +72,8 @@ fieldTypes.number = {
                 }
             }
             postfix = this.postfix;
-            if (postfix && postfix.match(/\*\*/)) {
-                postfix = postfix.split('**')[val >= 0 ? 0 : 1];
+            if (postfix) {
+                postfix = postfix.match(/\*\*/) ? postfix.split('**')[val >= 0 ? 0 : 1] : postfix;
             } else {
                 postfix = '';
             }
