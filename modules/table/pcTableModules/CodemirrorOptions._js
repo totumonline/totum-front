@@ -244,7 +244,7 @@
                     let noSubs = true;
                     while (stream.peek() === '[' && stream.skipTo(']') && stream.next()) {
                         noSubs = false;
-                        if(stream.peek() === ']'){
+                        if (stream.peek() === ']') {
                             stream.next();
                         }
                     }
@@ -256,6 +256,18 @@
 
                 state.lineNames = [];
                 let codeBlocks = [];
+
+
+                if(state.inFunction){
+                    let matches;
+                    if (stream.string[stream.start - 1] === '(' && (matches = stream.string.substring(stream.start).match(/([^)]+)\)/))) {
+                        if(matches[1].trim()!=='' && !matches[1].match(/^(\s*[a-z_]+\s*:\s*[^;]*;)*(\s*[a-z_]+\s*:\s*[^;]*)?$/)){
+                            stream.skipTo(')');
+                            return 'error';
+                        }
+                    }
+                }
+
 
                 if (stream.lineStart === 0 && stream.start === 0) {
                     try {
@@ -582,6 +594,7 @@
                         return 'function';
                     }
 
+
                     if (!state.functionParam && /[a-z_]/.test(stream.peek())) {
                         if (stream.skipTo(':')) {
                             let paramName = stream.string.substring(stream.start, stream.pos);
@@ -619,7 +632,7 @@
                         return '';
                     }
 
-                    if ((state.functionParam === 'order' || (state.functionParam === 'key' && state.func[5]==='listSort')) && /[ad]/.test(stream.peek())) {
+                    if ((state.functionParam === 'order' || (state.functionParam === 'key' && state.func[5] === 'listSort')) && /[ad]/.test(stream.peek())) {
                         if (stream.string.substring(stream.start, stream.start + 3) === 'asc') {
                             stream.next();
                             stream.next();
