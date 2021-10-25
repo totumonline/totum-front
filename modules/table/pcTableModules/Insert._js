@@ -104,8 +104,8 @@ $.extend(App.pcTableMain.prototype, {
         let $d = $.Deferred();
         if (Object.keys(pcTable._insertError).length) {
             let fieldName = Object.keys(pcTable._insertError)[0];
-            let _error = pcTable._insertError[fieldName];
-            App.notify(_error, $('<div>' + App.translate('Error in %s field', $('<span>').text(pcTable.fields[fieldName].title || pcTable.fields[fieldName].name)).html()) + '</div>');
+            let _error = pcTable._insertError[fieldName].toString();
+            App.notify(_error, App.translate('Error in %s field', $('<span>').text(pcTable.fields[fieldName].title || pcTable.fields[fieldName].name).text()));
             pcTable._currentInsertCellIndex = pcTable.fieldCategories.visibleColumns.findIndex(function (field) {
                 if (field.name === fieldName) return true
             });

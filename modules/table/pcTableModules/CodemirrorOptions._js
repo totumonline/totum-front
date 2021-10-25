@@ -258,17 +258,6 @@
                 let codeBlocks = [];
 
 
-                if(state.inFunction){
-                    let matches;
-                    if (stream.string[stream.start - 1] === '(' && (matches = stream.string.substring(stream.start).match(/([^)]+)\)/))) {
-                        if(matches[1].trim()!=='' && !matches[1].match(/^(\s*[a-z_]+\s*:\s*[^;]*;)*(\s*[a-z_]+\s*:\s*[^;]*)?$/)){
-                            stream.skipTo(')');
-                            return 'error';
-                        }
-                    }
-                }
-
-
                 if (stream.lineStart === 0 && stream.start === 0) {
                     try {
                         stream.lineOracle.doc.cm.lineNames = [];

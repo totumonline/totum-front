@@ -843,14 +843,23 @@
             selector.on('change', () => {
                 let lastId = 0;
                 let prevLastId = null;
+                let val = selector.val();
+
+                if (this.PageData.countLimit && parseInt(val) > parseInt(this.PageData.countLimit)) {
+                    val = this.PageData.countLimit;
+                }
+
+                if (this.PageData.onPage === val) {
+                    return;
+                }
 
                 if (this.PageData.allCount <= this.PageData.onPage) {
 
                 } else if (page >= Math.floor(this.PageData.allCount / this.PageData.onPage)) {
                     prevLastId = -1;
                 }
-                this.PageData.onPage = parseInt(selector.val());
-                this.model.loadPage(this, lastId, selector.val(), prevLastId);
+                this.PageData.onPage = parseInt(val);
+                this.model.loadPage(this, lastId, val, prevLastId);
             });
 
 
@@ -885,7 +894,13 @@
                         lastId = keys[keys.length - 1];
                     }
                 }*/
-                let pageSplit = this.tableRow.pagination.split('/');
+                let checkLimits = this.tableRow.pagination.split('**');
+                if (checkLimits[1]) {
+                    let limit = checkLimits[1].split('/');
+                    this.PageData.countLimit = (this.isMobile ? limit[1] : limit[0])
+                }
+
+                let pageSplit = checkLimits[0].split('/');
                 let pageCount = parseInt((new URL(document.location)).searchParams.get('onPage') || (this.isMobile ? pageSplit[1] : pageSplit[0]));
                 lastId = pageSplit[2] || null;
 
