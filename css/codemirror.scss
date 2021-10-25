@@ -14,6 +14,10 @@
   font-weight: 300;
 }
 
+.CodeMirror-readonly .CodeMirror-cursor {
+  display: none !important
+}
+
 #pk .CodeMirror * {
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;

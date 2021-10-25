@@ -40,7 +40,7 @@ fieldTypes.text = {
             div = $('<div>');
             div.html(App.textWithLinks(text));
         } else {
-            div = $('<div class="codeEditor">');
+            div = $('<div class="codeEditor CodeMirror-readonly">');
             if (text && text.trim()) {
                 let field = this;
                 let options = {
