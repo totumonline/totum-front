@@ -1765,10 +1765,7 @@ th.id .pcTable-filters.for-selected .btn {
 
   width: 100%;
 
-  .backgroundButton {
-    height: 26px;
-    width: 26px;
-  }
+
 
   &.admin-see {
     background-color: lighten($btn-danger-bgcolor, 20);
@@ -1797,6 +1794,16 @@ th.id .pcTable-filters.for-selected .btn {
       &:hover {
         box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
       }
+    }
+    &.backgroundButton {
+      height: 26px;
+      width: 26px;
+      border-radius: 26px;
+      &:hover{
+        box-shadow: none
+      }
+
+      cursor: auto;
     }
   }
 

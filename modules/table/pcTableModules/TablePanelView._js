@@ -93,6 +93,18 @@
                     td.append($hand)
                 }
 
+                if (Field.editable && this.control.editing && !format.block) {
+                    td.on('dblclick', function () {
+                        pcTable.editSingleFieldInPanel(Field, data.id).then((json) => {
+                            if (json) {
+                                pcTable.table_modify(json);
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+                    })
+                }
+
             } else {
                 data.__td_style = function () {
                     let style = {td: {}, Button: {}};

@@ -336,6 +336,10 @@
             let insertVisibleIndex = 0;
             let editFieldName = editedObj ? editedObj.data('field') : undefined;
 
+            if (json.updated) {
+                pcTable.model.tableData.updated = JSON.parse(json.updated);
+                pcTable._refreshTitle();
+            }
 
             if (pcTable.isPanel && json.chdata) {
                 delete json.chdata.params;
@@ -556,10 +560,7 @@
             }
 
 
-            if (json.updated) {
-                pcTable.model.tableData.updated = JSON.parse(json.updated);
-                pcTable._refreshTitle();
-            }
+
             if (!pcTable.isPanel) {
                 if (json.filtersString) {
                     pcTable._refreshFiltersBlock.call(pcTable, json)

@@ -280,7 +280,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             let bBtn = $buttons.find('.backgroundButton');
             if (format.background) {
                 if (!bBtn.length) {
-                    bBtn = $('<button class="backgroundButton btn btn-sm btn-default">').appendTo($buttons)
+                    bBtn = $('<span class="backgroundButton btn btn-sm btn-default">').appendTo($buttons)
                 }
                 bBtn.css('background-color', format.background)
             } else if (bBtn.length) {

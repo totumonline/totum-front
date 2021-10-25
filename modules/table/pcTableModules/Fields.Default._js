@@ -9,7 +9,7 @@ var defaultField = {
     getPanelVal(val) {
         return val;
     },
-    getPanelFormats(divForPannelFormats, panelFormats){
+    getPanelFormats(divForPannelFormats, panelFormats) {
         let field = this;
         divForPannelFormats.empty();
         if (panelFormats) {
@@ -78,7 +78,7 @@ var defaultField = {
             var r = new RegExp(this.regexp);
             if (!r.test(val)) {
                 notify = this.regexpErrorText || App.translate('Value fails regexp validation: "%s"', this.regexp);
-                notify = App.translate('Filled "%s" field  error: %s',[this.title, notify]);
+                notify = App.translate('Filled "%s" field  error: %s', [this.title, notify]);
                 error = true;
             }
         }
@@ -197,7 +197,6 @@ var defaultField = {
 
         editVal === 'null' ? editVal = '' : false;
         itemVal === 'null' ? itemVal = '' : false;
-        itemVal === (this.errorText || App.translate('ERR!')) ? itemVal = '' : false;
         itemVal === 'undefined' ? itemVal = '' : false;
 
         return editVal !== itemVal;
