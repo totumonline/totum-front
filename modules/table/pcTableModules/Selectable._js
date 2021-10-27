@@ -189,6 +189,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             } else {
                 editButton.on('click', function () {
                     td.dblclick();
+                    selectObject.selectPanelDestroy();
                     return false;
                 })
             }
