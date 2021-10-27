@@ -387,10 +387,10 @@
                         if (item === undefined) {
                             addedRows.push(v);
                         } else {
-
                             pcTable.refreshRow(item.$tr, item, v);
                         }
                     });
+
                     if (addedRows.length) {
                         if (App.isEmpty(pcTable.data) && pcTable._content) {
                             pcTable._content.find('.pcTable-noDataRow').remove();
