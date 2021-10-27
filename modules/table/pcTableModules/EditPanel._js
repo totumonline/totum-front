@@ -190,7 +190,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format)
                 }
             } else {
-                let divWrapper = $('<div class="cell-wrapper" style="position: relative">');
+                let divWrapper = $('<div class="cell-wrapper" style="position: relative"><div class="progressBorder"></div></div>');
 
                 if (field.panelColor) {
                     divWrapper.css('background-color', field.panelColor)
@@ -278,14 +278,22 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             let $buttons = cell.parent().find('.btns');
             let bBtn = $buttons.find('.backgroundButton');
-            if (format.background) {
+            if (format.background || format.color) {
                 if (!bBtn.length) {
-                    bBtn = $('<span class="backgroundButton btn btn-sm btn-default">').appendTo($buttons)
+                    bBtn = $('<span class="backgroundButton btn btn-sm btn-default">').appendTo($buttons).html('<span/>')
                 }
-                bBtn.css('background-color', format.background)
+
+                bBtn.css('background-color', format.background || "transparent")
+                bBtn.find('span').css('background-color', format.color || format.background)
+
             } else if (bBtn.length) {
                 bBtn.remove();
             }
+
+            cell.parent().find('.progressBorder').css({
+                borderTopColor: format.progresscolor || "transparent",
+                width: (format.progress || 100) >= 100 ? 100 : format.progress + "%",
+            })
 
             if (format.hide && format.hide.panel) {
                 cell.parent().css('display', 'none');
@@ -620,7 +628,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 cell.data('input', span.find('button'))
             }
 
-            if (field.unitType && !(['tree', 'select'].indexOf(field.type)!==-1 && field.multiple)) {
+            if (field.unitType && !(['tree', 'select'].indexOf(field.type) !== -1 && field.multiple)) {
                 if (field.before) {
                     span.prepend(field.unitType + " ");
                 } else {
@@ -989,38 +997,38 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     };
 
     let focusTimer;
-/*
-    this.FocusIt = function (focusIndex) {
+    /*
+        this.FocusIt = function (focusIndex) {
 
-        if (focusTimer) clearTimeout(focusTimer);
-        focusTimer = setTimeout(function () {
+            if (focusTimer) clearTimeout(focusTimer);
+            focusTimer = setTimeout(function () {
 
-            let isLastCell = true;
+                let isLastCell = true;
 
-            if (!EditPanelFunc.$panel || !EditPanelFunc.$panel.length) return false;
+                if (!EditPanelFunc.$panel || !EditPanelFunc.$panel.length) return false;
 
-            EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (field, index) {
-                if (focusIndex === index) {
-                    if (!EditPanelFunc.isEditable(field)) {
-                        ++focusIndex;
-                        return;
-                    } else {
-                        let input = EditPanelFunc.$panel.find('.cell[data-name="' + field.name + '"]').data('input');
-                        if (input) {
-                            field.focusElement(input);
+                EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (field, index) {
+                    if (focusIndex === index) {
+                        if (!EditPanelFunc.isEditable(field)) {
+                            ++focusIndex;
+                            return;
+                        } else {
+                            let input = EditPanelFunc.$panel.find('.cell[data-name="' + field.name + '"]').data('input');
+                            if (input) {
+                                field.focusElement(input);
+                            }
                         }
+                        isLastCell = false;
+                        return false;
                     }
-                    isLastCell = false;
-                    return false;
-                }
-            });
-            if (isLastCell) {
+                });
+                if (isLastCell) {
 
-                let buttonSave = EditPanelFunc.bootstrapPanel.indexedButtons[Object.keys(EditPanelFunc.bootstrapPanel.indexedButtons)[0]];
-                buttonSave.focus();
-            }
-        }, 50);
-    };*/
+                    let buttonSave = EditPanelFunc.bootstrapPanel.indexedButtons[Object.keys(EditPanelFunc.bootstrapPanel.indexedButtons)[0]];
+                    buttonSave.focus();
+                }
+            }, 50);
+        };*/
 
 
     const _refreshContentTable = () => {

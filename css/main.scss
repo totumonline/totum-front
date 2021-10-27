@@ -1116,6 +1116,7 @@ th {
   span[data-unit-type]:after {
     content: attr(data-unit-type);
   }
+
   span[data-unit-type-before]:before {
     content: attr(data-unit-type-before);
   }
@@ -1764,8 +1765,15 @@ th.id .pcTable-filters.for-selected .btn {
   //font-family: 'Open Sans', serif;
 
   width: 100%;
+  position: relative;
 
-
+  .progressBorder {
+    border-top: 1px solid transparent;
+    display: block;
+    position: absolute;
+    top: 0;
+    width: calc(100% - 20px);
+  }
 
   &.admin-see {
     background-color: lighten($btn-danger-bgcolor, 20);
@@ -1795,15 +1803,27 @@ th.id .pcTable-filters.for-selected .btn {
         box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
       }
     }
+
     &.backgroundButton {
       height: 26px;
       width: 26px;
       border-radius: 26px;
-      &:hover{
+
+      &:hover {
         box-shadow: none
       }
 
+      position: relative;
       cursor: auto;
+
+      > span {
+        height: 6px;
+        width: 6px;
+        position: absolute;
+        border-radius: 6px;
+        left: 9px;
+        top: 9px;
+      }
     }
   }
 
@@ -2300,18 +2320,22 @@ input {
     margin-bottom: 0;
     margin-left: 5px;
   }
-  .fa-lock{
+
+  .fa-lock {
     padding: 9px 13px;
   }
-  .btn.with-lock:disabled{
+
+  .btn.with-lock:disabled {
     padding: 0;
   }
 }
-.modal-footer{
-  .fa-lock{
+
+.modal-footer {
+  .fa-lock {
     padding: 9px 13px;
   }
-  .btn.with-lock:disabled{
+
+  .btn.with-lock:disabled {
     padding: 0;
   }
 }
