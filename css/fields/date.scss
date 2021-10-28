@@ -1,9 +1,15 @@
-.bootstrap-datetimepicker-widget .col-md-6{
-  width: 50%;
-  float: left;
+.bootstrap-datetimepicker-widget {
+  .col-md-6 {
+    width: 50%;
+    float: left;
+  }
 
+  .timepicker{
+    width: 198px;
+  }
 }
-.date-popover.popover{
+
+.date-popover.popover {
   max-width: 450px;
   width: 450px;
 }
