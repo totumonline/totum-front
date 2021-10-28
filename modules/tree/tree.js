@@ -201,7 +201,7 @@
 
             if (!isMobile) {
 
-                let input = $('<input placeholder="'+App.translate('Tree search')+'" class="form-control">');
+                let input = $('<input placeholder="' + App.translate('Tree search') + '" class="form-control">');
                 let elseSearch = $('<div id="serverSearch"></div>')
                 $leftTree.before(input);
                 $leftTree.after(elseSearch);
@@ -326,7 +326,7 @@
                                 }
                                 return true;
                             };
-                            return checkForStr(node.text || "") || checkForStr(node.original.name || "")
+                            return checkForStr(node.text || "") || isCreatorView && checkForStr(node.original.name || "")
 
                         }
 
