@@ -143,12 +143,15 @@
 
     CodeMirror.defineInitHook(function (mirror) {
         try {
-            $(mirror.display.wrapper).on('contextmenu', '.cm-function', function () {
-                let func = $(this).text();
-                func = func.substring(0, func.length - 1)
-                funcHelp(func, $(this));
-
-                return false;
+            $(mirror.display.wrapper).on('dblclick contextmenu', function (event) {
+                let target;
+                target = event.originalEvent.path?event.originalEvent.path[0]:event.originalEvent.explicitOriginalTarget;
+                if ((target = $(target)) && target.is('.cm-function')) {
+                    let func = target.text();
+                    func = func.substring(0, func.length - 1)
+                    funcHelp(func, target);
+                    return false;
+                }
             })
         } catch (e) {
             console.log(e.message)

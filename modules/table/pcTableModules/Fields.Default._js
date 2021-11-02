@@ -98,7 +98,7 @@ var defaultField = {
                 case 9:
                     try {
                         $input.data('enterClicked', true);
-                        enterClbk($(this), event);
+                        enterClbk($(this), event, event.keyCode === 13 ? 'enter' : false);
                     } catch (err) {
                         $input.data('enterClicked', false);
                         App.popNotify(err, $input, 'default');

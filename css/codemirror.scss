@@ -41,6 +41,8 @@
   border-radius: 0;
   padding: 3px;
   font-size: 13px;
+  overflow-x: auto;
+  max-width: 600px;
 
 
   li.CodeMirror-hint-active {

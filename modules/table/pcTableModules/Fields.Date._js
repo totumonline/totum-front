@@ -49,7 +49,7 @@ fieldTypes.date = {
                 if (popover && popover.is(':visible')) {
                     popover.hide();
                 }
-                enterClbk($(this), event);
+                enterClbk($(this), event, event.keyCode === 13 ? 'enter' : false);
             } else if (event.keyCode === 27) {
                 escClbk($(this), event);
             }
@@ -114,7 +114,7 @@ fieldTypes.date = {
                     popover.show();
                     setDateTimePickerDate();
                 };
-                $input.on('focus mouskeydown',  showPopover);
+                $input.on('focus mouskeydown', showPopover);
             }
 
         }, 20);
