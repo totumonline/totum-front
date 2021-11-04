@@ -803,8 +803,8 @@
 
             let page = offset === 0 ? 0 : Math.ceil(offset / onPage);
 
+            let allPages = Math.ceil(allCount / onPage) + (offset>onPage && (offset % onPage) > 0 ? 1 : 0);
 
-            let allPages = Math.ceil(allCount / onPage) + (offset % onPage > 0 ? 1 : 0);
             let before, after, first, last;
             if (offset > 0)
                 before = $('<button class="btn btn-default btn-sm"><i class="fa fa-hand-o-left"></i></button>').on('click', () => {
