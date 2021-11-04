@@ -719,6 +719,11 @@
                 } else {
                     (new App.models.table(panel.uri, {}, {})).getTableData().then(function (config) {
                         config.model = new App.models.table(panel.uri, {'updated': config.updated});
+
+                        if (data.id) {
+                            config.rows = [{id: data.id}];
+                        }
+
                         pcTables[panel.uri] = new App.pcTableMain(null, config);
 
                         show(pcTables[panel.uri]);

@@ -609,7 +609,7 @@ $.extend(App.pcTableMain.prototype, {
                     if (inputOld.data('input').data('LISTs')) {
                         inputOld.data('input').data('LISTs').isListForLoad = true;
                     }
-                    item = $.extend(true, {}, item);
+                    let _item = $.extend(true, {}, item);
                     if (isAdded) {
 
                         let addVal;
@@ -619,17 +619,16 @@ $.extend(App.pcTableMain.prototype, {
                             addVal = Object.keys(data.json.chdata.rows)[0];
                         }
 
-
                         if (field.multiple) {
-                            item[field.name].v = field.getEditVal(input);
-                            item[field.name].v.push(addVal);
+                            _item[field.name].v = field.getEditVal(input);
+                            _item[field.name].v.push(addVal);
                         } else {
-                            item[field.name].v = addVal;
+                            _item[field.name].v = addVal;
                         }
 
                     } else if (field.selectTableBaseField) {
-                        if (!field.multiple) {
-                            item[field.name].v = data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]][field.selectTableBaseField].v;
+                        if (!field.multiple && data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]] && data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]][field.selectTableBaseField]) {
+                            _item[field.name].v = data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]][field.selectTableBaseField].v;
                         }
                     }
 
@@ -638,13 +637,13 @@ $.extend(App.pcTableMain.prototype, {
                             pcTable.table_modify.call(pcTable, json);
                         });
                     }
-                    item[field.name].replaceViewValue = function (viewArray) {
+                    _item[field.name].replaceViewValue = function (viewArray) {
                         if (field.category != 'column') {
                             pcTable.data_params[field.name].v_ = viewArray;
                         }
                     };
 
-                    inputOld.replaceWith(input = field.getEditElement(inputOld, item[field.name], item, saveClbck, escClbck, blurClbck));
+                    inputOld.replaceWith(input = field.getEditElement(inputOld, _item[field.name], _item, saveClbck, escClbck, blurClbck));
                     onAction = false;
                 })
                 return false;
