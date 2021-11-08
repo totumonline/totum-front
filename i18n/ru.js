@@ -67,6 +67,7 @@ App.langs.ru =
                 "Single installation": "Одинарная установка",
                 "Multiple installation": "Множественная установка",
 
+                    'The value is not found': 'Значение не найдено',
 
                 "Cancel": "Отмена",
                 "Add": "Добавить",

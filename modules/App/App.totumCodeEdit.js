@@ -1,5 +1,5 @@
 (function () {
-    App.totumCodeEdit = function (code, title, table, checkboxes, canBeSwitchOff) {
+    App.totumCodeEdit = function (code, title, table, checkboxes, canBeSwitchOff, codeType) {
         return new Promise((resolve, reject) => {
 
             let newCodemirrorDiv = $('<div class="HTMLEditor" id="bigOneCodemirror" style="height: 100%;"></div>');
@@ -129,6 +129,7 @@
                     });
 
                     if (table) editorMax.table = table;
+                    if (codeType) editorMax.codeType = codeType;
 
                     let minheight = Math.round(dialog.$modalContent.height() - dialog.$modalHeader.outerHeight() - 40);
                     editorMax.getScrollerElement().style.minHeight = minheight + 'px';

@@ -393,6 +393,9 @@
             getValue: function (data, table_id) {
                 return this.__ajax('post', {data: data, method: 'getValue', table_id: table_id});
             },
+            getIdByFieldValue: function (data) {
+                return this.__ajax('post', {data: data, method: 'getIdByFieldValue'});
+            },
             getNotificationsTable: function () {
                 return this.__ajax('post', {method: "getNotificationsTable"});
             },

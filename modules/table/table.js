@@ -784,7 +784,8 @@
                             App.totumCodeEdit(
                                 json.row[fieldName].v, title, pcTable.tableRow.name,
                                 [],
-                                false
+                                false,
+                                codeType
                             )
                                 .then((data) => {
                                     pcTableTable.model.save({[pcTable.tableRow.id]: {[fieldName]: data.code}}).then(() => {
@@ -846,7 +847,8 @@
                             App.totumCodeEdit(
                                 json.row.data_src.v[codeType].Val, title, field.pcTable.tableRow.name,
                                 checkboxes,
-                                (codeType !== 'codeSelect' && json.row.data_src.v[codeType] && json.row.data_src.v[codeType].isOn)
+                                (codeType !== 'codeSelect' && json.row.data_src.v[codeType] && json.row.data_src.v[codeType].isOn),
+                                codeType
                             )
                                 .then((data) => {
                                     pcTableTablesFields.model.checkEditRow({id: field.id}).then(function (json) {

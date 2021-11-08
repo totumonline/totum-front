@@ -142,21 +142,190 @@
 
 
     CodeMirror.defineInitHook(function (mirror) {
-        try {
-            $(mirror.display.wrapper).on('dblclick contextmenu', function (event) {
-                let target;
-                target = event.originalEvent.path?event.originalEvent.path[0]:event.originalEvent.explicitOriginalTarget;
-                if ((target = $(target)) && target.is('.cm-function')) {
-                    let func = target.text();
-                    func = func.substring(0, func.length - 1)
-                    funcHelp(func, target);
-                    return false;
+            try {
+
+
+                if (mirror.options.mode === 'totum' && $('#table').data('pctable').isCreatorView) {
+
+                    let lastBtn;
+                    mirror.on('blur', (cm) => {
+                        setTimeout(() => {
+                            if (lastBtn) {
+                                lastBtn.remove();
+                            }
+                        }, 100)
+
+                    })
+                    mirror.on('cursorActivity', function (cm) {
+                            if (lastBtn) {
+                                lastBtn.remove();
+                            }
+                            let cursor = cm.getCursor();
+
+                            let token = cm.getTokenAt(cursor);
+
+                            if (token.state.functionParam === 'code' && token.type) {
+
+                                let table, field, id, type, where;
+
+                                if (token.type.match(/db_name/) && token.string[0] === '@') {
+                                    [table, field, where] = token.string.split('.');
+                                    table = table.substr(1);
+                                    type = 'select';
+                                    if (field && field.match(/\[/))
+                                        return;
+                                    if (where && where.match(/\[\[/))
+                                        return;
+                                } else if (cm.table) {
+                                    table = cm.table;
+
+                                    if (token.type.match(/string-name/)) {
+                                        type = 'get-code';
+                                        field = token.string.substr(1, token.string.length - 2);
+                                    } else if (token.type.match(/db_name/)) {
+                                        type = 'select';
+                                        field = token.string.substr(1);
+                                    } else {
+                                        return;
+                                    }
+                                } else {
+                                    return;
+                                }
+
+
+                                var pos = cm.cursorCoords(null);
+                                var left = pos.left, top = pos.top - 40;
+                                let btn = window.top.document.createElement("ul");
+                                btn.className = "CodeMirror-hints";
+                                let btnEdit = $('<button class="btn btn-xs btn-default"><i class="fa fa-edit"></button>');
+                                $(btn).append(btnEdit)
+                                btn.style.left = left + "px";
+                                btn.style.top = top + "px";
+                                (window.top.document.body).appendChild(btn)
+                                lastBtn = btn;
+
+                                let codeType = cm.codeType;
+                                let funcName = token.state.func[5];
+
+                                btnEdit.on('click', () => {
+                                        if (type === 'select') {
+                                            App.getPcTableById(table).then(function (pcTable) {
+                                                const getId = () => {
+                                                    return new Promise((resolve, reject) => {
+                                                        let rowId;
+                                                        if (where) {
+                                                            let matches = where.match(/([a-z_0-9]{2,})\[(\d+)\]/);
+                                                            if (matches) {
+                                                                if (matches[1] === 'id') {
+                                                                    resolve(matches[2]);
+                                                                } else {
+                                                                    pcTable.model.getIdByFieldValue({[matches[1]]: matches[2]}).then((json) => {
+                                                                        if (!json.value) {
+                                                                            App.notify(App.translate('The value is not found'));
+                                                                            reject()
+                                                                        } else {
+                                                                            resolve(json.value)
+                                                                        }
+                                                                    })
+
+                                                                }
+                                                                return;
+                                                            }
+                                                        }
+                                                        resolve(null)
+                                                    })
+                                                }
+
+                                                getId().then((rowId) => {
+                                                    pcTable.model.getValue({'fieldName': field, rowId: rowId}).then((val) => {
+                                                        App.totumCodeEdit(val['value'], "edit totumCode in " + table + '/' + field, table, undefined, undefined, undefined).then((val) => {
+                                                            App.fullScreenProcesses.showCog();
+                                                            pcTable.model.save({[rowId || 'params']: {[field]: val.code}}).then((json) => {
+                                                                App.fullScreenProcesses.hideCog();
+                                                            });
+                                                        }, () => {
+                                                        })
+                                                    })
+                                                }, () => {
+                                                })
+                                            });
+                                        } else {
+                                            let text = 'type:' + type + (type === 'get-code' ? '(' + cm.codeType + ')' : '') + '/' + table + '/' + field + '/' + where;
+
+                                            switch (funcName) {
+                                                case 'linkToInput':
+                                                case 'linkToDataJson':
+                                                case 'linkToFileUpload':
+                                                    codeType = 'codeAction';
+                                                    break;
+                                            }
+                                            if (!codeType) {
+                                                App.notify('codeType is not defined');
+                                                return;
+                                            }
+                                            App.getPcTableById(2).then(function (pcTable) {
+                                                const getId = () => {
+                                                    return new Promise((resolve, reject) => {
+                                                        pcTable.model.getIdByFieldValue({
+                                                            table_name: table,
+                                                            name: field
+                                                        }).then((json) => {
+                                                            if (!json.value) {
+                                                                App.notify(App.translate('The value is not found'));
+                                                                reject()
+                                                            } else {
+                                                                resolve(json.value)
+                                                            }
+                                                        })
+                                                    })
+                                                }
+
+                                                getId().then((rowId) => {
+                                                    pcTable.model.getValue({'fieldName': 'data_src', rowId: rowId}).then((val) => {
+                                                        App.totumCodeEdit(val['value'][codeType] ? val['value'][codeType].Val : '=: ', "edit totumCode in " + table + '/' + field + '/' + codeType, table, undefined, undefined, undefined).then((valCode) => {
+                                                            App.fullScreenProcesses.showCog();
+                                                            let _val = val['value'];
+                                                            _val[codeType] = _val[codeType] || {Val: '', isOn: false};
+                                                            _val[codeType].Val = valCode.code;
+
+                                                            pcTable.model.save({[rowId]: {data_src: _val}}).then((json) => {
+                                                                App.fullScreenProcesses.hideCog();
+                                                            });
+                                                        }, () => {
+                                                        })
+                                                    })
+                                                }, () => {
+                                                })
+                                            });
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    )
+
+                    $(mirror.display.wrapper).on('dblclick contextmenu', function (event) {
+                        let target;
+                        target = event.originalEvent.path ? event.originalEvent.path[0] : event.originalEvent.explicitOriginalTarget;
+                        target = $(target);
+                        if (target.length) {
+                            if (target.is('.cm-function')) {
+                                let func = target.text();
+                                func = func.substring(0, func.length - 1)
+                                funcHelp(func, target);
+                                return false;
+                            }
+                        }
+                    })
                 }
-            })
-        } catch (e) {
-            console.log(e.message)
+
+            } catch
+                (e) {
+                console.log(e.message)
+            }
         }
-    });
+    )
+    ;
 
 
     const TotumTab = function (cm, alt, shift) {
@@ -647,7 +816,7 @@
                         if (stream.skipTo(quote)) {
                             stream.next();
                         } else return error();
-                        return "string-name";
+                        return "string-name " + (state.functionParam === 'code' ? 'code-name' : '');
                     }
 
 
@@ -1103,7 +1272,12 @@
                         type: 'item-code-var'
                     },
                     {text: "$#nu", title: App.translate('user id'), render: renderHint, type: 'item-code-var'},
-                    {text: "$#nr", title: App.translate('user roles ids'), render: renderHint, type: 'item-code-var'},
+                    {
+                        text: "$#nr",
+                        title: App.translate('user roles ids'),
+                        render: renderHint,
+                        type: 'item-code-var'
+                    },
                     {text: "$#nti", title: App.translate('table id'), render: renderHint, type: 'item-code-var'},
                     {text: "$#ntn", title: App.translate('table NAME'), render: renderHint, type: 'item-code-var'},
                     {
@@ -1112,7 +1286,12 @@
                         render: renderHint,
                         type: 'item-code-var'
                     },
-                    {text: "$#ih", title: App.translate('adding row HASH'), render: renderHint, type: 'item-code-var'},
+                    {
+                        text: "$#ih",
+                        title: App.translate('adding row HASH'),
+                        render: renderHint,
+                        type: 'item-code-var'
+                    },
                     {
                         text: "$#nci",
                         title: App.translate('calcuated table cycle id'),
@@ -1473,10 +1652,16 @@
             var cur = cm.getCursor(), token = cm.getTokenAt(cur).state, line = cm.lineInfo(cur.line);
             let comment;
             if (comment = line.text.match(/^([\t\s]*)\/\//)) {
-                cm.replaceRange("", {line: cur.line, ch: comment[1].length}, {line: cur.line, ch: comment[0].length});
+                cm.replaceRange("", {line: cur.line, ch: comment[1].length}, {
+                    line: cur.line,
+                    ch: comment[0].length
+                });
             } else {
                 comment = line.text.match(/^[\t\s]*/);
-                cm.replaceRange("//", {line: cur.line, ch: comment[0].length}, {line: cur.line, ch: comment[0].length});
+                cm.replaceRange("//", {line: cur.line, ch: comment[0].length}, {
+                    line: cur.line,
+                    ch: comment[0].length
+                });
             }
         };
 

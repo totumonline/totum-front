@@ -596,8 +596,8 @@
                 }
 
                 [
-                    [App.translate('Creator-tableEditButtons-default_action'), 'default_action', 'action'],
-                    [App.translate('Creator-tableEditButtons-on_duplicate'), 'on_duplicate', 'action'],
+                    [App.translate('Creator-tableEditButtons-default_action'), 'default_action', 'codeAction'],
+                    [App.translate('Creator-tableEditButtons-on_duplicate'), 'on_duplicate', 'codeAction'],
                     [App.translate('Creator-tableEditButtons-row_format'), 'row_format', 'format'],
                     [App.translate('Creator-tableEditButtons-table_format'), 'table_format', 'format'],
 

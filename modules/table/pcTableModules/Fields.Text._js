@@ -234,6 +234,7 @@ fieldTypes.text = {
 
                     if (field.pcTable && field.pcTable.tableRow.name === 'tables') {
                         editor.table = item.name.v || item.name;
+
                     }
 
                     if (window.innerHeight > 585) {
