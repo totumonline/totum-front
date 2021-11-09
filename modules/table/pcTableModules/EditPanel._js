@@ -10,7 +10,13 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     EditPanelFunc.pcTable = pcTable;
     EditPanelFunc.panelId = 'panel' + (panelId++);
 
+    let inCycleId;
+
     let isEditFieldPanel = pcTable === 2 || (typeof pcTable === 'object' && pcTable.tableRow.id === 2);
+    if (isEditFieldPanel || pcTable === 1 || (typeof pcTable === 'object' && pcTable.tableRow.id === 2)) {
+        inCycleId = inData.cycle_id;
+        delete inData.cycle_id;
+    }
     let manuallyChanged = {}, fieldParamsChanged = false;
     this.closed = false;
 
@@ -35,6 +41,12 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
 
     this.checkRow = async function (val, isFirstLoad, clearField) {
+
+        if (inCycleId) {
+            EditPanelFunc.pcTable.tableRow.cycle_id = inCycleId;
+            inCycleId = null;
+        }
+
         let self = this;
         const Check = () => {
             return new Promise(function (resolve, reject) {
@@ -1070,7 +1082,6 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
         App.getPcTableById(EditPanelFunc.pcTable).then(function (pcTable) {
             EditPanelFunc.pcTable = pcTable;
-
 
             pcTable._refreshContentTable = _refreshContentTable;
 

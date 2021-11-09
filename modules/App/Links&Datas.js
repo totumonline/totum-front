@@ -660,7 +660,9 @@
     };
     App.getPcTableById = function (id, elseData, element, config_else) {
         let $d = $.Deferred();
-        (new App.models.table('/Table/0/' + id.toString(), {}, {})).getTableData(elseData ? elseData.sess_hash : null).then(function (config) {
+        elseData = elseData || {};
+        let uri = '/Table/0/' + (elseData.cycle_id ?  '0/' + elseData.cycle_id + '/' : '') + id.toString();
+        (new App.models.table(uri, {}, {})).getTableData(elseData.sess_hash).then(function (config) {
 
             if (config_else && (config_else.withHeader === false || config_else.withFooter === false)) {
                 let fields = [];
@@ -672,7 +674,7 @@
                 delete config_else.withFooter;
             }
 
-            config.model = new App.models.table('/Table/0/' + id.toString(), $.extend({'updated': config.updated}, elseData || {}));
+            config.model = new App.models.table(uri, $.extend({'updated': config.updated}, elseData));
 
             $.extend(true, config, config_else);
 

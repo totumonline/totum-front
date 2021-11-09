@@ -411,6 +411,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     editor.getScrollerElement().style.minHeight = '150px';
 
                     editor.table = item.table_name && item.table_name.v ? item.table_name.v : null;
+                    editor.codeType = fName;
+                    editor.cycle_id = field.pcTable.tableRow.cycle_id;
+
                     App.CodemirrorFocusBlur(editor)
                 })
 

@@ -68,6 +68,9 @@ App.langs.ru =
                 "Multiple installation": "Множественная установка",
                     'The value is not found': 'Значение не найдено',
 
+                    "Edit totumCode in %s":"Редактировать Тотум-код в %s",
+                    "Edit totumCode in value of %s":"Редактировать Тотум-код в ячейке %s",
+
                 "Cancel": "Отмена",
                 "Add": "Добавить",
                 "Add a branch": "Добавить ветку",

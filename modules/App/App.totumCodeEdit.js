@@ -1,5 +1,5 @@
 (function () {
-    App.totumCodeEdit = function (code, title, table, checkboxes, canBeSwitchOff, codeType) {
+    App.totumCodeEdit = function (code, title, codeData, checkboxes, canBeSwitchOff) {
         return new Promise((resolve, reject) => {
 
             let newCodemirrorDiv = $('<div class="HTMLEditor" id="bigOneCodemirror" style="height: 100%;"></div>');
@@ -56,10 +56,10 @@
                 {
                     action: save,
                     cssClass: 'btn-warning btn-save',
-                    label: App.translate('Save')+' Alt+S'
+                    label: App.translate('Save') + ' Alt+S'
                 },
                 {
-                    action: ()=>{
+                    action: () => {
                         Dialog.close();
                     },
                     cssClass: 'btn-default btn-save',
@@ -70,7 +70,7 @@
             if (canBeSwitchOff)
                 buttons.unshift({
                     action: () => {
-                        App.confirmation(App.translate("Disable code")+" " + title, {
+                        App.confirmation(App.translate("Disable code") + " " + title, {
                             [App.translate('Cancel')]: (dialog) => {
                                 dialog.close();
                             },
@@ -128,8 +128,11 @@
                         bigOneDialog: save
                     });
 
-                    if (table) editorMax.table = table;
-                    if (codeType) editorMax.codeType = codeType;
+                    if (codeData) {
+                        Object.keys(codeData).forEach((k) => {
+                            editorMax[k] = codeData[k]
+                        })
+                    }
 
                     let minheight = Math.round(dialog.$modalContent.height() - dialog.$modalHeader.outerHeight() - 40);
                     editorMax.getScrollerElement().style.minHeight = minheight + 'px';

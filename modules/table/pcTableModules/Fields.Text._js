@@ -234,7 +234,13 @@ fieldTypes.text = {
 
                     if (field.pcTable && field.pcTable.tableRow.name === 'tables') {
                         editor.table = item.name.v || item.name;
-
+                        editor.cycle_id = field.pcTable.tableRow.cycle_id;
+                        editor.codeType = {
+                            'default_action': 'codeAction',
+                            'on_duplicate': 'codeAction',
+                            'row_format': 'format',
+                            'table_format': 'format'
+                        }[field.name];
                     }
 
                     if (window.innerHeight > 585) {

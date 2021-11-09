@@ -547,7 +547,7 @@
 
                 $('<button class="btn btn-danger btn-xxs" title="' + App.translate('Edit table settings') + '"/>')
                     .html('<i class="fa fa-pencil-square-o"></i>').on('click', function () {
-                    (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {id: pcTable.tableRow.id})).then(function (json) {
+                    (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {id: pcTable.tableRow.id, cycle_id: pcTable.tableRow.cycle_id})).then(function (json) {
                         if (json) window.location.reload(true);
                     });
                 }).appendTo(creatorPart);
@@ -628,6 +628,9 @@
                         if (pcTable.tableRow.__version) {
                             data['version'] = {v: pcTable.tableRow.__version};
                         }
+
+                        data.cycle_id= pcTable.tableRow.cycle_id;
+
                         (new EditPanel(2, BootstrapDialog.TYPE_DANGER, data)).then(function (json) {
                             if (json) {
 
@@ -2073,7 +2076,7 @@
 
 
                         const contextmenu = function () {
-                            (new EditPanel(2, BootstrapDialog.TYPE_DANGER, {id: field.id})).then(funcOnTableChanged);
+                            (new EditPanel(2, BootstrapDialog.TYPE_DANGER, {id: field.id, cycle_id: pcTable.tableRow.cycle_id})).then(funcOnTableChanged);
                             return false;
                         };
 
@@ -2096,6 +2099,7 @@
                                             pin[k] = true;
                                         }
                                     });
+                                    ee.cycle_id=pcTable.tableRow.cycle_id;
                                     (new EditPanel(2, BootstrapDialog.TYPE_DANGER, ee, false, pin)).then(funcOnTableChanged);
                                 });
                             })
@@ -2112,6 +2116,9 @@
                                 ee.ord = {'v': field.ord + 10};
                                 ee.category = {v: field.category};
                                 ee.table_id = {v: pcTable.tableRow.id};
+
+                                ee.cycle_id = pcTable.tableRow.cycle_id;
+
                                 if (pcTable.tableRow.__version) {
                                     ee.version = {v: pcTable.tableRow.__version};
                                 }

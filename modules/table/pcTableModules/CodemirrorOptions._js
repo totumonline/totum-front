@@ -153,7 +153,7 @@
                             if (lastBtn) {
                                 lastBtn.remove();
                             }
-                        }, 100)
+                        }, 300)
 
                     })
                     mirror.on('cursorActivity', function (cm) {
@@ -178,13 +178,9 @@
                                         return;
                                 } else if (cm.table) {
                                     table = cm.table;
-
                                     if (token.type.match(/string-name/)) {
                                         type = 'get-code';
                                         field = token.string.substr(1, token.string.length - 2);
-                                    } else if (token.type.match(/db_name/)) {
-                                        type = 'select';
-                                        field = token.string.substr(1);
                                     } else {
                                         return;
                                     }
@@ -197,7 +193,7 @@
                                 var left = pos.left, top = pos.top - 40;
                                 let btn = window.top.document.createElement("ul");
                                 btn.className = "CodeMirror-hints";
-                                let btnEdit = $('<button class="btn btn-xs btn-default"><i class="fa fa-edit"></button>');
+                                let btnEdit = $('<button class="btn btn-xs btn-default"><i class="fa fa-edit"> ' + App.translate('Edit') + '</button>');
                                 $(btn).append(btnEdit)
                                 btn.style.left = left + "px";
                                 btn.style.top = top + "px";
@@ -205,11 +201,18 @@
                                 lastBtn = btn;
 
                                 let codeType = cm.codeType;
+                                let cycle_id = cm.cycle_id;
                                 let funcName = token.state.func[5];
 
                                 btnEdit.on('click', () => {
+
+                                        App.fullScreenProcesses.showCog();
+                                        setTimeout(() => {
+                                            App.fullScreenProcesses.hideCog();
+                                        }, 500)
+
                                         if (type === 'select') {
-                                            App.getPcTableById(table).then(function (pcTable) {
+                                            App.getPcTableById(table, {cycle_id: cycle_id}).then(function (pcTable) {
                                                 const getId = () => {
                                                     return new Promise((resolve, reject) => {
                                                         let rowId;
@@ -237,21 +240,34 @@
                                                 }
 
                                                 getId().then((rowId) => {
-                                                    pcTable.model.getValue({'fieldName': field, rowId: rowId}).then((val) => {
-                                                        App.totumCodeEdit(val['value'], "edit totumCode in " + table + '/' + field, table, undefined, undefined, undefined).then((val) => {
+                                                    pcTable.model.getValue({
+                                                        'fieldName': field,
+                                                        rowId: rowId
+                                                    }).then((val) => {
+                                                        let title = App.translate("Edit totumCode in value of %s", (rowId ? rowId + '/' : '') + table + '/' + field);
+
+                                                        App.totumCodeEdit(val['value'], title, {
+                                                            table: table,
+                                                            cycle_id: cycle_id
+                                                        }).then((val) => {
                                                             App.fullScreenProcesses.showCog();
                                                             pcTable.model.save({[rowId || 'params']: {[field]: val.code}}).then((json) => {
                                                                 App.fullScreenProcesses.hideCog();
+                                                                if (['format', 'code'].indexOf(codeType) !== -1) {
+                                                                    $('#table').data('pctable').model.refresh();
+                                                                }
                                                             });
                                                         }, () => {
                                                         })
                                                     })
                                                 }, () => {
+                                                    App.notify(App.translate('Code is not found.'))
                                                 })
+                                            }, () => {
+                                                App.notify('Error');
                                             });
-                                        } else {
-                                            let text = 'type:' + type + (type === 'get-code' ? '(' + cm.codeType + ')' : '') + '/' + table + '/' + field + '/' + where;
 
+                                        } else {
                                             switch (funcName) {
                                                 case 'linkToInput':
                                                 case 'linkToDataJson':
@@ -269,6 +285,7 @@
                                                         pcTable.model.getIdByFieldValue({
                                                             table_name: table,
                                                             name: field
+                                                            , __cycle_id: cycle_id
                                                         }).then((json) => {
                                                             if (!json.value) {
                                                                 App.notify(App.translate('The value is not found'));
@@ -282,7 +299,12 @@
 
                                                 getId().then((rowId) => {
                                                     pcTable.model.getValue({'fieldName': 'data_src', rowId: rowId}).then((val) => {
-                                                        App.totumCodeEdit(val['value'][codeType] ? val['value'][codeType].Val : '=: ', "edit totumCode in " + table + '/' + field + '/' + codeType, table, undefined, undefined, undefined).then((valCode) => {
+                                                        let title = App.translate("Edit totumCode in %s", codeType + '/' + (rowId ? rowId + '/' : '') + table + '/' + field)
+                                                        App.totumCodeEdit(val['value'][codeType] ? val['value'][codeType].Val : '=: ', title, {
+                                                            cycle_id: cycle_id,
+                                                            table: table,
+                                                            codeType: codeType
+                                                        }).then((valCode) => {
                                                             App.fullScreenProcesses.showCog();
                                                             let _val = val['value'];
                                                             _val[codeType] = _val[codeType] || {Val: '', isOn: false};
@@ -290,12 +312,18 @@
 
                                                             pcTable.model.save({[rowId]: {data_src: _val}}).then((json) => {
                                                                 App.fullScreenProcesses.hideCog();
+                                                                if (['format', 'code'].indexOf(codeType) !== -1) {
+                                                                    $('#table').data('pctable').model.refresh();
+                                                                }
                                                             });
                                                         }, () => {
                                                         })
                                                     })
                                                 }, () => {
+                                                    App.notify('Id isn\'t received');
                                                 })
+                                            }, () => {
+                                                App.notify('Error');
                                             });
                                         }
                                     }
