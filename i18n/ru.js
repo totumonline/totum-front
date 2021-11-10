@@ -66,10 +66,10 @@ App.langs.ru =
                 "Schema": "Схема",
                 "Single installation": "Одинарная установка",
                 "Multiple installation": "Множественная установка",
-                    'The value is not found': 'Значение не найдено',
+                'The value is not found': 'Значение не найдено',
 
-                    "Edit totumCode in %s":"Редактировать Тотум-код в %s",
-                    "Edit totumCode in value of %s":"Редактировать Тотум-код в ячейке %s",
+                "Edit totumCode in %s": "Редактировать Тотум-код в %s",
+                "Edit totumCode in value of %s": "Редактировать Тотум-код в ячейке %s",
 
                 "Cancel": "Отмена",
                 "Add": "Добавить",
@@ -268,7 +268,7 @@ App.langs.ru =
                 'Column footers': 'Футеры колонок',
                 'Out of column footers': 'Футеры вне колонок',
 
-
+                'Logout': 'Выход',
                 'Print': 'Печать',
                 ' from ': ' из ',
                 'Header': 'Хэдер',

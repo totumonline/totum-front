@@ -102,6 +102,7 @@
                 placement: 'auto bottom',
                 template: '<div class="popover" role="tooltip" style=""><div class="arrow" style="left: 50%;"></div><div class="popover-content" style=" padding: 3px 5px;"></div></div>'
             });
+
             if (select) {
 
                 selectDiv.height(350)
@@ -126,6 +127,7 @@
 
             setTimeout(() => {
                 UserFio.popover('show');
+                selectDiv.height(selectDiv.height() + 30).append('<button class="btn"><a href="/Auth/logout/">'+App.translate('Logout')+'</a></button>')
 
                 $('body').one('click.FioPopover', function (e) {
                     if (e.altKey !== undefined) {

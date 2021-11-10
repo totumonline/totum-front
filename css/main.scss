@@ -1015,7 +1015,7 @@ th {
   }
 
   .form-control {
-    height: 28px;
+    height: 27px;
     font-size: 12px;
   }
 
@@ -1202,6 +1202,9 @@ th {
   i.fa.fa-spinner {
     margin-top: -5px;
     display: block;
+  }
+  .form-control{
+    height: 28px;
   }
 }
 
@@ -1510,6 +1513,9 @@ th {
         max-height: 35px;
         background-clip: padding-box;
 
+        .form-control{
+          height: 28px;
+        }
       }
     }
 
