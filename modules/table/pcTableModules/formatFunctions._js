@@ -6,6 +6,9 @@ App.pcTableMain.prototype.__formatFunctions = {
     tablecomment: function () {
         this._rowsButtons();
     },
+    browsertitle: function () {
+        this._setBrowserTitle();
+    },
     buttons: function () {
         this._rerendParamsblock();
         this._rowsButtons();

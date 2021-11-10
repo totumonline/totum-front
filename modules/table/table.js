@@ -377,7 +377,7 @@
             closeCallbacks: [],
             _init: function () {
                 let pcTable = this;
-
+                this._setBrowserTitle();
                 $(document).on({
                     dragover: function () {
                         return false;
@@ -495,6 +495,7 @@
                         window.location.reload();
                     });
                 }
+
             },
             saveFilterAndPage: function () {
                 if (this.tableRow.type === 'cycles') {

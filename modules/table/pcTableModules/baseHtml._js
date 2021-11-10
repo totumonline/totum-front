@@ -547,7 +547,10 @@
 
                 $('<button class="btn btn-danger btn-xxs" title="' + App.translate('Edit table settings') + '"/>')
                     .html('<i class="fa fa-pencil-square-o"></i>').on('click', function () {
-                    (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {id: pcTable.tableRow.id, cycle_id: pcTable.tableRow.cycle_id})).then(function (json) {
+                    (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {
+                        id: pcTable.tableRow.id,
+                        cycle_id: pcTable.tableRow.cycle_id
+                    })).then(function (json) {
                         if (json) window.location.reload(true);
                     });
                 }).appendTo(creatorPart);
@@ -629,7 +632,7 @@
                             data['version'] = {v: pcTable.tableRow.__version};
                         }
 
-                        data.cycle_id= pcTable.tableRow.cycle_id;
+                        data.cycle_id = pcTable.tableRow.cycle_id;
 
                         (new EditPanel(2, BootstrapDialog.TYPE_DANGER, data)).then(function (json) {
                             if (json) {
@@ -806,7 +809,7 @@
 
             let page = offset === 0 ? 0 : Math.ceil(offset / onPage);
 
-            let allPages = Math.ceil(allCount / onPage) + (offset>onPage && (offset % onPage) > 0 ? 1 : 0);
+            let allPages = Math.ceil(allCount / onPage) + (offset > onPage && (offset % onPage) > 0 ? 1 : 0);
 
             let before, after, first, last;
             if (offset > 0)
@@ -1035,6 +1038,11 @@
                 this._beforeSpace_title.find('.updated').html(updatedDiv);
             }
 
+        },
+        _setBrowserTitle() {
+            if (this.f.browsertitle) {
+                window.document.title = this.f.browsertitle.toString() === 'true' ? (this.f.tabletitle || this.tableRow.title) : this.f.browsertitle;
+            }
         }
         ,
         _createTableText: function () {
@@ -2076,7 +2084,10 @@
 
 
                         const contextmenu = function () {
-                            (new EditPanel(2, BootstrapDialog.TYPE_DANGER, {id: field.id, cycle_id: pcTable.tableRow.cycle_id})).then(funcOnTableChanged);
+                            (new EditPanel(2, BootstrapDialog.TYPE_DANGER, {
+                                id: field.id,
+                                cycle_id: pcTable.tableRow.cycle_id
+                            })).then(funcOnTableChanged);
                             return false;
                         };
 
@@ -2099,7 +2110,7 @@
                                             pin[k] = true;
                                         }
                                     });
-                                    ee.cycle_id=pcTable.tableRow.cycle_id;
+                                    ee.cycle_id = pcTable.tableRow.cycle_id;
                                     (new EditPanel(2, BootstrapDialog.TYPE_DANGER, ee, false, pin)).then(funcOnTableChanged);
                                 });
                             })
