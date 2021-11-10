@@ -1,5 +1,6 @@
 .innerContainer.panelsView {
   padding-top: 10px;
+
   &:not(.kanbanInnerContainer) {
     overflow: visible;
   }
@@ -21,6 +22,10 @@
 
       &.selected {
         //background-color: #c8f8ff80;
+      }
+
+      td > .fa {
+        padding-right: 4px;
       }
 
       box-shadow: 0 0 7px 0px #0000000f;
@@ -96,7 +101,8 @@
     .kanban-cards {
       margin-left: -5px;
       margin-right: -5px;
-      .empty-kanban{
+
+      .empty-kanban {
         padding-left: 15px;
 
       }
@@ -108,7 +114,7 @@
     margin-top: 15px;
     padding-left: 2px;
 
-    .fa, span{
+    .fa, span {
       opacity: 0.5;
     }
 
@@ -118,7 +124,7 @@
     }
   }
 
-  .pcTable-floatInner>div{
+  .pcTable-floatInner > div {
     margin-bottom: 5px;
   }
 }

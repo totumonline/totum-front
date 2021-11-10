@@ -72,7 +72,7 @@
                 }
 
                 if (format.comment) {
-                    td.prepend($('<i class="fa fa-help">').attr('title', format.comment))
+                    td.prepend($('<i class="fa fa-info">').attr('title', format.comment))
                 } else if (format.icon) {
                     td.prepend($('<i class="fa">').addClass('fa-' + format.icon))
                 }
