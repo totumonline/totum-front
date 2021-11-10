@@ -782,7 +782,11 @@
 
 
                             App.totumCodeEdit(
-                                json.row[fieldName].v, title, {cycle_id: pcTable.tableRow.cycle_id, table:pcTable.tableRow.name, codeType:codeType},
+                                json.row[fieldName].v, title, {
+                                    cycle_id: pcTable.tableRow.cycle_id,
+                                    table: pcTable.tableRow.name,
+                                    codeType: codeType
+                                },
                                 [],
                                 false
                             )
@@ -844,7 +848,11 @@
 
 
                             App.totumCodeEdit(
-                                json.row.data_src.v[codeType].Val, title, {cycle_id: field.pcTable.tableRow.cycle_id, table:field.pcTable.tableRow.name, codeType:codeType},
+                                json.row.data_src.v[codeType].Val, title, {
+                                    cycle_id: field.pcTable.tableRow.cycle_id,
+                                    table: field.pcTable.tableRow.name,
+                                    codeType: codeType
+                                },
                                 checkboxes,
                                 (codeType !== 'codeSelect' && json.row.data_src.v[codeType] && json.row.data_src.v[codeType].isOn)
                             )
@@ -975,6 +983,8 @@
             }
             ,
             showRefreshButton(tableUpdated) {
+                if (!this.checkTableIsChangedObject)
+                    return;
                 this.checkTableIsChangedObject.abort();
                 if (this.checkTableIsChangedObject.changed) return;
                 this.checkTableIsChangedObject.changed = true;
