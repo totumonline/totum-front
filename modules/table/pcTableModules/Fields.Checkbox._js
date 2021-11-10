@@ -41,7 +41,7 @@ fieldTypes.checkbox = {
 
         $input.on('click', function (event) {
             action = true;
-            enterClbk($input, event);
+            enterClbk($input, event, 'enter');
         });
         return $input;
     }

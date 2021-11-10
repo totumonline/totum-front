@@ -1030,7 +1030,7 @@
     function scriptHint(editor, keywords, getToken, options) {
         // Find the token at the cursor
         var cur = editor.getCursor(), token = getToken(editor, cur), line = editor.getLine(cur.line), start;
-        if (!token.type.match('string-name') && /\b(?:string|comment)\b/.test(token.type)) return;
+        if (token.type && !token.type.match('string-name') && /\b(?:string|comment)\b/.test(token.type)) return;
 
 
         var innerMode = CodeMirror.innerMode(editor.getMode(), token.state);
