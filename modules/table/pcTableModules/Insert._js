@@ -205,7 +205,7 @@ $.extend(App.pcTableMain.prototype, {
 
         if (this.isTreeView && this.tableRow.type === 'cycles') {
         } else if (this.viewType === 'panels' || this.isRotatedView || this.isTreeView) {
-            if(!this.isTreeView || !this.fields.tree.treeHideAddButton){
+            if (!this.isTreeView || !this.fields.tree.treeHideAddButton) {
                 getAddButton(App.translate('Add'), AddWithPanel, "add").width(80)
             }
         } else {
@@ -370,7 +370,12 @@ $.extend(App.pcTableMain.prototype, {
                 })
             }
             $_td.on('focus', 'input,button,select', () => {
-                this._InsertFocusFalse = Date.now();
+                if (this._InsertFocusFalse !== true) {
+                    this._InsertFocusFalse = Date.now();
+                }
+            })
+            $_td.on('click', 'input,select', () => {
+                this._InsertFocusFalse = true
             })
         });
 
@@ -643,7 +648,8 @@ $.extend(App.pcTableMain.prototype, {
     },
     _insertFocusIt: function (outTimed) {
         let pcTable = this;
-        if (this._InsertFocusFalse && (Date.now() - this._InsertFocusFalse) < 200) {
+        if (this._InsertFocusFalse && (this._InsertFocusFalse === true || (Date.now() - this._InsertFocusFalse) < 200)) {
+            this._InsertFocusFalse = false;
             return false;
         }
         if (!outTimed) {
