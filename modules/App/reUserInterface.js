@@ -33,7 +33,6 @@
                 })
                 $('#docs-link').before(checkbox)
             }
-
         }
 
         const addFioClick = function (event) {

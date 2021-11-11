@@ -11,6 +11,7 @@ fieldTypes.select = {
     },
     loadPreviewPanel(panel, fieldName, item, val) {
         let $def = $.Deferred();
+        let field = this;
         panel.html('<div class="center"><i class="fa fa-spinner fa-spin"></i></div>');
         this.pcTable.model.loadPreviewHtml(fieldName, item, val).then(function (json) {
             if (panel) {
