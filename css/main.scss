@@ -748,6 +748,10 @@ th {
   .creator-buttons {
     padding-top: 10px;
     display: inline;
+    #addField{
+      background-color: #ff8585;
+      color: #fff;
+    }
 
     .copy_me, .btn-danger {
       color: $btn-danger-bgcolor;
@@ -2218,8 +2222,8 @@ input {
     &.roles {
       margin-left: 3px;
 
-      &.fa-border{
-        border-color: #ff8585;
+      &.fa-lower{
+        color: #ff85e4;
       }
       &:first-child {
         margin-left: 0px;

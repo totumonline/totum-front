@@ -623,7 +623,7 @@
 
                 creatorPart.appendTo(topButtons);
 
-                let btnAdd = $('<button class="btn btn-danger btn-xxs">' + App.translate('Add field') + '</span></button>').width(113)
+                let btnAdd = $('<button class="btn btn-danger btn-xxs" id="addField">' + App.translate('Add field') + '</span></button>').width(113)
                     .on('click', function () {
                         let data = {
                             table_id: {v: pcTable.tableRow.id}, data_src: {v: pcTable_default_field_data_src}
@@ -1912,7 +1912,7 @@
                 }
                 if (field.code && !field.linkFieldName) {
                     if (field.codeOnlyInAdd) {
-                        creatorIcons.append('<i class="fa fa-cogs fa-border roles"></i>');
+                        creatorIcons.append('<i class="fa fa-cogs fa-lower roles"></i>');
                     } else {
                         creatorIcons.append('<i class="fa fa-cogs roles"></i>');
                     }
