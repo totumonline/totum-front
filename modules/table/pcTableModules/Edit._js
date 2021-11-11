@@ -591,73 +591,73 @@ $.extend(App.pcTableMain.prototype, {
             editCellsBlock.append($btn)
         }
 
-        if (field.changeSelectTable && field.type === 'select') {
+        if (field.changeSelectTable && field.type === 'select')
+            (() => {
+                let itemLocal = $.extend(true, {}, item);
+                let sourceBtnClick = function () {
+                    onAction = true;
+                    sourcePanelOpened = true;
+                    setTimeout(() => {
+                        input.click();
+                    }, 3)
 
-            let sourceBtnClick = function () {
-                onAction = true;
-                sourcePanelOpened = true;
-                setTimeout(() => {
-                    input.click();
-                }, 3)
+                    let isAdd = $(this).data('add-button');
 
-                let isAdd = $(this).data('add-button');
+                    field.sourceButtonClick(itemLocal, isAdd).then((data) => {
+                        if (!data) return;
+                        let isAdded = (data && data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
+                        let inputOld = input;
+                        delete field.list;
+                        if (inputOld.data('input').data('LISTs')) {
+                            inputOld.data('input').data('LISTs').isListForLoad = true;
+                        }
+                        if (isAdded) {
+                            let addVal;
+                            if (field.selectTableBaseField) {
+                                addVal = data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]][field.selectTableBaseField].v;
+                            } else {
+                                addVal = Object.keys(data.json.chdata.rows)[0];
+                            }
 
-                field.sourceButtonClick(item, isAdd).then((data) => {
-                    let isAdded = (data && data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
-                    let inputOld = input;
-                    delete field.list;
-                    if (inputOld.data('input').data('LISTs')) {
-                        inputOld.data('input').data('LISTs').isListForLoad = true;
-                    }
-                    let _item = $.extend(true, {}, item);
-                    if (isAdded) {
+                            if (field.multiple) {
+                                itemLocal[field.name].v = field.getEditVal(input);
+                                itemLocal[field.name].v.push(addVal);
+                            } else {
+                                itemLocal[field.name].v = addVal;
+                            }
 
-                        let addVal;
-                        if (field.selectTableBaseField) {
-                            addVal = data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]][field.selectTableBaseField].v;
-                        } else {
-                            addVal = Object.keys(data.json.chdata.rows)[0];
+                        } else if (field.selectTableBaseField) {
+                            if (!field.multiple && data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]] && data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]][field.selectTableBaseField]) {
+                                itemLocal[field.name].v = data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]][field.selectTableBaseField].v;
+                            }
                         }
 
-                        if (field.multiple) {
-                            _item[field.name].v = field.getEditVal(input);
-                            _item[field.name].v.push(addVal);
-                        } else {
-                            _item[field.name].v = addVal;
+                        if (!isAdded && field.category === 'column') {
+                            pcTable.model.refresh(function (json) {
+                                pcTable.table_modify.call(pcTable, json);
+                            });
                         }
+                        itemLocal[field.name].replaceViewValue = function (viewArray) {
+                            if (field.category != 'column') {
+                                pcTable.data_params[field.name].v_ = viewArray;
+                            }
+                        };
 
-                    } else if (field.selectTableBaseField) {
-                        if (!field.multiple && data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]] && data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]][field.selectTableBaseField]) {
-                            _item[field.name].v = data.json.chdata.rows[Object.keys(data.json.chdata.rows)[0]][field.selectTableBaseField].v;
-                        }
-                    }
+                        inputOld.replaceWith(input = field.getEditElement(inputOld, itemLocal[field.name], itemLocal, saveClbck, escClbck, blurClbck));
+                        onAction = false;
+                    })
+                    return false;
+                };
 
-                    if (!isAdded && field.category === 'column') {
-                        pcTable.model.refresh(function (json) {
-                            pcTable.table_modify.call(pcTable, json);
-                        });
-                    }
-                    _item[field.name].replaceViewValue = function (viewArray) {
-                        if (field.category != 'column') {
-                            pcTable.data_params[field.name].v_ = viewArray;
-                        }
-                    };
-
-                    inputOld.replaceWith(input = field.getEditElement(inputOld, _item[field.name], _item, saveClbck, escClbck, blurClbck));
-                    onAction = false;
-                })
-                return false;
-            };
-
-            $btn = $('<button class="btn btn-sm btn-primary"><i class="fa fa-edit" title="' + App.translate('Change in source table') + '"></i></button>');
-            $btn.on('click', sourceBtnClick);
-            editCellsBlock.append($btn);
-            if (field.changeSelectTable === 2) {
-                $btn = $('<button class="btn btn-sm btn-primary" data-add-button="true"><i class="fa fa-plus" title="' + App.translate('Add to source table') + '"></i></button>');
-                editCellsBlock.append($btn);
+                $btn = $('<button class="btn btn-sm btn-primary"><i class="fa fa-edit" title="' + App.translate('Change in source table') + '"></i></button>');
                 $btn.on('click', sourceBtnClick);
-            }
-        }
+                editCellsBlock.append($btn);
+                if (field.changeSelectTable === 2) {
+                    $btn = $('<button class="btn btn-sm btn-primary" data-add-button="true"><i class="fa fa-plus" title="' + App.translate('Add to source table') + '"></i></button>');
+                    editCellsBlock.append($btn);
+                    $btn.on('click', sourceBtnClick);
+                }
+            })();
         let btnCount = editCellsBlock.find('button').length;
         editCellsBlock.width(btnCount * 31);
 
