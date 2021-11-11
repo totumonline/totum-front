@@ -1912,7 +1912,7 @@
                 }
                 if (field.code && !field.linkFieldName) {
                     if (field.codeOnlyInAdd) {
-                        creatorIcons.append('<i class="fa fa-cog-o roles"></i>');
+                        creatorIcons.append('<i class="fa fa-cogs fa-border roles"></i>');
                     } else {
                         creatorIcons.append('<i class="fa fa-cogs roles"></i>');
                     }

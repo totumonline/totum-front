@@ -496,7 +496,7 @@
 
 
         let selectedDiv;
-        this._content.on('contextmenu', '.panelsView-card td', function () {
+        this._content.on('contextmenu click', '.panelsView-card td', function () {
             if (selectedDiv) {
                 selectedDiv.removeClass('selected')
             }

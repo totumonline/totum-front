@@ -621,7 +621,8 @@
                 title = title || this.fields[th.data('field')].title;
                 if (!th.attr('aria-describedby') && title) {
                     let div = $('<div style="width:200px" class="creator-icons">');
-                    div.append($('<div class="full-title">').text(title || this.fields[th.data('field')].title));
+                    let unitType = this.fields[th.data('field')].unitType ? ', ' + this.fields[th.data('field')].unitType : '';
+                    div.append($('<div class="full-title">').text((title || this.fields[th.data('field')].title) + unitType));
 
                     let placement = 'top';
 
@@ -646,7 +647,8 @@
             creatorIconsPopover: async function (th) {
                 if (!th.attr('aria-describedby')) {
                     let div = $('<div style="width:200px" class="creator-icons">');
-                    div.append($('<div class="full-title">').text(this.fields[th.data('field')].title));
+                    let unitType = this.fields[th.data('field')].unitType ? ', ' + this.fields[th.data('field')].unitType : '';
+                    div.append($('<div class="full-title">').text(this.fields[th.data('field')].title + unitType));
 
                     th.find('i:not(.fa-caret-down):not(.fa-info)').each((i, icon) => {
                         if (['fa-star', 'fa-star-o', 'fa-cogs'].some((c) => {
@@ -655,7 +657,7 @@
                         let el = $('<div>').append(icon.outerHTML);
 
                         if (i === 0) {
-                            el.append(' ' + th.data('field'));
+                            el.append(' ').append($('<span class="name"></span>').text(th.data('field')));
                             let btnCopy = $('<button class="btn btn-sm btn-default copy-me" title="' + App.translate('Copy') + ' "><i class="fa fa-copy"></i></button>');
                             btnCopy.on('click', function () {
                                 App.copyMe(th.data('field'));

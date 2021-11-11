@@ -1203,7 +1203,8 @@ th {
     margin-top: -5px;
     display: block;
   }
-  .form-control{
+
+  .form-control {
     height: 28px;
   }
 }
@@ -1513,7 +1514,7 @@ th {
         max-height: 35px;
         background-clip: padding-box;
 
-        .form-control{
+        .form-control {
           height: 28px;
         }
       }
@@ -2195,6 +2196,16 @@ input {
     font-weight: 500;
   }
 
+  .name {
+    display: inline-block;
+    max-width: 143px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    text-indent: 0;
+    padding-bottom: 1px;
+  }
+
   i {
     margin-left: 3px;
     font-size: 11px;
@@ -2204,6 +2215,9 @@ input {
     &.roles {
       margin-left: 3px;
 
+      &.fa-border{
+        border-color: #ff8585;
+      }
       &:first-child {
         margin-left: 0px;
       }
