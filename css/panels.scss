@@ -1,5 +1,6 @@
 .totum-math-operations {
   margin-bottom: 20px;
+
   th {
     height: 32px;
     width: 150px;
@@ -8,7 +9,8 @@
   th:last-child {
     width: 200px;
   }
-  td{
+
+  td {
     padding-top: 5px;
   }
 
@@ -25,16 +27,18 @@
 }
 
 .edit-row-panel {
-  .format-text, .format-comment{
+  .format-text, .format-comment {
     padding: 5px;
     font-size: 12px;
     margin-top: 5px;
   }
-  .format-text + .format-comment{
+
+  .format-text + .format-comment {
     margin-top: 0px;
   }
-  .format-comment{
-    i{
+
+  .format-comment {
+    i {
       padding-right: 5px;
     }
   }
@@ -148,6 +152,21 @@
 }
 
 .fieldparams-edit-panel {
+  #fieldParamsLocker {
+    z-index: 1000;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #aaaaaa;
+    opacity: 0.3;
+    font-size: 100px;
+    text-align: center;
+    padding-top: 50px;
+    color: #fff
+  }
+
   .field {
     .bootstrap-select button, input {
       border: 1px solid transparent !important;
@@ -165,7 +184,7 @@
     font-size: 14px !important;
   }
 
-  label span{
+  label span {
     font-size: 15px;
   }
 }

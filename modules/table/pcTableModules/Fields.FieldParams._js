@@ -364,6 +364,23 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             formFill(oldValueParam.v)
             div.append(form)
             div.addClass('fieldparams-edit-panel')
+            setTimeout(() => {
+                let blocked = false;
+                let insertPanel = div.closest('.InsertPanel');
+                let versionVal = insertPanel.find('div[data-name="version"] select').val();
+                insertPanel.on('keyup.jsonFormEvent change.jsonFormEvent', '.cell:not([data-name="data_src"]) input, .cell:not([data-name="data_src"]) select', function (event) {
+                    if (!blocked) {
+                        if ($(this).closest('[data-name="version"]').length && versionVal === $(this).val()) {
+                            return;
+                        }
+                        blocked = true;
+                        div.find('.jsonForm').prepend('<div id="fieldParamsLocker"><i class="fa fa-lock"></i></div>')
+                    }
+                })
+                div.find('.jsonForm').on('remove', () => {
+                    insertPanel.off('jsonFormEvent')
+                })
+            })
         }
 
         return div.data('val', oldValueParam.v).data('input', form);//.attr('data-category', category).attr('data-category', category);
