@@ -95,7 +95,7 @@
 
                 if (Field.editable && this.control.editing && !format.block) {
                     td.on('dblclick', function () {
-                        let background=td.css('backgroundColor');
+                        let background = td.css('backgroundColor');
                         let html = td.html();
                         td.html('Редактирование в поле').css('background-color', '#ffddb4')
                         pcTable.editSingleFieldInPanel(Field, data.id).then((json) => {
@@ -501,14 +501,16 @@
                 selectedDiv.removeClass('selected')
             }
             let td = $(this);
-            let item = pcTable.data[td.closest('.panelsView-card').data('id')];
-            let field = td.data('name');
-            if (td.data('panel') && td.data('panel').isAttached() && pcTable.selectedCells.selectPanel === td.data('panel')) {
-                pcTable.selectedCells.selectPanelDestroy();
-                td.data('panel', null);
-            } else {
-                td.data('panel', pcTable.selectedCells.selectPanel = pcTable.getSelectPanel.call(pcTable, pcTable.fields[field], item, td));
-                selectedDiv = td.addClass('selected')
+            if (!selectedDiv || selectedDiv.get(0)!==td.get(0)) {
+                let item = pcTable.data[td.closest('.panelsView-card').data('id')];
+                let field = td.data('name');
+                if (td.data('panel') && td.data('panel').isAttached() && pcTable.selectedCells.selectPanel === td.data('panel')) {
+                    pcTable.selectedCells.selectPanelDestroy();
+                    td.data('panel', null);
+                } else {
+                    td.data('panel', pcTable.selectedCells.selectPanel = pcTable.getSelectPanel.call(pcTable, pcTable.fields[field], item, td));
+                    selectedDiv = td.addClass('selected')
+                }
             }
         });
 

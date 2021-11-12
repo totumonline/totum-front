@@ -1621,7 +1621,7 @@ th {
   }
 
   .pcTable-topButtons {
-    height: 45px;
+    height: 25px;
     box-sizing: border-box;
   }
 
@@ -2223,7 +2223,8 @@ input {
       margin-left: 3px;
 
       &.fa-lower{
-        color: #ff85e4;
+        color: magenta;
+        opacity: 0.5;
       }
       &:first-child {
         margin-left: 0px;

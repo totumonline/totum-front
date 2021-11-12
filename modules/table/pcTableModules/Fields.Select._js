@@ -42,9 +42,16 @@ fieldTypes.select = {
                                 break;
                             case 'currency':
                             case 'number':
-                                if (preview[2] === 'currency') {
+                                if (preview[2] === 'currency' || preview[3].currency) {
                                     try {
-                                        $_html.text(parseFloat(preview[1]).toLocaleString(App.lang.locale));
+                                        $_html.text(
+                                                App.numberFormat(parseFloat(preview[1]),
+                                                    preview[3].dectimalPlaces,
+                                                    preview[3].dectimalSeparator,
+                                                    preview[3].thousandthSeparator,
+                                                    preview[3].prefix,
+                                                    preview[3].postfix)
+                                            );
                                     } catch (e) {
                                         $_html.text(preview[1]);
                                     }
@@ -53,12 +60,11 @@ fieldTypes.select = {
                                 }
 
                                 if (preview[3]['unitType']) {
-                                    if (field.before) {
+                                    if (preview[3].before) {
                                         $_html.prepend(preview[3]['unitType'] + ' ');
                                     } else {
                                         $_html.append(' ' + preview[3]['unitType']);
                                     }
-
                                 }
 
                                 break;

@@ -831,7 +831,7 @@ $.extend(App.pcTableMain.prototype, {
                     /*Показать окно с полем*/
 
                     input = field.getEditElement(td, val, id ? this.data[id] : this.data_params, () => {
-                        save()
+                        //save()
                     }, () => {
                     }, () => {
                     });
