@@ -176,13 +176,18 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         }
 
 
+        let oldVals = {};
+
+        EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (field, index) {
+            oldVals[field.name] = EditPanelFunc.editItem[field.name];
+            EditPanelFunc.editItem[field.name] = json.row[field.name];
+        });
+
         EditPanelFunc.pcTable.fieldCategories.panel_fields.forEach(function (field, index) {
 
             let cell = EditPanelFunc.$panel.find('div.cell[data-field-name="' + field.name + '"]');
 
-            let Oldval = EditPanelFunc.editItem[field.name];
-
-            EditPanelFunc.editItem[field.name] = json.row[field.name];
+            let Oldval = oldVals[field.name];
 
             if (EditPanelFunc.isEditable(field)) isAnyEditableFields = true;
 

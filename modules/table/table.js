@@ -599,7 +599,7 @@
 
 
                 if (reorderedFields) {
-                    ['param', 'column', 'filter', 'footer'].forEach(function (category) {
+                    ['param', 'column', 'filter', 'footer', 'panel_fields'].forEach(function (category) {
                         pcTable.fieldCategories[category].sort(function (field_a, field_b) {
                             return field_a.ord - field_b.ord;
                         })
