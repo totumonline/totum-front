@@ -496,12 +496,16 @@
 
 
         let selectedDiv;
-        this._content.on('contextmenu click', '.panelsView-card td', function () {
+        this._content.on('contextmenu click', '.panelsView-card td', function (event) {
             if (selectedDiv) {
                 selectedDiv.removeClass('selected')
             }
+            if(event.type==='click' && event.originalEvent && event.originalEvent.path && $(event.originalEvent.path[0]).is('button')){
+                return;
+            }
+
             let td = $(this);
-            if (!selectedDiv || selectedDiv.get(0)!==td.get(0)) {
+            if (!selectedDiv || selectedDiv.get(0) !== td.get(0) || !pcTable.selectedCells.selectPanel) {
                 let item = pcTable.data[td.closest('.panelsView-card').data('id')];
                 let field = td.data('name');
                 if (td.data('panel') && td.data('panel').isAttached() && pcTable.selectedCells.selectPanel === td.data('panel')) {
@@ -511,6 +515,8 @@
                     td.data('panel', pcTable.selectedCells.selectPanel = pcTable.getSelectPanel.call(pcTable, pcTable.fields[field], item, td));
                     selectedDiv = td.addClass('selected')
                 }
+            } else {
+                selectedDiv = null;
             }
         });
 
@@ -519,6 +525,9 @@
         this._content.on('click', '.panelsView-card', function (event) {
             if (event.originalEvent && event.originalEvent.path && !$(event.originalEvent.path[0]).is('button, .fa')) {
                 let td = $(this);
+                if (td.is('.cell-button')) {
+                    return;
+                }
                 if (selected && selected.get(0) === td.get(0)) {
                     td.removeClass('selected');
                     selected = null
