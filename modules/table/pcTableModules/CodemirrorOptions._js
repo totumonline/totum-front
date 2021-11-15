@@ -1389,11 +1389,11 @@
                 }
 
 
-            } else if (match = token.string.match(/^(#?\$)/)) {
+            } else if (match = token.string.match(/(.*)(#?\$)([a-zA-Z_0-9]+)/)) {
 
                 keywords = [];
-                token.string = token.string.slice(match[1].length, cur.ch - token.start);
-                token.start = token.start + match[1].length;
+                token.string = match[3];
+                token.start = token.start + match[1].length + match[2].length;
                 token.end = cur.ch;
 
                 if (token.state.inTotumBlock) {
@@ -1410,10 +1410,11 @@
                     });
                 }
 
-            } else if (match = token.string.match(/^\#/) && !token.state.inTotumBlock) {
+            } else if (!token.state.inTotumBlock && (match = token.string.match(/(.*)\#/))) {
+
                 keywords = [];
-                token.string = token.string.slice(1, cur.ch - token.start);
-                token.start = token.start + 1;
+                token.string = token.string.slice(match[1].length + 1, cur.ch - token.start);
+                token.start = token.start + match[1].length + 1;
                 token.end = cur.ch;
 
                 if (match = token.string.match(/^([a-z]{1,3}\.)/)) {
