@@ -1769,7 +1769,7 @@ th.id .pcTable-filters.for-selected .btn {
   background-color: #fcfcfc;
 }
 
-.InsertPanel .cell-wrapper, .fieldparams-edit-panel {
+.InsertPanel .cell-wrapper, .fieldparams-edit-panel .jsonForm {
   &:not(.fieldparams-edit-panel) {
     padding-right: 10px;
     padding-left: 10px;
