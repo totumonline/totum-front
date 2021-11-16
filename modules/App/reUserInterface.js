@@ -11,27 +11,100 @@
 
         if (isNotCreatorHimSelf) {
             App.blink(UserFio, 10, '#ffe486');
-        }else if(App.isTopWindow()){
+        } else if (App.isTopWindow()) {
 
             if ($('#isCreator').length === 0) {
                 let isMobile = screen.width <= window.MOBILE_MAX_WIDTH;
-                let checkbox = $('<span id="isCreator" class="btn btn-sm"><i class="fa-user-circle fa"></i></span>');
-                let input = checkbox;
+                let creatorButton = $('<span id="isCreator" class="btn btn-sm"><i class="fa-user-circle fa"></i></span>');
+
                 if (!isMobile && !localStorage.getItem('notCreator')) {
-                    input.addClass('btn-danger');
+                    creatorButton.addClass('btn-danger');
                 } else {
-                    input.addClass('btn-warning');
+                    creatorButton.addClass('btn-warning');
                     $('.plus-top-branch').hide();
                 }
-                input.on('click', () => {
-                    if (!localStorage.getItem('notCreator')) {
+
+                let isCommonView = false;
+                if ($.cookie('ttm__commonTableView') === 'true') {
+                    creatorButton.addClass('commonView');
+                    isCommonView = true;
+                }
+
+                const changeNotCreator = (setted) => {
+                    if (!setted) {
                         localStorage.setItem('notCreator', true)
                     } else {
                         localStorage.removeItem('notCreator')
                     }
-                    window.location.reload(true);
+
+                }
+
+                creatorButton.on('click', () => {
+                    let mainTable = $('#table').data('pctable');
+                    if (mainTable && (isCommonView || mainTable.isTreeView || mainTable.viewType)) {
+                        let showed;
+                        if (!creatorButton.data('bs.popover')) {
+
+                            let $selects = $('<div id="isCreatorSelector"></div>');
+
+                            $selects.append('<div><input type="checkbox" data-type="NotCreatorView"> ' + App.translate('isCreatorSelector-NotCreatorView') + '</div>');
+                            $selects.append('<div><input type="checkbox" data-type="CommonView"> ' + App.translate('isCreatorSelector-CommonView') + '</div>');
+                            $selects.append('<div><button>' + App.translate('Apply') + '</button></div>');
+
+                            if ($.cookie('ttm__commonTableView') === 'true') {
+                                $selects.find('[data-type="CommonView"]').prop('checked', true);
+                            }
+                            if (localStorage.getItem('notCreator')) {
+                                $selects.find('[data-type="NotCreatorView"]').prop('checked', true);
+                            }
+
+                            $selects.on('click', 'button', function () {
+                                let NotCreatorView = $selects.find('[data-type="NotCreatorView"]').is(':checked');
+                                let CommonView = $selects.find('[data-type="CommonView"]').is(':checked');
+                                changeNotCreator(!NotCreatorView);
+                                let path = window.location.pathname
+                                if (!CommonView) {
+                                    $.removeCookie('ttm__commonTableView', {path: path})
+                                } else {
+                                    $.cookie('ttm__commonTableView', 'true', {path: path})
+                                }
+                                window.location.reload(true)
+                            })
+                            $selects.on('click', (event)=>{
+                                event.stopPropagation();
+                            })
+
+
+                            creatorButton.popover({
+                                trigger: "manual",
+                                placement: "bottom",
+                                content: $selects,
+                                html: true,
+                                animation: false,
+                                container: '#pk nav.navbar-default'
+                            })
+                        }
+                        if (!showed) {
+                            creatorButton.popover('show');
+                            setTimeout(() => {
+                                mainTable.closeCallbacks.push(() => {
+                                    setTimeout(() => {
+                                        creatorButton.popover('hide');
+                                        showed = false;
+                                    }, 50)
+                                })
+                            }, 100);
+                        }
+
+
+                    } else {
+                        changeNotCreator(localStorage.getItem('notCreator'))
+                        window.location.reload(true);
+                    }
                 })
-                $('#docs-link').before(checkbox)
+
+
+                $('#docs-link').before(creatorButton)
             }
         }
 
@@ -107,7 +180,7 @@
 
             if (Object.keys(users).length) {
                 let sBtn = $('<div class="select-btn"></div>').appendTo(selectDiv);
-                select = $('<select data-size="' + (UserTables.length ? 13 - UserTables.length - 1 : (isCreatorView?13:11)) + '" class="open" title="'+App.translate("Select user")+'" data-style="btn-sm btn-default" data-live-search="true" data-width="100%">');
+                select = $('<select data-size="' + (UserTables.length ? 13 - UserTables.length - 1 : (isCreatorView ? 13 : 11)) + '" class="open" title="' + App.translate("Select user") + '" data-style="btn-sm btn-default" data-live-search="true" data-width="100%">');
 
                 Object.keys(users).forEach(function (uId) {
                     select.append($('<option>').text(uId).data('content', users[uId]));
@@ -149,7 +222,7 @@
 
             setTimeout(() => {
                 UserFio.popover('show');
-                selectDiv.height(selectDiv.height() + 30).append('<button class="btn"><a href="/Auth/logout/">'+App.translate('Logout')+'</a></button>')
+                selectDiv.height(selectDiv.height() + 30).append('<button class="btn"><a href="/Auth/logout/">' + App.translate('Logout') + '</a></button>')
 
                 $('body').one('click.FioPopover', function (e) {
                     if (e.altKey !== undefined) {

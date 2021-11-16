@@ -935,7 +935,7 @@
 
                     if (this.viewType === 'panels' && !this.isMobile)
                         this._renderTablePanelView();
-                    else if (!this.isTreeView && this.tableRow.rotated_view) {
+                    else if (!this.isTreeView && (this.tableRow.rotated_view && !$.cookie('ttm__commonTableView'))) {
                         this._renderRotatedView();
                     }
 

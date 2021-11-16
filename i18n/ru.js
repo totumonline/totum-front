@@ -403,7 +403,9 @@ App.langs.ru =
                 'The table was changed by the user <b>%s</b> at <b>%s</b>': 'Таблица была изменена пользователем <b>%s</b> в <b>%s</b>',
                 'treeAddTable': 'Таблицу',
                 'treeAddFolder': 'Папку/Ссылку',
-                'Tree search': 'Поиск по дереву'
+                'Tree search': 'Поиск по дереву',
+                    'isCreatorSelector-NotCreatorView':'Пользовательский вид',
+                    'isCreatorSelector-CommonView':'Табличный вид',
             }
     }
 ;

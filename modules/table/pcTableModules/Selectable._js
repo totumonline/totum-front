@@ -916,7 +916,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         let spans = pcTable.selectedCells.summarizer.element.find('span');
 
                         if (allNumbers) {
-                            spans[1].innerHTML = numberField.numberFormat(summ, numberField.dectimalPlaces || 0, '.');
+                            spans[1].innerHTML = App.numberFormat(summ, numberField.dectimalPlaces || 0, '.');
                         } else {
                             spans[1].innerHTML = '-';
                         }
