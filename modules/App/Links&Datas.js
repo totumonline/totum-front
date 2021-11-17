@@ -45,7 +45,7 @@
                                 nf.$modal.remove();
                             })
                         })
-                        notifications = [];
+                        notifications.splice(0, notifications.length);
                     }).on('remove', () => {
                     if (clocks) {
                         clocks.popover('destroy')
@@ -70,7 +70,7 @@
                                 nf.$modal.remove();
                             })
                         })
-                        notifications = [];
+                        notifications.splice(0, notifications.length);
                     });
 
 
