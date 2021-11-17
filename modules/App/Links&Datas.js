@@ -38,7 +38,7 @@
                         onHide();
                         notificationManager.remove();
                         notificationManager = null;
-                        _model.notificationUpdate(Object.keys(notifications), 'deactivate').then(function () {
+                        _model.notificationUpdate('ALL_ACTIVE', 'deactivate').then(function () {
                         })
                         Object.values(notifications).forEach((notifications) => {
                             notifications.forEach((nf) => {
@@ -61,7 +61,7 @@
                         let num = $div.find('input').val();
                         let select = $div.find('select').val();
                         onHide();
-                        _model.notificationUpdate(Object.keys(notifications), 'later', num, select).then(function () {
+                        _model.notificationUpdate('ALL_ACTIVE', 'later', num, select).then(function () {
                         })
                         notificationManager.remove();
                         notificationManager = null;
