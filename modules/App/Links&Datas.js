@@ -45,7 +45,9 @@
                                 nf.$modal.remove();
                             })
                         })
-                        notifications.splice(0, notifications.length);
+                        Object.keys(notifications).forEach(key => {
+                            delete notifications[key];
+                        });
                     }).on('remove', () => {
                     if (clocks) {
                         clocks.popover('destroy')
@@ -70,7 +72,9 @@
                                 nf.$modal.remove();
                             })
                         })
-                        notifications.splice(0, notifications.length);
+                        Object.keys(notifications).forEach(key => {
+                            delete notifications[key];
+                        });
                     });
 
 
