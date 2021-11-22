@@ -665,7 +665,7 @@
     App.getPcTableById = function (id, elseData, element, config_else) {
         let $d = $.Deferred();
         elseData = elseData || {};
-        let uri = '/Table/0/' + (elseData.cycle_id ?  '0/' + elseData.cycle_id + '/' : '') + id.toString();
+        let uri = '/Table/0/' + (elseData.cycle_id ? '0/' + elseData.cycle_id + '/' : '') + id.toString();
         (new App.models.table(uri, {}, {})).getTableData(elseData.sess_hash).then(function (config) {
 
             if (config_else && (config_else.withHeader === false || config_else.withFooter === false)) {
@@ -921,9 +921,11 @@
             let tempFrame = iframe[0];
             let tempFrameWindow = tempFrame.contentWindow ? tempFrame.contentWindow : tempFrame.contentDocument.defaultView;
 
-
             tempFrameWindow.document.head.innerHTML = '<style>' + styles + '</style>';
-            tempFrameWindow.document.body.innerHTML = body;
+            setTimeout(()=>{
+                tempFrameWindow.document.body.innerHTML = body;
+            }, 50)
+
             let iBody = tempFrameWindow.document.body;
 
             let def = $.Deferred();
@@ -949,6 +951,8 @@
                 iCheck = 0;
                 checkScroll();
             };
+
+
             checkBodyHeight();
             def.then(function () {
                 App.fullScreenProcesses.hideCog();
@@ -958,9 +962,9 @@
                     tempFrameWindow.print();
                 }, 250);
 
-                setTimeout(function () {
-                    // iframe.remove();
-                }, 10000);
+                /*setTimeout(function () {
+                     iframe.remove();
+                }, 10000);*/
             });
         }
     }
