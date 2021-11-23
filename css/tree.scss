@@ -3,6 +3,7 @@
 .TreeContainer {
   overflow: scroll;
   overflow-x: hidden;
+  scrollbar-width: none;
 }
 
 #page-tree {
