@@ -472,17 +472,10 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             App.popNotify(params);
         }
 
+        pcTable.closeCallbackAdd(() => {
+            selectObject.selectPanelDestroy();
+        }, 'selectPanelDestroy', 20)
 
-        $('body').on(eventNameClick, function (event) {
-            if ($(event.target).closest('#selectPanel').length === 0) {
-                selectObject.selectPanelDestroy();
-            }
-        })
-            .on(eventNameKeyUp, function (event) {
-                if (event.which == 27) {
-                    selectObject.selectPanelDestroy();
-                }
-            });
 
         return td;
     }
@@ -607,7 +600,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             },
             selectPanelDestroy: function () {
                 let panelObj = this;
-
+                pcTable.closeCallbackRemove('selectPanelDestroy');
                 if (panelObj.selectPanel) {
                     if (panelObj.selectPanel.attr('aria-describedby')) {
                         panelObj.selectPanel.popover('destroy');

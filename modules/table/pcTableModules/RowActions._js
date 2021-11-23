@@ -569,9 +569,10 @@
                     pcTable._refreshFiltersBlock.call(pcTable, json)
                 }
                 pcTable._headCellIdButtonsState();
+                refreshContentTable = true;
             }
 
-            if (withoutRefreshes) {
+            if (!withoutRefreshes && refreshContentTable) {
                 this._refreshContentTable(0, false, true);
                 this._container.getNiceScroll().resize();
             }

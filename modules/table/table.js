@@ -375,6 +375,28 @@
                 this.model.setLoadedTableData(this.data);
             },
             closeCallbacks: [],
+            closeCallbackAdd: function (func, name, timeout) {
+                const add = () => {
+                    this.closeCallbacks.push({
+                        type: name,
+                        func: func
+                    })
+                }
+                if (timeout) {
+                    setTimeout(() => {
+                        add()
+                    }, timeout)
+                } else {
+                    add();
+                }
+            },
+            closeCallbackRemove: function (name) {
+                this.closeCallbacks.forEach((o, i) => {
+                    if (o.type === name) {
+                        this.closeCallbacks.splice(i, 1)
+                    }
+                })
+            },
             _init: function () {
                 let pcTable = this;
                 this._setBrowserTitle();
@@ -409,7 +431,11 @@
                         closeCallbacksActive = true;
                         let cnt = pcTable.closeCallbacks.length;
                         pcTable.closeCallbacks.forEach(function (func) {
-                            func();
+                            if (typeof func === 'function') {
+                                func();
+                            } else {
+                                func.func();
+                            }
                         });
                         pcTable.closeCallbacks.splice(0, cnt);
                         closeCallbacksActive = false;
