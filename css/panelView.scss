@@ -72,6 +72,14 @@
 
   }
 
+  .kanban .kanban-disabled:hover, .kanban .kanban-disabled *:hover {
+    cursor: not-allowed;
+  }
+
+  .kanban.kanban-enabled {
+    background-color: lightcyan;
+  }
+
   .kanbanWrapper {
     display: grid;
     grid-gap: 20px;

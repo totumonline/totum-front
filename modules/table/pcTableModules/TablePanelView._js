@@ -271,9 +271,9 @@
         return div;
     }
     const addSortable = function (div) {
-        if (this.kanban) {
+        if ((this.kanban && this.fields[this.tableRow.panels_view.kanban].editable) || this.tableRow.with_order_field) {
 
-            const saveOrder = ($item) => {
+            const saveOrder = ($item, withoutRefreshes) => {
                 let $d = $.Deferred();
 
                 let order = [];
@@ -288,7 +288,7 @@
                     this.dataSorted.push(...order);
 
                     return this.model.saveOrder(order).then((json) => {
-                        this.table_modify(json);
+                        this.table_modify(json, null, null, withoutRefreshes);
                     });
                 } else {
                     $d.resolve();
@@ -298,30 +298,70 @@
 
             $(div).find('.kanban').sortable({
                 items: '.panelsView-card',
-                connectWith: this.fields[this.tableRow.panels_view.kanban].editable ? '.kanban' : "",
-                stop: (event, ui) => {
+                connectWith: this.kanban && this.fields[this.tableRow.panels_view.kanban].editable ? '.kanban' : '',
+                over: (event, ui) => {
                     let $item = $(ui.item);
                     let itemId = $item.data('id');
-                    let nowBeforeId = $item.prev().data('id');
-                    App.fullScreenProcesses.show('sorting');
+                    let kanban = this.data[itemId][this.tableRow.panels_view.kanban].v || '';
+                    let newKanban = ui.placeholder.closest('.kanban').data('value');
+                    if (this.data[itemId][this.tableRow.panels_view.kanban].v == newKanban && !this.tableRow.with_order_field) {
+                        ui.item.addClass('kanban-disabled')
+                    } else {
+                        ui.item.removeClass('kanban-disabled')
+                        ui.placeholder.closest('.kanban').addClass('kanban-enabled')
+                    }
+                },
+                out: (event, ui) => {
+                    if (!(this.kanban && this.fields[this.tableRow.panels_view.kanban].editable)) {
+                        ui.item.addClass('kanban-disabled')
+                    }
+                    ui.placeholder.closest('.kanban').removeClass('kanban-enabled')
+                },
+                start: (event, ui) => {
+                    if (!(this.kanban && this.fields[this.tableRow.panels_view.kanban].editable)) {
+                        $(div).find('.kanban').not($(ui.item).closest('.kanban')).addClass('kanban-disabled')
+                    }
+                    ui.item.data('prev', $(ui.item).prev().data('id'));
+                },
+                stop: (event, ui) => {
+                    $(div).find('.kanban').removeClass('kanban-enabled')
+                    $(ui.item).removeClass('kanban-disabled')
 
-                    let kanban = this.data[itemId][this.tableRow.panels_view.kanban];
-                    if (this.data[itemId][this.tableRow.panels_view.kanban] != $item.parent().data('value')) {
-                        kanban = $item.closest('.kanban').data('value');
-                        this.model.save({[itemId]: {[this.tableRow.panels_view.kanban]: kanban}}).then((json) => {
-                            if (this.tableRow.with_order_field) {
-                                saveOrder($item).always(() => {
+                    let $item = $(ui.item);
+                    if ($item.data('prev') === $(ui.item).prev().data('id')) {
+                        return;
+                    }
+
+                    let itemId = $item.data('id');
+                    let nowBeforeId = $item.prev().data('id');
+
+                    let kanban = this.data[itemId][this.tableRow.panels_view.kanban].v || '';
+                    let newKanban = $item.closest('.kanban').data('value');
+                    $item.closest('.kanban').removeClass('kanban-disabled')
+
+                    if (kanban != newKanban) {
+                        App.fullScreenProcesses.show('sorting');
+
+
+                        if (this.tableRow.with_order_field) {
+                            saveOrder($item, true).always(() => {
+                                this.model.save({[itemId]: {[this.tableRow.panels_view.kanban]: newKanban}}).then((json) => {
+                                    this.table_modify(json);
                                     this._container.getNiceScroll().resize();
                                     App.fullScreenProcesses.hide('sorting');
-                                })
-                            } else {
-                                this.table_modify(json);
+                                });
+                            })
+                        } else {
+                            this.model.save({[itemId]: {[this.tableRow.panels_view.kanban]: newKanban}}).then((json) => {
+
                                 this._container.getNiceScroll().resize();
                                 App.fullScreenProcesses.hide('sorting');
-                            }
-                        });
+                            });
+                        }
+
                     } else {
                         if (this.tableRow.with_order_field) {
+                            App.fullScreenProcesses.show('sorting');
                             saveOrder($item).always(() => {
                                 App.fullScreenProcesses.hide('sorting');
                             })
@@ -329,38 +369,6 @@
                     }
                 }
             })
-        } else {
-            if (!$(div).data('sortableAdded')) {
-                $(div).data('sortableAdded', 1);
-                $(div).sortable({
-                    stop: (event, ui) => {
-                        let $item = $(ui.item);
-                        let itemId = $item.data('id');
-                        let nowBeforeId = $item.prev().data('id');
-
-                        let old = [...this.dataSorted];
-                        this.dataSorted.splice(this.dataSorted.indexOf(itemId), 1);
-                        if (nowBeforeId) {
-                            this.dataSorted.splice(this.dataSorted.indexOf(nowBeforeId) + 1, 0, itemId);
-                        } else {
-                            this.dataSorted.splice(0, 0, itemId);
-                        }
-                        this.dataSortedVisible = [];
-                        this.dataSorted.forEach((id) => {
-                            if (this.data[id].$visible) this.dataSortedVisible.push(id);
-                        });
-                        if (!Object.equals(old, this.dataSorted)) {
-                            App.fullScreenProcesses.show('sorting');
-                            this.model.saveOrder(this.dataSorted).then((json) => {
-                                this.table_modify(json);
-                            }).always(() => {
-                                App.fullScreenProcesses.hide('sorting');
-                            });
-                        }
-
-                    }
-                })
-            }
         }
     }
     const createPanelsContent = function () {
@@ -370,6 +378,7 @@
             if ((this.tableRow.with_order_field || this.kanban) && this.control.editing && !(this.f.blockorder || this.f.blockedit)) {
                 setTimeout(() => {
                     addSortable.call(this, d)
+
                 }, 1)
             }
         });
@@ -500,7 +509,7 @@
             if (selectedDiv) {
                 selectedDiv.removeClass('selected')
             }
-            if(event.type==='click' && event.originalEvent && event.originalEvent.path && $(event.originalEvent.path[0]).is('button')){
+            if (event.type === 'click' && event.originalEvent && event.originalEvent.path && $(event.originalEvent.path[0]).is('button')) {
                 return;
             }
 

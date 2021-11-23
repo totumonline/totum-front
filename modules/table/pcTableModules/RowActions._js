@@ -329,12 +329,14 @@
         }
         ,
 
-        table_modify: function (json, $trIdBefore, editedObj) {//$trIdBefore - это для вставки дублированных строк
+        table_modify: function (json, $trIdBefore, editedObj, withoutRefreshes) {//$trIdBefore - это для вставки дублированных строк
             "use strict";
             let pcTable = this;
             let insertIndex = 0;
             let insertVisibleIndex = 0;
             let editFieldName = editedObj ? editedObj.data('field') : undefined;
+
+            let refreshContentTable = false;
 
             if (json.updated) {
                 pcTable.model.tableData.updated = JSON.parse(json.updated);
@@ -396,7 +398,7 @@
                             pcTable._content.find('.pcTable-noDataRow').remove();
                         }
                         let reorderRows = [];
-                        if(pcTable.tableRow.order_desc === true){
+                        if (pcTable.tableRow.order_desc === true) {
                             addedRows = addedRows.reverse();
                         }
 
@@ -498,8 +500,8 @@
                         }
                     }
 
-                    this._refreshContentTable(0, false, true);
-                    this._container.getNiceScroll().resize();
+                    refreshContentTable = true;
+
                 }
 
                 if (json.chdata.order) {
@@ -509,7 +511,7 @@
                         if (this.data[id].$visible)
                             pcTable.dataSortedVisible.push(id)
                     })
-                    this._refreshContentTable(0, false, true);
+                    refreshContentTable = true;
                 }
 
                 let paramsChanges = {};
@@ -535,8 +537,10 @@
                     });
                 }
                 if (json.chdata.params || json.chdata.fields) {
-                    pcTable._refreshParamsBlock(paramsChanges, true);
-                    pcTable._refreshFootersBlock(paramsChanges, true);
+                    if (!withoutRefreshes) {
+                        pcTable._refreshParamsBlock(paramsChanges, true);
+                        pcTable._refreshFootersBlock(paramsChanges, true);
+                    }
 
                     if (pcTable.f && pcTable.f.buttons && pcTable.f.buttons.some) {
                         pcTable.f.buttons.some((name) => {
@@ -560,14 +564,16 @@
             }
 
 
-
             if (!pcTable.isPanel) {
                 if (json.filtersString) {
                     pcTable._refreshFiltersBlock.call(pcTable, json)
                 }
                 pcTable._headCellIdButtonsState();
+            }
 
-                pcTable.ScrollClasterized.insertToDOM(null, true);
+            if (withoutRefreshes) {
+                this._refreshContentTable(0, false, true);
+                this._container.getNiceScroll().resize();
             }
         }
         ,
