@@ -13,7 +13,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         let selectObject = pcTable.selectedCells;
         selectObject.selectPanelDestroy();
 
-        let $panel = $('<div id="selectPanel" class="text">');
+        let $panel = $('<div id="selectPanel" class="text">').on('click contextmenu', (event)=>{
+            event.stopPropagation();
+        });
 
         let textDivHeight = 200;
 
