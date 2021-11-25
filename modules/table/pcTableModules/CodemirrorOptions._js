@@ -1418,7 +1418,8 @@
                         });
                     }
 
-                } else if (!token.state.inTotumBlock && (match = token.string.match(/(.*)\#/))) {
+                } else if (!token.state.inTotumBlock && (match = token.string.match(/(.*)\#\$?[a-zA-Z0-9_]+$/))) {
+
 
                     keywords = [];
                     token.string = token.string.slice(match[1].length + 1, cur.ch - token.start);
