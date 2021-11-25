@@ -143,8 +143,15 @@
                             cssClass: 'target-iframe',
                             onhidden: function () {
                                 if (linkObject.refresh) {
-                                    let pcTable = $('#table').data('pctable');
-                                    model.refresh(null, linkObject.refresh)
+                                    if (model.getPcTable().isObjectOpened()) {
+                                        model.refresh(null, linkObject.refresh)
+                                    } else {
+                                        try {
+                                            $('#table').data('pctable').model.refresh();
+                                        } catch (e) {
+                                        }
+
+                                    }
                                     //window.location.reload();
                                 }
                             },
@@ -296,7 +303,15 @@
                                 cssClass: 'target-iframe',
                                 onhidden: function () {
                                     if (linkObject.refresh) {
-                                        model.refresh(null, linkObject.refresh)
+                                        if (model.getPcTable().isObjectOpened()) {
+                                            model.refresh(null, linkObject.refresh)
+                                        } else {
+                                            try {
+                                                $('#table').data('pctable').model.refresh();
+                                            } catch (e) {
+                                            }
+
+                                        }
                                     }
                                     dialogOffset--;
                                 },
@@ -922,7 +937,7 @@
             let tempFrameWindow = tempFrame.contentWindow ? tempFrame.contentWindow : tempFrame.contentDocument.defaultView;
 
             tempFrameWindow.document.head.innerHTML = '<style>' + styles + '</style>';
-            setTimeout(()=>{
+            setTimeout(() => {
                 tempFrameWindow.document.body.innerHTML = body;
             }, 50)
 

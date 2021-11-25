@@ -1069,6 +1069,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             EditPanelFunc.pcTable.model.refresh = () => {
                 EditPanelFunc.refresh();
             }
+            pcTable.domObject = EditPanelFunc.bootstrapPanel;
         }
 
         if (!pcTable.control.editing) {

@@ -73,6 +73,9 @@
             addPcTable: function (pcTableIn) {
                 pcTable = pcTableIn;
             },
+            getPcTable: function () {
+                return pcTable;
+            },
             __ajax: function ($method, $data, RequestObject, withoutLoading, filters) {
                 "use strict";
                 let url = this.url;

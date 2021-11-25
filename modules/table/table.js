@@ -397,6 +397,9 @@
                     }
                 })
             },
+            isObjectOpened: function () {
+                return this.domObject.is(':visible');
+            },
             _init: function () {
                 let pcTable = this;
                 this._setBrowserTitle();
@@ -409,7 +412,7 @@
                     }
                 });
 
-                this._container.addClass(this.contanerClass).addClass('pcTable-type-' + this.tableRow.type);
+                this.domObject = this._container.addClass(this.contanerClass).addClass('pcTable-type-' + this.tableRow.type);
 
                 if (this.isCreatorView) {
                     this._container.addClass('pcTable-creatorView')
