@@ -59,16 +59,15 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             }
         }
 
-        if (val.f) {
+        let format = $.extend({}, (pcTable.f || {}), (item.f || {}), (val.f || {}));
+        let textAsValue = format.textasvalue && ('text' in format);
 
-            if (val.f.text)
-                textDiv.prepend($('<div class="sp-element"><i class="fa fa-font"></i> </div>').append(val.f.text));
-            if (val.f.comment)
-                textDiv.prepend($('<div class="sp-element"><i class="fa fa-info"></i> </div>').append(val.f.comment));
+        if (!textAsValue && format.text)
+            textDiv.prepend($('<div class="sp-element"><i class="fa fa-font"></i> </div>').append(format.text));
+        if (format.comment)
+            textDiv.prepend($('<div class="sp-element"><i class="fa fa-info"></i> </div>').append(format.comment));
 
-        }
-
-        if (val.h && val.f && val.f.showhand !== false) {
+        if (val.h && format.showhand !== false) {
             if (val.c !== undefined) {
                 let c = val.c;
                 if (val.c_) {
@@ -200,12 +199,12 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         //filter
 
         if (field.category === 'column' && field.filterable) {
-            if (pcTable.isValInFilters.call(pcTable, field.name, val)) {
+            if (pcTable.isValInFilters.call(pcTable, field.name, item)) {
                 mobileButtons.push({
                     label: '<i class="fa fa-filter" style="color: #ffe486"></i>',
                     action: function (dialog) {
                         selectObject.selectPanelDestroy();
-                        pcTable.removeValueFromFilters.call(pcTable, field.name, val);
+                        pcTable.removeValueFromFilters.call(pcTable, field.name, item);
                         dialog.close();
                     }
                 });
@@ -213,7 +212,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 $('<button class="btn btn-sm btn-warning" title="' + App.translate("Remove from the filter") + '"><i class="fa fa-filter"></i></button>')
                     .on('click', function () {
                         selectObject.selectPanelDestroy();
-                        pcTable.removeValueFromFilters.call(pcTable, field.name, val)
+                        pcTable.removeValueFromFilters.call(pcTable, field.name, item)
                         return false;
                     })
                     .appendTo(btns);
@@ -222,7 +221,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     label: '<i class="fa fa-filter"></i>',
                     action: function (dialog) {
                         selectObject.selectPanelDestroy();
-                        pcTable.addValueToFilters.call(pcTable, field.name, val);
+                        pcTable.addValueToFilters.call(pcTable, field.name, item);
                         pcTable._container.scrollTop(pcTable._filtersBlock.offset().top - pcTable.scrollWrapper.offset().top);
                         pcTable.ScrollClasterized.insertToDOM.call(pcTable.ScrollClasterized, 0);
                         dialog.close();
@@ -232,7 +231,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 $('<button class="btn btn-sm btn-default" title="' + App.translate('Add to the filter') + '"><i class="fa fa-filter"></i></button>')
                     .on('click', function () {
                         selectObject.selectPanelDestroy();
-                        pcTable.addValueToFilters.call(pcTable, field.name, val);
+                        pcTable.addValueToFilters.call(pcTable, field.name, item);
                         pcTable._container.scrollTop(pcTable._filtersBlock.offset().top - pcTable.scrollWrapper.offset().top);
                         pcTable.ScrollClasterized.insertToDOM.call(pcTable.ScrollClasterized, 0);
                         return false;
@@ -321,7 +320,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         }
 
 
-        let fieldText = field.getPanelText(val.v, $panel, item);
+        let fieldText = textAsValue ? format.text : field.getPanelText(val.v, $panel, item);
 
         if (field.type === 'select' && field.withPreview && val['v'] && (!field.multiple || val['v'].length === 1)) {
             let _panel = $('<div class="previews">').appendTo(textDiv);
@@ -648,7 +647,10 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     ids.forEach(function (id) {
                         if (!data[id]) data[id] = {};
 
-                        let res = pcTable.fields[field].getCopyText.call(pcTable.fields[field], pcTable.data[id][field], pcTable.data[id]);
+                        let format = $.extend({}, (pcTable.f || {}), (pcTable.data[id].f || {}), (pcTable.data[id][field].f || {}));
+
+                        let res = format.textasvalue && ('text' in format) ? format.text : pcTable.fields[field].getCopyText.call(pcTable.fields[field], pcTable.data[id][field], pcTable.data[id]);
+
                         if (typeof res === 'object') {
                             deffs.push(res);
                             res.done(function (resData) {

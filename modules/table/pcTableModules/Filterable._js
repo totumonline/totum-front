@@ -171,10 +171,13 @@ App.pcTableMain.prototype.__applyFiltersToItem = function (item) {
             switch (type) {
                 case "v":
                     let field = pcTable._getFieldbyName(fieldName);
-                    if (!field.checkIsFiltered(item[fieldName], filterVals)) {
-                        visible = false;
+
+                    let val;
+                    let format = $.extend({}, (pcTable.f || {}), (item.f || {}), (item[fieldName].f || {}));
+                    if (format.textasvalue && 'text' in format) {
+                        visible = defaultField.checkIsFiltered({'v': format.text}, filterVals)
                     } else {
-                        field.checkIsFiltered(item[fieldName], filterVals)
+                        visible = field.checkIsFiltered(item[fieldName], filterVals);
                     }
                     break;
                 case "h":
@@ -213,33 +216,56 @@ App.pcTableMain.prototype.__applyFiltersToItem = function (item) {
     }
     return item.$visible;
 };
-App.pcTableMain.prototype.addValueToFilters = function (fieldName, valObj) {
+App.pcTableMain.prototype.addValueToFilters = function (fieldName, item) {
     const pcTable = this;
     if (!pcTable.filters[fieldName]) pcTable.filters[fieldName] = [];
     let field = pcTable.fields[fieldName];
-    pcTable.filters[fieldName].push(...field.getFilterDataByValue.call(field, valObj));
+
+    let valObj = item[fieldName];
+    let format = $.extend({}, (pcTable.f || {}), (item.f || {}), (valObj.f || {}));
+
+    if (format.textasvalue && 'text' in format) {
+        pcTable.filters[fieldName].push(...defaultField.getFilterDataByValue({v: format.text}));
+    } else {
+        pcTable.filters[fieldName].push(...field.getFilterDataByValue.call(field, valObj));
+    }
     if (field.$th) {
         field.$th.find('.btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
     }
     pcTable.__applyFilters.call(pcTable);
 };
-App.pcTableMain.prototype.isValInFilters = function (fieldName, valObj) {
+App.pcTableMain.prototype.isValInFilters = function (fieldName, item) {
     const pcTable = this;
+
     if (!pcTable.filters[fieldName]) return false;
     let field = pcTable.fields[fieldName];
-    let val = field.getFilterDataByValue.call(field, valObj);
+    let valObj = item[fieldName];
+    let val;
+    let format = $.extend({}, (pcTable.f || {}), (item.f || {}), (valObj.f || {}));
+    if (format.textasvalue && 'text' in format) {
+        val = defaultField.getFilterDataByValue({'v': format.text});
+    } else {
+        val = field.getFilterDataByValue(valObj);
+    }
 
     return pcTable.filters[fieldName].some((v) => {
         return val.indexOf(v) !== -1;
     });
 };
-App.pcTableMain.prototype.removeValueFromFilters = function (fieldName, valObj) {
+App.pcTableMain.prototype.removeValueFromFilters = function (fieldName, item) {
 
     const pcTable = this;
     if (!pcTable.filters[fieldName]) pcTable.filters[fieldName] = [];
     let field = pcTable.fields[fieldName];
 
-    let val = field.getFilterDataByValue.call(field, valObj);
+    let valObj = item[fieldName];
+    let val, format = $.extend({}, (pcTable.f || {}), (item.f || {}), (valObj.f || {}));
+    if (format.textasvalue && 'text' in format) {
+        val = defaultField.getFilterDataByValue({v: format.text});
+    } else {
+        val = field.getFilterDataByValue(valObj);
+    }
+
     let spliced = 0;
     let newFiled = [...pcTable.filters[fieldName]];
     pcTable.filters[fieldName].forEach((v, i) => {
@@ -286,7 +312,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
             let fieldName = th.is('.id') ? 'id' : th.data('field');
 
             let selectDiv = $('<div class="filter-div-button">');
-            let select = $('<select class="selectpicker" data-size="6" multiple title="'+App.translate("Select values")+'" data-style="btn-sm btn-default" data-width="css-width" data-live-search="true" data-selected-text-format="count">').appendTo(selectDiv);
+            let select = $('<select class="selectpicker" data-size="6" multiple title="' + App.translate("Select values") + '" data-style="btn-sm btn-default" data-width="css-width" data-live-search="true" data-selected-text-format="count">').appendTo(selectDiv);
 
             const popoverDestroy = function () {
                 try {
@@ -359,20 +385,33 @@ App.pcTableMain.prototype.__addFilterable = function () {
 
             var vals = {};
 
-            if(pcTable.isTreeView){
+
+            const addDataToFilter = (id) => {
+                let item = pcTable.data[id];
+                let val;
+                let format = $.extend({}, (pcTable.f || {}), (item.f || {}), (item[fieldName].f || {}));
+                if (format.textasvalue && 'text' in format) {
+                    defaultField.addDataToFilter(vals, {v: format.text})
+                } else {
+                    pcTable.fields[fieldName].addDataToFilter(vals, item[fieldName]);
+                }
+            }
+
+            if (pcTable.isTreeView) {
                 Object.values(pcTable.data).forEach(function (row) {
                     if (fieldName === 'id') {
                         vals[row.id.toString()] = row.id.toString();
                     } else {
-                        pcTable.fields[fieldName].addDataToFilter(vals, row[fieldName]);
+                        addDataToFilter(row.id);
                     }
                 });
-            }else{
+            } else {
                 Object.values(pcTable.dataSorted).forEach(function (_id) {
                     if (fieldName === 'id') {
                         vals[_id.toString()] = _id.toString();
                     } else {
-                        pcTable.fields[fieldName].addDataToFilter(vals, pcTable.data[_id][fieldName]);
+                        addDataToFilter(_id);
+
                     }
                 });
             }
@@ -394,7 +433,10 @@ App.pcTableMain.prototype.__addFilterable = function () {
             let chousenVisible = 0;
 
             const randOptions = function (q) {
-                optgroups = {[App.translate('Selected')]: $('<optgroup label="'+App.translate('Selected')+'">'), '': $('<optgroup label="">')};
+                optgroups = {
+                    [App.translate('Selected')]: $('<optgroup label="' + App.translate('Selected') + '">'),
+                    '': $('<optgroup label="">')
+                };
 
                 let isLikedFunc = function () {
                     return true;
@@ -404,12 +446,12 @@ App.pcTableMain.prototype.__addFilterable = function () {
 
                     [qs] = App.lang.search_prepare_function(qs);
 
-                    qs=qs.split(" ");
+                    qs = qs.split(" ");
                     isLikedFunc = function (v) {
                         let text;
-                        if(v === null){
-                            text="";
-                        }else{
+                        if (v === null) {
+                            text = "";
+                        } else {
                             text = v.toString();
                             [text] = App.lang.search_prepare_function(text);
                         }
@@ -448,7 +490,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
                 select.append(optgroups[App.translate('Selected')]);
                 select.append(optgroups['']);
                 if (isCutted) {
-                    select.append('<option data-content="'+App.translate('The data is incomplete. Use the search!')+'" disabled = disabled style="text-align: center; cursor: pointer">0</option>');
+                    select.append('<option data-content="' + App.translate('The data is incomplete. Use the search!') + '" disabled = disabled style="text-align: center; cursor: pointer">0</option>');
                 }
                 select.data('options', filterOptions);
                 select.selectpicker('val', filterVal);
@@ -483,25 +525,25 @@ App.pcTableMain.prototype.__addFilterable = function () {
 
             let $buttons = $('<div class="buttons" style="position: absolute; bottom: -10px; width: 100%; text-align: center">');
 
-            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">'+App.translate('ApplyShort')+'</span></span>').appendTo($buttons).on('click', function () {
+            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">' + App.translate('ApplyShort') + '</span></span>').appendTo($buttons).on('click', function () {
                 actionIt('setSelectedFilters');
             });
-            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">'+App.translate('InvertShort')+'</span></span>').appendTo($buttons).on('click', function () {
+            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px;">' + App.translate('InvertShort') + '</span></span>').appendTo($buttons).on('click', function () {
                 actionIt('setInvertFilters');
             });
-            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px">'+App.translate('CancelShort')+'</span>').appendTo($buttons).on('click', function () {
+            $('<span class="btn btn-default btn-xxs button-ok" style="margin-right: 4px; margin-top: 3px">' + App.translate('CancelShort') + '</span>').appendTo($buttons).on('click', function () {
                 actionIt('filterRemove');
             });
 
 
             if (pcTable.fields[fieldName] && pcTable.fields[fieldName].code && !pcTable.fields[fieldName].codeOnlyInAdd) {
-                let h_select = $('<select data-title="'+App.translate('All')+'" data-dropup-auto="false" class="dropup" data-container=".popover" data-style="btn btn-xxs filter-by-hand '
+                let h_select = $('<select data-title="' + App.translate('All') + '" data-dropup-auto="false" class="dropup" data-container=".popover" data-style="btn btn-xxs filter-by-hand '
                     + (pcTable.filters[fieldName + "/h"] ? 'btn-warning' : 'btn-default') + ' ">' +
-                    '<option value="">'+App.translate('All')+'</option>' +
-                    '<option value="n">'+App.translate('Without hand')+'</option>' +
-                    '<option value="h">'+App.translate('With hand all')+'</option>' +
-                    '<option value="hf">'+App.translate('With hand equals calc')+'</option>' + //<i class="fa fa-hand-rock-o pull-right"></i>
-                    '<option value="hc">'+App.translate('With hand different')+'</option>' + //<i class="fa fa-hand-paper-o pull-right"></i>
+                    '<option value="">' + App.translate('All') + '</option>' +
+                    '<option value="n">' + App.translate('Without hand') + '</option>' +
+                    '<option value="h">' + App.translate('With hand all') + '</option>' +
+                    '<option value="hf">' + App.translate('With hand equals calc') + '</option>' + //<i class="fa fa-hand-rock-o pull-right"></i>
+                    '<option value="hc">' + App.translate('With hand different') + '</option>' + //<i class="fa fa-hand-paper-o pull-right"></i>
                     '</select>')
                     .appendTo($buttons)
                     .on('change', function () {
@@ -534,7 +576,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
                     selectDiv.height(260)
                 else
                     selectDiv.height(220)
-                $buttons.append('<div class="text-center ttm-paging-danges">'+App.translate('Filtering by current page')+'</div>');
+                $buttons.append('<div class="text-center ttm-paging-danges">' + App.translate('Filtering by current page') + '</div>');
             } else {
                 if (chousenVisible)
                     selectDiv.height(220)
@@ -570,7 +612,6 @@ App.pcTableMain.prototype.__addFilterable = function () {
                     select.data('selectpicker')._searchStyle = function () {
                         return 'multiincludes';
                     };
-
 
 
                     let searchTimeout;
