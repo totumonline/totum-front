@@ -813,7 +813,7 @@
             onhidden: function () {
                 if (refresh) {
                     if (refresh === 'strong') {
-                        window.location.reload()
+                        App.windowReloadWithHash(model);
                     } else {
                         model.refresh(null, refresh)
                     }

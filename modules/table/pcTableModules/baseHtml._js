@@ -524,14 +524,14 @@
                     if (this.viewType !== 'panels') {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
                             this.model.panelsView(true).then(() => {
-                                window.location.reload();
+                                App.windowReloadWithHash(this.model);
                             })
 
                         });
                     } else {
                         btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-table"></i></button>').on('click', () => {
                             this.model.panelsView(false).then(() => {
-                                window.location.reload();
+                                App.windowReloadWithHash(this.model);
                             })
                         });
                     }
@@ -550,8 +550,8 @@
                     (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {
                         id: pcTable.tableRow.id,
                         cycle_id: pcTable.tableRow.cycle_id
-                    })).then(function (json) {
-                        if (json) window.location.reload(true);
+                    })).then((json) => {
+                        if (json) App.windowReloadWithHash(this.model);
                     });
                 }).appendTo(creatorPart);
 
@@ -636,8 +636,7 @@
 
                         (new EditPanel(2, BootstrapDialog.TYPE_DANGER, data)).then(function (json) {
                             if (json) {
-
-                                window.location.reload(true);
+                                App.windowReloadWithHash(pcTable.model);
                             }
                         })
                     }).appendTo(creatorPart);
@@ -2073,7 +2072,7 @@
 
                     const funcOnTableChanged = function (json) {
                         if (json) {
-                            window.location.reload();
+                            App.windowReloadWithHash(pcTable.model);
                         }
                     };
 
@@ -2175,7 +2174,7 @@
                                             App.getPcTableById(2).then(function (pcTableFields) {
                                                 App.panelTimer(App.translate('Deleting field %s from table %s?', [title, pcTable.tableRow.title]), pcTableFields.tableRow.delete_timer, function () {
                                                     pcTableFields.model.delete(field.id).then(function () {
-                                                        window.location.reload(true);
+                                                        App.windowReloadWithHash(pcTable.model);
                                                     })
                                                 });
                                             });

@@ -45,7 +45,7 @@ $.extend(App.pcTableMain.prototype, {
                         }
                     })
                 } else if (json.ok) {
-                    pcTable.table_modify.call(pcTable, json)
+                    App.windowReloadWithHash(pcTable.model)
                 }
             })
         }

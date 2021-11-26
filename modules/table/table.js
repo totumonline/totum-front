@@ -521,7 +521,7 @@
                     });
                 } else {
                     $(window).resize(function () {
-                        window.location.reload();
+                        App.windowReloadWithHash(pcTable.model);
                     });
                 }
 
@@ -930,7 +930,7 @@
                                                 pcTable.model.refresh();
                                             } else if (codeType === 'codeSelect') {
 
-                                                window.location.reload()
+                                                App.windowReloadWithHash(pcTable.model);
 
                                             } else {
 

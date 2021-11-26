@@ -76,6 +76,9 @@
             getPcTable: function () {
                 return pcTable;
             },
+            getSessHash: function () {
+                return tableData.sess_hash;
+            },
             __ajax: function ($method, $data, RequestObject, withoutLoading, filters) {
                 "use strict";
                 let url = this.url;
@@ -289,10 +292,13 @@
                             return;
                         }
                         startedQuery = (new Date()).getTime();
-                        if (/\?/.test(url)) {
-                            url += '&';
-                        } else url += '?';
-                        url += 'rn=' + Math.round(Math.random() * 100000) + (data_tmp['method'] || '');
+                        if (!url.match(/:\/\//)) {
+                            url = window.location.protocol + '//'+window.location.host+url;
+                        }
+                        let _url = new URL(url);
+                        _url.searchParams.delete('rn')
+                        _url.searchParams.append('rn', Math.round(Math.random() * 100000) + (data_tmp['method'] || ''));
+                        url = _url.toString();
                     }
                     if (!RequestObject || RequestObject.aborted !== true) {
                         $.ajax({
@@ -558,7 +564,7 @@
                     try {
                         func(json)
                     } catch (e) {
-                        window.location.reload();
+                        App.windowReloadWithHash(pcTable.model);
                     }
                 })
             },
