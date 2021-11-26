@@ -131,7 +131,7 @@ App.langs.ru =
                 'Editing <b>%s</b> from table <b>%s</b>': 'Редактирование <b>%s</b> таблицы <b>%s</b>',
 
                 'Adding table': 'Добавление таблицы',
-                'Adding field': 'Добавление таблицы',
+                'Adding field': 'Добавление поля',
                 'Adding row to table': 'Добавление строки в таблицу',
                 'Error in %s field': 'Ошибка в поле %s',
                 'Done': 'Выполнено',
