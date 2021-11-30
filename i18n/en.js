@@ -56,8 +56,8 @@ App.langs.en =
             'treeAddTable': 'Table',
             'treeAddFolder':'Folder/Link',
 
-            'isCreatorSelector-NotCreatorView':'User View',
-            'isCreatorSelector-CommonView':'Table View',
+            'isCreatorSelector-NotCreatorView':'Switch off admin layer',
+            'isCreatorSelector-CommonView':'Switch off special view',
 
         }
     }

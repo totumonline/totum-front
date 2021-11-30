@@ -125,6 +125,11 @@
   #isCreatorSelector {
     button {
       width: 100%;
+      border: none;
+      margin-top: 5px;
+    }
+    input{
+      vertical-align: text-bottom;
     }
   }
 
