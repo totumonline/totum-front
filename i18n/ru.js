@@ -176,7 +176,7 @@ App.langs.ru =
                 'Failed to load data': 'Не удалось загрузить данные',
                 'Required to save the item for file binding': 'Требуется сохранение элемента для привязки файла',
                 'Adding file': 'Добавить файл',
-                'Adding fils': 'Добавить файлы',
+                'Adding files': 'Добавить файлы',
                 'Drag and drop the file here': 'Перетащите сюда файл',
 
                 'There must be a number': 'Здесь должно быть число',
