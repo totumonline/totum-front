@@ -808,7 +808,11 @@
 
             let page = offset === 0 ? 0 : Math.ceil(offset / onPage);
 
-            let allPages = Math.ceil(allCount / onPage) + (offset > onPage && (offset % onPage) > 0 ? 1 : 0);
+            let allPages = Math.ceil(allCount / onPage);
+
+            if (allPages < page) {
+                allPages += (offset > onPage && (offset % onPage) > 0 ? 1 : 0);
+            }
 
             let before, after, first, last;
             if (offset > 0)

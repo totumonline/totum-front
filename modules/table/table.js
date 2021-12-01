@@ -606,7 +606,7 @@
                             if (field.name !== 'n') {
                                 pcTable.fieldCategories['panel_fields'].push(field);
                             }
-                            if ((field.name === 'tree' && field.category === 'column' && field.treeViewType)) {
+                            if ((field.name === 'tree' && field.category === 'column' && field.treeViewType && !$.cookie('ttm__commonTableView'))) {
                                 pcTable.isTreeView = true;
                                 pcTable.fieldCategories[field.category].unshift(field);
                             } else {
