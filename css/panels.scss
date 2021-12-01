@@ -121,7 +121,7 @@
     }
 
     span.date {
-      padding-right: 20px;
+      float: right;
     }
 
     span.user {
@@ -134,10 +134,10 @@
     }
 
     .new-comment {
-      border: 1px solid #E2CBCC;
+      background-color: seashell;
       padding: 5px;
       border-radius: 5px;
-      margin: 10px;
+      margin: 10px 0;
       margin-left: 0;
     }
   }

@@ -645,7 +645,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 cell.data('input', span.find('button'))
             }
 
-            if (field.unitType && !(['tree', 'select'].indexOf(field.type) !== -1 && field.multiple)) {
+            if (field.unitType && !(['tree', 'select'].indexOf(field.type) !== -1 && field.multiple) && span.text() !== "") {
                 if (field.before) {
                     span.prepend(field.unitType + " ");
                 } else {

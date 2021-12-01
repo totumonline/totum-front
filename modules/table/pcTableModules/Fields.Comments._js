@@ -102,11 +102,9 @@ fieldTypes.comments = {
     },
     getCommentLine: function (com) {
         let div = $('<div class="comments-line">');
-        div.append($('<span class="com_dt">').text(com[0]));
-        div.append(' ');
         div.append($('<span class="com_author">').text(com[1]));
-        div.append(' ');
-        div.append($('<span class="com_text">').html(App.textWithLinks(com[2])));
+        div.append($('<span class="com_dt">').text(com[0]));
+        div.append($('<div class="com_text">').html(App.textWithLinks(com[2])));
 
         return div;
     },
@@ -365,10 +363,10 @@ fieldTypes.comments = {
             let f = $('<div>');
             val.v.forEach(function (row) {
                 f.append(
-                    $('<div>')
-                        .append($('<span class="date">').text(row[0]))
+                    $('<div class="">')
                         .append($('<span class="user">').text(row[1]))
-                        .append($('<span class="text">').text(row[2]))
+                        .append($('<span class="date">').text(row[0]))
+                        .append($('<div class="text">').text(row[2]))
                 )
             });
             return f.children();
@@ -378,9 +376,9 @@ fieldTypes.comments = {
                 oldItem[this.name].v.forEach(function (row) {
                     f.append(
                         $('<div>')
-                            .append($('<span class="date">').text(row[0]))
                             .append($('<span class="user">').text(row[1]))
-                            .append($('<span class="text">').text(row[2]))
+                            .append($('<span class="date">').text(row[0]))
+                            .append($('<div class="text">').text(row[2]))
                     )
                 });
             }
