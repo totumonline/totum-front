@@ -75,6 +75,11 @@ td.cell-button, span.cell-button {
       padding-top: 5px;
     }
   }
+  .pcTable-buttons .cell-button{
+    i.fa-spinner{
+      padding-top: 12px;
+    }
+  }
 }
 
 @media(min-device-width: 1200px) {

@@ -959,15 +959,58 @@
 
 
                 if (!pcTable.isCreatorView && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length) {
-                    pcTable.f.buttons.forEach((name) => {
-                        if (pcTable.isReplacedToRowsButtonsField(name)) {
-                            let $td = $('<span class="button-wrapper">').data('field', name);
-                            let button = pcTable.fields[name].getCellText(null, $td, pcTable.data_params);
 
-                            $td.append(button).appendTo(buttons)
-                            button.wrap('<span class="cell-value">')
+                    const $addButtons = ($btns) => {
+                        let width = 0;
+                        pcTable.f.buttons.forEach((name) => {
+                            if (pcTable.isReplacedToRowsButtonsField(name)) {
+                                let $td = $('<span class="button-wrapper">').data('field', name);
+                                let button = pcTable.fields[name].getCellText(null, $td, pcTable.data_params);
+
+                                $td.append(button).appendTo($btns)
+                                button.wrap('<span class="cell-value">')
+                                if (width < pcTable.fields[name].width) {
+                                    width = pcTable.fields[name].width;
+                                }
+                            }
+                        })
+                        return width;
+                    };
+
+                    if (pcTable.isMobile) {
+                        let $btns = $('<div>');
+                        let width = $addButtons($btns);
+                        if ($btns.length) {
+                            $btns.width(width + 10)
+                            let burger = $('<span class="button-wrapper"><button class="btn btn-default btn-xxs button-field"><i class="fa fa-bars"></i></button></span>').appendTo(buttons);
+                            burger.popover(
+                                {
+                                    content: $btns,
+                                    html: true,
+                                    animation: false,
+                                    trigger: 'manual',
+                                    placement: 'bottom',
+                                }
+                            )
+                            burger.on('click', () => {
+                                if (!burger.attr('aria-describedby')) {
+                                    burger.popover('show');
+                                    const hider = (event) => {
+                                        if (event.originalEvent && $(event.originalEvent.target).closest('.modal').length) {
+                                            pcTable.closeCallbackAdd(hider, null, 30);
+                                            return;
+                                        }
+                                        burger.popover('hide');
+                                    };
+                                    pcTable.closeCallbackAdd(hider, null, 30);
+                                }
+                            })
+
                         }
-                    })
+
+                    } else {
+                        $addButtons(buttons);
+                    }
                 }
 
                 if (!this.isTreeView || this.fields.tree.treeViewLoad) {
@@ -2488,7 +2531,7 @@
                     .text(field.name).appendTo(pcTableCreatorButtonsBlock).css('max-width', width - filterBlockWidth);
             }
             if (!pcTable.isRotatedView && pcTable.isMobile) {
-                spanTitle.css('max-width', width - filterBlockWidth - 5)
+                spanTitle.css('max-width', width/* - filterBlockWidth*/ - 5)
             }
 
 

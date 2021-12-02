@@ -429,15 +429,15 @@
 
 
                 let closeCallbacksActive = false;
-                const closeCallbacksFunc = function () {
+                const closeCallbacksFunc = function (event) {
                     if (!closeCallbacksActive) {
                         closeCallbacksActive = true;
                         let cnt = pcTable.closeCallbacks.length;
                         pcTable.closeCallbacks.forEach(function (func) {
                             if (typeof func === 'function') {
-                                func();
+                                func(event);
                             } else {
-                                func.func();
+                                func.func(event);
                             }
                         });
                         pcTable.closeCallbacks.splice(0, cnt);
@@ -448,7 +448,7 @@
                 $('body').on('keyup', function (event) {
                     if (event.which === 27) {
                         pcTable._container.trigger('escPressed');
-                        closeCallbacksFunc();
+                        closeCallbacksFunc(event);
                     }
                 });
                 $('body').on('click', closeCallbacksFunc);
