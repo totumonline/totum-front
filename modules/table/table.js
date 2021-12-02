@@ -520,9 +520,9 @@
                         }, 500);
                     });
                 } else {
-                    $(window).resize(function () {
+                    /*$(window).resize(function () {
                         App.windowReloadWithHash(pcTable.model);
-                    });
+                    });*/
                 }
 
             },

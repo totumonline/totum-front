@@ -45,18 +45,25 @@ td.cell-button, span.cell-button {
   }
 }
 
-.pcTable-floatBlock .pcTable-floatInner > div.no-border td.cell-button {
-  padding: 2px 4px;
+.pcTable-floatBlock .pcTable-floatInner {
+  > div.no-border td.cell-button {
+    padding: 2px 4px;
 
-  button {
-    height: 25px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    background-color: #fffdf9;
+    button {
+      height: 25px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      background-color: #fffdf9;
 
-    &:disabled {
-      background-color: #faf9f8;
-      box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+      &:disabled {
+        background-color: #faf9f8;
+        box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+      }
+    }
+  }
+  td.cell-button{
+    i.fa-spinner{
+      padding-top: 6px;
     }
   }
 }

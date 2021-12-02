@@ -404,7 +404,7 @@ App.langs.ru =
                 'treeAddTable': 'Таблицу',
                 'treeAddFolder': 'Папку/Ссылку',
                 'Tree search': 'Поиск по дереву',
-                    'isCreatorSelector-NotCreatorView':'Отключить админ-лэер',
+                    'isCreatorSelector-NotCreatorView':'Отключить админ-слой',
                     'isCreatorSelector-CommonView':'Отключить спецвид',
             }
     }
