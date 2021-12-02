@@ -520,9 +520,18 @@
                         }, 500);
                     });
                 } else {
-                    /*$(window).resize(function () {
-                        App.windowReloadWithHash(pcTable.model);
-                    });*/
+                    $(window).one('resize', function () {
+                        let button = $('<button class="btn btn-lg">').text(App.translate('Reload')).on('click', () => {
+                            App.windowReloadWithHash(pcTable.model);
+                        }).wrap('<div id="ttm--mobile-resize-reload">')
+                        let wrapper = button.parent();
+
+                        let top = $('<div class="top">');
+                        top.text($('.totum-brand span').text());
+                        wrapper.append(top)
+
+                        $('body').html(wrapper)
+                    });
                 }
 
             },

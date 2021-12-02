@@ -382,6 +382,7 @@ App.langs.ru =
                 'Recalculating': 'Пересчет',
                 'Duplicating': 'Дублирование',
                 'Confirmation': 'Подтверждение',
+                'Reload': 'Обновить',
 
 
                 'All': 'Все',
