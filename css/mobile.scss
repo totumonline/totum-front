@@ -471,6 +471,17 @@
   }
   .pcTable-buttons {
     padding-left: 10px;
+
+    .ttm__burger-wrapper{
+      button{
+        width: 40px;
+      }
+    }
+    .ttm__burger-buttons {
+      text-align: center;
+      max-width: 400px;
+      width: calc(100vw / 2);
+    }
   }
   .pcTable-tableText {
     margin-left: 5px;
@@ -514,7 +525,8 @@
   #ttm--mobile-resize-reload {
     text-align: center;
     height: 100vh;
-    .top{
+
+    .top {
       background-image: url(/fls/6_main_img.png);
       padding-left: 65px;
       font-size: 30px;
@@ -522,7 +534,8 @@
       text-align: left;
       background-position-x: 10px;
     }
-    button{
+
+    button {
       position: absolute;
       top: calc(100vh / 2 - 45px);
       left: calc(100vw / 2 - 70px);

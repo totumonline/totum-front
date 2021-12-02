@@ -978,11 +978,10 @@
                     };
 
                     if (pcTable.isMobile) {
-                        let $btns = $('<div>');
+                        let $btns = $('<div class="ttm__burger-buttons">');
                         let width = $addButtons($btns);
                         if ($btns.length) {
-                            $btns.width(width + 10)
-                            let burger = $('<span class="button-wrapper"><button class="btn btn-default btn-xxs button-field"><i class="fa fa-bars"></i></button></span>').appendTo(buttons);
+                            let burger = $('<span class="button-wrapper ttm__burger-wrapper"><button class="btn btn-default btn-xxs button-field"><i class="fa fa-bars"></i></button></span>').appendTo(buttons);
                             burger.popover(
                                 {
                                     content: $btns,
