@@ -982,6 +982,7 @@
                         let width = $addButtons($btns);
                         if ($btns.length) {
                             let burger = $('<span class="button-wrapper ttm__burger-wrapper"><button class="btn btn-default btn-xxs button-field"><i class="fa fa-bars"></i></button></span>').appendTo(buttons);
+                            $btns.find('.cell-button,button').width('100%')
                             burger.popover(
                                 {
                                     content: $btns,
