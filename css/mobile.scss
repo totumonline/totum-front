@@ -306,6 +306,17 @@
     }
   }
 
+  #pk {
+    .pcTable-paramsTables, .pcTable-footersTables {
+      td {
+        background-color: #faf9f8;
+      }
+      th{
+        padding-bottom: 0;
+      }
+    }
+  }
+
   .cell-button {
     .ibtn {
       padding-left: 10px;
