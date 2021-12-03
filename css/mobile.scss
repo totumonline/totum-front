@@ -300,6 +300,11 @@
     padding-top: 9px;
   }
 
+  .DataRow .cell-button {
+    .text-center {
+      line-height: 35px;
+    }
+  }
 
   .cell-button {
     .ibtn {
@@ -307,6 +312,7 @@
       padding-top: 12px;
 
     }
+
 
     button.button-field {
       height: 25px;
@@ -461,9 +467,6 @@
     width: 420px !important;
     max-width: calc(100vw - 20px);
   }
-  .edit-row-panel {
-
-  }
 
   .pcTable-paramsTable, .pcTable-filtersTable, .pcTable-hiddenFieldsTable, .pcTable-beforeSpace, .pcTable-footersTable {
     width: 100%;
@@ -472,17 +475,19 @@
   .pcTable-buttons {
     padding-left: 10px;
 
-    .ttm__burger-wrapper{
-      button{
+    .ttm__burger-wrapper {
+      button {
         width: 40px;
         background-color: $btn-warning-bgcolor;
       }
     }
+
     .ttm__burger-buttons {
       text-align: center;
       max-width: 400px;
       width: calc(100vw / 2);
-      .button-wrapper.cell-button{
+
+      .button-wrapper.cell-button {
         margin: 0;
       }
     }

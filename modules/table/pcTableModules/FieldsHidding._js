@@ -373,7 +373,7 @@
                     }
                 },
                 {
-                    label: App.translate('Show all'),
+                    label: App.translate('All'),
                     action: function (dialogRef) {
                         dialogRef.close();
                         let fields = {};
@@ -584,7 +584,7 @@
                     }
                 },
                 {
-                    label: App.translate('Show all'),
+                    label: App.translate('All'),
                     action: function (dialogRef) {
                         dialogRef.close();
                         let fields = {};
