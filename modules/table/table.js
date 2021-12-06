@@ -511,26 +511,38 @@
                 this.initRowsData()
 
 
+                let windowSize = window.innerWidth;
+
                 if (!this.isMobile) {
                     let timeoutResize;
                     $(window).resize(function () {
                         if (timeoutResize) clearTimeout(timeoutResize);
                         timeoutResize = setTimeout(function () {
-                            pcTable.setWidthes();
+                            if (Math.abs(windowSize - window.innerWidth) > 20) {
+                                pcTable.setWidthes();
+                            }
+                            windowSize = window.innerWidth;
                         }, 500);
                     });
                 } else {
-                    $(window).one('resize', function () {
-                        let button = $('<button class="btn btn-lg">').text(App.translate('Reload')).on('click', () => {
-                            App.windowReloadWithHash(pcTable.model);
-                        }).wrap('<div id="ttm--mobile-resize-reload">')
-                        let wrapper = button.parent();
+                    $(window).on('resize', function () {
+                        if (windowSize === false) return;
 
-                        let top = $('<div class="top">');
-                        top.text($('.totum-brand span').text());
-                        wrapper.append(top)
+                        if (Math.abs(windowSize - window.innerWidth) > 20) {
+                            windowSize = false;
+                            let button = $('<button class="btn btn-lg">').text(App.translate('Reload')).on('click', () => {
+                                App.windowReloadWithHash(pcTable.model);
+                            }).wrap('<div id="ttm--mobile-resize-reload">')
+                            let wrapper = button.parent();
 
-                        $('body').html(wrapper)
+                            let top = $('<div class="top">');
+                            top.text($('.totum-brand span').text());
+                            wrapper.append(top)
+
+                            $('body').html(wrapper)
+                        } else {
+                            windowSize = window.innerWidth;
+                        }
                     });
                 }
 
