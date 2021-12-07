@@ -112,9 +112,12 @@
 }
 
 #pk {
+  .file-image-preview{
+    border-radius: 3px;
+  }
   [data-field-type="file"] {
     img {
-      border-radius: 2px;
+      border-radius: 3px;
     }
   }
 }
