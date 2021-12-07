@@ -66,7 +66,9 @@
                     _class = 'with-img';
                     show_img(img, file);
                 }
-                $('<div>').addClass(_class).appendTo(div).append(img).append($('<br/><a href="/fls/' + file.file + '" download="' + $('<div>').text(file.name).html() + '">').text(file.name)).append(field.getSize(file.size));
+                $('<div>').addClass(_class).appendTo(div).append(img).append(
+                    $('<div class="file-label">').html($('<a href="/fls/' + file.file + '" download="' + $('<div>').text(file.name).html() + '">').text(file.name)).append(field.getSize(file.size))
+                );
 
                 if (toCopy !== '') toCopy += "\n";
                 toCopy += window.location.protocol + '//' + window.location.host + '/fls/' + file.file;
