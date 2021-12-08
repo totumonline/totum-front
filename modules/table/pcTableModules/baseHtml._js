@@ -546,12 +546,12 @@
 
 
                 $('<button class="btn btn-danger btn-xxs" title="' + App.translate('Edit table settings') + '"/>')
-                    .html('<i class="fa fa-pencil-square-o"></i>').on('click', function () {
+                    .html('<i class="fa fa-pencil-square-o"></i>').on('click',  () => {
                     (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {
                         id: pcTable.tableRow.id,
                         cycle_id: pcTable.tableRow.cycle_id
                     })).then((json) => {
-                        if (json) App.windowReloadWithHash(this.model);
+                        if (json) App.windowReloadWithHash(pcTable.model);
                     });
                 }).appendTo(creatorPart);
 
