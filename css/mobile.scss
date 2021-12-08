@@ -53,6 +53,7 @@
     #leftTree {
       width: 100%;
       display: block;
+
     }
 
     .modal-header {
@@ -145,6 +146,10 @@
 }
 
 @media(max-device-width: 1199px) {
+
+  #leftTree{
+    font-size: 15px;
+  }
 
   #pk .alert {
     min-width: 300px;

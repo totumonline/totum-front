@@ -25,6 +25,28 @@
   }
 }
 
+#selectPanel, #selectPanelBig {
+  .previews {
+    padding-top: 7px;
+    background-color: #fafafa;
+    padding-left: 10px;
+    background-color: #fafafa;
+    .title{
+      &:not(:first-child){
+        padding-top: 3px;
+      }
+      font-family: PTRootUIWeb;
+    }
+
+  }
+  .title {
+    font-weight: bold;
+  }
+  .creator-select-val {
+    color: $btn-danger-bgcolor;
+    margin-top: auto;
+  }
+}
 #selectPanel {
   &.cell-button {
     .copytext-wrapper {
@@ -44,35 +66,18 @@
     float: left;
   }
 
-  .title {
-    font-weight: bold;
-  }
 
   div.preview {
     padding: 5px 0;
   }
 
-  .previews {
-    padding-top: 7px;
-    background-color: #fafafa;
-    padding-left: 10px;
-    .title{
-      &:not(:first-child){
-        padding-top: 3px;
-      }
-      font-family: PTRootUIWeb;
-    }
 
-  }
 
   &.text {
     width: 300px;
   }
 
-  .creator-select-val {
-    color: $btn-danger-bgcolor;
-    margin-top: auto;
-  }
+
 
   font-size: 13px;
 
