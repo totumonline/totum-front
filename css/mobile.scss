@@ -307,9 +307,12 @@
   }
 
   #pk {
-    .pcTable-paramsTables, .pcTable-footersTables {
+    .pcTable-paramsTables, .pcTable-footersTables, .pcTable-filtersTable {
       td {
         background-color: #faf9f8;
+      }
+      &.pcTable-filtersTable td{
+        background-color: whitesmoke;
       }
       th{
         padding-bottom: 0;
