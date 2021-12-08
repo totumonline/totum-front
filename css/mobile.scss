@@ -307,11 +307,11 @@
   }
 
   #pk {
-    .pcTable-paramsTables, .pcTable-footersTables, .pcTable-filtersTable {
-      td {
+    .pcTable-paramsTables, .pcTable-footersTables, .pcTable-filtersTable:not(#go-buttons) {
+      td:not(.cell-button) {
         background-color: #faf9f8;
       }
-      &.pcTable-filtersTable td{
+      &.pcTable-filtersTable td:not(.cell-button){
         background-color: whitesmoke;
       }
       th{
