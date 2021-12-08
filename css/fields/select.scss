@@ -46,8 +46,11 @@
     color: $btn-danger-bgcolor;
     margin-top: auto;
   }
-}
-#selectPanel {
+  .file-label{
+    padding-top: 3px;
+    font-weight: bold;
+  }
+
   &.cell-button {
     .copytext-wrapper {
       button {
@@ -57,7 +60,13 @@
     }
   }
 
-  width: 200px;
+  &#selectPanel{
+    width: 200px;
+    &.text {
+      width: 300px;
+    }
+  }
+
   overflow-y: auto;
 
   .cell-icon {
@@ -70,13 +79,6 @@
   div.preview {
     padding: 5px 0;
   }
-
-
-
-  &.text {
-    width: 300px;
-  }
-
 
 
   font-size: 13px;

@@ -30,7 +30,10 @@ fieldTypes.select = {
                                         if (['jpg', 'png'].indexOf(file.ext) !== -1) {
                                             $_html.append($('<a href="/fls/' + file.file + '" target="_blank">').html('<img src="/fls/' + file.file + '_thumb.jpg?rand=' + window.imgRand + '"/><br/>'));
                                         }
-                                        $_html.append($('<a href="/fls/' + file.file + '" target="_blank">').text(file.name + ' ' + Math.round(file.size / 1024).toLocaleString(App.langLocale) + ' Kb'));
+                                        $_html.append(
+                                            $('<div class="file-label">').html(
+                                                $('<a href="/fls/' + file.file + '" target="_blank">').text(file.name + ' ' + Math.round(file.size / 1024).toLocaleString(App.langLocale) + ' Kb')));
+
                                     });
                                 }
                                 break;
@@ -45,13 +48,13 @@ fieldTypes.select = {
                                 if (preview[2] === 'currency' || preview[3].currency) {
                                     try {
                                         $_html.text(
-                                                App.numberFormat(parseFloat(preview[1]),
-                                                    preview[3].dectimalPlaces,
-                                                    preview[3].dectimalSeparator,
-                                                    preview[3].thousandthSeparator,
-                                                    preview[3].prefix,
-                                                    preview[3].postfix)
-                                            );
+                                            App.numberFormat(parseFloat(preview[1]),
+                                                preview[3].dectimalPlaces,
+                                                preview[3].dectimalSeparator,
+                                                preview[3].thousandthSeparator,
+                                                preview[3].prefix,
+                                                preview[3].postfix)
+                                        );
                                     } catch (e) {
                                         $_html.text(preview[1]);
                                     }
