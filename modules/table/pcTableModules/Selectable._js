@@ -249,6 +249,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             let btn = $('<button class="btn btn-sm btn-default"><i class="fa fa-expand" style="padding-top: 3px;" aria-hidden="true"></i></button>');
 
             btn.on('click', function () {
+                allTextData.addClass('select-panel-expanded')
                 allTextData.find('.field-value').height('');
                 allTextData.find('.panel-img img').each((ind, img) => {
                     img = $(img);

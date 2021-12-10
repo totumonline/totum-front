@@ -166,11 +166,17 @@
 }
 
 
-#selectPanelBig *{
+#selectPanelBig.select-panel-expanded *{
   font-size: 15px;
 }
 
 #selectPanelBig, #selectPanel, .edit-row-panel .format-panel {
+  i.fa-eye{
+    vertical-align: super;
+  }
+
+
+
   .panel-buttons {
     button {
       width: calc(100% - 6px);

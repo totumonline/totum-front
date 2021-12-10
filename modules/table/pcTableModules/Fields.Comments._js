@@ -85,7 +85,13 @@ fieldTypes.comments = {
                 div.append(field.getCommentLine(com));
             });
             setTimeout(function () {
-                div.closest('td').scrollTop(div.height())
+                let element;
+                if(div.closest('td').length){
+                    element=div.closest('td')
+                }else{
+                    element=div.closest('.field-value')
+                }
+                element.scrollTop(div.height())
             }, 100);
             return div;
         };
