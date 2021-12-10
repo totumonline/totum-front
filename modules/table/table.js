@@ -219,8 +219,13 @@
             this.beforeSpaceHide = false;
         }
 
+        this.model.addPcTable(this);
 
         if (element) {
+            if (config.links && config.links.length > 0) this.model.showLinks(config);
+            if (config.interfaceDatas && config.interfaceDatas.length > 0) this.model.shoInterfaceDatas(config);
+            if (config.panels && config.panels.length > 0) this.model.showPanels(config);
+
             this.refreshArraysFieldCategories(true);
             let $element = $(element);
             $element.data(pcTable_DATA_KEY, this);
@@ -240,7 +245,7 @@
             this.initForPanel(config)
         }
 
-        this.model.addPcTable(this);
+
         //if (this.tableRow.type === 'tmp') {}
         return this;
     };
