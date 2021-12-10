@@ -31,22 +31,27 @@
     background-color: #fafafa;
     padding-left: 10px;
     background-color: #fafafa;
-    .title{
-      &:not(:first-child){
+
+    .title {
+      &:not(:first-child) {
         padding-top: 3px;
       }
+
       font-family: PTRootUIWeb;
     }
 
   }
+
   .title {
     font-weight: bold;
   }
+
   .creator-select-val {
     color: $btn-danger-bgcolor;
     margin-top: auto;
   }
-  .file-label{
+
+  .file-label {
     padding-top: 3px;
     font-weight: bold;
   }
@@ -60,13 +65,19 @@
     }
   }
 
-  &#selectPanel{
+  &#selectPanel {
     width: 200px;
+
     &.text {
       width: 300px;
     }
-    .field-value{
+
+    .field-value {
       height: 200px;
+    }
+
+    img {
+      max-width: 280px;
     }
   }
 
@@ -119,7 +130,8 @@
     .select-item span {
       display: block;
     }
-    .select-val{
+
+    .select-val {
       @include selectVal();
     }
   }
@@ -148,9 +160,14 @@
     margin-right: -6px;
   }
 
-  .panelView{
+  .panelView {
     padding-top: 10px;
   }
+}
+
+
+#selectPanelBig *{
+  font-size: 15px;
 }
 
 #selectPanelBig, #selectPanel, .edit-row-panel .format-panel {
@@ -184,14 +201,16 @@
       &[data-unit]:after {
         content: ' ' attr(data-unit);
       }
+
       &[data-unit-before]:before {
         content: attr(data-unit-before) ' ';
       }
 
-      &[data-unit]{
+      &[data-unit] {
         display: inline;
       }
-      &[data-unit-before] .select-val{
+
+      &[data-unit-before] .select-val {
         display: inline;
       }
     }
