@@ -24,6 +24,11 @@
     display: none;
   }
 }
+.cell-value{
+  .separator{
+    margin: 0 -4px;
+  }
+}
 
 #selectPanel, #selectPanelBig {
   .previews {
