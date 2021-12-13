@@ -113,6 +113,15 @@
             if (visibleFields && Object.keys(visibleFields).length === 0) {
                 visibleFields = {};
                 Object.values(pcTable.fields).forEach(function (field) {
+
+                    if (hideShowForse[field.name] === 'force') {
+                        hideShowForse[field.name] = true;
+                        this.fields[field.name].__hidden = true;
+
+                    } else {
+                        delete this.fields[field.name].__hidden
+                    }
+
                     let newVal = (field.hidden && hideShowForse[field.name] !== false) || hideShowForse[field.name] === true ? 0 : field.width;
 
 
@@ -137,6 +146,14 @@
                         newVal = isFromLoad && !field.hidden ? field.width : 0;
                     }
                     if (field.name in hideShowForse) {
+
+                        if (hideShowForse[field.name] === 'force') {
+                            hideShowForse[field.name] = true;
+                            pcTable.fields[field.name].__hidden = true;
+                        } else {
+                            delete pcTable.fields[field.name].__hidden
+                        }
+
                         if (hideShowForse[field.name] === true) {
                             newVal = 0
                         } else {
@@ -614,9 +631,13 @@
 
                     $fieldsDiv.append('<div class="category-name">' + categories[category] + '</div>');
                     $.each(pcTable.fieldCategories[category], function (k, field) {
+                        if (field.__hidden) {
+                            return;
+                        }
+
                         let hidden = '';
                         if (field.hidden) {
-                            hidden = ' ('+App.translate('Hidden by default')+')';
+                            hidden = ' (' + App.translate('Hidden by default') + ')';
                         }
                         let fCheckbox = $('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="' + field.name + '" class="form-check-input"> ' + field.title + hidden + '</label></div>');
                         if (field.showMeWidth) {

@@ -1,4 +1,9 @@
 App.pcTableMain.prototype.__formatFunctions = {
+    fieldhide: function () {
+        if(this.f && this.f.fieldhide && Object.keys(this.f.fieldhide).length){
+            this.loadVisibleFields(this.f.fieldhide);
+        }
+    },
     blockadd: function () {
         this._closeInsertRow();
         this._rowsButtons();
@@ -34,7 +39,7 @@ App.pcTableMain.prototype.__formatFunctions = {
     }, fieldtitle: function (newvals, oldVals) {
         let categories = {};
 
-        const getCat=function (field) {
+        const getCat = function (field) {
             return field.category == 'footer' && field.column ? 'tableFooter' : field.category;
         };
 
