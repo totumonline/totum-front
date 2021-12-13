@@ -361,12 +361,14 @@ $.extend(App.pcTableMain.prototype, {
                 $_td.on('focus', 'input,button,select', function (event) {
                     let i = pcTable._table.find('thead th #field-help-' + field.name);
                     let element = $(event.target);
-                    setTimeout(function () {
-                        i.trigger('open');
-                        element.one('blur remove', function () {
-                            i.trigger('close');
-                        });
-                    }, 120);
+                    if (!field.help.match('<hide(\/?)>')) {
+                        setTimeout(function () {
+                            i.trigger('open');
+                            element.one('blur remove', function () {
+                                i.trigger('close');
+                            });
+                        }, 120);
+                    }
                 })
             }
             $_td.on('focus', 'input,button,select', () => {

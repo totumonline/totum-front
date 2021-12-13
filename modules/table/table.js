@@ -456,7 +456,7 @@
                         closeCallbacksFunc(event);
                     }
                 });
-                $('body').on('click', closeCallbacksFunc);
+                $('body').on('click _click', closeCallbacksFunc);
 
 
                 pcTable._container.on('scroll', closeCallbacksFunc);

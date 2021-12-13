@@ -2071,7 +2071,10 @@
                                         container: pcTable.scrollWrapper
                                     }
                                 );
-                                btn.popover('show');
+                                setTimeout(()=>{
+                                    btn.popover('show');
+                                }, 10)
+
                             }
                         } else if (event.type !== "open") {
                             if (closeLimit) clearTimeout(closeLimit);
@@ -2081,7 +2084,7 @@
                                 }
                             }, 120);
                         }
-                        $('body').trigger('click')
+                        $('body').trigger('_click')
                         return false;
                     });
 
