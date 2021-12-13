@@ -116,10 +116,9 @@
 
                     if (hideShowForse[field.name] === 'force') {
                         hideShowForse[field.name] = true;
-                        this.fields[field.name].__hidden = true;
-
+                        pcTable.fields[field.name].__hidden = true;
                     } else {
-                        delete this.fields[field.name].__hidden
+                        delete pcTable.fields[field.name].__hidden
                     }
 
                     let newVal = (field.hidden && hideShowForse[field.name] !== false) || hideShowForse[field.name] === true ? 0 : field.width;
