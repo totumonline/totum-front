@@ -476,6 +476,9 @@
 
                     $fieldsDiv.append('<div class="category-name">' + categories[category] + '</div>');
                     $.each(pcTable.fieldCategories[category], function (k, field) {
+                        if(field.__hidden){
+                           return;
+                        }
                         let hidden = '';
                         if (field.hidden) {
                             hidden = ' (' + App.translate('Hidden by default') + ')';
