@@ -1422,6 +1422,9 @@ th {
       .text-edit-button {
         width: 100%;
       }
+      .bootstrap-select button, button.source-add{
+          border-width: 2px;
+      }
 
 
       td {
