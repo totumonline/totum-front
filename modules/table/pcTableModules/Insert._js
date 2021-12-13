@@ -507,7 +507,7 @@ $.extend(App.pcTableMain.prototype, {
 
             var editValResult = getEditVal($input);
             pcTable._currentInsertCellIndex = index + 1;
-            if (editValResult === null || refresh) {
+            if (editValResult === null || refresh === true) {
                 parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
                 pcTable._insertFocusIt.call(pcTable)
             } else {
