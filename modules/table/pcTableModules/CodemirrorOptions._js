@@ -1397,7 +1397,7 @@
                     }
 
 
-                } else if (match = token.string.match(/(.*)(#?\$)(a-z_0-9]+)/i)) {
+                } else if (match = token.string.match(/(.*)(#?\$)([a-z_0-9]*)/i)) {
 
                     keywords = [];
                     token.string = match[3];
@@ -1418,7 +1418,7 @@
                         });
                     }
 
-                } else if (!token.state.inTotumBlock && (match = token.string.match(/(.*)\#\$?[[а-яa-z0-9_]+$/i))) {
+                } else if (!token.state.inTotumBlock && (match = token.string.match(/(.*)\#\$?[а-яa-z0-9_]*$/i))) {
 
 
                     keywords = [];

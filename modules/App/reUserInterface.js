@@ -11,7 +11,7 @@
 
         if (isNotCreatorHimSelf) {
             App.blink(UserFio, 10, '#ffe486');
-        } else if (App.isTopWindow()) {
+        } else if (App.isTopWindow() && isCreatorView) {
 
             if ($('#isCreator').length === 0) {
                 let isMobile = screen.width <= window.MOBILE_MAX_WIDTH;
@@ -70,7 +70,7 @@
                                 }
                                 window.location.reload(true)
                             })
-                            $selects.on('click', (event)=>{
+                            $selects.on('click', (event) => {
                                 event.stopPropagation();
                             })
 
