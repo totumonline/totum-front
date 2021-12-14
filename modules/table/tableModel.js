@@ -515,6 +515,9 @@
                 }
                 return this.__ajax('post', {data: data, method: 'edit'}, null, null, _filters);
             },
+            saveLinkToEdit: function (hash, data) {
+                return this.__ajax('post', {data: data, shash: hash, method: 'saveLinkToEdit'});
+            },
             click: function (data) {
                 return this.__ajax('post', {data: data, method: 'click'});
             },

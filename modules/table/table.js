@@ -89,6 +89,9 @@
 
 
     let fieldTypes = {};
+    setTimeout(() => {
+        App.FieldTypes = fieldTypes;
+    })
 
 //=include pcTableModules/Fields.Default._js
 //=include pcTableModules/Fields.Text._js

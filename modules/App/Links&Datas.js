@@ -401,6 +401,180 @@
 
         });
     };
+
+
+    App.editField = function (model, data) {
+        let resolve, reject
+        let promise = new Promise((r1, r2) => {
+            resolve = r1, reject = 2;
+        })
+
+        if(data[1].refresh)
+        {
+            promise.then(() => {
+                switch (data[1].refresh) {
+                    case 'reload':
+                        App.windowReloadWithHash(model);
+                        break;
+                    default:
+                        model.refresh();
+                }
+
+            })
+
+        }
+
+        let field = $.extend({}, App.FieldTypes[data[1].field.type], data[1].field);
+        let val = data[1].value;
+        let title = data[1].title;
+        let td = $('<div>');
+        let special, editVal;
+
+        let Dialog, input;
+
+        let btns = [
+            {
+                action: (dialog) => {
+                    save();
+                },
+                cssClass: 'btn-warning btn-save',
+                label: App.translate('Save')
+            }
+        ];
+        if (field.code && !field.codeOnlyInAdd) {
+            if (val.h) {
+                btns.push({
+                    action: (dialog) => {
+                        special = 'setValuesToDefaults';
+                        editVal = null;
+                        save();
+                    },
+                    cssClass: 'btn-warning btn-save',
+                    label: '<i class="fa fa-eraser"></i>'
+                })
+            } else {
+                btns.push({
+                    action: (dialog) => {
+                        editVal = val.v;
+                        save();
+                    },
+                    cssClass: 'btn-warning btn-save',
+                    label: '<i class="fa fa-hand-rock-o"></i>'
+                })
+            }
+
+        }
+
+
+        btns.push({
+            action: (dialog) => {
+                dialog.close();
+            },
+            cssClass: '',
+            label: '<i class="fa fa-times"></i>'
+        })
+
+
+        const save = (confirmed) => {
+            if (editVal === undefined) {
+                try {
+                    editVal = field.getEditVal(input);
+                } catch (error) {
+                    let notify = $('#' + App.popNotify(error, td, 'default'));
+                    notify.css('z-index', 1000);
+                    return;
+                }
+                if (!field.isDataModified(editVal, val.v)) {
+                    Dialog.close();
+                    return;
+                }
+            }
+            if (!confirmed && (field.warningEditPanel) && field.checkEditRegExp.call(field, editVal)) {
+                App.confirmation((field.warningEditText || App.translate('Surely to change?')), {
+                    'OK': function (_dialog) {
+                        save(true);
+                        _dialog.close();
+                    },
+                    [App.translate("Cancel")]: function (_dialog) {
+                        revert();
+                        _dialog.close();
+                    }
+                }, App.translate('Change warning'));
+                return;
+            }
+
+            App.fullScreenProcesses.showCog();
+            model.saveLinkToEdit(data[1].hash, editVal)
+                .then(
+                    (json) => {
+                        resolve(json)
+                        Dialog.close();
+                    }
+                ).always(() => {
+                App.fullScreenProcesses.hideCog();
+            });
+        };
+
+        const dialogShow = () => {
+            Dialog = window.top.BootstrapDialog.show({
+                message: td,
+                type: null,
+                title: title,
+                cssClass: 'one-column-panel',
+                draggable: true,
+                buttons: btns,
+                onhidden: () => {
+                    resolve();
+                }
+            });
+        };
+
+        (() => {
+
+        })()
+        switch (field.type) {
+            case 'tree':
+            case 'text':
+            case 'file':
+            case 'comments':
+            case 'listRow':
+                /*Показать широкое окно*/
+
+                input = field.getEditElement(td, val, {}, () => {
+                    save()
+                }, () => {
+                }, () => {
+                }, 1, true);
+                td.append(input);
+
+                setTimeout(() => {
+                    Dialog = input.data('Dialog');
+                    let saveBtn = Dialog.getButtons()[0].action;
+                    btns[0].action = (dialog, event, notEnter) => {
+                        saveBtn(dialog, event, notEnter);
+                        save();
+                    }
+
+                    Dialog.setButtons(btns)
+
+                }, 2)
+
+                break;
+            default:
+                /*Показать окно с полем*/
+
+                input = field.getEditElement(td, val, {}, () => {
+                    //save()
+                }, () => {
+                }, () => {
+                });
+                td.append(input);
+
+                dialogShow();
+                input.focus();
+                break;
+        }
+    }
     App.showDatas = function (datas, notificationId, wnd) {
         let dialogs = [];
         let model = this;
@@ -457,6 +631,11 @@
                         let blob = new Blob(byteArrays, {type: file.type});
                         saveAs(blob, file.name);
                     })
+                    break;
+                case 'editField':
+
+                    App.editField(model, data)
+
                     break;
                 case 'input':
                     let input, Dialog;
