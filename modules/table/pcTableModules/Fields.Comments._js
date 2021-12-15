@@ -39,14 +39,23 @@ fieldTypes.comments = {
             if (item.id) {
                 data['rowId'] = item.id;
             }
-            def = this.pcTable.model.getValue(data, this.table_id);
+            def = this.getValueFromServer ? this.getValueFromServer() : this.pcTable.model.getValue(data, this.table_id);
         }
         def.then(function (json) {
-            if (item[field.name].v.notViewed || item[field.name].notViewed) {
+            let views;
+            if (value.notViewed)
+                views = value;
+            else if (item && item[field.name]) {
+                if (item[field.name].v.notViewed) {
+                    views = item[field.name].v
+                } else {
+                    views = item[field.name]
+                }
+            }
+            if (views && views.notViewed) {
                 let $_def = $.Deferred();
                 $_def.then(function () {
-                    delete item[field.name].v.notViewed;
-                    delete item[field.name].notViewed;
+                    delete views.notViewed;
                     let td;
                     if (item.id) {
                         td = field.pcTable._getTdByFieldName(field.name, field.pcTable.data[item.id].$tr);
@@ -86,10 +95,10 @@ fieldTypes.comments = {
             });
             setTimeout(function () {
                 let element;
-                if(div.closest('td').length){
-                    element=div.closest('td')
-                }else{
-                    element=div.closest('.field-value')
+                if (div.closest('td').length) {
+                    element = div.closest('td')
+                } else {
+                    element = div.closest('.field-value')
                 }
                 element.scrollTop(div.height())
             }, 100);
@@ -125,30 +134,31 @@ fieldTypes.comments = {
         div.data('dialog', dialog);
         let buttons;
         let valPreview;
+        let element = editNow === 'editField' ? div : dialog;
 
         oldValueParam = oldValueParam.v || '';
 
         let formFill = function (dlg) {
-            field.getValue.call(field, oldValueParam, item, !editNow).then(function (json) {
+            field.getValue(oldValueParam, item, !editNow).then(function (json) {
                 let $input = $('<textarea type="text" style="height:90px;resize: vertical" class="form-control"/>');
 
                 if (typeof json.value === 'object') {
                     $.each(json.value, function (i, com) {
-                        dialog.append(field.getCommentLine(com));
+                        element.append(field.getCommentLine(com));
                     });
                 } else if (json.value) {
                     $input.val(json.value)
                 } else if (div.data('val')) {
                     $input.val(div.data('val'))
                 }
-                dialog.append($('<div class="comments-input">').append($input));
-                dialog.data('input', $input);
+                element.append($('<div class="comments-input">').append($input));
+                element.data('input', $input);
                 $input.focus();
             });
 
         };
         const save = function (dlg, event, notEnter) {
-            let val = dialog.find('textarea').val().trim();
+            let val = element.find('textarea').val().trim();
             div.data('val', val);
 
             if (valPreview) {
@@ -171,7 +181,7 @@ fieldTypes.comments = {
         buttons = [];
 
         let btnsSave = {
-            'label': App.translate('Save')+' Alt+S',
+            'label': App.translate('Save') + ' Alt+S',
             cssClass: 'btn-m btn-warning',
             action: save
         }, btnsClose = {
@@ -184,110 +194,112 @@ fieldTypes.comments = {
             }
         };
 
-        let title = App.translate('Comments of field')+' <b>' + (this.title) + '</b>' + this.pcTable._getRowTitleByMainField(item, ' (%s)');
+        let title = App.translate('Comments of field') + ' <b>' + (this.title) + '</b>' + this.pcTable._getRowTitleByMainField(item, ' (%s)');
         let eventName = 'ctrlS.commentdialog';
         let btnClicked = false;
 
         if (editNow) {
+            if (editNow === 'editField') {
+                formFill();
+            } else {
 
+                setTimeout(function () {
+                    let cdiv = div.closest('td').find('.cdiv');
+                    if (cdiv.length > 0) {
+                        cdiv.data('bs.popover').options.content.find('.btn').each(function () {
+                            let btn = $(this);
+                            let buttn = {};
+                            buttn.label = btn.data('name');
+                            buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
+                            buttn.icon = btn.find('i').attr('class');
+                            buttn.save = btn.data('save');
+                            buttn.click = btn.data('click');
+                            buttn.action = function (dialog) {
+                                if (buttn.save) {
+                                    save(dialog, {}, true);
+                                }
+                                buttn.click({});
+                                btnClicked = true;
+                                dialog.close();
+                            };
 
-            setTimeout(function () {
-                let cdiv = div.closest('td').find('.cdiv');
-                if (cdiv.length > 0) {
-                    cdiv.data('bs.popover').options.content.find('.btn').each(function () {
-                        let btn = $(this);
-                        let buttn = {};
-                        buttn.label = btn.data('name');
-                        buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
-                        buttn.icon = btn.find('i').attr('class');
-                        buttn.save = btn.data('save');
-                        buttn.click = btn.data('click');
-                        buttn.action = function (dialog) {
-                            if (buttn.save) {
-                                save(dialog, {}, true);
+                            buttons.push(buttn)
+                        });
+                        cdiv.popover('destroy');
+                    } else {
+                        buttons.push(btnsSave);
+                        buttons.push(btnsClose)
+                    }
+
+                    if (field.pcTable.isMobile) {
+                        App.mobilePanel(title, dialog, {
+                            buttons: buttons,
+                            onhide: function (dialog) {
+                                $('body').off(eventName);
+                                if (!btnClicked) {
+                                    blurClbk(div, {});
+                                }
+                            },
+                            onshown: function (dialog) {
+
+                                formFill(dialog);
+                            },
+                            onshow: function (dialog) {
+                                $('body').on(eventName, function (event) {
+                                    save(dialog, event, false);
+                                });
                             }
-                            buttn.click({});
-                            btnClicked = true;
-                            dialog.close();
-                        };
+                        })
+                    } else {
+                        let Dialog = window.top.BootstrapDialog.show({
+                            message: dialog,
+                            type: null,
+                            title: title,
+                            cssClass: 'fieldparams-edit-panel',
+                            draggable: true,
+                            buttons: buttons,
+                            onhide: function (dialog) {
+                                $(window.top.document).find('body').off(eventName);
+                                if (!btnClicked) {
+                                    blurClbk(div, {});
+                                }
+                            },
+                            onshown: function (dialog) {
+                                dialog.$modalContent.position({
+                                    of: $(window.top.document).find('body'),
+                                    my: 'top+50px',
+                                    at: 'top'
+                                });
+                                formFill(dialog);
+                            },
+                            onshow: function (dialog) {
+                                dialog.$modalHeader.css('cursor', 'pointer');
+                                dialog.$modalContent.css({
+                                    width: 900
+                                });
 
-                        buttons.push(buttn)
-                    });
-                    cdiv.popover('destroy');
-                } else {
-                    buttons.push(btnsSave);
-                    buttons.push(btnsClose)
-                }
-
-                if (field.pcTable.isMobile) {
-                    App.mobilePanel(title, dialog, {
-                        buttons: buttons,
-                        onhide: function (dialog) {
-                            $('body').off(eventName);
-                            if (!btnClicked) {
-                                blurClbk(div, {});
+                                $(window.top.document).find('body').on(eventName, function (event) {
+                                    save(dialog, event, false);
+                                });
                             }
-                        },
-                        onshown: function (dialog) {
 
-                            formFill(dialog);
-                        },
-                        onshow: function (dialog) {
-                            $('body').on(eventName, function (event) {
-                                save(dialog, event, false);
-                            });
-                        }
-                    })
-                } else {
-                   let Dialog = window.top.BootstrapDialog.show({
-                        message: dialog,
-                        type: null,
-                        title: title,
-                        cssClass: 'fieldparams-edit-panel',
-                        draggable: true,
-                        buttons: buttons,
-                        onhide: function (dialog) {
-                            $(window.top.document).find('body').off(eventName);
-                            if (!btnClicked) {
-                                blurClbk(div, {});
-                            }
-                        },
-                        onshown: function (dialog) {
-                            dialog.$modalContent.position({
-                                of: $(window.top.document).find('body'),
-                                my: 'top+50px',
-                                at: 'top'
-                            });
-                            formFill(dialog);
-                        },
-                        onshow: function (dialog) {
-                            dialog.$modalHeader.css('cursor', 'pointer');
-                            dialog.$modalContent.css({
-                                width: 900
-                            });
+                        });
+                    }
+                    div.data('Dialog', Dialog)
 
-                            $(window.top.document).find('body').on(eventName, function (event) {
-                                save(dialog, event, false);
-                            });
-                        }
-
-                    });
-                }
-                div.data('Dialog', Dialog)
-
-            }, 1);
+                }, 1);
 
 
-            div.text(App.translate('Editing in the form')).addClass('edit-in-form');
-            setTimeout(() => {
-                div.closest('td').css('background-color', '#ffddb4')
-            })
-            
+                div.text(App.translate('Editing in the form')).addClass('edit-in-form');
+                setTimeout(() => {
+                    div.closest('td').css('background-color', '#ffddb4')
+                })
+            }
         } else {
             let showned = false;
             div.off().on('click keydown', function (event) {
                 if (showned) return false;
-                if(event.key ==='Tab' ){
+                if (event.key === 'Tab') {
                     blurClbk(dialog, event, null, true);
                     return
                 }

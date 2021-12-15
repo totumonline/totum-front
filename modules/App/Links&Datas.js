@@ -447,6 +447,15 @@
                     checkedVals: input ? field.getEditVal(input) : data[1].value.v
                 }, RequestObject)
             }
+        } else if (field.type === 'comments') {
+            field.getValueFromServer = () => {
+                return model.saveLinkToEdit(data[1].hash, null, null, {
+                    comment: 'getValues'
+                })
+            }
+            field.getEditVal = (element) => {
+                return element.find('textarea').val().trim()
+            }
         }
 
 
