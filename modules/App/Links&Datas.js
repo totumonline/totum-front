@@ -444,7 +444,7 @@
             field.getEditSelect = (itemTmp, name, q, _, __, RequestObject) => {
                 return model.saveLinkToEdit(data[1].hash, null, null, {
                     q: (q || ''),
-                    checkedVals: input ? field.getEditVal(input) : data[1].value
+                    checkedVals: input ? field.getEditVal(input) : data[1].value.v
                 }, RequestObject)
             }
         }
