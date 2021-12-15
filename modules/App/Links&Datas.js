@@ -409,8 +409,7 @@
             resolve = r1, reject = 2;
         })
 
-        if(data[1].refresh)
-        {
+        if (data[1].refresh) {
             promise.then(() => {
                 switch (data[1].refresh) {
                     case 'reload':
@@ -425,12 +424,37 @@
         }
 
         let field = $.extend({}, App.FieldTypes[data[1].field.type], data[1].field);
+        field.pcTable = model.getPcTable();
+
+        let Dialog, input;
+
+
+        if (field.type === 'fieldParams') {
+            App.notify(App.translate('You can\'t put the Settings field type in linkToEdit'), App.translate('Error'));
+            return;
+        } else if (field.type === 'text' || field.type === 'listRow') {
+            field.getEditVal = (input) => {
+                if (field.type === 'listRow' || field.textType === 'json') {
+                    return JSON.stringify(input.data('editor').get())
+                } else {
+                    return input.data('editor').getValue();
+                }
+            }
+        } else if (field.type === 'select' || field.type === 'tree') {
+            field.getEditSelect = (itemTmp, name, q, _, __, RequestObject) => {
+                return model.saveLinkToEdit(data[1].hash, null, null, {
+                    q: (q || ''),
+                    checkedVals: input ? field.getEditVal(input) : data[1].value
+                }, RequestObject)
+            }
+        }
+
+
         let val = data[1].value;
         let title = data[1].title;
         let td = $('<div>');
         let special, editVal;
 
-        let Dialog, input;
 
         let btns = [
             {
@@ -456,6 +480,7 @@
                 btns.push({
                     action: (dialog) => {
                         editVal = val.v;
+                        special = 'setValuesToPinned';
                         save();
                     },
                     cssClass: 'btn-warning btn-save',
@@ -484,7 +509,7 @@
                     notify.css('z-index', 1000);
                     return;
                 }
-                if (!field.isDataModified(editVal, val.v)) {
+                if (!special && !field.isDataModified(editVal, val.v)) {
                     Dialog.close();
                     return;
                 }
@@ -504,7 +529,7 @@
             }
 
             App.fullScreenProcesses.showCog();
-            model.saveLinkToEdit(data[1].hash, editVal)
+            model.saveLinkToEdit(data[1].hash, editVal, special)
                 .then(
                     (json) => {
                         resolve(json)
@@ -525,55 +550,39 @@
                 buttons: btns,
                 onhidden: () => {
                     resolve();
+                },
+                onshow: (dialog) => {
+                    if (['text', 'listRow'].indexOf(field.type) !== -1) {
+                        dialog.$modalContent.css({
+                            width: "90vw",
+                            minHeight: "90vh"
+                        });
+                    }
+                },
+                onshown: (dialog) => {
+                    if (['text', 'listRow'].indexOf(field.type) !== -1) {
+                        dialog.$modalContent.position({
+                            my: 'center top',
+                            at: 'center top+30px',
+                            of: window.top
+                        });
+                        setTimeout(() => {
+                            dialog.$modalContent.find('.HTMLEditor').height('100%')
+                        }, 30)
+                    }
                 }
             });
         };
 
-        (() => {
+        input = field.getEditElement(td, val, {}, () => {
+            //save()
+        }, () => {
+        }, () => {
+        }, 1, 'editField');
+        td.append(input);
 
-        })()
-        switch (field.type) {
-            case 'tree':
-            case 'text':
-            case 'file':
-            case 'comments':
-            case 'listRow':
-                /*Показать широкое окно*/
-
-                input = field.getEditElement(td, val, {}, () => {
-                    save()
-                }, () => {
-                }, () => {
-                }, 1, true);
-                td.append(input);
-
-                setTimeout(() => {
-                    Dialog = input.data('Dialog');
-                    let saveBtn = Dialog.getButtons()[0].action;
-                    btns[0].action = (dialog, event, notEnter) => {
-                        saveBtn(dialog, event, notEnter);
-                        save();
-                    }
-
-                    Dialog.setButtons(btns)
-
-                }, 2)
-
-                break;
-            default:
-                /*Показать окно с полем*/
-
-                input = field.getEditElement(td, val, {}, () => {
-                    //save()
-                }, () => {
-                }, () => {
-                });
-                td.append(input);
-
-                dialogShow();
-                input.focus();
-                break;
-        }
+        dialogShow();
+        input.focus();
     }
     App.showDatas = function (datas, notificationId, wnd) {
         let dialogs = [];

@@ -293,7 +293,7 @@
                         }
                         startedQuery = (new Date()).getTime();
                         if (!url.match(/:\/\//)) {
-                            url = window.location.protocol + '//'+window.location.host+url;
+                            url = window.location.protocol + '//' + window.location.host + url;
                         }
                         let _url = new URL(url);
                         _url.searchParams.delete('rn')
@@ -515,8 +515,14 @@
                 }
                 return this.__ajax('post', {data: data, method: 'edit'}, null, null, _filters);
             },
-            saveLinkToEdit: function (hash, data) {
-                return this.__ajax('post', {data: data, shash: hash, method: 'saveLinkToEdit'});
+            saveLinkToEdit: function (hash, data, special, search, RequestObject) {
+                return this.__ajax('post', {
+                    special: special,
+                    data: data,
+                    shash: hash,
+                    search: search,
+                    method: 'saveLinkToEdit'
+                }, RequestObject);
             },
             click: function (data) {
                 return this.__ajax('post', {data: data, method: 'click'});

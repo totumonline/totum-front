@@ -234,7 +234,14 @@ fieldTypes.select = {
             let RequestObject = {};
             selectQueries.push(RequestObject);
 
-            field.pcTable.model.getEditSelect(itemTmp, field.name, q, null, null, RequestObject).then(function (json) {
+            let res;
+
+            if (field.getEditSelect) {
+                res = field.getEditSelect(itemTmp, field.name, q, null, null, RequestObject);
+            } else {
+                res = field.pcTable.model.getEditSelect(itemTmp, field.name, q, null, null, RequestObject);
+            }
+            res.then(function (json) {
                 divParent.find('.loading').remove();
 
                 LISTs.innerList = json.list ? json.list : [];
@@ -543,8 +550,10 @@ fieldTypes.select = {
                                     let cdiv = input.closest('td').find('.cdiv')
                                     let popover = cdiv.data('bs.popover');
 
-                                    popover.applyPlacement(popover.getCalculatedOffset('top', popover.getPosition(), popover.$tip.width() + 8, popover.$tip.height() + 33), 'top');
-                                    popover.$tip.removeClass('bottom').addClass('top')
+                                    if (popover) {
+                                        popover.applyPlacement(popover.getCalculatedOffset('top', popover.getPosition(), popover.$tip.width() + 8, popover.$tip.height() + 33), 'top');
+                                        popover.$tip.removeClass('bottom').addClass('top')
+                                    }
                                 }
 
                             }, 10)

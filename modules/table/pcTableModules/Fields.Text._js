@@ -129,7 +129,7 @@ fieldTypes.text = {
             field.getValue(oldValueParam, item, !editNow).then(function (json) {
                 let editor;
                 div.append(element);
-                element.empty().appendTo(dialog);
+                element.empty().appendTo(editNow === 'editField' ? div : dialog);
 
                 if (field.textType === 'json') {
 
@@ -213,7 +213,8 @@ fieldTypes.text = {
                         theme: 'eclipse',
                         lineNumbers: true,
                         indentWithTabs: true,
-                        autoCloseTags: true
+                        autoCloseTags: true,
+                        bigOneDialog: editNow === 'editField'
                     };
 
                     if (mode === 'text') {
@@ -301,106 +302,115 @@ fieldTypes.text = {
             });
         }
 
-        let title = App.translate('Field <b>%s</b> text', this.title) + ', <b>' + field.textType + '</b>' + this.pcTable._getRowTitleByMainField(item, ' (%s)');
+
         let eventName = 'ctrlS.textedit';
 
+        let title = () => {
+            return App.translate('Field <b>%s</b> text', this.title) + ', <b>' + field.textType + '</b>' + this.pcTable._getRowTitleByMainField(item, ' (%s)');
+        }
+
         if (editNow) {
-            let btnClicked = false;
-            setTimeout(function () {
-                let cdiv = div.closest('td').find('.cdiv');
-                if (cdiv.length > 0) {
-                    cdiv.data('bs.popover').options.content.find('.btn').each(function () {
-                        let btn = $(this);
-                        let buttn = {};
-                        buttn.label = btn.data('name');
-                        buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
-                        buttn.icon = btn.find('i').attr('class');
-                        buttn.save = btn.data('save');
-                        buttn.click = btn.data('click');
-                        buttn.action = function (dialog) {
-                            if (buttn.save) {
-                                save(dialog, {}, true);
+            if (editNow === 'editField') {
+                setTimeout(formFill, 1)
+            } else {
+
+                let btnClicked = false;
+                setTimeout(function () {
+                    let cdiv = div.closest('td').find('.cdiv');
+                    if (cdiv.length > 0) {
+                        cdiv.data('bs.popover').options.content.find('.btn').each(function () {
+                            let btn = $(this);
+                            let buttn = {};
+                            buttn.label = btn.data('name');
+                            buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
+                            buttn.icon = btn.find('i').attr('class');
+                            buttn.save = btn.data('save');
+                            buttn.click = btn.data('click');
+                            buttn.action = function (dialog) {
+                                if (buttn.save) {
+                                    save(dialog, {}, true);
+                                }
+                                buttn.click({});
+                                btnClicked = true;
+                                dialog.close();
+                            };
+
+                            buttons.push(buttn)
+                        });
+                        cdiv.popover('destroy');
+                    } else {
+                        buttons.push(btnsSave);
+                        buttons.push(btnsClose)
+                    }
+
+                    if (field.pcTable.isMobile) {
+
+                        App.mobilePanel(title(), dialog, {
+                            buttons: buttons, onhide: function (dialog) {
+                                $('body').off(eventName);
+                                if (!btnClicked) {
+                                    blurClbk(div, {});
+                                }
+                            },
+                            onshown: function (dialog) {
+                                formFill();
+                            },
+                            onshow: function (dialog) {
+                                $('body').on(eventName, function (event) {
+                                    save(dialog, event);
+                                    return false;
+                                });
                             }
-                            buttn.click({});
-                            btnClicked = true;
-                            dialog.close();
-                        };
+                        })
 
-                        buttons.push(buttn)
-                    });
-                    cdiv.popover('destroy');
-                } else {
-                    buttons.push(btnsSave);
-                    buttons.push(btnsClose)
-                }
+                    } else {
+                        let Dialog = window.top.BootstrapDialog.show({
+                            message: dialog,
+                            type: null,
+                            title: title(),
+                            cssClass: 'fieldparams-edit-panel',
+                            draggable: true,
+                            buttons: buttons,
+                            onhide: function (dialog) {
+                                $(window.top.document).find('body').off(eventName);
+                                if (!btnClicked) {
+                                    escClbk(div, {});
+                                }
+                            },
+                            onshown: function (dialog) {
+                                dialog.$modalContent.position({
+                                    of: $(window.top.document).find('body'),
+                                    my: 'top+50px',
+                                    at: 'top'
+                                });
+                                formFill();
+                            },
+                            onshow: function (dialog) {
+                                dialog.$modalHeader.css('cursor', 'pointer')
+                                dialog.$modalContent.css({
+                                    width: '100%'
+                                });
 
-                if (field.pcTable.isMobile) {
-
-                    App.mobilePanel(title, dialog, {
-                        buttons: buttons, onhide: function (dialog) {
-                            $('body').off(eventName);
-                            if (!btnClicked) {
-                                blurClbk(div, {});
+                                $(window.top.document).find('body').on(eventName, function (event) {
+                                    save(dialog, event);
+                                    return false;
+                                });
                             }
-                        },
-                        onshown: function (dialog) {
-                            formFill();
-                        },
-                        onshow: function (dialog) {
-                            $('body').on(eventName, function (event) {
-                                save(dialog, event);
-                                return false;
-                            });
-                        }
-                    })
 
-                } else {
-                    let Dialog = window.top.BootstrapDialog.show({
-                        message: dialog,
-                        type: null,
-                        title: title,
-                        cssClass: 'fieldparams-edit-panel',
-                        draggable: true,
-                        buttons: buttons,
-                        onhide: function (dialog) {
-                            $(window.top.document).find('body').off(eventName);
-                            if (!btnClicked) {
-                                escClbk(div, {});
-                            }
-                        },
-                        onshown: function (dialog) {
-                            dialog.$modalContent.position({
-                                of: $(window.top.document).find('body'),
-                                my: 'top+50px',
-                                at: 'top'
-                            });
-                            formFill();
-                        },
-                        onshow: function (dialog) {
-                            dialog.$modalHeader.css('cursor', 'pointer')
-                            dialog.$modalContent.css({
-                                width: '100%'
-                            });
-
-                            $(window.top.document).find('body').on(eventName, function (event) {
-                                save(dialog, event);
-                                return false;
-                            });
-                        }
-
-                    });
-                    div.data('Dialog', Dialog)
-                }
+                        });
+                        div.data('Dialog', Dialog)
+                    }
 
 
-            }, 1);
-
-
-            div.text(App.translate('Editing in the form')).addClass('edit-in-form');
-            setTimeout(() => {
-                div.closest('td').css('background-color', '#ffddb4')
-            })
+                }, 1);
+                div.text(App.translate('Editing in the form')).addClass('edit-in-form');
+                setTimeout(() => {
+                    div.closest('td').css('background-color', '#ffddb4')
+                })
+            }
         } else {
+
+
             div.on('keydown click', function (event) {
                 if (event.key === 'Tab') {
                     blurClbk(dialog, event, null, true);
@@ -414,7 +424,7 @@ fieldTypes.text = {
                 var div = $(this).closest('div');
                 if (field.pcTable.isMobile) {
 
-                    App.mobilePanel(title, dialog, {
+                    App.mobilePanel(title(), dialog, {
                         buttons: _buttons,
                         onhide: function (event) {
                             $('body').off(eventName);
@@ -434,7 +444,7 @@ fieldTypes.text = {
                         message: dialog,
                         type: null,
                         cssClass: 'fieldparams-edit-panel',
-                        title: title,
+                        title: title(),
                         buttons: _buttons,
                         draggable: true,
                         onhide: function (event) {

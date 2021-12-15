@@ -134,6 +134,7 @@ App.langs.ru =
                 'Adding field': 'Добавление поля',
                 'Adding row to table': 'Добавление строки в таблицу',
                 'Error in %s field': 'Ошибка в поле %s',
+                'You can\'t put the Settings field type in linkToEdit': 'Нельзя тип поля Настройки выносить в linkToEdit',
                 'Done': 'Выполнено',
 
                 'Comments of field': 'Комментарии поля',
@@ -405,8 +406,8 @@ App.langs.ru =
                 'treeAddTable': 'Таблицу',
                 'treeAddFolder': 'Папку/Ссылку',
                 'Tree search': 'Поиск по дереву',
-                    'isCreatorSelector-NotCreatorView':'Отключить админ-слой',
-                    'isCreatorSelector-CommonView':'Отключить спецвид',
+                'isCreatorSelector-NotCreatorView': 'Отключить админ-слой',
+                'isCreatorSelector-CommonView': 'Отключить спецвид',
             }
     }
 ;

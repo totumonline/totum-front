@@ -71,11 +71,11 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
 
         return def.promise();
     },
-    getValue: function (value, item, isModulPanel) {
+    getValue: function (value, item, editNow) {
         "use strict";
         let def = $.Deferred();
 
-        if (isModulPanel || this.category === "filter" || typeof value === "object" || !value) {
+        if (!editNow || editNow === 'editField' || this.category === "filter" || typeof value === "object" || !value) {
             def.resolve({value: value});
             return def;
         } else {
@@ -105,12 +105,14 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
 
         let formFill = function () {
 
-            field.getValue(oldValueParam, item, !editNow).then(function (json) {
+            field.getValue(oldValueParam, item, editNow).then(function (json) {
                 let editor;
                 div.append(element);
-                element.empty().appendTo(dialog);
+                element.empty().appendTo(editNow === 'editField' ? div : dialog);
 
                 editor = new JSONEditor(element.get(0), {});
+                div.data('editor', editor);
+
                 try {
                     if (json.value !== '') {
                         editor.setText(JSON.stringify(json.value));
@@ -139,7 +141,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                     };
                     let title = App.translate('Manually changing the json field'), buttons = [
                         {
-                            'label': App.translate('Save')+' Alt+S',
+                            'label': App.translate('Save') + ' Alt+S',
                             cssClass: 'btn-m btn-warning',
                             action: saveM
                         }, {
@@ -207,7 +209,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
         buttons = [];
 
         let btnsSave = {
-            'label': App.translate('Save')+' Alt+S',
+            'label': App.translate('Save') + ' Alt+S',
             cssClass: 'btn-m btn-warning',
             action: save
         }, btnsClose = {
@@ -220,102 +222,108 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
             }
         };
 
-        let title = App.translate('Field <b>%s</b> text', this.title) + this.pcTable._getRowTitleByMainField(item, ' (%s)');
+        let title = () => {
+            return App.translate('Field <b>%s</b> text', this.title) + this.pcTable._getRowTitleByMainField(item, ' (%s)');
+        }
         let eventName = 'ctrlS.textedit';
 
         if (editNow) {
-            let btnClicked = false;
-            setTimeout(function () {
-                let cdiv = div.closest('td').find('.cdiv');
-                if (cdiv.length > 0) {
-                    cdiv.data('bs.popover').options.content.find('.btn').each(function () {
-                        let btn = $(this);
-                        let buttn = {};
-                        buttn.label = btn.data('name');
-                        buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
-                        buttn.icon = btn.find('i').attr('class');
-                        buttn.save = btn.data('save');
-                        buttn.click = btn.data('click');
-                        buttn.action = function (dialog) {
-                            if (buttn.save) {
-                                save(dialog, {}, true);
+            if (editNow === 'editField') {
+                setTimeout(formFill, 1)
+            } else {
+                let btnClicked = false;
+                setTimeout(function () {
+                    let cdiv = div.closest('td').find('.cdiv');
+                    if (cdiv.length > 0) {
+                        cdiv.data('bs.popover').options.content.find('.btn').each(function () {
+                            let btn = $(this);
+                            let buttn = {};
+                            buttn.label = btn.data('name');
+                            buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
+                            buttn.icon = btn.find('i').attr('class');
+                            buttn.save = btn.data('save');
+                            buttn.click = btn.data('click');
+                            buttn.action = function (dialog) {
+                                if (buttn.save) {
+                                    save(dialog, {}, true);
+                                }
+                                buttn.click({});
+                                btnClicked = true;
+                                dialog.close();
+                            };
+
+                            buttons.push(buttn)
+                        });
+                        cdiv.popover('destroy');
+                    } else {
+                        buttons.push(btnsSave);
+                        buttons.push(btnsClose)
+                    }
+
+                    if (field.pcTable.isMobile) {
+                        App.mobilePanel(title(), dialog, {
+                            buttons: buttons,
+                            onhide: function (dialog) {
+                                $('body').off(eventName);
+                                if (!btnClicked) {
+                                    blurClbk(div, {});
+                                }
+                            },
+                            onshown: function (dialog) {
+                                formFill();
+                            },
+                            onshow: function (dialog) {
+                                $('body').on(eventName, function (event) {
+                                    save(dialog, event);
+                                });
                             }
-                            buttn.click({});
-                            btnClicked = true;
-                            dialog.close();
-                        };
+                        })
+                    } else {
+                        Dialog = window.top.BootstrapDialog.show({
+                            message: dialog,
+                            type: null,
+                            title: title(),
+                            cssClass: 'fieldparams-edit-panel',
+                            draggable: true,
+                            buttons: buttons,
+                            onhide: function (dialog) {
+                                $('body').off(eventName);
+                                if (!btnClicked) {
+                                    blurClbk(div, {});
+                                }
+                            },
+                            onshown: function (dialog) {
+                                dialog.$modalContent.position({
+                                    of: $(window.top.document.body),
+                                    my: 'top+50px',
+                                    at: 'top'
+                                });
+                                formFill();
+                            },
+                            onshow: function (dialog) {
+                                dialog.$modalHeader.css('cursor', 'pointer')
+                                dialog.$modalContent.css({
+                                    width: 900,
+                                    maxWidth: "99vw"
+                                });
 
-                        buttons.push(buttn)
-                    });
-                    cdiv.popover('destroy');
-                } else {
-                    buttons.push(btnsSave);
-                    buttons.push(btnsClose)
-                }
-
-                if (field.pcTable.isMobile) {
-                    App.mobilePanel(title, dialog, {
-                        buttons: buttons,
-                        onhide: function (dialog) {
-                            $('body').off(eventName);
-                            if (!btnClicked) {
-                                blurClbk(div, {});
+                                $('body').on(eventName, function (event) {
+                                    save(dialog, event);
+                                });
                             }
-                        },
-                        onshown: function (dialog) {
-                            formFill();
-                        },
-                        onshow: function (dialog) {
-                            $('body').on(eventName, function (event) {
-                                save(dialog, event);
-                            });
-                        }
-                    })
-                } else {
-                    Dialog = window.top.BootstrapDialog.show({
-                        message: dialog,
-                        type: null,
-                        title: title,
-                        cssClass: 'fieldparams-edit-panel',
-                        draggable: true,
-                        buttons: buttons,
-                        onhide: function (dialog) {
-                            $('body').off(eventName);
-                            if (!btnClicked) {
-                                blurClbk(div, {});
-                            }
-                        },
-                        onshown: function (dialog) {
-                            dialog.$modalContent.position({
-                                of: $(window.top.document.body),
-                                my: 'top+50px',
-                                at: 'top'
-                            });
-                            formFill();
-                        },
-                        onshow: function (dialog) {
-                            dialog.$modalHeader.css('cursor', 'pointer')
-                            dialog.$modalContent.css({
-                                width: 900,
-                                maxWidth: "99vw"
-                            });
 
-                            $('body').on(eventName, function (event) {
-                                save(dialog, event);
-                            });
-                        }
+                        });
+                    }
+                    div.data('Dialog', Dialog)
 
-                    });
-                }
-                div.data('Dialog', Dialog)
-
-            }, 1);
+                }, 1);
 
 
-            div.text(App.translate('Editing in the form')).addClass('edit-in-form');
-            setTimeout(() => {
-                div.closest('td').css('background-color', '#ffddb4')
-            })
+                div.text(App.translate('Editing in the form')).addClass('edit-in-form');
+                setTimeout(() => {
+                    div.closest('td').css('background-color', '#ffddb4')
+                })
+            }
         } else {
             div.on('focus click', 'button', function () {
                 let _buttons = buttons.splice();
@@ -324,7 +332,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
 
                 var div = $(this).closest('div');
                 if (field.pcTable.isMobile) {
-                    App.mobilePanel(title, dialog, {
+                    App.mobilePanel(title(), dialog, {
                         buttons: _buttons,
                         onhide: function (event) {
                             $('body').off(eventName);
@@ -342,7 +350,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                         message: dialog,
                         type: null,
                         cssClass: 'fieldparams-edit-panel',
-                        title: title,
+                        title: title(),
                         draggable: true,
                         buttons: _buttons,
                         onhide: function (event) {
