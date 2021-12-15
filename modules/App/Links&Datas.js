@@ -551,7 +551,7 @@
                 onhidden: () => {
                     resolve();
                 },
-                onshow: (dialog) => {
+                /*onshow: (dialog) => {
                     if (['text', 'listRow'].indexOf(field.type) !== -1) {
                         dialog.$modalContent.css({
                             width: "90vw",
@@ -570,7 +570,7 @@
                             dialog.$modalContent.find('.HTMLEditor').height('100%')
                         }, 30)
                     }
-                }
+                }*/
             });
         };
 
