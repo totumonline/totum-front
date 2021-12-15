@@ -51,7 +51,7 @@
             $text = $text['$text'];
         }
         timeout = timeout || undefined;
-        container = container === undefined ? element.closest('.pcTable-scrollwrapper, .InsertPanel') : container;
+        container = container === undefined ? (element.closest('.pcTable-scrollwrapper, .InsertPanel').length ? element.closest('.pcTable-scrollwrapper, .InsertPanel') : container) : container;
         trigger = trigger || 'manual';
 
         options = $.extend(options, {

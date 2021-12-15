@@ -562,7 +562,9 @@
         td.append(input);
 
         dialogShow();
-        input.focus();
+        setTimeout(() => {
+            input.focus()
+        }, 20)
     }
     App.showDatas = function (datas, notificationId, wnd) {
         let dialogs = [];
