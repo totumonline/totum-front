@@ -545,32 +545,12 @@
                 message: td,
                 type: null,
                 title: title,
-                cssClass: 'one-column-panel',
+                cssClass: ['text', 'listRow'].indexOf(field.type) !== -1 ? 'fieldparams-edit-panel' : 'one-column-panel',
                 draggable: true,
                 buttons: btns,
                 onhidden: () => {
                     resolve();
                 },
-                /*onshow: (dialog) => {
-                    if (['text', 'listRow'].indexOf(field.type) !== -1) {
-                        dialog.$modalContent.css({
-                            width: "90vw",
-                            minHeight: "90vh"
-                        });
-                    }
-                },
-                onshown: (dialog) => {
-                    if (['text', 'listRow'].indexOf(field.type) !== -1) {
-                        dialog.$modalContent.position({
-                            my: 'center top',
-                            at: 'center top+30px',
-                            of: window.top
-                        });
-                        setTimeout(() => {
-                            dialog.$modalContent.find('.HTMLEditor').height('100%')
-                        }, 30)
-                    }
-                }*/
             });
         };
 
