@@ -456,6 +456,17 @@
             field.getEditVal = (element) => {
                 return element.find('textarea').val().trim()
             }
+        }else if (field.type === 'file') {
+            field.getEditVal = (element) => {
+                let files=[];
+                element.closest('.modal-content').find('.modal-body .filePart').each(function () {
+                    let fileDiv = $(this), file = fileDiv.data('file');
+                    if (file) {
+                        files.push(file)
+                    }
+                });
+                return files
+            }
         }
 
 

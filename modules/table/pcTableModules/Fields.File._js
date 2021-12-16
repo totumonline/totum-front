@@ -2,8 +2,6 @@
     const show_img = function (img, file) {
         img.attr('data-fileviewpreview', JSON.stringify({'name': file.name, file: file.file}))
     }
-
-
     fieldTypes.file = {
         icon: 'fa-file-image-o',
         getSize: function (size) {
@@ -21,11 +19,9 @@
                 if (['png', 'jpg'].indexOf(file.ext) !== -1) {
                     img = $('<img src="/fls/' + file.file + '_thumb.jpg" style="z-index: 200; max-height: 24px; margin-right: 4px;" class="file-image-preview" data-filename="' + file.file + '"/>');
                     show_img(img, file);
-                }
-                else if(file.ext === 'pdf'){
+                } else if (file.ext === 'pdf') {
                     img = '<img src="/imgs/file_ico_pdf.png" style="max-height: 24px;  margin-right: 4px;" class="file-pdf-preview" data-filename="/fls/' + file.file + '"/>';
-                }
-                else {
+                } else {
                     img = '<img src="/imgs/file_ico.png" style="max-height: 24px;  margin-right: 4px;"/>';
                 }
                 let a = $('<a href="/fls/' + file.file + '"  class="file-sell-text" download="' + $('<div>').text(file.name).html() + '" style="padding-right: 5px"></a>');
@@ -102,7 +98,7 @@
                     ext: file.ext
                 };
                 let regExpName = new RegExp('^' + field.pcTable.tableRow.id + '_' + (item.id ? item.id : ''));
-                
+
                 addDiv.data('file', fl);
                 addDiv.find('.name').text(file.name);
                 addDiv.find('.size').text(field.getSize(file.size));
@@ -126,11 +122,14 @@
             };
 
             const saveDisable = function (disable) {
-                dialog.$modalFooter.find('button:first').prop('disabled', disable);
+                dialogBody.closest('.modal-content').find('.modal-footer button:first').prop('disabled', disable);
             };
 
             const formFill = function () {
                 dialogBody.empty();
+                if (editNow === 'editField') {
+                    dialogBody = div
+                }
                 let fileAdd = $('<input type="file" name = "file" ' + (field.multiple ? 'multiple' : '') + ' accept="' + field.accept + '" style="display: block; position: absolute; top: -3000px"/>');//fileInput
 
                 let addForm = $('<div>').appendTo(dialogBody);
@@ -138,7 +137,7 @@
                 addForm.append(btn);
                 btn.wrap('<div class="addFilesButton">');
                 btn.wrap('<div>');
-                let dropZone = $('<div class="ttm-dropzone" id="ttmDropzone">'+App.translate('Drag and drop the file here')+'</div>').insertAfter(btn.parent())
+                let dropZone = $('<div class="ttm-dropzone" id="ttmDropzone">' + App.translate('Drag and drop the file here') + '</div>').insertAfter(btn.parent())
                 dropZone.on('dragenter', () => dropZone.addClass('highlight'))
                 dropZone.on('dragleave', () => dropZone.removeClass('highlight'))
                 dropZone.on('drop', (e) => {
@@ -224,7 +223,10 @@
                                     }
                                 }
                                 addDiv.data('file', null);
-                                process.text(App.translate('Error')).css({'box-shadow': 'none', 'background-color': '#ffe486'})
+                                process.text(App.translate('Error')).css({
+                                    'box-shadow': 'none',
+                                    'background-color': '#ffe486'
+                                })
 
                             };
 
@@ -284,7 +286,7 @@
 
             buttons = [
                 {
-                    'label': App.translate('Save')+' Alt+S',
+                    'label': App.translate('Save') + ' Alt+S',
                     cssClass: 'btn-m btn-warning',
                     action: save
                 }, {
@@ -354,12 +356,15 @@
             };
 
             if (editNow) {
-
-                showDialog(div);
-                div.text(App.translate('Editing in the form')).addClass('edit-in-form');
-                setTimeout(() => {
-                    div.closest('td').css('background-color', '#ffddb4')
-                })
+                if (editNow === 'editField') {
+                    formFill();
+                } else {
+                    showDialog(div);
+                    div.text(App.translate('Editing in the form')).addClass('edit-in-form');
+                    setTimeout(() => {
+                        div.closest('td').css('background-color', '#ffddb4')
+                    })
+                }
             } else {
                 div.on('keydown', function (event) {
                     if (event.key === 'Tab') {
