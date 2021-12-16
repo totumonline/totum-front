@@ -185,7 +185,11 @@ var defaultField = {
         return checkDiv(res);
     },
     focusElement: function (input) {
-        input.focus();
+        if(input.is('div')){
+            input.find('button').focus();
+        }else{
+            input.focus();
+        }
         if (input.closest('tr').is('.InsertRow')) {
             this.pcTable._insertRow.find('.active').removeClass('active');
             input.closest('td').addClass('active');

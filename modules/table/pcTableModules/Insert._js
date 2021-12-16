@@ -339,7 +339,12 @@ $.extend(App.pcTableMain.prototype, {
                 }
 
                 if (td.data('input')) {
-                    td.data('input').attr('tabindex', tabi++)
+                    let _btn = td.data('input').find('button:first');
+                    if(false && _btn.length){
+                        _btn.attr('tabindex', tabi++)
+                    }else{
+                        td.data('input').attr('tabindex', tabi++)
+                    }
                 }
 
             });

@@ -325,7 +325,14 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                 })
             }
         } else {
-            div.on('focus click', 'button', function () {
+            let showned = false;
+            div.on('click keydown', function (event) {
+                if (showned) return false;
+                if (event.key === 'Tab') {
+                    blurClbk(dialog, event, null, true);
+                    return
+                }
+                showned = true;
                 let _buttons = buttons.splice();
                 _buttons.push(btnsSave);
                 _buttons.push(btnsClose);
@@ -375,7 +382,9 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
             });
 
             let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Edit list/json'));
-            if (tabindex) btn.attr('tabindex', tabindex);
+            if (tabindex) {
+                btn.attr('tabindex', tabindex);
+            }
 
             div.append(btn);
 
