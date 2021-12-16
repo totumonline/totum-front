@@ -429,7 +429,7 @@
         let Dialog, input;
 
 
-        if (field.type === 'fieldParams') {
+        if (['fieldParams', 'button', 'link'].indexOf(field.type) !== -1) {
             App.notify(App.translate('You can\'t put the Settings field type in linkToEdit'), App.translate('Error'));
             return;
         } else if (field.type === 'text' || field.type === 'listRow') {

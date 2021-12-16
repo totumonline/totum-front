@@ -885,13 +885,13 @@ fieldTypes.select = {
                 field.focusElement(div)
             }, 50)
         } else{
-            button.click();
-            div.data('input').data('selectpicker').$searchbox.focus();
-
             if (div.closest('tr').is('.InsertRow')) {
                 this.pcTable._insertRow.find('.active').removeClass('active');
                 div.closest('td').addClass('active');
+                button.click();
             }
+            
+            div.data('input').data('selectpicker').$searchbox.focus();
         }
     }
     ,
