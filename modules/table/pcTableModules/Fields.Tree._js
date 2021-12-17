@@ -6,6 +6,19 @@
         getEditVal: function (div) {
             return div.data('val');
         },
+        getCheckedIds: function (dialog) {
+            let checked_ids = [];
+            let checked = dialog.data('jstree').jstree("get_selected", true);
+            checked.forEach(function (node) {
+                checked_ids.push(node.id);
+            });
+
+            if (!this.multiple) {
+                checked_ids = checked_ids[0] || '';
+            }
+
+            return checked_ids;
+        },
         getEditElement: function ($oldInput, oldValueParam, item, enterClbk, escClbk, blurClbk, tabindex, editNow) {
             let field = this;
             let div = $oldInput || $('<div>');
@@ -17,31 +30,23 @@
             oldValueParam = oldValueParam.v || '';
 
             const save = function (dlg, event, notEnter) {
-                let checked_ids = [];
-                let checked = dialog.data('jstree').jstree("get_selected", true);
-                checked.forEach(function (node) {
-                    checked_ids.push(node.id);
-                });
 
-                if (!field.multiple) {
-                    checked_ids = checked_ids[0] || '';
-                }
 
-                div.data('val', checked_ids);
+                div.data('val', field.getCheckedIds(dialog));
                 if (!notEnter) {
                     enterClbk(div, {});
                     dlg.close();
                 }
             };
             let formFill = function (dlg) {
-                field.treePanel.call(field, dialog, item, oldValueParam);
+                field.treePanel.call(field, (editNow === 'editField' ? div : dialog), item, oldValueParam);
             };
 
 
             buttons = [];
 
             let btnsSave = {
-                'label': App.translate('Save')+' Alt+S',
+                'label': App.translate('Save') + ' Alt+S',
                 cssClass: 'btn-m btn-warning',
                 action: save
             }, btnsClose = {
@@ -73,80 +78,86 @@
 
             };
             if (editNow) {
-                let btnClicked = false;
-                setTimeout(function () {
-
-                    let cdiv = div.closest('td').find('.cdiv');
-                    if (cdiv.length > 0) {
-                        cdiv.data('bs.popover').options.content.find('.btn').each(function () {
-                            btn = $(this);
-                            let buttn = {};
-                            buttn.label = btn.data('name');
-                            buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
-                            buttn.icon = btn.find('i').attr('class');
-                            buttn.save = btn.data('save');
-                            buttn.click = btn.data('click');
-                            buttn.action = function (dialog) {
-                                if (buttn.save) {
-                                    save(dialog, {}, true);
-                                }
-                                buttn.click({});
-                                btnClicked = true;
-                                dialog.close();
-                            };
-
-                            buttons.push(buttn)
-                        });
-                        cdiv.popover('destroy');
-                    } else {
-                        buttons.push(btnsSave);
-                        buttons.push(btnsClose)
-                    }
-
-                    if (field.pcTable.isMobile) {
-                        App.mobilePanel(title, dialog, {
-                            buttons: buttons,
-                            onhide: function (dialog) {
-                                $('body').off(eventName);
-                                if (!btnClicked) {
-                                    blurClbk(div, {});
-                                }
-                            },
-                            onshow: onshown
-                        })
-                    } else {
-                        Dialog = window.top.BootstrapDialog.show({
-                            message: dialog,
-                            type: null,
-                            title: title,
-                            cssClass: 'fieldparams-edit-panel',
-                            draggable: true,
-                            buttons: buttons,
-                            onhide: function (dialog) {
-                                $(window.top.document).find('body').off(eventName);
-                                if (!btnClicked) {
-                                    blurClbk(div, {});
-                                }
-                            },
-                            onshown: function (dialog) {
-                                dialog.$modalContent.position({
-                                    of: $(window.top.document).find('body'),
-                                    my: 'top+50px',
-                                    at: 'top'
-                                });
-                            },
-                            onshow: onshown
-
-                        });
-                        div.data('Dialog', Dialog)
-                    }
-                }, 1);
+                if (editNow === 'editField') {
+                    formFill();
+                } else {
 
 
-                div.text(App.translate('Editing in the form')).addClass('edit-in-form');
-                setTimeout(() => {
-                    div.closest('td').css('background-color', '#ffddb4')
-                })
+                    let btnClicked = false;
+                    setTimeout(function () {
+
+                        let cdiv = div.closest('td').find('.cdiv');
+                        if (cdiv.length > 0) {
+                            cdiv.data('bs.popover').options.content.find('.btn').each(function () {
+                                btn = $(this);
+                                let buttn = {};
+                                buttn.label = btn.data('name');
+                                buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
+                                buttn.icon = btn.find('i').attr('class');
+                                buttn.save = btn.data('save');
+                                buttn.click = btn.data('click');
+                                buttn.action = function (dialog) {
+                                    if (buttn.save) {
+                                        save(dialog, {}, true);
+                                    }
+                                    buttn.click({});
+                                    btnClicked = true;
+                                    dialog.close();
+                                };
+
+                                buttons.push(buttn)
+                            });
+                            cdiv.popover('destroy');
+                        } else {
+                            buttons.push(btnsSave);
+                            buttons.push(btnsClose)
+                        }
+
+                        if (field.pcTable.isMobile) {
+                            App.mobilePanel(title, dialog, {
+                                buttons: buttons,
+                                onhide: function (dialog) {
+                                    $('body').off(eventName);
+                                    if (!btnClicked) {
+                                        blurClbk(div, {});
+                                    }
+                                },
+                                onshow: onshown
+                            })
+                        } else {
+                            Dialog = window.top.BootstrapDialog.show({
+                                message: dialog,
+                                type: null,
+                                title: title,
+                                cssClass: 'fieldparams-edit-panel',
+                                draggable: true,
+                                buttons: buttons,
+                                onhide: function (dialog) {
+                                    $(window.top.document).find('body').off(eventName);
+                                    if (!btnClicked) {
+                                        blurClbk(div, {});
+                                    }
+                                },
+                                onshown: function (dialog) {
+                                    dialog.$modalContent.position({
+                                        of: $(window.top.document).find('body'),
+                                        my: 'top+50px',
+                                        at: 'top'
+                                    });
+                                },
+                                onshow: onshown
+
+                            });
+                            div.data('Dialog', Dialog)
+                        }
+                    }, 1);
+
+
+                    div.text(App.translate('Editing in the form')).addClass('edit-in-form');
+                    setTimeout(() => {
+                        div.closest('td').css('background-color', '#ffddb4')
+                    })
+                }
             } else {
                 let showned = false;
                 div.off().on('click keydown', function (ev) {
@@ -629,22 +640,22 @@
             let notEmptyVal, r;
             if (val === null || val === undefined) {
                 if (!arrayVal || !arrayVal[0]) return this.withEmptyVal || '';
-            }else{
-                notEmptyVal=true;
+            } else {
+                notEmptyVal = true;
             }
 
             if (arrayVal[0] === null || arrayVal[0] === '') {
-                r= '[' + (this.withEmptyVal || '') + ']';
-            }else if (this.FullView) {
-                r= arrayVal[2] || arrayVal[0];
-            }else{
+                r = '[' + (this.withEmptyVal || '') + ']';
+            } else if (this.FullView) {
+                r = arrayVal[2] || arrayVal[0];
+            } else {
                 r = arrayVal[0];
             }
 
             if (notEmptyVal && this.multiple && this.unitType) {
-                if(this.before){
+                if (this.before) {
                     r = this.unitType + ' ' + r;
-                }else{
+                } else {
                     r += ' ' + this.unitType;
                 }
             }

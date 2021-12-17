@@ -440,12 +440,29 @@
                     return input.data('editor').getValue();
                 }
             }
-        } else if (field.type === 'select' || field.type === 'tree') {
+        } else if (field.type === 'select') {
             field.getEditSelect = (itemTmp, name, q, _, __, RequestObject) => {
                 return model.saveLinkToEdit(data[1].hash, null, null, {
                     q: (q || ''),
                     checkedVals: input ? field.getEditVal(input) : data[1].value.v
                 }, RequestObject)
+            }
+        } else if (field.type === 'tree') {
+            field.getEditVal = function (div) {
+                return this.getCheckedIds(div);
+            }
+            field.getEditSelect = (item, q, parentId) => {
+                let $deffered = $.Deferred();
+                model.saveLinkToEdit(data[1].hash, null, null, {
+                    q: (q || ''),
+                    parentId: parentId,
+                    checkedVals: input ? field.getEditVal(input) : data[1].value.v
+                }).then((data) => {
+                    $deffered.resolve([data.list, data.indexed])
+                }).fail(() => {
+                    $deffered.reject();
+                });
+                return $deffered;
             }
         } else if (field.type === 'comments') {
             field.getValueFromServer = () => {
@@ -456,9 +473,9 @@
             field.getEditVal = (element) => {
                 return element.find('textarea').val().trim()
             }
-        }else if (field.type === 'file') {
+        } else if (field.type === 'file') {
             field.getEditVal = (element) => {
-                let files=[];
+                let files = [];
                 element.closest('.modal-content').find('.modal-body .filePart').each(function () {
                     let fileDiv = $(this), file = fileDiv.data('file');
                     if (file) {
