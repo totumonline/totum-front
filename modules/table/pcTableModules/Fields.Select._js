@@ -424,7 +424,7 @@ fieldTypes.select = {
                         const getTitle = function () {
 
 
-                            let title = '-----';
+                            let title = '—';
                             if (field.category === 'filter') {
                                 title = App.translate('Empty');
                                 if (field.selectFilterWithEmptyText) {
