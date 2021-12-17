@@ -1501,6 +1501,9 @@ th {
             background-color: $btn-primary-bgcolor;
           }
         }
+        button.source-add + div{
+          padding-right: 4px;
+        }
       }
     }
 

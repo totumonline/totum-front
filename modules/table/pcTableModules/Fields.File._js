@@ -342,6 +342,7 @@
                                 width: 600
                             });
                             formFill();
+                            dialog.$modalContent.find('.addFilesButton').focus();
 
                             $('body').on(eventName, function (event) {
                                 save(dialog);
@@ -366,15 +367,10 @@
                     })
                 }
             } else {
-                div.on('keydown', function (event) {
-                    if (event.key === 'Tab') {
-                        blurClbk(dialog, event, null, true);
-                        return
+                div.on('click keydown', 'button', function (event) {
+                    if (['Tab', 'Esc'].indexOf(event.key) === -1) {
+                        showDialog($(this).closest('div'))
                     }
-                    showDialog($(this).closest('div'))
-                });
-                div.on('focus click keydown', 'button', function () {
-                    showDialog($(this).closest('div'))
                 });
 
                 let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Edit field'));

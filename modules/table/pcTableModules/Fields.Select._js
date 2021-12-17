@@ -478,7 +478,6 @@ fieldTypes.select = {
                                 input.data('selectpicker').$button.click();
                                 return true;
                             }
-
                             let q = $(this).val();
                             if (Q !== q) {
                                 Q = q;
@@ -888,9 +887,11 @@ fieldTypes.select = {
             if (div.closest('tr').is('.InsertRow')) {
                 this.pcTable._insertRow.find('.active').removeClass('active');
                 div.closest('td').addClass('active');
-                button.click();
+                if(button.attr('aria-expanded')!=='true'){
+                    button.click();
+                }
             }
-            
+
             div.data('input').data('selectpicker').$searchbox.focus();
         }
     }
