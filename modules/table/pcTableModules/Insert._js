@@ -84,7 +84,7 @@ $.extend(App.pcTableMain.prototype, {
         };
 
         panel = this._addRowPanel(pcTable_PANNEL_IDS.insert, $row, btns);
-        this._addButtons = panel.find('button:not(:last)');
+        this._addButtons = panel.find('button');
     },
     __insertRowActionsStack: [],
     __insertRowActions: function (actionName, actionFunction) {
@@ -257,7 +257,7 @@ $.extend(App.pcTableMain.prototype, {
                 .on('click focus', 'input,button,select', function (event) {
                     let inputElement = $(this);
                     let active = pcTable._insertRow.find('.active');
-                    if (!active.length || (event.type === 'click' && !inputElement.is('[type="checkbox"]') && active !== $(this).closest('td'))) {
+                    if (!active.length || (!inputElement.is('[type="checkbox"]') && active !== $(this).closest('td'))) {
                         active.removeClass('active');
                         pcTable._currentInsertCellIndex = $(this).closest('td').data('index');
                         $(this).closest('td').addClass('active');
