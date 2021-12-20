@@ -370,6 +370,8 @@
                 div.on('click keydown', 'button', function (event) {
                     if (['Tab', 'Esc'].indexOf(event.key) === -1) {
                         showDialog($(this).closest('div'))
+                    } else if (event.key === 'Tab') {
+                        blurClbk(div, {});
                     }
                 });
 
