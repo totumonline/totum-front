@@ -110,6 +110,7 @@ App.langs.ru =
                 'Default sets': 'Наборы по умолчанию',
                 'Sets': 'Наборы',
                 'Save as default set': 'Сохранить как набор по умолчанию',
+                'Click hear to unlock': 'Кликните для разблокировки',
 
 
                 'Apply to selected': 'Применить к выделенным',
