@@ -45,6 +45,9 @@
   overflow-x: auto;
   max-width: 600px;
 
+  .code-edit{
+    font-family: Roboto;
+  }
 
   li.CodeMirror-hint-active {
     background-color: $btn-primary-bgcolor;

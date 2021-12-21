@@ -178,7 +178,7 @@
                                             return;
                                     } else if (cm.table) {
                                         table = cm.table;
-                                        if (token.type.match(/string-name/)) {
+                                        if (token.type.match(/string/)) {
                                             type = 'get-code';
                                             field = token.string.substr(1, token.string.length - 2);
                                         } else {
@@ -193,7 +193,7 @@
                                     var left = pos.left, top = pos.top - 40;
                                     let btn = window.top.document.createElement("ul");
                                     btn.className = "CodeMirror-hints";
-                                    let btnEdit = $('<button class="btn btn-xs btn-default"><i class="fa fa-edit"> ' + App.translate('Edit') + '</button>');
+                                    let btnEdit = $('<button class="btn btn-xs btn-default code-edit"><i class="fa fa-edit"></i> ' + App.translate('Edit') + '</button>');
                                     $(btn).append(btnEdit)
                                     btn.style.left = left + "px";
                                     btn.style.top = top + "px";
@@ -217,12 +217,14 @@
                                                         return new Promise((resolve, reject) => {
                                                             let rowId;
                                                             if (where) {
-                                                                let matches = where.match(/([a-z_0-9]{2,})\[(\d+)\]/);
+                                                                let matches = where.match(/([a-z_0-9]{2,})\[(?:(\d+)|"([^"]+)"|([a-z_0-9\-]+))\]/);
                                                                 if (matches) {
                                                                     if (matches[1] === 'id') {
                                                                         resolve(matches[2]);
                                                                     } else {
-                                                                        pcTable.model.getIdByFieldValue({[matches[1]]: matches[2]}).then((json) => {
+                                                                        let keys = matches[2] || matches[3] || matches[3];
+
+                                                                        pcTable.model.getIdByFieldValue({[matches[1]]: keys}).then((json) => {
                                                                             if (!json.value) {
                                                                                 App.notify(App.translate('The value is not found'));
                                                                                 reject()
@@ -1555,8 +1557,7 @@
 
                         event.preventDefault();
                     }
-                }
-                else if ((event.keyCode || event.which).toString() === '13') {
+                } else if ((event.keyCode || event.which).toString() === '13') {
                     let cursor = cm.getCursor();
                     let nextline = cursor.line;
                     let line = cm.getLine(nextline);
