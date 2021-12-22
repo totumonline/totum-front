@@ -61,7 +61,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
         if (typeof fieldValue !== 'string') {
             panelHtmlResult(fieldValue);
         } else {
-            this.getValue(fieldValue, item, false).then(function (json) {
+            this.getValue(fieldValue, item, true).then(function (json) {
                 panelHtmlResult(json.value)
 
             }).fail(function () {
@@ -87,7 +87,6 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                 def.resolve(json);
             })
         }
-
 
         return def;
     },
