@@ -13,7 +13,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         let selectObject = pcTable.selectedCells;
         selectObject.selectPanelDestroy();
 
-        let $panel = $('<div id="selectPanel" class="text">').on('click contextmenu', (event)=>{
+        let $panel = $('<div id="selectPanel" class="text">').on('click contextmenu', (event) => {
             event.stopPropagation();
         });
 
@@ -71,16 +71,73 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
         if (val.h && format.showhand !== false) {
             if (val.c !== undefined) {
-                let c = val.c;
+                let c = '';
                 if (val.c_) {
-                    c = val.c_[0];
-                    if (val.c_[1]) {
-                        c = $('<span class="deleted_value">').text(c);
+                    if (field.multiple && val.c_.forEach) {
+                        val.c_.forEach((_c) => {
+                            if (c) {
+                                c += ', ';
+                            }
+                            if (_c[1]) {
+                                c += $('<span class="deleted_value">').text(_c[0]).get(0).outerHTML;
+                            } else {
+                                c += $('<span class="value">').text(_c[0]).get(0).outerHTML;
+                            }
+                        })
+                        let limit = 20;
+
+                        let i = 0;
+                        let opened = false;
+                        let opened_inner = false;
+                        let closes_inner = false;
+                        let cBig = c;
+                        let letters = 0;
+                        while (letters < limit || opened) {
+                            switch (cBig[i]) {
+                                case "<":
+                                    opened_inner = true;
+                                    opened = true;
+                                    break;
+                                case "/":
+                                    if (opened_inner) {
+                                        closes_inner = true
+                                    }
+                                    break;
+                                case ">":
+                                    if (opened && opened_inner && closes_inner) {
+                                        closes_inner = false;
+                                        opened = false;
+                                    }
+                                    opened_inner = false;
+                                    break;
+                                default:
+                                    if (!opened_inner) {
+                                        letters++;
+                                    }
+                            }
+                            i++;
+                        }
+                        if (i < cBig.length) {
+                            c = cBig.substr(0, i) + '...'
+                            c += ' ';
+                            let btn_c = $('<button class="btn btn-default btn-xxs"><i class="fa fa-eye"></i></button>').on('click', () => {
+                                App.notify(cBig, App.translate('Calculated value'));
+                            })
+                            c = $('<div>').html(c);
+                            c.append(btn_c)
+                        }
+                    } else {
+                        c = val.c_[0];
+                        if (val.c_[1]) {
+                            c = $('<span class="deleted_value">').text(c);
+                        }else{
+                            c = $('<span class="value">').text(c);
+                        }
                     }
                 }
-                textDiv.append($('<div><i class="fa fa-hand-paper-o"></i> ' + App.translate('Calculated value') + ': </div>').append(c));
+                textDiv.append($('<div class="calc-value"><i class="fa fa-hand-paper-o"></i> ' + App.translate('Calculated value') + ': </div>').append(c));
             } else
-                textDiv.append('<div><i class="fa fa-hand-grab-o pull-left"></i> ' + App.translate('Same as calculated') + '</div>');
+                textDiv.append('<div class="calc-value"><i class="fa fa-hand-grab-o pull-left"></i> ' + App.translate('Same as calculated') + '</div>');
         }
 
         let divForPannelFormats = $('<div><div class="center"><i class="fa fa-spinner fa-spin"></i></div></div>');

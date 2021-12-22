@@ -226,7 +226,7 @@
                             if (typeof cellText === 'object') cellText = cellText.text();
                         }
                     }
-                    notify.append($('<div>' + App.translate('Calculated value') + ': </div>').append($('<code>').text(cellText)));
+                    notify.append($('<div>' + App.translate('Calculated value') + ': </div>').append($('<code>').text(cellText.length<=50?cellText:cellText.substr(0, 47)+'...')));
 
                     hand.one('mouseout', function () {
                         if (notify.length) {
