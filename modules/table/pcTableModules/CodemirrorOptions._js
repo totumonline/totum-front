@@ -460,16 +460,19 @@
                     }
 
                     state.lineNames = [];
+                    state.lineCodeNames = [];
                     let codeBlocks = [];
 
 
                     if (stream.lineStart === 0 && stream.start === 0) {
                         try {
                             stream.lineOracle.doc.cm.lineNames = [];
+                            stream.lineOracle.doc.cm.lineCodeNames = [];
                             let inCodeBlockNamed = null;
                             let inCodeBlockType = null;
                             let inCodeBlockStart = null;
                             let codeBlockNames = [];
+                            let codeBlockNamesNoStart = [];
                             let codeLines = [];
                             stream.lineOracle.doc.cm.codeBlocks = codeBlocks;
 
@@ -478,7 +481,7 @@
                                 if (inCodeBlockNamed) {
                                     if (line.trim() === '```') {
                                         stream.lineOracle.doc.cm.lineNames.push(inCodeBlockNamed);
-                                        codeBlocks.push([inCodeBlockStart, i, inCodeBlockType, inCodeBlockNamed, codeBlockNames]);
+                                        codeBlocks.push([inCodeBlockStart, i, inCodeBlockType, inCodeBlockNamed, codeBlockNames, codeBlockNamesNoStart]);
                                         inCodeBlockNamed = null;
                                         inCodeBlockType = null;
                                         inCodeBlockStart = null;
@@ -486,6 +489,9 @@
                                     } else {
                                         if (matches = line.match(/^\s*~?\s*([a-zA-Z_0-9]+)\s*(=\s*[a-zA-Z0-9_]*)?:/)) {
                                             codeBlockNames.push(matches[1]);
+                                            if(!matches[2]){
+                                                codeBlockNamesNoStart.push(matches[1])
+                                            }
                                         }
                                     }
                                     codeLines.push(i);
@@ -500,7 +506,10 @@
                                 }
                                 if (line.trim().length === 0 || line.indexOf('//') === 0) return '';
                                 if (!(matches = line.match(/^\s*~?\s*([a-zA-Z_0-9]+)\s*(=\s*[a-zA-Z0-9_]*)?:/))) return '';
-                                return stream.lineOracle.doc.cm.lineNames.push(matches[1]);
+                                stream.lineOracle.doc.cm.lineNames.push(matches[1]);
+                                if (!matches[2]) {
+                                    stream.lineOracle.doc.cm.lineCodeNames.push(matches[1]);
+                                }
                             });
 
                             if (codeBlocks.length) {
@@ -533,6 +542,7 @@
                     }
                     codeBlocks = stream.lineOracle.doc.cm.codeBlocks;
                     state.lineNames = stream.lineOracle.doc.cm.lineNames;
+                    state.lineCodeNames = stream.lineOracle.doc.cm.lineCodeNames;
 
                     state.inTotumBlock = false;
 
@@ -550,6 +560,7 @@
                             state.inTotumBlock = true;
                             state.codeBlock = block;
                             state.lineNames = block[4];
+                            state.lineCodeNames = block[5] || [];
                         }
                     }
 
@@ -1228,6 +1239,26 @@
                     token.string = token.string.slice(0, cur.ch - token.start);
                 }
 
+
+                if (token.type === "spec") {
+                    let matches = token.string.match(/([a-z]+)`([^`]*)`?/);
+                    let s = cur.ch - token.start;
+                    token.string = token.string.substr(0, s);
+                    token.string = token.string.replace(/[a-z]+`([^`]*)`?/, '$1');
+                    token.start = token.start + matches[1].length + 1;
+
+
+                    if (matches = token.string.match(/([a-z$#.A-Z0-9@"'\[\]]+)$/)) {
+                        token.start += token.string.length - matches[1].length;
+                        token.string = matches[1];
+                    } else {
+                        token.string = ''
+                        token.start = cur.ch;
+                        token.end = cur.ch;
+                    }
+                }
+
+
                 /* @ */
                 if (token.string.indexOf('@') === 0) {
                     options.inStart = false;
@@ -1407,17 +1438,9 @@
                     token.end = cur.ch;
 
                     if (token.state.inTotumBlock) {
-                        token.state.codeBlock[4].forEach(function (name) {
-                            if (name.indexOf('=') === -1) {
-                                keywords.push(name);
-                            }
-                        });
+                        keywords.push(...(token.state.codeBlock[5] || []))
                     } else {
-                        token.state.lineNames.forEach(function (name) {
-                            if (name.indexOf('=') === -1) {
-                                keywords.push(name);
-                            }
-                        });
+                        keywords.push(...(token.state.lineCodeNames || []))
                     }
 
                 } else if (!token.state.inTotumBlock && (match = token.string.match(/(.*)\#\$?[а-яa-z0-9_]*$/i))) {
@@ -1513,8 +1536,7 @@
                             curPos: token.start + (fName + ': ' + zpt).length - zpt.length
                         });
                     })
-                } else {
-
+                } else if (token.type != 'spec') {
                     keywords = [
                         'true',
                         'false', $math, $json, $cond, $str
