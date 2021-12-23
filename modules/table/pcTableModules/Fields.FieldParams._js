@@ -36,8 +36,20 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
         } catch (e) {
         }
 
+        App.tableTypes = App.tableTypes || {};
 
-        let formFill = function (oldValueParam) {
+        let formFill = async function (oldValueParam) {
+            if (!App.tableTypes[item['table_id']['v']]) {
+                let type;
+                if (item['table_id']['v'] != $('#table').data('pctable').tableRow.id) {
+                    let json = await App.getPcTableById(item['table_id']['v']);
+                    type = json.tableRow.type;
+                } else {
+                    type = $('#table').data('pctable').tableRow.type;
+                }
+                App.tableTypes[item['table_id']['v']] = type;
+            }
+
 
             let jsonFields = field.jsonFields;
             let left, right;
@@ -58,6 +70,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     }
                     if (fieldSettings['names']) {
                         if (fieldSettings['names'].indexOf(item['name']['v']) === -1) return false;
+                    }
+                    if (fieldSettings['tables']) {
+                        if (fieldSettings['tables'].indexOf(App.tableTypes[item['table_id']['v']]) === -1) return false;
                     }
 
 
@@ -214,14 +229,15 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     };
 
 
-                    let typeInput = addInput('type', fieldsList, fieldsLevelFuncs).find('select');
+                    let input = addInput('type', fieldsList, fieldsLevelFuncs);
+                    let typeInput = input.find('select');
 
                     typeInput.on('change', function () {
                         addfields($(this).val())
                     });
 
                     fieldsList.forEach(function (fName) {
-                        addInput(fName, fieldsList, fieldsLevelFuncs);
+                        let t = addInput(fName, fieldsList, fieldsLevelFuncs);
                     });
 
                     editorsRefresh();
@@ -374,7 +390,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                             return;
                         }
                         blocked = true;
-                        div.find('.jsonForm').prepend('<div id="fieldParamsLocker"><i class="fa fa-lock"></i><div class="unlock-click">'+App.translate('Click hear to unlock')+'</div></div>')
+                        div.find('.jsonForm').prepend('<div id="fieldParamsLocker"><i class="fa fa-lock"></i><div class="unlock-click">' + App.translate('Click hear to unlock') + '</div></div>')
                     }
                 })
                 div.find('.jsonForm').on('remove', () => {
