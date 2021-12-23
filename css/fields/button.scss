@@ -10,10 +10,11 @@ button {
 
 .btn.button-field {
   text-shadow: none;
-  background-color:#fff;
+  background-color: #fff;
 }
-#selectPanel .btn.button-field{
-  background-color:#fafafa;
+
+#selectPanel .btn.button-field {
+  background-color: #fafafa;
 }
 
 td.cell-button, span.cell-button {
@@ -25,6 +26,7 @@ td.cell-button, span.cell-button {
       border-color: transparent;
       box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
     }
+
     i {
       margin-right: 3px;
     }
@@ -36,8 +38,7 @@ td.cell-button, span.cell-button {
       padding-bottom: 0;
       opacity: 1;
     }
-
-    height: 19px;
+    height: 25px;
   }
 
   button:not(.ibtn) {
@@ -46,6 +47,14 @@ td.cell-button, span.cell-button {
 }
 
 .pcTable-floatBlock .pcTable-floatInner {
+
+  > div td.cell-button .cell-value {
+    padding-top: 0;
+    button.button-field{
+      height: 25px;
+    }
+  }
+
   > div.no-border td.cell-button {
     padding: 2px 4px;
 
@@ -61,8 +70,9 @@ td.cell-button, span.cell-button {
       }
     }
   }
-  td.cell-button{
-    i.fa-spinner{
+
+  td.cell-button {
+    i.fa-spinner {
       padding-top: 6px;
     }
   }
@@ -75,8 +85,8 @@ td.cell-button, span.cell-button {
       padding-top: 5px;
     }
   }
-  .pcTable-buttons .cell-button{
-    i.fa-spinner{
+  .pcTable-buttons .cell-button {
+    i.fa-spinner {
       padding-top: 12px;
     }
   }
@@ -92,7 +102,8 @@ td.cell-button, span.cell-button {
         border-color: transparent;
       }
     }
-    .text-center{
+
+    .text-center {
       padding-top: 2px;
     }
   }
