@@ -520,7 +520,7 @@
                         ['v', 'v_', 'f', 'e', 'h', 'c', 'ch'].forEach(function (part) {
                             if (pcTable.data_params[k] && (v[part] !== undefined || pcTable.data_params[k][part])) {
                                 if (!Object.equals(pcTable.data_params[k][part], v[part]) || k === editFieldName) {
-                                    paramsChanges[k] = part;
+                                    paramsChanges[k] = paramsChanges[k] || part;
                                     pcTable.data_params[k][part] = v[part];
                                 }
                             }

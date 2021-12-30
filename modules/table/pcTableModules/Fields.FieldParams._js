@@ -391,6 +391,10 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                         }
                         blocked = true;
                         div.find('.jsonForm').prepend('<div id="fieldParamsLocker"><i class="fa fa-lock"></i><div class="unlock-click">' + App.translate('Click hear to unlock') + '</div></div>')
+                        $('.jsonForm #fieldParamsLocker').one('click', ()=>{
+                            $('.jsonForm #fieldParamsLocker').remove();
+                            blocked = false;
+                        });
                     }
                 })
                 div.find('.jsonForm').on('remove', () => {
