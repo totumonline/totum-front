@@ -70,6 +70,12 @@
       }
 
       td {
+        &.cell-button{
+          .cell-value{
+            padding-top: 0px;
+          }
+        }
+
         &.id {
           font-size: inherit;
 
