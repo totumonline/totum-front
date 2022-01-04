@@ -17,6 +17,13 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             event.stopPropagation();
         });
 
+        switch (field.contextPanelWidth) {
+            case 'wide':
+            case 'extrawide':
+                $panel.addClass('panel-' + field.contextPanelWidth);
+                break;
+        }
+
         let textDivHeight = 200;
 
         let columnName = $('<div class="column-name"></div>').text(field.title);
@@ -130,7 +137,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         c = val.c_[0];
                         if (val.c_[1]) {
                             c = $('<span class="deleted_value">').text(c);
-                        }else{
+                        } else {
                             c = $('<span class="value">').text(c);
                         }
                     }

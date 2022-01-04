@@ -76,6 +76,12 @@
     &.text {
       width: 300px;
     }
+    &.panel-wide {
+      width: 400px;
+    }
+    &.panel-extrawide {
+      width: 500px;
+    }
 
     .field-value {
       height: 200px;

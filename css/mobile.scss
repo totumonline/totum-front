@@ -147,7 +147,13 @@
 
 @media(max-device-width: 1199px) {
 
-  #leftTree{
+
+  .table-description {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  #leftTree {
     font-size: 15px;
   }
 
@@ -316,10 +322,12 @@
       td:not(.cell-button) {
         background-color: #faf9f8;
       }
-      &.pcTable-filtersTable td:not(.cell-button){
+
+      &.pcTable-filtersTable td:not(.cell-button) {
         background-color: whitesmoke;
       }
-      th{
+
+      th {
         padding-bottom: 0;
       }
     }
