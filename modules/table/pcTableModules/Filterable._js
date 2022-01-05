@@ -102,8 +102,12 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
                     if (typeof element === 'object') {
                         p = element.p
                     } else {
-                        parents.push(this.dataSorted[ip]);
-                        p = this.dataSorted[ip].p;
+                        if (new_.indexOf(this.dataSorted[ip]) === -1) {
+                            parents.push(this.dataSorted[ip]);
+                            p = this.dataSorted[ip].p;
+                        } else {
+                            p = null
+                        }
                     }
 
                     while (p && ip) {
@@ -111,8 +115,12 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
                             ip--;
                         }
                         if (this.dataSorted[ip] === this.getElementInTree(p)) {
-                            parents.push(this.dataSorted[ip])
-                            p = this.dataSorted[ip].p;
+                            if (new_.indexOf(this.dataSorted[ip]) === -1) {
+                                parents.push(this.dataSorted[ip])
+                                p = this.dataSorted[ip].p;
+                            } else {
+                                p = null
+                            }
                         }
                         ip--;
                     }
@@ -124,9 +132,7 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
             }
 
         } else {
-            this.dataSorted.forEach((v) => {
-                new_.push(v);
-            })
+            new_ = [...this.dataSorted];
         }
     } else {
         for (let i = 0; i < this.dataSorted.length; i++) {

@@ -163,7 +163,7 @@
             let oldBlock = !!this.nSortedTreeBlock;
             this.nSortedTreeBlock = false;
 
-            if(!this.__checkedRows.length && !this.nReorderedTree){
+            if (!this.__checkedRows.length && !this.nReorderedTree) {
                 this.nSortedTree = undefined;
             }
 
@@ -181,7 +181,7 @@
                 }
             })
 
-            if(oldTreeCat!=this.nSortedTree || oldBlock!=this.nSortedTreeBlock){
+            if (oldTreeCat != this.nSortedTree || oldBlock != this.nSortedTreeBlock) {
                 this.ScrollClasterized.insertToDOM(null, false, true)
             }
 
@@ -221,7 +221,7 @@
 
 
         if (this.fields.tree.selectTable && row.v && !this.fields.tree.treeBfield) {
-            $('<div class="menu-item"><i class="fa fa-edit"></i> '+App.translate('Edit')+'</div>').on('click', () => {
+            $('<div class="menu-item"><i class="fa fa-edit"></i> ' + App.translate('Edit') + '</div>').on('click', () => {
                 let obj = {id: row.v};
                 new EditPanel(this.fields.tree.selectTable, null, obj).then(() => {
                     this.model.refresh();
@@ -229,7 +229,7 @@
             }).appendTo($divPopoverArrowDown)
 
 
-            $('<div class="menu-item"><i class="fa fa-plus"></i> '+App.translate('Add a branch')+'</div>')
+            $('<div class="menu-item"><i class="fa fa-plus"></i> ' + App.translate('Add a branch') + '</div>')
                 .on('click', () => {
 
                     let parentField = this.fields.tree.treeViewParentField || "tree";
@@ -243,7 +243,7 @@
         }
 
         if (this.isInsertable()) {
-            $('<div class="menu-item"><i class="fa fa-th-large"></i> '+App.translate('Add a row')+'</div>')
+            $('<div class="menu-item"><i class="fa fa-th-large"></i> ' + App.translate('Add a row') + '</div>')
                 .on('click', () => {
                     if (this.tableRow.type === 'cycles') {
                         this.model.add(null, {tree: row.v}).then(json => {
@@ -316,7 +316,7 @@
         } else {
             this._treeRefresh();
             this.__applyFilters(true);
-            this.ScrollClasterized.insertToDOM(null, true, true);
+            //this.ScrollClasterized.insertToDOM(null, true, true);
         }
     }
 
@@ -536,7 +536,23 @@
                 }
                 if (newTreeBranch in this.treeIndex && this.treeIndex[newTreeBranch].l) {
                     if (this.treeIndex[newTreeBranch][arr].indexOf(bVal.toString()) === -1) {
-                        this.treeIndex[newTreeBranch][arr].push(bVal.toString());
+                        let done = false;
+                        if (this.tableRow.with_order_field && this.data[bVal] && this.data[bVal].n) {
+                            if (this.treeIndex[newTreeBranch][arr].length && this.data[this.treeIndex[newTreeBranch][arr][0]] && this.data[this.treeIndex[newTreeBranch][arr][0]].n > this.data[bVal].n) {
+                                done = true;
+                                this.treeIndex[newTreeBranch][arr].unshift(bVal)
+                            } else {
+                                this.treeIndex[newTreeBranch][arr].some((v, k) => {
+                                    if (this.data[bVal].n > this.data[v].n && this.treeIndex[newTreeBranch][arr][k + 1] && this.treeIndex[newTreeBranch][arr][k + 1] && this.data[this.treeIndex[newTreeBranch][arr][k + 1]] && this.data[this.treeIndex[newTreeBranch][arr][k + 1]].n > this.data[bVal].n) {
+                                        done = true;
+                                        this.treeIndex[newTreeBranch][arr].splice(k + 1, 0, bVal)
+                                    }
+                                })
+                            }
+                        }
+                        if (!done) {
+                            this.treeIndex[newTreeBranch][arr].push(bVal.toString());
+                        }
                     }
 
                     if (openIt) {
