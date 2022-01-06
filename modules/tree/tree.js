@@ -320,7 +320,7 @@
                             const checkForStr = (str) => {
                                 for (var i = 0; i < words.length; i++) {
                                     word = words[i];
-                                    if ((str).toLowerCase().indexOf(word) === -1) {
+                                    if ((str).toString().toLowerCase().indexOf(word) === -1) {
                                         return false;
                                     }
                                 }
