@@ -283,12 +283,19 @@ $.extend(App.pcTableMain.prototype, {
             visibleColumnsIndexes.push(field.name);
         });
 
-        pcTable.model.checkInsertRow(data, pcTable._insertRowHash, this.insertRow.clearField).then(function (json) {
+        pcTable.model.checkInsertRow(data, pcTable._insertRowHash, this.insertRow.clearField, (!pcTable._insertRowHash ? 'all' : 'true')).then(function (json) {
             pcTable.insertRow.clearField = null;
             pcTable._insertRowHash = pcTable._insertRowHash || json.hash;
             item = json.row;
             let errors = false;
             let tabi = 2;
+
+            if (json.selects) {
+                Object.keys(json.selects).forEach((k) => {
+                    pcTable.fields[k].loadedSelect = json.selects[k]
+                })
+            }
+
             $.each(pcTable.fieldCategories.column, function (ind, field) {
 
 
@@ -340,9 +347,9 @@ $.extend(App.pcTableMain.prototype, {
 
                 if (td.data('input')) {
                     let _btn = td.data('input').find('button:first');
-                    if(false && _btn.length){
+                    if (false && _btn.length) {
                         _btn.attr('tabindex', tabi++)
-                    }else{
+                    } else {
                         td.data('input').attr('tabindex', tabi++)
                     }
                 }

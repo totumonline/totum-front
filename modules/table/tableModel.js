@@ -414,7 +414,7 @@
             setTableFavorite: function (status) {
                 return this.__ajax('post', {status: status, method: 'setTableFavorite'});
             },
-            checkInsertRow: function (data, hash, clearField) {
+            checkInsertRow: function (data, hash, clearField, loadSelects) {
                 var sendData = {};
                 $.each(data, function (k, v) {
                     if (v != undefined) {
@@ -425,17 +425,18 @@
                     data: sendData,
                     hash: hash,
                     clearField: clearField,
+                    loadSelects: loadSelects,
                     method: 'checkInsertRow'
                 });
             },
-            checkEditRow: function (data) {
+            checkEditRow: function (data, loadSelects) {
                 var sendData = {};
                 $.each(data, function (k, v) {
                     if (v != undefined) {
                         sendData[k] = v;
                     }
                 });
-                return this.__ajax('post', {data: sendData, method: 'checkEditRow'});
+                return this.__ajax('post', {data: sendData, method: 'checkEditRow', loadSelects: loadSelects});
             },
             viewRow: function (id) {
                 return this.__ajax('post', {id: id, method: 'viewRow'});

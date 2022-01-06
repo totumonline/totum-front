@@ -48,17 +48,36 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         }
 
         let self = this;
+
+
         const Check = () => {
             return new Promise(function (resolve, reject) {
-                EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), hash, clearField).then(function (json) {
+                const success = function (json) {
                     if (EditPanelFunc.panelType == 'edit' && isFirstLoad) {
                         firstLoad = $.extend(true, {}, json.row);
                     }
                     hash = hash || json.hash;
+
+                    if (json.selects) {
+                        Object.keys(json.selects).forEach((k) => {
+                            EditPanelFunc.pcTable.fields[k].loadedSelect = json.selects[k]
+                        })
+                    }
+
                     EditPanelFunc.editRow.call(EditPanelFunc, json);
                     resolve(EditPanelFunc);
                     fieldParamsChanged = false;
-                }).fail(reject);
+                };
+
+                switch (checkMethod) {
+                    case 'checkEditRow':
+                        EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), (isFirstLoad ? 'all' : 'true')).then(success).fail(reject);
+                        break;
+                    case 'checkInsertRow':
+                        EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), hash, clearField, (isFirstLoad ? 'all' : 'true')).then(success).fail(reject);
+                        break;
+                }
+
             })
         }
         if (EditPanelFunc.beforeSave && !isFirstLoad) {
@@ -701,7 +720,6 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             cell.html(span).data('input', null);
         } else {
 
-
             EditPanelFunc.blockedFields[field.name] = false;
 
             let getEditVal = async function ($input) {
@@ -1081,6 +1099,13 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 return false;
             }
         }
+
+        EditPanelFunc.pcTable.fields = {...EditPanelFunc.pcTable.fields};
+
+        if (checkMethod === 'checkInsertRow') {
+            EditPanelFunc.pcTable._insertItem = EditPanelFunc.editItem;
+        }
+
         return true;
     }
 

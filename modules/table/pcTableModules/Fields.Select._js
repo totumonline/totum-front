@@ -239,7 +239,13 @@ fieldTypes.select = {
             if (field.getEditSelect) {
                 res = field.getEditSelect(itemTmp, field.name, q, null, null, RequestObject);
             } else {
-                res = field.pcTable.model.getEditSelect(itemTmp, field.name, q, null, null, RequestObject);
+                if (field.loadedSelect) {
+                    res = $.Deferred();
+                    res.resolve({...field.loadedSelect});
+                    delete field.loadedSelect;
+                } else {
+                    res = field.pcTable.model.getEditSelect(itemTmp, field.name, q, null, null, RequestObject);
+                }
             }
             res.then(function (json) {
                 divParent.find('.loading').remove();
@@ -883,11 +889,11 @@ fieldTypes.select = {
             setTimeout(function () {
                 field.focusElement(div)
             }, 50)
-        } else{
+        } else {
             if (div.closest('tr').is('.InsertRow')) {
                 this.pcTable._insertRow.find('.active').removeClass('active');
                 div.closest('td').addClass('active');
-                if(button.attr('aria-expanded')!=='true'){
+                if (button.attr('aria-expanded') !== 'true') {
                     button.click();
                 }
             }
