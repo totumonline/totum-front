@@ -328,15 +328,19 @@
                     $(ui.item).removeClass('kanban-disabled')
 
                     let $item = $(ui.item);
-                    if ($item.data('prev') === $(ui.item).prev().data('id')) {
-                        return;
-                    }
+
 
                     let itemId = $item.data('id');
-                    let nowBeforeId = $item.prev().data('id');
+
 
                     let kanban = this.data[itemId][this.tableRow.panels_view.kanban].v || '';
                     let newKanban = $item.closest('.kanban').data('value');
+
+                    if ($item.data('prev') === $(ui.item).prev().data('id') && kanban == newKanban) {
+                        return;
+                    }
+
+                    let nowBeforeId = $item.prev().data('id');
                     $item.closest('.kanban').removeClass('kanban-disabled')
 
                     if (kanban != newKanban) {
