@@ -242,7 +242,7 @@
                 }).appendTo($divPopoverArrowDown)
         }
 
-        if (this.isInsertable()) {
+        if (this.isInsertable() && this.fields.tree.treeViewType !== 'self') {
             $('<div class="menu-item"><i class="fa fa-th-large"></i> ' + App.translate('Add a row') + '</div>')
                 .on('click', () => {
                     if (this.tableRow.type === 'cycles') {
@@ -255,7 +255,7 @@
                         });
                     } else {
                         let obj = {tree: {v: row.v}};
-                        new EditPanel(this, null, obj, null, {tree: true}).then(() => {
+                        new EditPanel(this, null, obj, null, {tree: true}).then((json) => {
                             this.model.refresh();
                         })
                     }
@@ -316,7 +316,10 @@
         } else {
             this._treeRefresh();
             this.__applyFilters(true);
-            //this.ScrollClasterized.insertToDOM(null, true, true);
+            if (this.treeLoading) {
+                this.treeLoading = false;
+                this.ScrollClasterized.insertToDOM(null, true, true);
+            }
         }
     }
 
@@ -338,6 +341,7 @@
         let treeRow = this.treeIndex[$(node).data('treeRow')];
         if (node) {
             $(node).closest('td').html(App.translate('Loading'));
+            this.treeLoading = true;
         }
         if (!treeRow.opened) {
             this._expandTreeFolderRow(treeRow, treeRowRecurcive)
@@ -395,7 +399,7 @@
                         let row = this.getTreeBranch(tv, i);
                     })
                 }
-                if (json.rows) {
+                if (json.rows && json.rows.length) {
                     this._treeApplyRows(json.rows);
                 }
                 if (!treeRowRecurcive || (recursiveCounter.counter-- < 1)) {
