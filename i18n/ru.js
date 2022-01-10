@@ -74,7 +74,7 @@ App.langs.ru =
 
 
                 'Edited': 'Редактировано',
-                'There is no any active action.': 'Нет включенных экшенов.',
+                'There is no any active trigger.': 'Нет включенных триггеров.',
                 'Your last comment editing': 'Редактирование последнего комментария',
                 "Cancel": "Отмена",
                 "Add": "Добавить",

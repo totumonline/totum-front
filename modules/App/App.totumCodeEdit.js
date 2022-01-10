@@ -10,7 +10,7 @@
             let panelClassSwitcher = () =>{};
             let chsDiv;
             if (codeData && codeData.codeType === 'codeAction' && checkboxes) {
-                wrapper.append('<div class="code-checkboxes-warning-panel">' + App.translate('There is no any active action.') + '</div>')
+                wrapper.append('<div class="code-checkboxes-warning-panel">' + App.translate('There is no any active trigger.') + '</div>')
 
                 panelClassSwitcher = () => {
                     if (chsDiv.find(':checked').length === 0) {

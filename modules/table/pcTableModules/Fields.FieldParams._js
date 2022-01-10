@@ -455,7 +455,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
                     if (fName == 'codeAction') {
                         if (!input.data('checking')) {
-                            input.append('<div class="code-checkboxes-warning-panel">' + App.translate('There is no any active action.') + '</div>');
+                            input.append('<div class="code-checkboxes-warning-panel">' + App.translate('There is no any active trigger.') + '</div>');
                             const checkWarningFunction = () => {
                                 if (!input.is('.disabled') && input.next().find(':checked').length === 0) {
                                     input.addClass('code-checkboxes-active-warning')
