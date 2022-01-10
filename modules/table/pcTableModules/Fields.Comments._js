@@ -491,7 +491,7 @@ fieldTypes.comments = {
                 }
             ], class: 'linkButtons'
         };
-        let title = 'Edit your last comment';
+        let title = App.translate('Your last comment editing');
 
         if (screen.width <= window.MOBILE_MAX_WIDTH) {
             Dialog = App.mobilePanel(title, html, props)

@@ -74,6 +74,7 @@ App.langs.ru =
 
 
                 'Edited': 'Редактировано',
+                'Your last comment editing': 'Редактирование последнего комментария',
                 "Cancel": "Отмена",
                 "Add": "Добавить",
                 "Add a branch": "Добавить ветку",
