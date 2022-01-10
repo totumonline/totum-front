@@ -391,7 +391,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                         }
                         blocked = true;
                         div.find('.jsonForm').prepend('<div id="fieldParamsLocker"><i class="fa fa-lock"></i><div class="unlock-click">' + App.translate('Click hear to unlock') + '</div></div>')
-                        $('.jsonForm #fieldParamsLocker').one('click', ()=>{
+                        $('.jsonForm #fieldParamsLocker').one('click', () => {
                             $('.jsonForm #fieldParamsLocker').remove();
                             blocked = false;
                         });
@@ -452,7 +452,26 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     editor.cycle_id = field.pcTable.tableRow.cycle_id;
 
                     App.CodemirrorFocusBlur(editor)
+
+                    if (fName == 'codeAction') {
+                        if (!input.data('checking')) {
+                            input.append('<div class="code-checkboxes-warning-panel">' + App.translate('There is no any active action.') + '</div>');
+                            const checkWarningFunction = () => {
+                                if (!input.is('.disabled') && input.next().find(':checked').length === 0) {
+                                    input.addClass('code-checkboxes-active-warning')
+                                } else {
+                                    input.removeClass('code-checkboxes-active-warning')
+                                }
+                            }
+                            checkWarningFunction();
+
+                            input.data('checking', true)
+                            input.parent().on('change', '[data-name="codeAction"] input,[data-name="CodeActionOnAdd"] input,[data-name="CodeActionOnChange"] input,[data-name="CodeActionOnDelete"] input,[data-name="CodeActionOnClick"] input', checkWarningFunction)
+                        }
+                    }
+
                 })
+
 
                 break;
 

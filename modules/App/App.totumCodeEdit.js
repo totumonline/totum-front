@@ -7,12 +7,25 @@
 
             let eventName = 'ctrlS.CodeEdit';
 
+            let panelClassSwitcher = () =>{};
+            let chsDiv;
+            if (codeData && codeData.codeType === 'codeAction' && checkboxes) {
+                wrapper.append('<div class="code-checkboxes-warning-panel">' + App.translate('There is no any active action.') + '</div>')
+
+                panelClassSwitcher = () => {
+                    if (chsDiv.find(':checked').length === 0) {
+                        wrapper.addClass('code-checkboxes-active-warning');
+                    } else {
+                        wrapper.removeClass('code-checkboxes-active-warning');
+                    }
+                }
+            }
+
 
             let value = code;
             let editorMax;
             let resolved = false
 
-            let chsDiv;
 
             if (checkboxes) {
                 chsDiv = $('<div class="flex">').appendTo(wrapper);
@@ -26,6 +39,8 @@
                     }
                     chsDiv.append(chDiv)
                 });
+                chsDiv.on('change', 'input', panelClassSwitcher)
+                panelClassSwitcher()
             }
 
 
