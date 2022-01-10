@@ -23,25 +23,34 @@ fieldTypes.comments = {
 
         return mainDiv;
     },
-    getValue: function (value, item, isModulPanel) {
+    getValue: function (value, item, isModulPanel, force) {
         "use strict";
         let field = this;
         let def = $.Deferred();
 
+        let data = {'fieldName': this.name};
+        if (item.id) {
+            data['rowId'] = item.id;
+        }
+
         if (isModulPanel) {
             if (!value) value = [];
-            def.resolve({'value': value});
-        } else if (value.n === 0 || (value.n === 1 && !value.cuted && !value.notViewed)) {
+            else if (typeof value === "string" && !(field.category === 'column' && !item.id)) {
+                let def2 = this.getValueFromServer ? this.getValueFromServer() : this.pcTable.model.getValue(data, this.table_id);
+                def2.then((json) => {
+                    def.resolve({'value': value, list: json.value});
+                })
+            } else {
+                def.resolve({'value': value});
+            }
+        } else if (!force && (value.n === 0 || (value.n === 1 && !value.cuted && !value.notViewed))) {
             if (!value) value = [];
             def.resolve({'value': [value.c]});
 
-        } else if (value.n > 1 && !value.notViewed && value.all) {
+        } else if (!force && value.n > 1 && !value.notViewed && value.all) {
             def.resolve({'value': value.c});
         } else {
-            let data = {'fieldName': this.name};
-            if (item.id) {
-                data['rowId'] = item.id;
-            }
+
             def = this.getValueFromServer ? this.getValueFromServer() : this.pcTable.model.getValue(data, this.table_id);
         }
         def.then(function (json) {
@@ -130,7 +139,7 @@ fieldTypes.comments = {
         }
         if (com[4] === 'editable' && withEdits) {
             edit = edit || $('<div class="com_edit">').appendTo(div)
-            edit.append('<button class="btn btn-xxs comment-edit"><i class="fa fa-edit"></i></button>')
+            edit.html('<button class="btn btn-m btn-default comment-edit">' + (com[3] ? '<span>' + App.translate('Edited') + '</span>' : '') + '<i class="fa fa-edit"></i></button>')
         }
 
         return div;
@@ -142,7 +151,7 @@ fieldTypes.comments = {
 
         let field = this;
         let div = $oldInput || $('<div>');
-        let dialog = div.data('dialog') || $('<div>').css('min-height', 200);
+        let dialog = $('<div>').css('min-height', 200);
         div.data('dialog', dialog);
         let buttons;
         let valPreview, Dialog;
@@ -152,21 +161,28 @@ fieldTypes.comments = {
         oldValueParam = oldValueParam.v || '';
 
         let formFill = function (dlg) {
-            field.getValue(oldValueParam, item, !editNow).then(function (json) {
+            field.getValue(oldValueParam, item, !editNow, true).then(function (json) {
                 let $input = $('<textarea type="text" style="height:90px;resize: vertical" class="form-control"/>');
 
-                if (typeof json.value === 'object') {
-                    $.each(json.value, function (i, com) {
+                if (typeof json.value === 'object' || typeof json.list === 'object') {
+                    let list = json.value;
+                    if (typeof list !== 'object') {
+                        list = json.list;
+                    }
+
+                    $.each(list, function (i, com) {
                         element.append(field.getCommentLine(com, true));
                     });
 
                     element.on('click', '.comment-edit', (event) => {
-                        field.editLastComment(json.value[json.value.length - 1], item);
+                        field.editLastComment(list[list.length - 1], item);
                         Dialog.close();
                     })
 
 
-                } else if (json.value) {
+                }
+
+                if (json.value && typeof json.value !== 'object') {
                     $input.val(json.value)
                 } else if (div.data('val')) {
                     $input.val(div.data('val'))
@@ -331,7 +347,7 @@ fieldTypes.comments = {
 
                 var div = $(this).closest('div');
                 if (field.pcTable.isMobile) {
-                    App.mobilePanel(title, dialog, {
+                    Dialog = App.mobilePanel(title, dialog, {
                         buttons: buttonsClick,
                         onhide: function (event) {
                             showned = false;
@@ -349,7 +365,7 @@ fieldTypes.comments = {
                         }
                     })
                 } else {
-                    window.top.BootstrapDialog.show({
+                    Dialog = window.top.BootstrapDialog.show({
                         message: dialog,
                         type: null,
                         cssClass: 'fieldparams-edit-panel',
@@ -400,11 +416,14 @@ fieldTypes.comments = {
         if (val.v.forEach) {
             let f = $('<div>');
             val.v.forEach(function (row) {
+
+
                 f.append(
                     $('<div class="">')
                         .append($('<span class="user">').text(row[1]))
                         .append($('<span class="date">').text(row[0]))
                         .append($('<div class="text">').text(row[2]))
+                        .append(row[3]?$('<div class="edited">').text(App.translate('Edited')):'')
                 )
             });
             return f.children();

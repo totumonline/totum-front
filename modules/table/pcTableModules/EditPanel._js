@@ -218,7 +218,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (cell.length) {
                 if (cell.data('input') && !format.block) {
-                    if (!Oldval || field.isDataModified(EditPanelFunc.editItem[field.name].v, Oldval.v) || field.codeSelectIndividual || (EditPanelFunc.panelType == 'insert' && field.code && !field.codeOnlyInAdd) || field.type === 'fieldParams' || field.name in loadedContextDataFields) {
+                    if (!Oldval || field.isDataModified(EditPanelFunc.editItem[field.name].v, Oldval.v) || field.codeSelectIndividual || (EditPanelFunc.panelType == 'insert' && field.code && !field.codeOnlyInAdd) || ['fieldParams'].indexOf(field.type) > -1 || field.name in loadedContextDataFields) {
 
                         EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format);
                     }

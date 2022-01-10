@@ -21,6 +21,7 @@ App.langs.ru =
         },
         modelMethods: {
             'edit': 'Изменение',
+
             'checkInsertRow': 'Предварительное добавление',
             'duplicate': 'Дублирование',
             'refresh_rows': 'Пересчет строк',
@@ -71,6 +72,8 @@ App.langs.ru =
                 "Edit totumCode in %s": "Редактировать Тотум-код в %s",
                 "Edit totumCode in value of %s": "Редактировать Тотум-код в ячейке %s",
 
+
+                'Edited': 'Редактировано',
                 "Cancel": "Отмена",
                 "Add": "Добавить",
                 "Add a branch": "Добавить ветку",
