@@ -703,6 +703,12 @@
                 }
             }
 
+            if(item.f && item.f.rowcomment){
+                text.append($('<div class="menu-item comment"><i class="fa fa-info"></i></div>').on('click', ()=>{
+                    App.notify(item.f.rowcomment);
+                }));
+            }
+
             let popoverId = App.popNotify({
                 isParams: true,
                 $text: text,
@@ -720,7 +726,6 @@
                 text.remove();
             }).find('.arrow').css('left', '11px').end()
                 .find('.popover-content').css('padding', '5px');
-
 
             return false;
         }
