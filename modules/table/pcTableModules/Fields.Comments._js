@@ -3,6 +3,9 @@ fieldTypes.comments = {
     getEditVal: function (div) {
         return div.data('val');
     },
+    isDataModified: function (editVal, itemVal) {
+        return editVal !== null;
+    },
     getCellText: function (fieldValue) {
         let field = this;
         if (fieldValue.n === 0 || !fieldValue.n) return '';
@@ -115,11 +118,20 @@ fieldTypes.comments = {
 
         return def.promise();
     },
-    getCommentLine: function (com) {
+    getCommentLine: function (com, withEdits) {
         let div = $('<div class="comments-line">');
         div.append($('<span class="com_author">').text(com[1]));
         div.append($('<span class="com_dt">').text(com[0]));
         div.append($('<div class="com_text">').html(App.textWithLinks(com[2])));
+
+        let edit;
+        if (com[3]) {
+            div.append(edit = $('<div class="com_edit">').html(App.translate('Edited')));
+        }
+        if (com[4] === 'editable' && withEdits) {
+            edit = edit || $('<div class="com_edit">').appendTo(div)
+            edit.append('<button class="btn btn-xxs comment-edit"><i class="fa fa-edit"></i></button>')
+        }
 
         return div;
     },
@@ -133,7 +145,8 @@ fieldTypes.comments = {
         let dialog = div.data('dialog') || $('<div>').css('min-height', 200);
         div.data('dialog', dialog);
         let buttons;
-        let valPreview;
+        let valPreview, Dialog;
+        let btnClicked = false;
         let element = editNow === 'editField' ? div : dialog;
 
         oldValueParam = oldValueParam.v || '';
@@ -144,8 +157,15 @@ fieldTypes.comments = {
 
                 if (typeof json.value === 'object') {
                     $.each(json.value, function (i, com) {
-                        element.append(field.getCommentLine(com));
+                        element.append(field.getCommentLine(com, true));
                     });
+
+                    element.on('click', '.comment-edit', (event) => {
+                        field.editLastComment(json.value[json.value.length - 1], item);
+                        Dialog.close();
+                    })
+
+
                 } else if (json.value) {
                     $input.val(json.value)
                 } else if (div.data('val')) {
@@ -196,7 +216,7 @@ fieldTypes.comments = {
 
         let title = App.translate('Comments of field') + ' <b>' + (this.title) + '</b>' + this.pcTable._getRowTitleByMainField(item, ' (%s)');
         let eventName = 'ctrlS.commentdialog';
-        let btnClicked = false;
+
 
         if (editNow) {
             if (editNow === 'editField') {
@@ -232,7 +252,7 @@ fieldTypes.comments = {
                     }
 
                     if (field.pcTable.isMobile) {
-                        App.mobilePanel(title, dialog, {
+                        Dialog = App.mobilePanel(title, dialog, {
                             buttons: buttons,
                             onhide: function (dialog) {
                                 $('body').off(eventName);
@@ -251,7 +271,7 @@ fieldTypes.comments = {
                             }
                         })
                     } else {
-                        let Dialog = window.top.BootstrapDialog.show({
+                        Dialog = window.top.BootstrapDialog.show({
                             message: dialog,
                             type: null,
                             title: title,
@@ -410,6 +430,64 @@ fieldTypes.comments = {
             c: oldValueParam[oldValueParam.length - 1],
             n: oldValueParam.length
         })
+    },
+    editLastComment: function (com, item) {
+        let input, Dialog, field = this;
+        let html = $('<div>');
+        input = $('<input type="text" class="form-control" id="ttmInput">').appendTo(html).val(com[2]).on('keydown', (event) => {
+            if (event.keyCode === 13) {
+                save();
+            }
+        });
+
+        let save = function () {
+            if (com[2] === input.val()) {
+                Dialog.close();
+                return;
+            }
+            field.pcTable.model.save({
+                [item.id ? item.id : 'params']: {[field.name]: {value: input.val(), editLastComment: com[2]}}
+            })
+                .then(
+                    (json) => {
+                        field.pcTable.table_modify(json);
+                        Dialog.close();
+                    }
+                );
+        };
+
+        setTimeout(() => {
+            input.focus();
+        }, 1)
+
+        let props = {
+            buttons: [
+                {
+                    label: App.translate('Save'), action: save
+                }
+                , {
+                    label: App.translate('Cancel'), action: function (dialog) {
+                        dialog.close();
+                    }
+                }
+            ], class: 'linkButtons'
+        };
+        let title = 'Edit your last comment';
+
+        if (screen.width <= window.MOBILE_MAX_WIDTH) {
+            Dialog = App.mobilePanel(title, html, props)
+        } else {
+            if (props.width || !props.html) {
+                props.onshown = function (dialog) {
+                    if (props.width) {
+                        dialog.$modalDialog.width(props.width)
+                    }
+                }
+            }
+            Dialog = App.panel(title, html, props);
+        }
+
+
     }
 
 };

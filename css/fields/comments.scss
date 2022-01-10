@@ -1,29 +1,43 @@
 @import "../vars";
-#selectPanel .field-value .comments{
+
+#selectPanel .field-value .comments {
   span {
     display: inline;
   }
 }
-.pcTable-container td .cell-value{
-  .notViewed{
+
+.pcTable-container td .cell-value {
+  .notViewed {
     border-bottom: 2px solid $btn-danger-bgcolor;
   }
 }
-.com_author{
+
+.com_author {
   font-weight: bold;
 }
-.com_dt{
+
+.com_edit {
+  text-align: right;
+  .fa {
+    margin-right: 5px;
+  }
+}
+
+.com_dt {
   float: right
 }
-.comments-line{
+
+.comments-line {
   padding-bottom: 14px;
   white-space: pre-wrap;
 }
-#selectPanelBig{
-  .comments-line{
+
+#selectPanelBig {
+  .comments-line {
     padding-right: 10px;
   }
 }
-.comments-input{
+
+.comments-input {
   padding-top: 10px;
 }
