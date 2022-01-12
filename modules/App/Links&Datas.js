@@ -668,29 +668,69 @@
                 case 'input':
                     let input, Dialog;
                     let html = $('<div>').html(data[1].html);
-                    if (html.find('#ttmInput').length) {
-                        input = html.find('#ttmInput');
-                    } else {
-                        input = $('<input type="text" class="form-control" id="ttmInput">');
-                        if (data[1].type) {
-                            input.attr('type', data[1].type)
-                            if (data[1].type === 'password') {
-                                input.attr('autocomplete', "off")
-                            }
+
+                    let getVal;
+                    if (data[1].type === 'select') {
+
+                        let pcTable = {...model.pcTable};
+                        let field = $.extend({}, App.FieldTypes.select, {
+                            name: 'inputSelect',
+                            multiple: data[1].multiple
+                        });
+                        field.pcTable = model.getPcTable();
+
+                        model.inputClick = function (hash, val, selectData) {
+                            return this.__ajax('post', {
+                                method: 'linkInputClick',
+                                hash: hash,
+                                val: val,
+                                search: selectData
+                            })
                         }
-                        if (data[1].value)
-                            input.val(data[1].value)
-                        html.append(input);
-                        input.wrap('<div>');
-                        input.on('keydown', (event) => {
-                            if (event.keyCode === 13) {
-                                save();
+                        field.getEditSelect = (itemTmp, name, q, _, __, RequestObject) => {
+                            return model.inputClick(data[1].hash, null, {
+                                q: (q || ''),
+                                checkedVals: input ? field.getEditVal(input) : data[1].value
+                            }, RequestObject)
+                        }
+                        getVal = () => {
+                            return field.getEditVal(input)
+                        }
+                        input = field.getEditElement(html, data[1].value, [], () => {
+                        }, () => {
+                        }, () => {
+                        }, 1, 'editField')
+                        html.html(input)
+                    } else {
+
+                        if (html.find('#ttmInput').length) {
+                            input = html.find('#ttmInput');
+                        } else {
+                            input = $('<input type="text" class="form-control" id="ttmInput">');
+                            if (data[1].type) {
+                                input.attr('type', data[1].type)
+                                if (data[1].type === 'password') {
+                                    input.attr('autocomplete', "off")
+                                }
                             }
-                        })
+                            if (data[1].value)
+                                input.val(data[1].value)
+                            html.append(input);
+                            input.wrap('<div>');
+                            input.on('keydown', (event) => {
+                                if (event.keyCode === 13) {
+                                    save();
+                                }
+                            })
+                        }
+
+                        getVal = () => {
+                            return input.val()
+                        }
                     }
 
                     let save = function () {
-                        model.inputClick(data[1].hash, input.val()).then(function () {
+                        model.inputClick(data[1].hash, getVal()).then(function () {
                             if (data[1].close && wnd && wnd.closeMe) {
                                 window.closeMe();
                             } else if (data[1].refresh) {
