@@ -125,7 +125,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                             form.find('[data-parent="' + fName.toLowerCase() + '"]').hide().find('input[type="checkbox"]').prop('checked', false).trigger('change');
                         }
                     };
-                    let divInput = field.__addInput.call(field, fName, fieldSettings, thisValue, item, clback);
+                    let divInput = field.__addInput.call(field, fName, fieldSettings, thisValue, item, clback, form);
 
                     if ((fieldSettings.align || 'center') !== 'center') {
                         if (!left) {
@@ -406,7 +406,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
         return div.data('val', oldValueParam.v).data('input', form);//.attr('data-category', category).attr('data-category', category);
 
     },
-    __addInput: function (fName, f, Val, item, callback) {
+    __addInput: function (fName, f, Val, item, callback, form) {
 
         let field = this;
         var f = f || {};
@@ -453,7 +453,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
                     App.CodemirrorFocusBlur(editor)
 
-                    if (fName == 'codeAction') {
+                    if (fName == 'codeAction' && form.find('div[data-name="type"] select').val()!=='button') {
                         if (!input.data('checking')) {
                             input.append('<div class="code-checkboxes-warning-panel">' + App.translate('There is no any active trigger.') + '</div>');
                             const checkWarningFunction = () => {

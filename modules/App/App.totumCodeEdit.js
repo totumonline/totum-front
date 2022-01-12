@@ -9,7 +9,7 @@
 
             let panelClassSwitcher = () =>{};
             let chsDiv;
-            if (codeData && codeData.codeType === 'codeAction' && checkboxes) {
+            if (checkboxes && checkboxes.length && codeData && codeData.codeType === 'codeAction' && checkboxes) {
                 wrapper.append('<div class="code-checkboxes-warning-panel">' + App.translate('There is no any active trigger.') + '</div>')
 
                 panelClassSwitcher = () => {
@@ -27,7 +27,7 @@
             let resolved = false
 
 
-            if (checkboxes) {
+            if (checkboxes && checkboxes.length) {
                 chsDiv = $('<div class="flex">').appendTo(wrapper);
                 checkboxes.forEach(([name, title, val]) => {
                     let ch = $('<input type="checkbox">').attr('name', name);

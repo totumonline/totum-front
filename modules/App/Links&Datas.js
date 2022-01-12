@@ -696,7 +696,7 @@
                         getVal = () => {
                             return field.getEditVal(input)
                         }
-                        input = field.getEditElement(html, data[1].value, [], () => {
+                        input = field.getEditElement(html, {v:data[1].value}, [], () => {
                         }, () => {
                         }, () => {
                         }, 1, 'editField')
