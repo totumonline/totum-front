@@ -41,7 +41,7 @@
 
                 creatorButton.on('click', () => {
                     let mainTable = $('#table').data('pctable');
-                    if (mainTable && (isCommonView || mainTable.isTreeView || mainTable.viewType)) {
+                    if (mainTable && (isCommonView || mainTable.isTreeView || mainTable.viewType || mainTable.tableRow.rotated_view)) {
                         let showed;
                         if (!creatorButton.data('bs.popover')) {
 
