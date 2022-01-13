@@ -688,6 +688,7 @@
                                 else if (br.type === 'tab_button'){
                                     let tab = $('<li><a>' + br.text + '</a></li>').on('click', ()=>{
                                         App.clickToCyclesTabButton(br.id);
+                                        return false
                                     })
                                     tablsUl.append(tab)
                                 }
