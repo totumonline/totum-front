@@ -649,7 +649,7 @@
                 this._beforeSpace_title = $('<div class="pcTable-title"><span class="title"/><span class="bttns"/><div class="updated"/></div>').prependTo(this._beforeSpace);
 
 
-                if (this.tableRow.type === 'calcs' && window.TREE_DATA) {
+                if ((this.tableRow.type === 'calcs' || (new URLSearchParams(window.location.search)).has('b')) && window.TREE_DATA) {
                     let tabls = $('<div class="pcTable-tabls"><ul class="nav nav-tabs"></div>');
                     let tablsUl = tabls.find('ul');
                     let pathId, topPathId;
@@ -683,8 +683,14 @@
                                         tablsUl.append('<li><a href="/Table/' + topPathId + '"><i class="fa fa-arrow-left"></a></li>');
                                     addedBack = true;
                                 }
-                                if (br.id === ('table' + this.tableRow.id))
+                                if (br.state.selected)
                                     tablsUl.append('<li class="active"><a class="tab-title">' + br.text + '</a></li>');
+                                else if (br.type === 'tab_button'){
+                                    let tab = $('<li><a>' + br.text + '</a></li>').on('click', ()=>{
+                                        App.clickToCyclesTabButton(br.id);
+                                    })
+                                    tablsUl.append(tab)
+                                }
                                 else
                                     tablsUl.append('<li><a href="/Table/' + pathId + '/' + br.href + '">' + br.text + '</a></li>')
                             }

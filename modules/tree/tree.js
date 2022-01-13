@@ -383,6 +383,9 @@
                     case 'link':
                         window.location.href = d.node.a_attr.href;
                         break;
+                    case 'tab_button':
+                        App.clickToCyclesTabButton(d.node.id)
+                        break;
                     case 'folder':
                     case 'project':
                         if (d.node.state.opened) {

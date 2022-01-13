@@ -481,6 +481,13 @@ input:not([type="checkbox"]):focus {
     overflow-x: auto;
     overflow-y: hidden;
 
+    li{
+      cursor: pointer;
+    }
+    li:active{
+      cursor: auto;
+    }
+
     &::-webkit-scrollbar {
       height: 5px;
       margin-bottom: -5px;
