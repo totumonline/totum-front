@@ -576,6 +576,7 @@
 
                 $.each(pcTable.hidden_fields, function (k, field) {
                     pcTable.hidden_fields[k] = $.extend({}, defaultField, fieldTypes[field.type], field);
+                    pcTable.hidden_fields[k].pcTable = pcTable;
                     pcTable.hidden_fields[k].isHiddenField = true;
                 });
 
@@ -647,6 +648,7 @@
                             pcTable.fieldCategories[field.category].push(field);
                         }
                     } else if (field.name) {
+                    
                         pcTable.hidden_fields[field.name] = field;
                     }
                 };
