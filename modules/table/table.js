@@ -575,7 +575,7 @@
                 pcTable.hidden_fields = pcTable.hidden_fields || {};
 
                 $.each(pcTable.hidden_fields, function (k, field) {
-                    pcTable.hidden_fields[k] = $.extend({}, field, fieldTypes[field.type], field);
+                    pcTable.hidden_fields[k] = $.extend({}, defaultField, fieldTypes[field.type], field);
                     pcTable.hidden_fields[k].isHiddenField = true;
                 });
 
