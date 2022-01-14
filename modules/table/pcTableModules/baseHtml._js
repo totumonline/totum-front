@@ -226,7 +226,7 @@
                             if (typeof cellText === 'object') cellText = cellText.text();
                         }
                     }
-                    notify.append($('<div>' + App.translate('Calculated value') + ': </div>').append($('<code>').text(cellText.length<=50?cellText:cellText.substr(0, 47)+'...')));
+                    notify.append($('<div>' + App.translate('Calculated value') + ': </div>').append($('<code>').text(cellText.length <= 50 ? cellText : cellText.substr(0, 47) + '...')));
 
                     hand.one('mouseout', function () {
                         if (notify.length) {
@@ -546,7 +546,7 @@
 
 
                 $('<button class="btn btn-danger btn-xxs" title="' + App.translate('Edit table settings') + '"/>')
-                    .html('<i class="fa fa-pencil-square-o"></i>').on('click',  () => {
+                    .html('<i class="fa fa-pencil-square-o"></i>').on('click', () => {
                     (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {
                         id: pcTable.tableRow.id,
                         cycle_id: pcTable.tableRow.cycle_id
@@ -685,14 +685,13 @@
                                 }
                                 if (br.state.selected)
                                     tablsUl.append('<li class="active"><a class="tab-title">' + br.text + '</a></li>');
-                                else if (br.type === 'tab_button'){
-                                    let tab = $('<li><a>' + br.text + '</a></li>').on('click', ()=>{
+                                else if (br.type === 'tab_button') {
+                                    let tab = $('<li><a>' + br.text + '</a></li>').on('click', () => {
                                         App.clickToCyclesTabButton(br.id);
                                         return false
                                     })
                                     tablsUl.append(tab)
-                                }
-                                else
+                                } else
                                     tablsUl.append('<li><a href="/Table/' + pathId + '/' + br.href + '">' + br.text + '</a></li>')
                             }
                         });
@@ -1869,7 +1868,10 @@
                 $th.css('background-color', panelColor);
                 field.panelColor = panelColor;
             }
+
             if (field.webRoles && field.webRoles.length === 1 && field.webRoles[0].toString() === "1") {
+                $th.addClass('admin-see');
+            } else if (field.isCyclesTabButton()) {
                 $th.addClass('admin-see');
             }
 
@@ -2078,7 +2080,7 @@
                                         container: pcTable.scrollWrapper
                                     }
                                 );
-                                setTimeout(()=>{
+                                setTimeout(() => {
                                     btn.popover('show');
                                 }, 10)
 

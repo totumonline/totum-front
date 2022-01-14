@@ -12,6 +12,10 @@ fieldTypes.button = {
         $btn.wrap('<div>');
         return $btn.parent();
     },
+    isCyclesTabButton() {
+        let pcTable = this.pcTable, field = this;
+        return pcTable.tableRow.type === 'cycles' && field.category === 'column' && field.name.match(/^tab_/)
+    },
     getCellText: function (fieldValue, td, item) {
         let field = this, format = {};
         if (this.category === 'column') {

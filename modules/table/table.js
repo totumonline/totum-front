@@ -638,6 +638,8 @@
                             if ((field.name === 'tree' && field.category === 'column' && field.treeViewType && !$.cookie('ttm__commonTableView'))) {
                                 pcTable.isTreeView = true;
                                 pcTable.fieldCategories[field.category].unshift(field);
+                            } else if (!pcTable.isCreatorView && field.isCyclesTabButton()) {
+                                return;
                             } else {
                                 pcTable.fieldCategories[field.category].push(field);
                             }

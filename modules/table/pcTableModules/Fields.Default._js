@@ -9,6 +9,9 @@ var defaultField = {
     getPanelVal(val) {
         return val;
     },
+    isCyclesTabButton(){
+      return false
+    },
     getPanelFormats(divForPannelFormats, panelFormats) {
         let field = this;
         divForPannelFormats.empty();
