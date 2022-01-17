@@ -262,9 +262,12 @@
             $treeblock.data('jstree', $mes);
 
             if (!this.multiple && this.withEmptyVal) {
+               let val = item[field.name].v;
                 $mes.on("select_node.jstree", function (evt, data) {
-                    if (data.node.state.selected) {
-                        $mes.jstree(true).deselect_node(data.node.id)
+                    if (val === data.node.id) {
+                        data.instance.deselect_node(data.instance.get_node(data.node.id));
+                    }else{
+                        val = data.node.id
                     }
                 })
             }
