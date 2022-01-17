@@ -262,12 +262,13 @@
             $treeblock.data('jstree', $mes);
 
             if (!this.multiple && this.withEmptyVal) {
-                $mes.on("click", 'li.jstree-node[aria-selected="true"]', function (e) {
-                    $mes.jstree(true).deselect_node($(this));
-                    return false;
+                $mes.on("select_node.jstree", function (evt, data) {
+                    if (data.node.state.selected) {
+                        $mes.jstree(true).deselect_node(data.node.id)
+                    }
                 })
-
             }
+
             let reloadStates = null;
 
             $mes.on("init.jstree", function (e, data) {
