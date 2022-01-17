@@ -584,11 +584,14 @@ fieldTypes.select = {
                             })
                         }
 
-                        input.on('hidden.bs.select', function () {
+                        input.on('hidden.bs.select', function (event) {
                             let changed = input.data('changed');
-                            let event = {};
                             let keyPressed = input.data('keyPressed');
                             if (keyPressed) event[keyPressed] = true;
+
+                            if (changed) {
+                                event = {type: 'changed'}
+                            }
 
                             if (!field.multiple) {
                                 setTimeout(function () {

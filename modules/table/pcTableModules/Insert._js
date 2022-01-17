@@ -518,10 +518,15 @@ $.extend(App.pcTableMain.prototype, {
         var saveClbck = function ($input, event, refresh) {
 
             var editValResult = getEditVal($input);
-            pcTable._currentInsertCellIndex = index + 1;
+
+            if (event.type !== 'hidden') {
+                pcTable._currentInsertCellIndex = index + 1;
+            }
             if (editValResult === null || refresh === true) {
                 parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
-                pcTable._insertFocusIt.call(pcTable)
+                if (event.type !== 'hidden'){
+                    pcTable._insertFocusIt.call(pcTable)
+                }
             } else {
                 if (field.isDataModified(editValResult, pcTable._insertItem[field.name].v)) {
                     pcTable.insertRow.editedFields[field.name] = true;
@@ -530,7 +535,7 @@ $.extend(App.pcTableMain.prototype, {
                         pcTable._createInsertCell.call(pcTable, td, field, row, index, nodeName, parentFunction);
                     }
                     parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
-                } else {
+                } else if (event.type !== 'hidden') {
                     pcTable._insertFocusIt.call(pcTable)
                 }
             }
