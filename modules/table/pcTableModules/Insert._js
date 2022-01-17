@@ -329,7 +329,7 @@ $.extend(App.pcTableMain.prototype, {
                         } else if (item[field.name].v === null && Oldval.v == '') {
                             isEqual = true;
                         } else {
-                            isEqual = Object.equals(item[field.name].v, Oldval.v) && !field.codeSelectIndividual;
+                            isEqual = Object.equals(item[field.name].v, Oldval.v) && !field.codeSelectIndividual && field.list;
                         }
 
                         if ((Oldval === undefined || !isEqual || field.name == 'data_src' || field.type == 'comments' || (field.code && !field.codeOnlyInAdd))) {
@@ -515,16 +515,16 @@ $.extend(App.pcTableMain.prototype, {
         };
 
 
-        var saveClbck = function ($input, event, refresh) {
+        var saveClbck = function ($input, event, refresh, newVal) {
 
-            var editValResult = getEditVal($input);
+            var editValResult = newVal ? newVal.v : getEditVal($input);
 
             if (event.type !== 'hidden') {
                 pcTable._currentInsertCellIndex = index + 1;
             }
             if (editValResult === null || refresh === true) {
                 parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
-                if (event.type !== 'hidden'){
+                if (event.type !== 'hidden') {
                     pcTable._insertFocusIt.call(pcTable)
                 }
             } else {
@@ -641,18 +641,18 @@ $.extend(App.pcTableMain.prototype, {
                             if (inputOld.data('input').data('LISTs')) {
                                 inputOld.data('input').data('LISTs').isListForLoad = true;
                             }
-                            if (isAdded) {
-                                if (field.multiple) {
-                                    item[field.name].v.push(Object.keys(data.json.chdata.rows)[0]);
-                                } else {
-                                    item[field.name].v = Object.keys(data.json.chdata.rows)[0];
-                                }
-                            }
-                            inputOld.replaceWith(input = field.getEditElement(inputOld, item[field.name], item, saveClbck, escClbck, blurClbck));
-                            $('body').off('.select-add-' + field.name);
-                            td.data('input', input);
-                            parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
 
+                            if (isAdded) {
+                                let newVal = $.extend(true, {}, item[field.name]);
+                                if (field.multiple) {
+                                    newVal.v.push(Object.keys(data.json.chdata.rows)[0]);
+                                } else {
+                                    newVal.v = Object.keys(data.json.chdata.rows)[0];
+                                }
+                                saveClbck(inputOld, {type: 'hidden'}, false, newVal)
+                            }
+                            $('body').off('.select-add-' + field.name);
+                            // parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
                         }
                     });
                 pcTable.model.selectSourceTableAction(field.name, ee);
