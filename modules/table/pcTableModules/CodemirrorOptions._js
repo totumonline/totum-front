@@ -222,7 +222,7 @@
                                                                     if (matches[1] === 'id') {
                                                                         resolve(matches[2]);
                                                                     } else {
-                                                                        let keys = matches[2] || matches[3] || matches[3];
+                                                                        let keys = matches[2] || matches[3] || matches[4];
 
                                                                         pcTable.model.getIdByFieldValue({[matches[1]]: keys}).then((json) => {
                                                                             if (!json.value) {
