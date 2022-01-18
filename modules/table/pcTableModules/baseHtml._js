@@ -1173,10 +1173,17 @@
 
                             const goFunc = function () {
                                 let href;
+                                let empty_params = {};
+                                let searchParams = (new URL(document.location)).searchParams;
+                                if (searchParams.get('b')) {
+                                    empty_params.b = searchParams.get('b');
+                                }
+
                                 if (self.is('.eraser')) {
-                                    href = '?';
+                                    href = '?' + $.param(empty_params);
                                 } else {
-                                    href = '?' + $.param({'f': pcTable._filtersBlock.data('cryptoFilters') || pcTable.filtersString});
+                                    empty_params.f = pcTable._filtersBlock.data('cryptoFilters') || pcTable.filtersString;
+                                    href = '?' + $.param(empty_params);
                                 }
                                 if (pcTable.isMobile) {
                                     href += '#go-buttons';
