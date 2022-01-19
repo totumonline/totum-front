@@ -42,8 +42,17 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             if (!App.tableTypes[item['table_id']['v']]) {
                 let type;
                 if (item['table_id']['v'] != $('#table').data('pctable').tableRow.id) {
-                    let json = await App.getPcTableById(item['table_id']['v']);
-                    type = json.tableRow.type;
+                    if (!field.pcTable.model.getTableParam) {
+                        field.pcTable.model.getTableParam = function (tableId, type) {
+                            return this.__ajax('post', {
+                                method: 'getTableParam',
+                                tableId: tableId,
+                                param: type
+                            })
+                        }
+                    }
+                    let json = await field.pcTable.model.getTableParam(item['table_id']['v'], 'type')
+                    type = json.type;
                 } else {
                     type = $('#table').data('pctable').tableRow.type;
                 }
@@ -453,7 +462,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
                     App.CodemirrorFocusBlur(editor)
 
-                    if (fName == 'codeAction' && form.find('div[data-name="type"] select').val()!=='button') {
+                    if (fName == 'codeAction' && form.find('div[data-name="type"] select').val() !== 'button') {
                         if (!input.data('checking')) {
                             input.append('<div class="code-checkboxes-warning-panel">' + App.translate('There is no any active trigger.') + '</div>');
                             const checkWarningFunction = () => {
