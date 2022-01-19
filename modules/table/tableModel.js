@@ -553,8 +553,8 @@
             refresh: function (func, refreshType, withoutIds, getList) {
 
                 func = func || function (json) {
-                    pcTable.table_modify.call(pcTable, json);
-                    pcTable.reloaded.call(pcTable);
+                    pcTable.table_modify(json);
+                    pcTable.reloaded();
                 };
                 let tree;
                 if (pcTable.treeIndex) {

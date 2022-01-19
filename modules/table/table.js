@@ -1045,6 +1045,10 @@
                     notify.closest('.alert').remove();
                     this.checkTableIsChanged(parseInt(this.checkIsUpdated) * 2000);
                 }
+
+                if(this._insertRow){
+                    this._createInsertRow(this._insertRow)
+                }
             }
             ,
             showRefreshButton(tableUpdated) {
