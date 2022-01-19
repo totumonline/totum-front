@@ -403,10 +403,18 @@
 
                     v.$div = $('<div class="kanban"></div>').data('value', v[0]).width(divWidth);
 
+
+
                     if (width)
                         width += 20;
-                    width += divWidth
-                    v.$div.append($('<div class="kanban-title">').text(v[1]).attr('data-value', v[0]))
+                    width += divWidth;
+                    let title=$('<div class="kanban-title">').text(v[1]).attr('data-value', v[0]);
+                    v.$div.append(title)
+                    if (this.tableRow.panels_view.kanban_colors) {
+                        if (this.tableRow.panels_view.kanban_colors[v[0]])
+                            title.css({'background-color': this.tableRow.panels_view.kanban_colors[v[0]]})
+                    }
+
                     let $cards = $('<div class="kanban-cards">');
                     v.$div.append($cards);
                     let kId = v[0];
