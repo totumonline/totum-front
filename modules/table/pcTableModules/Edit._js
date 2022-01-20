@@ -539,8 +539,10 @@ $.extend(App.pcTableMain.prototype, {
                         onAction = true;
                         let selectedTd = pcTable._container.find('td.selected');
                         pcTable._setTdSaving(selectedTd);
-                        let editedData = pcTable.selectedCells.getEditedData(null, true);
-                        pcTable._saveEdited.call(pcTable, selectedTd.closest('tr'), editedData, false);
+                        pcTable.selectedCells.getEditedData(null, true).then((editedData)=>{
+                            pcTable._saveEdited.call(pcTable, selectedTd.closest('tr'), editedData, false);
+                        });
+
                     });
                     editCellsBlock.append($btn);
                 }
@@ -584,9 +586,19 @@ $.extend(App.pcTableMain.prototype, {
                 let editedData = {};
                 if (!parseInt(itemId)) itemId = 'params';
                 editedData[itemId] = {};
-                editedData[itemId][field.name] = itemId === 'params' ? pcTable.data_params[field.name]['v'] : pcTable.data[itemId][field.name]['v'];
+                let item;
+                item = itemId === 'params' ? pcTable.data_params : pcTable.data[itemId];
 
-                pcTable._saveEdited.call(pcTable, td, editedData, false);
+                editedData[itemId][field.name] = item[field.name]['v'];
+
+                if (pcTable.fields[field.name].getValue) {
+                    pcTable.fields[field.name].getValue(editedData[itemId][field.name], item, true).then((json) => {
+                        editedData[itemId][field.name] = json.value;
+                        pcTable._saveEdited.call(pcTable, td, editedData, false);
+                    })
+                } else {
+                    pcTable._saveEdited.call(pcTable, td, editedData, false);
+                }
             });
             editCellsBlock.append($btn)
         }

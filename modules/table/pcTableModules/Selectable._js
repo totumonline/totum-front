@@ -593,11 +593,14 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 this.multiCheck();
             },
             getEditedData: function (val, fix) {
+                let deff = $.Deferred();
+
                 let editedData = {};
                 let isMulti = false;
                 if (Object.keys(pcTable.selectedCells.ids).length > 1) {
                     isMulti = true;
                 }
+                let deffs = [];
 
                 Object.keys(pcTable.selectedCells.ids).forEach(function (fieldName) {
                     pcTable.selectedCells.ids[fieldName].forEach(function (id) {
@@ -610,13 +613,28 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                         if (!editedData[id]) editedData[id] = {};
                         if (fix) {
-                            editedData[id][fieldName] = item[fieldName]['v'];
+                            if (pcTable.fields[fieldName].getValue) {
+                                let res = pcTable.fields[fieldName].getValue(item[fieldName]['v'], item, true)
+                                deffs.push(res);
+                                res.done(function (resData) {
+                                    editedData[id][fieldName] = resData.value;
+                                })
+                            } else {
+                                editedData[id][fieldName] = item[fieldName]['v'];
+                            }
                         } else {
                             editedData[id][fieldName] = val;
                         }
 
                     })
                 });
+
+                $.when(...deffs).then(() => {
+                    deff.resolve(editedData)
+                })
+                if (fix) {
+                    return deff;
+                }
                 return editedData;
             },
             remove: function (id, fieldName) {
