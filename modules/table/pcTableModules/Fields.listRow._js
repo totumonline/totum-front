@@ -28,6 +28,14 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                         let val = listItem[column];
                         if (typeof val != "string" || val === "") {
                             val = JSON.stringify(val)
+                            switch (val){
+                                case 'true':
+                                    val = '✓'
+                                    break;
+                                case 'false':
+                                    val = '-'
+                                    break;
+                            }
                         }
                         const td = $('<td>').text(val).appendTo(tr);
                     });
