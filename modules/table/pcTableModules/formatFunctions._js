@@ -1,8 +1,11 @@
 App.pcTableMain.prototype.__formatFunctions = {
     fieldhide: function () {
-        if(this.f && this.f.fieldhide && Object.keys(this.f.fieldhide).length){
+        if (this.f && this.f.fieldhide && Object.keys(this.f.fieldhide).length) {
             this.loadVisibleFields(this.f.fieldhide);
         }
+    },
+    kanban_html: function () {
+        this._refreshContentTable();
     },
     blockadd: function () {
         this._closeInsertRow();

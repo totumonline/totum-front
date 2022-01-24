@@ -396,24 +396,35 @@
                 this._innerContainer.addClass('kanbanInnerContainer');
                 $div.addClass('kanbanWrapper').empty()
 
+
                 $div.css('grid-template-columns', "1fr ".repeat(this.kanban.length));
                 let width = 0;
+
+                let kanban_html = this.kanban_html || this.f.kanban_html || {};
+
                 this.kanban.forEach((v) => {
                     let divWidth = (this.tableRow.panels_view.panels_in_kanban || 1) * (parseInt(this.tableRow.panels_view.width) + 10) - 10;
 
                     v.$div = $('<div class="kanban"></div>').data('value', v[0]).width(divWidth);
 
 
-
                     if (width)
                         width += 20;
                     width += divWidth;
-                    let title=$('<div class="kanban-title">').text(v[1]).attr('data-value', v[0]);
+                    let title = $('<div class="kanban-title">').text(v[1]).attr('data-value', v[0]);
                     v.$div.append(title)
                     if (this.tableRow.panels_view.kanban_colors) {
                         if (this.tableRow.panels_view.kanban_colors[v[0]])
                             title.css({'background-color': this.tableRow.panels_view.kanban_colors[v[0]]})
                     }
+                    if (this.tableRow.panels_view.kanban_html_type) {
+                        let html = $('<div class="kanban-html">');
+                        title.after(html);
+                        if (kanban_html[v[0]]) {
+                            html.html(kanban_html[v[0]])
+                        }
+                    }
+
 
                     let $cards = $('<div class="kanban-cards">');
                     v.$div.append($cards);
@@ -431,6 +442,36 @@
                         $cards.append('<div class="empty-kanban">' + App.translate('No data') + '</div>');
                     }
                 })
+
+                if (this.tableRow.panels_view.kanban_html_type === 'hide') {
+                    $div.css('grid-template-columns', "40px " + ("1fr ".repeat(this.kanban.length)));
+                    $div.css('margin-left', "-60px");
+
+                    let buttonsDiv = $('<div>').prependTo($div)
+                    let btn = $('<button></button>');
+                    buttonsDiv.prepend(btn)
+                    if (!this.kanban_html) {
+                        btn.text('show').on('click', () => {
+                            if (!this.model.getKanbanHtml) {
+                                this.model.getKanbanHtml = function () {
+                                    return this.__ajax('post', {method: 'getKanbanHtml'});
+                                }
+                            }
+                            this.model.getKanbanHtml().then((json) => {
+                                this.kanban_html = json.kanban_html;
+                                this._refreshContentTable();
+                            })
+
+                        })
+                    } else {
+                        btn.text('hide').on('click', () => {
+                            this.kanban_html = null;
+                            this._refreshContentTable();
+                        })
+                    }
+
+                }
+
                 $div.width(width);
                 this.tableWidth = width;
             } else {
@@ -614,6 +655,8 @@
             let wrapper, cln, topButton, attached = false;
             const scrollFunc = () => {
                 wrapper = wrapper || this._container.find('.kanbanWrapper.pcTable-floatBlock');
+
+
                 let offset = wrapper.offset();
                 if (offset.top < 0) {
                     if (!cln) {
