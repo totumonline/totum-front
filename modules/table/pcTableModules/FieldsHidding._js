@@ -205,6 +205,12 @@
                     this._hideHell_storage.checkIssetFields.call(pcTable);
                     this._refreshHiddenFieldsBlock();
                 }
+            }else{
+                this._rerendParamsblock();
+                if (this.isCreatorView) {
+                    this._refreshHiddenFieldsBlock()
+                }
+                this._rerendBottomFoolers();
             }
 
             this.fieldsHiddingGetButton();

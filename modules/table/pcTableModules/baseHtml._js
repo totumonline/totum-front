@@ -12,10 +12,10 @@
             }
         },
         _rerendFiltersBlock: function () {
-            this._filtersBlock.replaceWith($block = this._createFiltersBlock());
-            this._filtersBlock = $block;
+                this._filtersBlock.replaceWith($block = this._createFiltersBlock());
+                this._filtersBlock = $block;
 
-            this._refreshFiltersBlock(this.data_params);
+                this._refreshFiltersBlock(this.data_params);
         },
         _rerendBottomFoolers: function () {
             this._createFootersSubtable();
@@ -226,7 +226,7 @@
                             if (typeof cellText === 'object') cellText = cellText.text();
                         }
                     }
-                    notify.append($('<div>' + App.translate('Calculated value') + ': </div>').append($('<code>').text(cellText.length <= 50 ? cellText : cellText.substr(0, 47) + '...')));
+                    notify.append($('<div>' + App.translate('Calculated value') + ': </div>').append($('<code>').text(cellText.length <= 50 ? cellText : cellText.toString().substr(0, 47) + '...')));
 
                     hand.one('mouseout', function () {
                         if (notify.length) {
@@ -928,14 +928,14 @@
         }
         ,
         rowButtonsCalcWidth: function () {
-            if (this.tableWidth < this._innerContainer.width()) {
-                if (this.isMobile) {
-                    this.__$rowsButtons.width(this._table.width());
-                } else {
-                    this.__$rowsButtons.width(this._table.width() - 70);
-                }
-            } else if (!this.isMobile) {
-                this.__$rowsButtons.width(this._innerContainer.width() - 5)
+                if (this.tableWidth < this._innerContainer.width()) {
+                    if (this.isMobile) {
+                        this.__$rowsButtons.width(this._table.width());
+                    } else {
+                        this.__$rowsButtons.width(this._table.width() - 70);
+                    }
+                } else if (!this.isMobile) {
+                    this.__$rowsButtons.width(this._innerContainer.width() - 5)
             }
         },
         _rowsButtons: function () {
@@ -1615,8 +1615,8 @@
         }
         ,
         _refreshHead: function () {
-            this._header.empty().append(this._createHeadRow());
-            return this._header;
+                this._header.empty().append(this._createHeadRow());
+                return this._header;
         }
         ,
         _createFirstBody: function () {

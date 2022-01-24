@@ -400,7 +400,7 @@
                 $div.css('grid-template-columns', "1fr ".repeat(this.kanban.length));
                 let width = 0;
 
-                let kanban_html = this.kanban_html || this.f.kanban_html || {};
+                let kanban_html = this.kanban_html || this.f.kanban_html || null;
 
                 this.kanban.forEach((v) => {
                     let divWidth = (this.tableRow.panels_view.panels_in_kanban || 1) * (parseInt(this.tableRow.panels_view.width) + 10) - 10;
@@ -417,8 +417,11 @@
                         if (this.tableRow.panels_view.kanban_colors[v[0]])
                             title.css({'background-color': this.tableRow.panels_view.kanban_colors[v[0]]})
                     }
-                    if (this.tableRow.panels_view.kanban_html_type) {
+                    if (this.tableRow.panels_view.kanban_html_type && kanban_html) {
                         let html = $('<div class="kanban-html">');
+
+                        html.height(this.tableRow.panels_view.kanban_html_height);
+
                         title.after(html);
                         if (kanban_html[v[0]]) {
                             html.html(kanban_html[v[0]])
@@ -447,11 +450,11 @@
                     $div.css('grid-template-columns', "40px " + ("1fr ".repeat(this.kanban.length)));
                     $div.css('margin-left', "-60px");
 
-                    let buttonsDiv = $('<div>').prependTo($div)
-                    let btn = $('<button></button>');
+                    let buttonsDiv = $('<div class="kanban_left_buttons">').prependTo($div)
+                    let btn = $('<button class="btn btn-default btn-sm kanban_html_arrow"></button>');
                     buttonsDiv.prepend(btn)
                     if (!this.kanban_html) {
-                        btn.text('show').on('click', () => {
+                        btn.html('<i class="fa fa-arrow-down"></i>').attr('title', App.translate('Show columns extra info')).on('click', () => {
                             if (!this.model.getKanbanHtml) {
                                 this.model.getKanbanHtml = function () {
                                     return this.__ajax('post', {method: 'getKanbanHtml'});
@@ -464,7 +467,7 @@
 
                         })
                     } else {
-                        btn.text('hide').on('click', () => {
+                        btn.html('<i class="fa fa-arrow-up"></i>').attr('title', App.translate('Hide columns extra info')).on('click', () => {
                             this.kanban_html = null;
                             this._refreshContentTable();
                         })
@@ -711,12 +714,14 @@
 
             this.rowButtonsCalcWidth = function () {
 
-                if (this.tableWidth < this.tableRow.panels_view.width) {
-                    this.__$rowsButtons.width(this.tableRow.panels_view.width)
-                } else if (this.tableWidth < this._innerContainer.width()) {
-                    this.__$rowsButtons.width(this.tableWidth)
-                } else if (!this.isMobile) {
-                    this.__$rowsButtons.width(this._innerContainer.width())
+                if (this.__$rowsButtons) {
+                    if (this.tableWidth < this.tableRow.panels_view.width) {
+                        this.__$rowsButtons.width(this.tableRow.panels_view.width)
+                    } else if (this.tableWidth < this._innerContainer.width()) {
+                        this.__$rowsButtons.width(this.tableWidth)
+                    } else if (!this.isMobile) {
+                        this.__$rowsButtons.width(this._innerContainer.width())
+                    }
                 }
             }
         } else {

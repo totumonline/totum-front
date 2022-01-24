@@ -73,6 +73,10 @@ App.langs.ru =
                 "Edit totumCode in value of %s": "Редактировать Тотум-код в ячейке %s",
 
 
+                /*Kanban*/
+                'Show columns extra info': 'Показать дополнительную информацию колонок',
+                'Hide columns extra info': 'Скрыть дополнительную информацию колонок',
+
                 'Edited': 'Редактировано',
                 'There is no any active trigger.': 'Нет включенных триггеров.',
                 'Your last comment editing': 'Редактирование последнего комментария',
