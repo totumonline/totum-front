@@ -921,8 +921,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 cell.append($('<div class="format-comment">').text(format.comment).prepend('<i class="fa fa-info"></i>'))
             }
         }
-        let isSingleSelectWithPreview = field.type === 'select' && field.withPreview && EditPanelFunc.editItem[field.name]['v'] && (!field.multiple || EditPanelFunc.editItem[field.name]['v'].length === 1);
-        if ((field.formatInPanel || isSingleSelectWithPreview) && EditPanelFunc.editItem.id) {
+        let isSingleSelectWithPreview = field.type === 'select' && field.withPreview && (!field.multiple || EditPanelFunc.editItem[field.name]['v'].length === 1);
+        if ((field.formatInPanel || isSingleSelectWithPreview)) {
             cell.find('.format-panel').remove();
             let panel = $('<div class="format-panel">').appendTo(cell);
             let link = $('<a href=""></a>').html(App.translate('Open context data')).appendTo(panel);
@@ -937,10 +937,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         })
                     }
                     let _panel = $('<div class="previews loaded-preview">').appendTo(AllForSelect);
-                    field.loadPreviewPanel(_panel, field.name, item, EditPanelFunc.editItem[field.name]['v']).then(function () {
-
-                    });
-
+                    field.loadPreviewPanel(_panel, field.name, item, EditPanelFunc.editItem[field.name]['v']);
 
                 } else {
                     field.pcTable.model.getPanelFormats(field.name, item.id || hash).then((json) => {
