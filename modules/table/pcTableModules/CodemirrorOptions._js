@@ -1248,7 +1248,7 @@
                     token.start = token.start + matches[1].length + 1;
 
 
-                    if (matches = token.string.match(/([a-z$#.A-Z0-9@"'\[\]]+)$/)) {
+                    if (matches = token.string.match(/([a-z$#.а-я0-9@"'\[\]]+)$/i)) {
                         token.start += token.string.length - matches[1].length;
                         token.string = matches[1];
                     } else {
