@@ -550,7 +550,7 @@
                     span.append($('<button class="btn btn-default btn-xxs treeRow ins"><i class="fa fa-plus"></i></button>'));
                 }
 
-                span.append(format.text || row.t);
+                span.append($('<span class="tree-span-text">').text(format.text || row.t));
                 return span;
             } else {
                 let arrayVals = item[field.name].v_;
