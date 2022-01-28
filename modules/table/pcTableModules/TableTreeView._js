@@ -121,6 +121,8 @@
                                 return true;
                             }
                             id = id.row.id;
+                        }else{
+                            return ;
                         }
                     }
 
