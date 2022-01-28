@@ -397,7 +397,6 @@
                         if (App.isEmpty(pcTable.data) && pcTable._content) {
                             pcTable._content.find('.pcTable-noDataRow').remove();
                         }
-                        let reorderRows = [];
                         if (pcTable.tableRow.order_desc === true) {
                             addedRows = addedRows.reverse();
                         }
@@ -422,8 +421,6 @@
                                 if ((v.__after && (!$trIdBefore || $trIdBefore.id !== v.__after))) {
                                     nowInsertIndex = pcTable.dataSorted.indexOf(v.__after) + 1;
                                     nowInsertVisibleIndex = pcTable.dataSortedVisible.indexOf(v.__after) + 1;
-                                } else if ('order' in json.chdata) {
-                                    reorderRows.push(v.id)
                                 }
 
                                 pcTable.dataSorted.splice(nowInsertIndex, 0, v.id);
@@ -435,30 +432,6 @@
                             }
 
                         });
-
-                        /*reorderRows.forEach(function (id) {
-                            let place = json.chdata.order.indexOf(id);
-                            let newPlace = 0;
-                            let newPlaceVisible = 0;
-                            if (place > 0) {
-                                let beforeId = json.chdata.order[place - 1];
-                                newPlace = pcTable.dataSorted.indexOf(beforeId) + 1
-                                newPlaceVisible = pcTable.dataSortedVisible.indexOf(beforeId) + 1
-                            }
-                            let oldPlace = pcTable.dataSorted.indexOf(id);
-                            let oldPlaceVisible = pcTable.dataSortedVisible.indexOf(id);
-                            if (oldPlace !== newPlace) {
-                                pcTable.dataSorted.splice(newPlace, 0, id);
-                                let oldPlace = pcTable.dataSorted.indexOf(id);
-                                pcTable.dataSorted.splice(oldPlace, 1);
-                            }
-                            if (oldPlaceVisible !== newPlaceVisible) {
-                                pcTable.dataSortedVisible.splice(newPlaceVisible, 0, id);
-                                let oldPlaceVisible = pcTable.dataSortedVisible.indexOf(id);
-                                pcTable.dataSortedVisible.splice(oldPlaceVisible, 1);
-                            }
-                        })*/
-
 
                         if ($trIdBefore && !pcTable.isMobile) {
                             setTimeout(function () {
@@ -473,6 +446,7 @@
                         pcTable.selectedCells.summarizer.check();
                     }
                 }
+
 
                 if (deleted.length) {
                     $.each(deleted, function (k, v) {
@@ -505,13 +479,18 @@
                 }
 
                 if (json.chdata.order) {
-                    this.dataSorted = json.chdata.order;
-                    pcTable.dataSortedVisible = [];
-                    pcTable.dataSorted.forEach((id) => {
-                        if (this.data[id].$visible)
-                            pcTable.dataSortedVisible.push(id)
-                    })
+                    if (this.setOrdersForRows) {
+                        this.setOrdersForRows(json.chdata.order)
+                    } else {
+                        this.dataSorted = json.chdata.order;
+                        pcTable.dataSortedVisible = [];
+                        pcTable.dataSorted.forEach((id) => {
+                            if (this.data[id].$visible)
+                                pcTable.dataSortedVisible.push(id)
+                        })
+                    }
                     refreshContentTable = true;
+
                 }
 
                 let paramsChanges = {};
@@ -703,8 +682,8 @@
                 }
             }
 
-            if(item.f && item.f.rowcomment){
-                text.append($('<div class="menu-item comment"><i class="fa fa-info"></i></div>').on('click', ()=>{
+            if (item.f && item.f.rowcomment) {
+                text.append($('<div class="menu-item comment"><i class="fa fa-info"></i></div>').on('click', () => {
                     App.notify(item.f.rowcomment);
                 }));
             }

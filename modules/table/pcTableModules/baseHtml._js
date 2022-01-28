@@ -7,19 +7,19 @@
         },
         _rerendParamsblock: function () {
             this._createParamsBlock();
-            if (this.isMobile) {
+            if (this.isMobile && this._paramsBlock) {
                 this._refreshParamsBlock();
             }
         },
         _rerendFiltersBlock: function () {
-                this._filtersBlock.replaceWith($block = this._createFiltersBlock());
-                this._filtersBlock = $block;
+            this._filtersBlock.replaceWith($block = this._createFiltersBlock());
+            this._filtersBlock = $block;
 
-                this._refreshFiltersBlock(this.data_params);
+            this._refreshFiltersBlock(this.data_params);
         },
         _rerendBottomFoolers: function () {
             this._createFootersSubtable();
-            if (this.isMobile) {
+            if (this.isMobile && this._footersBlock) {
                 this._refreshFootersBlock();
             }
         },
@@ -57,9 +57,7 @@
 
             if (pcTable.isTreeView) {
                 pcTable._connectTreeView.call(pcTable);
-                if (this.fields.tree.treeViewType === 'other') {
-                    this.addReOrderRowBind();
-                }
+                this.addReOrderRowBind();
             } else {
                 this.addReOrderRowBind();
             }
@@ -928,14 +926,14 @@
         }
         ,
         rowButtonsCalcWidth: function () {
-                if (this.tableWidth < this._innerContainer.width()) {
-                    if (this.isMobile) {
-                        this.__$rowsButtons.width(this._table.width());
-                    } else {
-                        this.__$rowsButtons.width(this._table.width() - 70);
-                    }
-                } else if (!this.isMobile) {
-                    this.__$rowsButtons.width(this._innerContainer.width() - 5)
+            if (this.tableWidth < this._innerContainer.width()) {
+                if (this.isMobile) {
+                    this.__$rowsButtons.width(this._table.width());
+                } else {
+                    this.__$rowsButtons.width(this._table.width() - 70);
+                }
+            } else if (!this.isMobile) {
+                this.__$rowsButtons.width(this._innerContainer.width() - 5)
             }
         },
         _rowsButtons: function () {
@@ -1615,8 +1613,8 @@
         }
         ,
         _refreshHead: function () {
-                this._header.empty().append(this._createHeadRow());
-                return this._header;
+            this._header.empty().append(this._createHeadRow());
+            return this._header;
         }
         ,
         _createFirstBody: function () {
@@ -1699,22 +1697,19 @@
             let OrderClass = 'btn-warning';
 
             let $btnNHiding = $('<button class="btn btn-default btn-xxs" id="n-expander"><i class="fa fa-sort"></i></button>')
-            if (this.isTreeView && this.fields.tree.treeViewType !== 'other') {
-                $btnNHiding.prop('disabled', true)
-            } else {
-                $btnNHiding.on('click', function () {
-                    if (!pcTable.fieldCategories.visibleColumns.some(function (field) {
-                        return field.name === 'n';
-                    })) {
-                        pcTable.fieldsHiddingHide.call(pcTable, 'n', true);
-                        $btnNHiding.addClass(OrderClass)
-                    } else {
-                        pcTable.fieldsHiddingHide.call(pcTable, 'n');
-                        $btnNHiding.removeClass(OrderClass)
-                    }
-                    pcTable.ScrollClasterized.reloadScrollHead();
-                })
-            }
+
+            $btnNHiding.on('click', function () {
+                if (!pcTable.fieldCategories.visibleColumns.some(function (field) {
+                    return field.name === 'n';
+                })) {
+                    pcTable.fieldsHiddingHide.call(pcTable, 'n', true);
+                    $btnNHiding.addClass(OrderClass)
+                } else {
+                    pcTable.fieldsHiddingHide.call(pcTable, 'n');
+                    $btnNHiding.removeClass(OrderClass)
+                }
+                pcTable.ScrollClasterized.reloadScrollHead();
+            })
 
             if (pcTable.fieldCategories.visibleColumns.some(function (field) {
                 return field.name === 'n';

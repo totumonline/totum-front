@@ -67,12 +67,22 @@
                 return false;
             }
             this.nSortedTree = this.data[btnId].tree.v;
-            let treeIndexArr = this.treeIndex[this.nSortedTree]['sorted'];
+
+            let treeIndexArr;
+
+            if (this.fields.tree.treeViewType === 'self') {
+                if (this.nSortedTree === null) {
+                    treeIndexArr = this.treeSort
+                } else {
+                    treeIndexArr = this.treeIndex[this.nSortedTree]['trees'];
+                }
+            } else {
+                treeIndexArr = this.treeIndex[this.nSortedTree]['sorted'];
+            }
 
             let idInd;
             let orderingRowIds = [];
             if (this.row_actions_get_checkedIds().length === 0) {
-
 
                 orderingRowIds.push(btnId);
                 let btnIndex = treeIndexArr.indexOf(btnId);
@@ -99,12 +109,19 @@
                     if (idsLength === 0) return true;
 
                     if (typeof id === 'object') {
-                        if (id.row && id.row.$checked) {
-                            this.nSortedTree = undefined;
-                            App.notify(App.translate('Only nested rows can be moved'));
-                            return true;
+                        if (this.fields.tree.treeViewType === 'self') {
+                            id = id.row.id;
+                        } else if (id.row) {
+                            if (id.row.$checked) {
+                                this.nSortedTree = undefined;
+                                App.notify(App.translate('Only nested rows can be moved'));
+                                return true;
+                            }
+                            id = id.row.id;
                         }
-                    } else if (pcTable.data[id].$checked) {
+                    }
+
+                    if (pcTable.data[id].$checked) {
                         if (pcTable.data[id].tree.v != this.nSortedTree) {
                             this.nSortedTree = undefined;
                             App.notify(App.translate('You can only move within one branch'));
@@ -134,6 +151,37 @@
 
             pcTable.row_actions_uncheck_all();
         };
+
+        this.setOrdersForRows = function (order) {
+            if (this.fields.tree.treeViewType !== 'self') return;
+
+            let newOrder = [];
+
+            const getSortedList = (ids) => {
+                let newids = [];
+                order.forEach((id) => {
+                    id = id.toString();
+                    if (ids.indexOf(id) > -1) {
+                        newids.push(id)
+                    }
+                })
+                ids.forEach((id) => {
+                    if (newids.indexOf(id.toString()) == -1) {
+                        newids.push(id)
+                    }
+                })
+                return newids;
+            };
+
+            this.treeSort = getSortedList(this.treeSort);
+
+            const reOrderTreeBtranches = (id) => {
+                this.treeIndex[id].trees = getSortedList(this.treeIndex[id].trees);
+                this.treeIndex[id].trees.forEach(reOrderTreeBtranches)
+            };
+            this.treeSort.forEach(reOrderTreeBtranches)
+        }
+
         this.reOrderRowsSave = function () {
             let pcTable = this;
             /*if (pcTable.notCorrectOrder) {
@@ -168,7 +216,7 @@
             }
 
             this.__checkedRows.some((id) => {
-                if (this.data[id].__tree) {
+                if (this.data[id].__tree && this.fields.tree.treeViewType === 'other') {
                     this.nSortedTreeBlock = true;
                     return true;
                 } else if (this.nSortedTree !== undefined) {
