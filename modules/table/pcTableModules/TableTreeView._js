@@ -233,7 +233,7 @@
                 }
             })
 
-            if (oldTreeCat != this.nSortedTree || oldBlock != this.nSortedTreeBlock) {
+            if (oldTreeCat !== this.nSortedTree || oldBlock !== this.nSortedTreeBlock) {
                 this.ScrollClasterized.insertToDOM(null, false, true)
             }
 
