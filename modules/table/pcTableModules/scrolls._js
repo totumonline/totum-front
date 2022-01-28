@@ -228,6 +228,12 @@
                 insertToDOM: function (cluster, forceCheckTableHeight, forceRefreshData) {
                     // explore row's height
 
+                    if (forceRefreshData) {
+                        Object.keys(pcTable.data).forEach((id)=>{
+                            delete pcTable.data[id].$tr
+                        })
+                    }
+
                     if (pcTable.isMobile) {
                         this.setHtml(pcTable.dataSortedVisible, 0, 0, forceRefreshData);
                     } else {
