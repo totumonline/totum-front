@@ -17,7 +17,7 @@ fieldTypes.n = $.extend({}, fieldTypes.default, {
         if (this.pcTable.isTreeView) {
             buttons = '';
             if (item.__tree) {
-                if (this.pcTable.fields.tree.treeViewType === 'self') {
+                if (this.pcTable.fields.tree.treeViewType === 'self'  && (this.pcTable.nSortedTree === undefined || this.pcTable.nSortedTree === item.tree.v)) {
                     let index;
                     this.pcTable.dataSorted.some((v, k) => {
                         if (v.toString() === item.id.toString()) {
