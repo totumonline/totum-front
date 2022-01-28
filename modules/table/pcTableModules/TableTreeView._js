@@ -66,7 +66,10 @@
                 App.notify(App.translate('It is possible to sort only within a category'));
                 return false;
             }
-            this.nSortedTree = this.data[btnId].tree.v;
+            if (this.nSortedTree === undefined) {
+                this.nSortedTree = this.data[btnId].tree.v;
+            }
+
 
             let treeIndexArr;
 
@@ -127,7 +130,7 @@
                             App.notify(App.translate('You can only move within one branch'));
                             return true;
                         }
-                        orderingRowIds.push(id);
+                        orderingRowIds.push(id.toString());
                         --idsLength;
                     }
                 });
@@ -137,7 +140,6 @@
                 });
                 idInd = treeIndexArr.indexOf(btnId) + ($direction === 'after' ? 1 : 0)
             }
-
             treeIndexArr.splice(idInd, 0, ...orderingRowIds);
             this.ntreeSortedArr = treeIndexArr;
 
@@ -147,8 +149,7 @@
                 // pcTable._table.addClass('reordered');
             }
 
-            pcTable.treeApply();
-
+            pcTable.treeApply(true);
             pcTable.row_actions_uncheck_all();
         };
 
@@ -194,6 +195,7 @@
             this.model.saveOrder(this.ntreeSortedArr.map((id) => parseInt(id)))
                 .then(function (json) {
                     pcTable.nSortedTree = undefined;
+                    pcTable.nReorderedTree= false;
                     pcTable.table_modify(json);
                     pcTable._refreshContentTable(true);
                     pcTable._orderSaveBtn.prop('disabled', false).find('i').attr('class', 'fa fa-save');
@@ -338,7 +340,7 @@
         }
 
     }
-    App.pcTableMain.prototype.treeApply = function () {
+    App.pcTableMain.prototype.treeApply = function (reCreateRows = false) {
         if (this.treeReloadRows.length) {
             this.model.loadTreeBranches(this.treeReloadRows, true).then((json) => {
                 if (json.tree) {
@@ -363,7 +365,7 @@
             })
         } else {
             this._treeRefresh();
-            this.__applyFilters(true);
+            this.__applyFilters(true, reCreateRows);
             if (this.treeLoading) {
                 this.treeLoading = false;
                 this.ScrollClasterized.insertToDOM(null, true, true);

@@ -42,7 +42,7 @@ App.pcTableMain.prototype.sessionStorageFilters = {
     }
 };
 let isFirstStart = true;
-App.pcTableMain.prototype.__applyFilters = function (forse = false) {
+App.pcTableMain.prototype.__applyFilters = function (forse = false, reCreateRows = false) {
     let pcTable = this;
     App.fullScreenProcesses.show();
 
@@ -149,7 +149,7 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false) {
 
     if (this.isTreeView || forse || JSON.stringify(old) !== JSON.stringify(new_check)) {
         this.dataSortedVisible = new_;
-        this._refreshContentTable(false, true);
+        this._refreshContentTable(reCreateRows, true);
         this._headCellIdButtonsState();
     }
     this.selectedCells && this.selectedCells.summarizer.check();

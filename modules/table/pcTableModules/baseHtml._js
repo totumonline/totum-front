@@ -1923,8 +1923,13 @@
                 }
                 creatorIcons.append('<i class="fa ' + field.icon + ' roles"></i>');
                 let $ord = $('<i class="roles">' + (field._ord || field.ord) + '</i>');
+
                 creatorIcons.append($ord);
-                if (field._ord) {
+
+                if(pcTable.isTreeView && field.name==='tree'){
+                    $ord.addClass('reordered');
+                }
+                else if (field._ord) {
                     $ord.addClass('reordered');
                     $ord.before('<i class="roles">' + (field.ord) + '</i>')
                 }
