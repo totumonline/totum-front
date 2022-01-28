@@ -13,11 +13,16 @@ fieldTypes.n = $.extend({}, fieldTypes.default, {
             return '';
         }
 
-        let buttons = '<button class="btn btn-xxs btn-default"><i class="fa fa-angle-up"></i></button><button class="btn btn-xxs btn-default"><i class="fa fa-angle-down"></i></button>';
+        let up = '<button class="btn btn-xxs btn-default"><i class="fa fa-angle-up"></i></button>';
+        let down = '<button class="btn btn-xxs btn-default"><i class="fa fa-angle-down"></i></button>';
+        let upDis = '<button class="btn btn-xxs btn-default arrow-disabled"><i class="fa fa-angle-up"></i></button>';
+        let downDis = '<button class="btn btn-xxs btn-default arrow-disabled"><i class="fa fa-angle-down"></i></button>';
+
+        let buttons = up + down;
         if (this.pcTable.isTreeView) {
             buttons = '';
             if (item.__tree) {
-                if (this.pcTable.fields.tree.treeViewType === 'self'  && (this.pcTable.nSortedTree === undefined || this.pcTable.nSortedTree === item.tree.v)) {
+                if (this.pcTable.fields.tree.treeViewType === 'self' && (this.pcTable.nSortedTree === undefined || this.pcTable.nSortedTree === item.tree.v)) {
                     let index;
                     this.pcTable.dataSorted.some((v, k) => {
                         if (v.toString() === item.id.toString()) {
@@ -42,9 +47,9 @@ fieldTypes.n = $.extend({}, fieldTypes.default, {
 
 
                         if (itemBefore && itemBefore.tree.v === item.tree.v) {
-                            buttons += '<button class="btn btn-xxs btn-default"><i class="fa fa-angle-up"></i></button>';
+                            buttons += up;
                         } else {
-                            buttons += '<button class="btn btn-xxs btn-default arrow-disabled"><i class="fa fa-angle-up"></i></button>';
+                            buttons += upDis;
                         }
 
                         let itemAfter;
@@ -57,9 +62,9 @@ fieldTypes.n = $.extend({}, fieldTypes.default, {
                         }
 
                         if (itemAfter && itemAfter.tree.v === item.tree.v) {
-                            buttons += '<button class="btn btn-xxs btn-default"><i class="fa fa-angle-down"></i></button>';
+                            buttons += down;
                         } else {
-                            buttons += '<button class="btn btn-xxs btn-default arrow-disabled"><i class="fa fa-angle-down"></i></button>';
+                            buttons += downDis;
                         }
                     }
                 }
@@ -67,16 +72,19 @@ fieldTypes.n = $.extend({}, fieldTypes.default, {
                 let index = this.pcTable.dataSorted.indexOf(item.id + '');
                 buttons = '';
                 if (index >= 1 && typeof this.pcTable.dataSorted[index - 1] !== 'object') {
-                    buttons += '<button class="btn btn-xxs btn-default"><i class="fa fa-angle-up"></i></button>';
+                    buttons += up;
                 } else {
-                    buttons += '<button class="btn btn-xxs btn-default arrow-disabled"><i class="fa fa-angle-up"></i></button>';
+                    buttons += upDis;
                 }
                 if (index < (this.pcTable.dataSorted.length - 1) && typeof this.pcTable.dataSorted[index + 1] !== 'object') {
-                    buttons += '<button class="btn btn-xxs btn-default"><i class="fa fa-angle-down"></i></button>';
+                    buttons += down;
                 } else {
-                    buttons += '<button class="btn btn-xxs btn-default arrow-disabled"><i class="fa fa-angle-down"></i></button>';
+                    buttons += downDis;
                 }
             } else {
+                buttons = '';
+            }
+            if (buttons === upDis + downDis) {
                 buttons = '';
             }
         }
