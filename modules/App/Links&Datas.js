@@ -1183,9 +1183,9 @@
             let tempFrame = iframe[0];
             let tempFrameWindow = tempFrame.contentWindow ? tempFrame.contentWindow : tempFrame.contentDocument.defaultView;
 
-            tempFrameWindow.document.head.innerHTML = '<style>' + styles + '</style>';
+
             setTimeout(() => {
-                tempFrameWindow.document.body.innerHTML = body;
+                tempFrameWindow.document.body.innerHTML = '<style>' + styles + '</style>'+body;
             }, 50)
 
             let iBody = tempFrameWindow.document.body;
