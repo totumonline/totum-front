@@ -103,10 +103,11 @@
 .file-mini-panel div {
   padding-top: 15px;
 
-  .file-label{
+  .file-label {
     padding-top: 3px;
     font-weight: bold;
   }
+
   img {
     border-radius: 4px;
   }
@@ -117,9 +118,17 @@
 }
 
 #pk {
-  .file-image-preview{
+  .pcTable-floatBlock .pcTable-floatInner > div td span.cell-value[data-type="file"] {
+    margin-top: 0;
+    img{
+      margin-top: 0;
+    }
+  }
+
+  .file-image-preview {
     border-radius: 2px;
   }
+
   [data-field-type="file"] {
     img {
       border-radius: 2px;

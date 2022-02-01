@@ -2756,7 +2756,7 @@
                 td.attr('data-field', field.name);
             }
 
-            var span = $('<span class="cell-value">')
+            var span = $('<span class="cell-value" data-type="'+field.type+'">');
             var val = item[field.name];
 
             if (!field.linkFieldName && field.code && !field.codeOnlyInAdd) {
