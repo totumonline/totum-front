@@ -520,16 +520,18 @@
 
 
                 let windowSize = window.innerWidth;
+                let windowSizeHeight = window.innerHeight;
 
                 if (!this.isMobile) {
                     let timeoutResize;
                     $(window).resize(function () {
                         if (timeoutResize) clearTimeout(timeoutResize);
                         timeoutResize = setTimeout(function () {
-                            if (Math.abs(windowSize - window.innerWidth) > 20) {
+                            if (Math.abs(windowSize - window.innerWidth) > 20 || Math.abs(windowSizeHeight - window.innerHeight) > 20) {
                                 pcTable.setWidthes();
                             }
                             windowSize = window.innerWidth;
+                            windowSizeHeight = window.innerHeight;
                         }, 500);
                     });
                 } else {
