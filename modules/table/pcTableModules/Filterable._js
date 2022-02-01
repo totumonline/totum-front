@@ -308,7 +308,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
     this.loadFilters();
 
     /*!panelView*/
-    if (!this.viewType) {
+    if (this.viewType !== 'panels') {
         this._header.on('click', '.pcTable-filters > span button.btn-filter:not(#checkS)', function (event) {
 
             let btn = $(this);
