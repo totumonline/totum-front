@@ -109,8 +109,9 @@
 
                             break;
                         case 'cycle_name':
+                        case 'cycle_name_tab':
                             data.push({
-                                type: 'plus'
+                                type: 'tab_button'
                                 , id: 'plus-calcs' + v.parent.substring(4)
                                 , text: App.translate('treeAddTable')
                                 , parent: v.id
@@ -385,6 +386,9 @@
                         break;
                     case 'tab_button':
                         App.clickToCyclesTabButton(d.node.id)
+                        break;
+                    case 'cycle_name_tab':
+                        App.clickToCyclesTabButton(d.node.original.href)
                         break;
                     case 'folder':
                     case 'project':
