@@ -114,20 +114,14 @@ input.error {
   }
 }
 
-@media (min-width: 600px) {
+@media (min-width: 1200px) {
   .page_content.tree-minifyed .pcTable-topButtons #TOTUM_FOOTER {
     display: block;
   }
 }
 
-@media (min-width: 1120px) {
+@media (min-width: 1500px) {
   .page_content:not(.tree-minifyed) .pcTable-topButtons #TOTUM_FOOTER {
-    display: block;
-  }
-}
-
-@media (min-width: 600px) {
-  .page_content.tree-minifyed .pcTable-topButtons #TOTUM_FOOTER {
     display: block;
   }
 }
