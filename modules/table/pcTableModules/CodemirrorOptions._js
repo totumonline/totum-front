@@ -489,7 +489,7 @@
                                     } else {
                                         if (matches = line.match(/^\s*~?\s*([a-zA-Z_0-9]+)\s*(=\s*[a-zA-Z0-9_]*)?:/)) {
                                             codeBlockNames.push(matches[1]);
-                                            if(!matches[2]){
+                                            if (!matches[2]) {
                                                 codeBlockNamesNoStart.push(matches[1])
                                             }
                                         }
@@ -857,6 +857,16 @@
                             }
 
                         }
+
+                        if ((state.functionParam === 'key' && (state.func[5] === 'listSort' || state.func[5] === 'listFilter')) && /[ns]/.test(stream.peek())) {
+                            if (stream.string.substring(stream.start, stream.start + 3) === 'num' || stream.string.substring(stream.start, stream.start + 3) === 'str') {
+                                stream.next();
+                                stream.next();
+                                stream.next();
+                                return '';
+                            }
+                        }
+
 
                         if (stream.peek() === "'") {
                             let quote = stream.peek();

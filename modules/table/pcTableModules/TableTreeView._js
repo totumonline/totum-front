@@ -25,30 +25,6 @@
             }, null, null, this.filtersString || {})
         }
 
-       /* setTimeout(() => {
-            if (this.fields.tree.treeViewLoad && !Object.values((this.filters || {})).length) {
-                let apply = false;
-                $('#table').data('pctable').fieldCategories.filter.forEach((Field) => {
-                    if (Field.column && Field.column !== 'tree' && this.data_params[Field.name].v) {
-                        if (typeof this.data_params[Field.name].v !== "object") {
-                            if (!typeof this.data_params[Field.name].v.match(/\*(ALL|NONE)\*!/) && !(this.data_params[Field.name].v === "" || Field.type === 'select')) {
-                                this.filters = this.filters || {};
-                                this.filters[Field.name] = [this.data_params[Field.name].v];
-                                apply = true;
-                            }
-                        } else if (this.data_params[Field.name].v.indexOf('*ALL*') === -1 && this.data_params[Field.name].v.indexOf('**NONE**') === -1) {
-                            this.filters[Field.column] = this.data_params[Field.name].v;
-                            apply = true;
-                        }
-                    }
-                    if (apply) {
-                        pcTable.__applyFilters(true);
-                    }
-                })
-            }
-        }, 10)*/
-
-
         this.reOrderRows = function (btnId, $direction) {
             let pcTable = this;
             btnId = btnId.toString();
