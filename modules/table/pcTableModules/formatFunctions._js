@@ -1,4 +1,23 @@
 App.pcTableMain.prototype.__formatFunctions = {
+    interlace: function (firstStart) {
+        
+        if (firstStart && !this.f.interlace) return;
+        let interlaceStyle = $('#ttmTableStyles').length ? $('#ttmTableStyles') : $('<style>').attr('id', 'ttmTableStyles').appendTo(this._container);
+
+        let colors=this.f.interlace.split('/');
+        let text='';
+        colors.forEach((v, i)=>{
+            if(v.match(/\#?[0-0A-F]+/i)){
+                if(i==0){
+                    text+=' tr.DataRow:nth-child(odd) td {background-color: '+v+';}'
+                }else{
+                    text+=' tr.DataRow:nth-child(even) td {background-color: '+v+';}'
+                }
+            }
+        })
+        interlaceStyle.text(text)
+
+    },
     fieldhide: function () {
         if (this.f && this.f.fieldhide && Object.keys(this.f.fieldhide).length) {
             this.loadVisibleFields(this.f.fieldhide);

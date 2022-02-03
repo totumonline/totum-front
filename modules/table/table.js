@@ -434,6 +434,7 @@
                 }
 
                 this._innerContainer = $('<div class="innerContainer">');
+                this.__formatFunctions.interlace.call(this, true);
 
 
                 let closeCallbacksActive = false;
@@ -650,7 +651,7 @@
                             pcTable.fieldCategories[field.category].push(field);
                         }
                     } else if (field.name) {
-                    
+
                         pcTable.hidden_fields[field.name] = field;
                     }
                 };
@@ -1048,7 +1049,7 @@
                     this.checkTableIsChanged(parseInt(this.checkIsUpdated) * 2000);
                 }
 
-                if(this._insertRow){
+                if (this._insertRow) {
                     this._createInsertRow(this._insertRow)
                 }
             }
