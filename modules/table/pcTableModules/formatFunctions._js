@@ -7,7 +7,7 @@ App.pcTableMain.prototype.__formatFunctions = {
         let colors=this.f.interlace.split('/');
         let text='';
         colors.forEach((v, i)=>{
-            if(v.match(/\#?[0-0A-F]+/i)){
+            if(v.match(/\#?[0-9A-F]+/i)){
                 if(i==0){
                     text+=' tr.DataRow:nth-child(odd) td {background-color: '+v+';}'
                 }else{
