@@ -265,7 +265,11 @@
                         pcTable._removeEditing.call(pcTable, element);
                     });
                     let $trs = pcTable._content.empty().get(0);
-                    if (top) $trs.appendChild($('<tr style="height: ' + top + 'px;" class="loading-row"><td colspan="' + (pcTable.fieldCategories.column.length + 1) + '"></td></tr>').get(0));
+                    if (top) {
+                        $trs.appendChild($('<tr style="height: ' + top + 'px;" class="loading-row"><td colspan="' + (pcTable.fieldCategories.column.length + 1) + '"></td></tr>').get(0));
+                    }else{
+                        $trs.appendChild($('<tr style="height: 0px;" class="loading-row"></tr>').get(0));
+                    }
 
                     if (pcTable.dataSorted.length === 0) {
                         $trs.appendChild(pcTable._createNoDataRow().get(0));

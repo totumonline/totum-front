@@ -1,20 +1,24 @@
 App.pcTableMain.prototype.__formatFunctions = {
     interlace: function (firstStart) {
-        
+
         if (firstStart && !this.f.interlace) return;
         let interlaceStyle = $('#ttmTableStyles').length ? $('#ttmTableStyles') : $('<style>').attr('id', 'ttmTableStyles').appendTo(this._container);
 
-        let colors=this.f.interlace.split('/');
-        let text='';
-        colors.forEach((v, i)=>{
-            if(v.match(/\#?[0-9A-F]+/i)){
-                if(i==0){
-                    text+=' tr.DataRow:nth-child(odd) td {background-color: '+v+';}'
-                }else{
-                    text+=' tr.DataRow:nth-child(even) td {background-color: '+v+';}'
+        let text = '';
+        if (this.f.interlace.toString().match(/^[0-9]{1,3}$/) && parseInt(this.f.interlace) <= 100) {
+            text += ' tr.DataRow:nth-of-type(odd) td {box-shadow: inset 0 0 100px 100px rgba(0,0,0,' + (parseInt(this.f.interlace) / 100) + ')}'
+        } else {
+            let colors = this.f.interlace.split('/');
+            colors.forEach((v, i) => {
+                if (v.match(/\#?[0-9A-F]+/i)) {
+                    if (i == 1) {
+                        text += ' tr.DataRow:nth-of-type(odd) td {background-color: ' + v + ';}'
+                    } else {
+                        text += ' tr.DataRow:nth-of-type(even) td {background-color: ' + v + ';}'
+                    }
                 }
-            }
-        })
+            })
+        }
         interlaceStyle.text(text)
 
     },
