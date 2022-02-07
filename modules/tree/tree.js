@@ -109,9 +109,8 @@
 
                             break;
                         case 'cycle_name':
-                        case 'cycle_name_tab':
                             data.push({
-                                type: 'tab_button'
+                                type: 'plus'
                                 , id: 'plus-calcs' + v.parent.substring(4)
                                 , text: App.translate('treeAddTable')
                                 , parent: v.id
@@ -291,7 +290,7 @@
                     "types": {
                         "folder": {},
                         "plus": {"icon": "fa fa-plus"},
-                        "cycle_name": {"icon": "fa fa-dot-circle-o"},
+                        "cycle_name": {"icon": "fa fa-dot-circle-o", "select_node":false},
                         "text": {"icon": "jstree-file"},
                         "table": {"icon": "jstree-file"},
                         "table_simple": App.tableTypes.simple,
@@ -387,8 +386,8 @@
                     case 'tab_button':
                         App.clickToCyclesTabButton(d.node.id)
                         break;
-                    case 'cycle_name_tab':
-                        App.clickToCyclesTabButton(d.node.original.href)
+                    case 'cycle_name':
+                       return false;
                         break;
                     case 'folder':
                     case 'project':

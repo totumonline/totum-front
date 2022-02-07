@@ -104,8 +104,13 @@
   padding-top: 10px;
   width: 300px;
 
-  .jstree-node.tree-folder {
-    margin-top: 10px;
+  .jstree-node {
+    .tree-folder {
+      margin-top: 10px;
+    }
+    &.nopoiner > a{
+      cursor: auto;
+    }
   }
 
   /* color: #bbb;*/
