@@ -67,8 +67,10 @@
                 App.showDatas.call(pcTable.model, json.interfaceDatas, null, window);
                 delete json.interfaceDatas;
             }, showPanels: function (json) {
-                App.showPanels(json.panels, pcTable);
-                delete json.panels;
+                if (json.showPanels) {
+                    App.showPanels(json.showPanels, pcTable);
+                    delete json.showPanels;
+                }
             },
             addPcTable: function (pcTableIn) {
                 pcTable = pcTableIn;
@@ -187,7 +189,7 @@
                         else {
                             if (json.links && json.links.length > 0) Model.showLinks(json);
                             if (json.interfaceDatas && json.interfaceDatas.length > 0) Model.shoInterfaceDatas(json);
-                            if (json.panels && json.panels.length > 0) Model.showPanels(json);
+                            Model.showPanels(json);
                         }
                         $d.resolve(json);
 

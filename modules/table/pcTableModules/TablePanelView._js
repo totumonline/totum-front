@@ -496,7 +496,7 @@
         return $div;
     };
 
-    const render = function () {
+    const renderTable = function () {
         let pcTable = this;
         this._sorting = {};
         this._table = $("<table>")
@@ -529,6 +529,11 @@
         rowsParent
             .append(this._createRowsTitle(rowsParent))
             .append(this._createFiltersBlock())
+            .append(() => {
+                if (this.tableRow.pagination && this.tableRow.pagination !== '0/0') {
+                    return this._pagination();
+                }
+            })
             .append(this._rowsButtons())
             .append(this._innerContainer);
 
@@ -637,7 +642,7 @@
         this.model.addExtraData({'panelsView': true})
 
 
-        this._renderTable = render.bind(this);
+        this._renderTable = renderTable.bind(this);
         this._getRowCard = getRowCard.bind(this);
 
         this._refreshHead = () => {
@@ -649,6 +654,8 @@
                 },
                 insertToDOM: () => {
                     this._refreshContentTable();
+                },
+                emptyCache: () => {
                 }
             };
         }
