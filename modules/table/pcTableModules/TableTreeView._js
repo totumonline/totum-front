@@ -4,13 +4,13 @@
         let pcTable = this;
         let timeout;
 
-        this._content.on('click', '.treeRow', function () {
+        this._content.on('click', '.treeRow', function (event) {
             let node = $(this);
             if (node.is('.dbl')) {
                 pcTable._actionTreeFolderRow(node, true)
             } else if (node.is('.ins')) {
                 pcTable._actionAddTreeFolderRow(node)
-            } else {
+            } else{
                 pcTable._actionTreeFolderRow(node)
             }
         })
@@ -21,7 +21,7 @@
                 method: 'loadTreeBranches',
                 branchIds: branchIds,
                 withParents: withParents,
-                recurcive: recurcive
+                recurcive: recurcive,
             }, null, null, this.filtersString || {})
         }
 
@@ -97,8 +97,8 @@
                                 return true;
                             }
                             id = id.row.id;
-                        }else{
-                            return ;
+                        } else {
+                            return;
                         }
                     }
 
@@ -173,7 +173,7 @@
             this.model.saveOrder(this.ntreeSortedArr.map((id) => parseInt(id)))
                 .then(function (json) {
                     pcTable.nSortedTree = undefined;
-                    pcTable.nReorderedTree= false;
+                    pcTable.nReorderedTree = false;
                     pcTable.table_modify(json);
                     pcTable._refreshContentTable(true);
                     pcTable._orderSaveBtn.prop('disabled', false).find('i').attr('class', 'fa fa-save');
@@ -284,7 +284,7 @@
                     } else {
                         let obj = {tree: {v: row.v}};
                         new EditPanel(this, null, obj, null, {tree: true}).then((json) => {
-                            this.model.refresh();
+                            this.table_modify(json);
                         })
                     }
                 }).appendTo($divPopoverArrowDown)
@@ -304,19 +304,121 @@
 
             let folder = $('<i class="fa fa-folder' + (row.opened ? '-open' : '') + ' treeRow"></i>').data('treeRow', row.v);
 
-            let span = $('<span class="tree-view">').append(folder);
             let td = $('<td colspan="' + (this.fieldCategories.visibleColumns.length) + '" class="tree-view-td" style="padding-left: ' + (7 + row.level * 22) + 'px"></td>');
+            let span = $('<span class="tree-view">').append(folder);
             td.append(span)
 
             this._treeFolderRowAddDropdown(span, row)
 
-            td.append($('<span class="treeRow">').text(row.t).data('treeRow', row.v))
-
+            let treeRow = $('<span class="treeRow">').text(row.t).data('treeRow', row.v);
+            if (row.opened && row.count) {
+                this._treePagination(treeRow, row)
+            }
+            td.append(treeRow)
 
             tr.append(td)
             return row.tr = tr;
         }
+    }
 
+    App.pcTableMain.prototype.treePaginationLoadPageStack = function (row) {
+        if (this.treePaginationLoadPageTimer) {
+            clearTimeout(this.treePaginationLoadPageTimer);
+        }
+        this._treePaginationLoadPageStack = this._treePaginationLoadPageStack || [];
+        this._treePaginationLoadPageStack.push(row);
+
+        this.treePaginationLoadPageTimer = setTimeout(() => {
+            let stack = this._treePaginationLoadPageStack;
+            this._treePaginationLoadPageStack = null
+            this.treePaginationLoadPage(stack)
+        }, 20)
+    }
+    App.pcTableMain.prototype.treePaginationLoadPage = function (stack) {
+
+        if (!this.treePaginationCountLimit) {
+            let limit = this.tableRow.pagination.split('/');
+            this.treePaginationCountLimit = (this.isMobile ? limit[1] : limit[0])
+        }
+
+        if (stack && stack.length) {
+            let vs = [];
+            stack.forEach((row) => {
+                vs.push({v: row.v, p: row.PageData.page})
+            })
+
+            this.model.loadTreeRows = this.model.loadTreeRows || function (branches, count) {
+                branches = JSON.stringify(branches);
+                return this.__ajax('post', {
+                    method: 'loadTreeRows',
+                    branches: branches,
+                    onPage: count
+                }, null, null, this.filtersString || {})
+            }
+
+            this.model.loadTreeRows(vs, this.treePaginationCountLimit).then((json) => {
+                json.deleted = [];
+                stack.forEach((row) => {
+                    if (this.treeIndex[row.v]) {
+                        json.deleted.push(...this.treeIndex[row.v].sorted)
+                    }
+                })
+
+                this.table_modify({'chdata': json});
+                this.treeApply(true)
+                stack.forEach((row) => {
+                    this._treePagination(null, row)
+                })
+            })
+        }
+    }
+
+    App.pcTableMain.prototype._treePagination = function (treeRow, row) {
+        row.PageData = row.PageData || {}
+        row.PageData.$block = row.PageData.$block || $('<span class="ttm-pagination"></span>')
+
+        if (treeRow && !row.PageData.$block.parent().is(treeRow)) {
+            row.PageData.$block.appendTo(treeRow)
+        }
+        let allPagesCount
+
+        if (row.PageData.page === undefined) {
+            row.PageData.$block.empty().append('<i class="fa fa-spinner"></i>');
+            row.PageData.page = 0
+            this.treePaginationLoadPageStack(row)
+        } else if ((allPagesCount = Math.ceil(row.count / this.treePaginationCountLimit)) === 1) {
+            row.PageData.$block.empty().append('');
+        } else {
+            let before = $('<button class="btn btn-default btn-sm"><i class="fa fa-hand-o-left"></i></button>');
+            if (row.PageData.page === 0) {
+                before.prop('disabled', true).on('click', () => {
+                    return false
+                });
+            } else {
+                before.on('click', () => {
+                    row.PageData.$block.empty().append('<i class="fa fa-spinner"></i>');
+                    row.PageData.page--;
+                    this.treePaginationLoadPageStack(row)
+                    return false;
+                })
+            }
+            let after = $('<button class="btn btn-default btn-sm"><i class="fa fa-hand-o-right"></i></button>');
+
+            if (row.PageData.page >= allPagesCount - 1) {
+                after.prop('disabled', true).on('click', () => {
+                    return false
+                });
+            } else {
+                after.on('click', () => {
+                    row.PageData.$block.empty().append('<i class="fa fa-spinner"></i>');
+                    row.PageData.page++;
+                    this.treePaginationLoadPageStack(row)
+                    return false;
+                })
+            }
+            let sigh = $('<span class="ttm-pages-arrows"><i class="fa fa-hand-o-left"></i><i class="fa fa-hand-o-right"></i></span>');
+            row.PageData.$block.empty().append(sigh).append($('<span class="ttm-pages-active">').append(before).append('<span class="ttm-pages">' + App.translate('%s from %s', [(row.PageData.page + 1), allPagesCount]) + '</span>').append(after));
+        }
     }
     App.pcTableMain.prototype.treeApply = function (reCreateRows = false) {
         if (this.treeReloadRows.length) {

@@ -1,49 +1,88 @@
-.pcTable-table tbody td.tree-view-td{
+.pcTable-table tbody td.tree-view-td {
   background-color: whitesmoke;
   border-top-color: #faf9f8;
   border-right-color: #faf9f8;
   border-left-color: #faf9f8;
   font-size: 15px;
 }
-.tree-view{
-  .fa{
+
+.tree-view {
+  .fa {
     opacity: 0.4;
     font-size: 13px;
   }
-  button.btn-default{
+
+  button.btn-default {
     background-color: transparent;
     color: inherit;
   }
-  .treeRow{
+
+  .treeRow {
     padding-top: 2px;
     margin-right: 4px;
-    &.ins{
+
+    &.ins {
       margin-right: 8px;
     }
   }
-  .tree-span-text{
+
+  .tree-span-text {
     color: #818181;
   }
-  .fa-arrows-v{
+
+  .fa-arrows-v {
     margin-right: 8px;
   }
+
   min-width: 50px;
   padding-right: 8px;
 }
-.tree-view-td>.treeRow{
-  font-family: PTRootUIWeb;
-  font-weight: 600;
 
+.tree-view-td {
+  cursor: auto;
+
+  .treeRow {
+    .ttm-pagination {
+      padding-top: 0;
+    }
+
+    .ttm-pages-active {
+      display: none;
+    }
+
+    .ttm-pages, .ttm-pages-arrows {
+      padding: 0;
+    }
+  }
+
+  &:hover {
+    .ttm-pages-active {
+      display: inline;
+    }
+
+    .ttm-pages-arrows {
+      display: none;
+    }
+  }
+
+  > .treeRow {
+    font-family: PTRootUIWeb;
+    font-weight: 600;
+
+  }
 }
-.btn.tree-view-td-edit{
+
+.btn.tree-view-td-edit {
   margin-right: 3px;
 }
-.btn.treeRow{
+
+.btn.treeRow {
   border-color: transparent;
   width: 24px;
   margin-left: 4px;
   margin-right: 0;
-  & + .btn.treeRow{
+
+  & + .btn.treeRow {
     margin-left: 0;
   }
 }

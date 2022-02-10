@@ -91,7 +91,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         let postData = this.getDataForPost();
 
         const save = () => {
-            EditPanelFunc.pcTable.model[saveMethod](this.panelType === 'insert' ? hash : postData)
+            EditPanelFunc.pcTable.model[saveMethod](this.panelType === 'insert' ? hash : postData, null)
                 .then(function (json) {
                     if (isEditFieldPanel) {
                         let mainTable = $('#table').data(pcTable_DATA_KEY);

@@ -357,15 +357,22 @@
                 let deleted = json.chdata.deleted || [];
                 let addedRows = [];
 
-                if (json.chdata.rows) {
-                    if (json.refresh && json.chdata.rows) {
-                        Object.keys(pcTable.data).forEach(function (id) {
-                            if (json.chdata.rows[id] === undefined) {
-                                deleted.push(parseInt(id));
-                            }
-                        });
-                    }
 
+                if (json.refresh && json.chdata.rows) {
+                    Object.keys(pcTable.data).forEach(function (id) {
+                        if (json.chdata.rows[id] === undefined) {
+                            deleted.push(parseInt(id));
+                        }
+                    });
+                }
+
+                if (deleted.length) {
+                    $.each(deleted, function (k, v) {
+                        pcTable._deleteItemById.call(pcTable, v);
+                    });
+                }
+
+                if (json.chdata.rows) {
                     if (json.chdata.tree) {
                         let ids = {};
                         json.chdata.tree.forEach((tv, i) => {
@@ -448,13 +455,8 @@
                 }
 
 
-                if (deleted.length) {
-                    $.each(deleted, function (k, v) {
-                        pcTable._deleteItemById.call(pcTable, v);
-                    });
-                    if (App.isEmpty(pcTable.data) && pcTable._content && pcTable._content.find('.' + this.noDataRowClass).length === 0) {
-                        pcTable._content.append(pcTable._createNoDataRow());
-                    }
+                if (App.isEmpty(pcTable.data) && pcTable._content && pcTable._content.find('.' + this.noDataRowClass).length === 0) {
+                    pcTable._content.append(pcTable._createNoDataRow());
                 }
 
                 if (deleted.length || addedRows.length || (json.chdata.nsorted_ids && pcTable.nSorted && !Object.equals(json.chdata.nsorted_ids, pcTable.dataSorted))) {
@@ -505,6 +507,12 @@
                             }
                         });
                     });
+                }
+
+                if (json.chdata.treeCounts) {
+                    Object.keys(json.chdata.treeCounts).forEach((v) => {
+                        this.treeIndex[v].count = json.chdata.treeCounts[v]
+                    })
                 }
 
                 if (json.chdata.fields) {

@@ -116,7 +116,7 @@
                 if (data_tmp.data !== undefined && typeof data_tmp.data === 'object') {
                     data_tmp.data = JSON.stringify(data_tmp.data);
                 }
-                if (dataRows) {
+                if (dataRows && !data_tmp.ids) {
                     data_tmp.ids = JSON.stringify(Object.keys(dataRows));
                 }
                 if (!('offset' in $data) && offset !== undefined) {
@@ -242,7 +242,8 @@
                         App.notify(errorText)
                         $d.reject(json);
                     }
-                }, fail = function (obj) {
+                },
+                    fail = function (obj) {
                     let error, timeout;
                     if (obj && obj.status === 200) {
                         if (obj.responseJSON && obj.responseJSON.error) error = obj.responseJSON.error;
@@ -398,8 +399,8 @@
                 "use strict";
                 return this.__ajax('post', {fieldName: fieldName, fieldVal: val, method: 'checkUnic'});
             },
-            add: function (hash, data) {
-                return this.__ajax('post', {hash: hash, method: 'add', data: data});
+            add: function (hash, data, idsString) {
+                return this.__ajax('post', {hash: hash, method: 'add', data: data, ids: idsString});
             },
             getValue: function (data, table_id) {
                 return this.__ajax('post', {data: data, method: 'getValue', table_id: table_id});
