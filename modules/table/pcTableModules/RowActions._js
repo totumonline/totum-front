@@ -886,7 +886,7 @@
                             }
 
                             //Замена значений уникальных полей
-                            if (unic_fields.length) {
+                            if (unic_fields.length && !pcTable.tableRow.on_duplicate) {
                                 let $uniqTable = $('<table class="simpleTable"><thead><tr><td class="id">id</td></tr></thead><tbody></tbody></table>');
                                 let $head = $uniqTable.find('thead tr');
                                 let $body = $uniqTable.find('tbody');

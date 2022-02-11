@@ -589,7 +589,7 @@
                 }
 
                 const checkIsFilled = (btn, code) => {
-                    if (code === null || code == '' || code.trim() === "=:" || code.trim() === "f1=:") {
+                    if (code!==true) {
                         btn.css('background-color', 'transparent')
                     } else {
                         btn.css('background-color', '#ffedb1')
@@ -1926,10 +1926,9 @@
 
                 creatorIcons.append($ord);
 
-                if(pcTable.isTreeView && field.name==='tree'){
+                if (pcTable.isTreeView && field.name === 'tree') {
                     $ord.addClass('reordered');
-                }
-                else if (field._ord) {
+                } else if (field._ord) {
                     $ord.addClass('reordered');
                     $ord.before('<i class="roles">' + (field.ord) + '</i>')
                 }
@@ -2756,7 +2755,7 @@
                 td.attr('data-field', field.name);
             }
 
-            var span = $('<span class="cell-value" data-type="'+field.type+'">');
+            var span = $('<span class="cell-value" data-type="' + field.type + '">');
             var val = item[field.name];
 
             if (!field.linkFieldName && field.code && !field.codeOnlyInAdd) {
