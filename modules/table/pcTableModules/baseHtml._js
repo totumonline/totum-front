@@ -299,7 +299,7 @@
                 if ($TOTUM_FOOTER.length) {
                     topButtons.append($TOTUM_FOOTER);
                 }
-                if (pcTable.isCreatorView) {
+                if (pcTable.isCreatorView || pcTable.shadowedCreator) {
                     let LogButtons = $('<div class="creator-log-buttons">');
                     let codes = $.cookie('pcTableLogs') || '[]';
                     codes = JSON.parse(codes);
@@ -589,7 +589,7 @@
                 }
 
                 const checkIsFilled = (btn, code) => {
-                    if (code!==true) {
+                    if (code !== true) {
                         btn.css('background-color', 'transparent')
                     } else {
                         btn.css('background-color', '#ffedb1')
