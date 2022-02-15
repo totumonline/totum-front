@@ -127,7 +127,9 @@ $.extend(App.pcTableMain.prototype, {
                             let item = {};
                             Object.keys(pcTable._insertItem).forEach((k) => {
                                 if (typeof pcTable._insertItem[k] === "object" && "v" in pcTable._insertItem[k]) {
-                                    item[k] = pcTable._insertItem[k].v;
+                                    if (!pcTable.fields[k].code || pcTable._insertItem[k].h) {
+                                        item[k] = pcTable._insertItem[k].v;
+                                    }
                                 }
                             })
                             pcTable._createInsertRow(pcTable._insertRow, true, item);
