@@ -858,7 +858,7 @@
 
                         }
 
-                        if ((state.functionParam === 'key' && (state.func[5] === 'listSort' || state.func[5] === 'listFilter')) && /[ns]/.test(stream.peek())) {
+                        if (state.functionParam === 'key' && (['listSort', 'listFilter', 'listSearch'].indexOf(state.func[5]) !== -1) && /[ns]/.test(stream.peek())) {
                             if (stream.string.substring(stream.start, stream.start + 3) === 'num' || stream.string.substring(stream.start, stream.start + 3) === 'str') {
                                 stream.next();
                                 stream.next();
