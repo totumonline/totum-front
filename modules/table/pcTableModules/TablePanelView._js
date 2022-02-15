@@ -156,7 +156,7 @@
             if (format.progress && format.progresscolor) {
                 let addProgress = function () {
                     if (!td.isAttached()) {
-                        setTimeout(addProgress, 50);
+                        setTimeout(addProgress, 1);
                     } else {
                         let progress = Math.round(td.outerWidth() * parseInt(format.progress) / 100);
                         td.css('box-shadow', 'inset ' + progress.toString() + 'px 0px 0 0 ' + format.progresscolor);
@@ -627,13 +627,32 @@
             this._hideHell_storage.checkIssetFields.call(this)
         }
     }
-    const refreshRow = function (tr, item, newData) {
+    const refreshRow = function (tr, item, newData, onlyChanged) {
         if (tr.is('.panelsView-card')) {
+            let changed = false;
+            if (newData && onlyChanged) {
+                Object.keys(newData).some((k) => {
+                    if (newData[k] !== null && typeof newData[k] == 'object') {
+                        if (newData[k].changed) {
+                            changed = true;
+                            return true;
+                        } else if (!Object.equals(newData[k], item[k]) && (k in this.fields) && this.fields[k].type !== "listRow") {
+                            changed = true;
+                            return true;
+                        }
+                    } else if (newData[k] != item[k]) {
+                        changed = true;
+                        return true;
+                    }
+                    item[k] = newData[k];
+                })
+            }
+
             $.extend(item, newData);
-            this._getRowCard(item.id);
+            if (!onlyChanged || changed) {
+                this._getRowCard(item.id);
+            }
         }
-
-
     }
 
     App.pcTableMain.prototype._renderTablePanelView = function () {

@@ -2654,16 +2654,16 @@
                 });
             }
         },
-        refreshRow: function (tr, item, newData) {
+        refreshRow: function (tr, item, newData, onlyChanged) {
             if ((tr && tr.is('.DataRow')) || item) {
 
                 if (!item) {
                     item = this._getItemByTr(tr);
                 }
-
+                let changed = false, oldData;
                 let chData = [];
                 if (newData) {
-                    let changed = false, oldData;
+
                     if (this.isTreeView) {
                         oldData = {
                             id: item.id,
@@ -2698,7 +2698,9 @@
                     }
                 }
 
-                if (tr) this._createRow(item, chData);
+                if (tr && (!onlyChanged || changed)) {
+                    this._createRow(item, chData);
+                }
             } else if (this._isParamsArea(tr)) {
                 this._refreshParamsBlock();
             } else if (this._isFootersArea(tr)) {

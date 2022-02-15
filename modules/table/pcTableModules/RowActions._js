@@ -396,7 +396,7 @@
                         if (item === undefined) {
                             addedRows.push(v);
                         } else {
-                            pcTable.refreshRow(item.$tr, item, v);
+                            pcTable.refreshRow(item.$tr, item, v, withoutRefreshes);
                         }
                     });
 
