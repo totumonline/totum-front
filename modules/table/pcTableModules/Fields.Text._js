@@ -204,7 +204,7 @@ fieldTypes.text = {
                     let mode = field.getMode();
 
 
-                    let el = $('<div>').appendTo(element);
+                    let el = $('<div>').height('100%').appendTo(element);
                     let options = {
                         value: (json.value || '').toString(),
                         mode: mode,
@@ -222,7 +222,7 @@ fieldTypes.text = {
                         options.lineWrapping = true;
                     }
 
-                    editor = CodeMirror(el.get(0), options);
+                    editor = window.top.CodeMirror(el.get(0), options);
                     editor.on('paste', function (cm, event) {
                         setTimeout(function () {
                             editor.refresh();
@@ -250,7 +250,6 @@ fieldTypes.text = {
                     }
 
                     editor.focus();
-
                 }
 
 

@@ -133,7 +133,7 @@
                 },
 
                 onshown: function (dialog) {
-                    editorMax = CodeMirror(newCodemirrorDiv.get(0), {
+                    editorMax = window.top.CodeMirror(newCodemirrorDiv.get(0), {
                         mode: "totum",
                         value: value,
                         theme: 'eclipse',
