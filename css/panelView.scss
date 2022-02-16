@@ -20,9 +20,17 @@
       cursor: pointer;
       border: 1px solid transparent;
 
+
+
+
       &.selected {
         //background-color: #c8f8ff80;
       }
+
+      .cell-button button{
+        background-color: whitesmoke;
+      }
+
 
       td > .fa {
         padding-right: 4px;
