@@ -310,7 +310,7 @@
 
             this._treeFolderRowAddDropdown(span, row)
 
-            let treeRow = $('<span class="treeRow">').text(row.t).data('treeRow', row.v);
+            let treeRow = $('<span class="treeRow">').html($('<span>').text(row.t)).data('treeRow', row.v);
             if (row.opened && row.count) {
                 this._treePagination(treeRow, row)
             }
@@ -416,7 +416,7 @@
                     return false;
                 })
             }
-            let sigh = $('<span class="ttm-pages-arrows"><i class="fa fa-hand-o-left"></i><i class="fa fa-hand-o-right"></i></span>');
+            let sigh = $('<span class="ttm-pages-arrows"><i class="fa fa-ellipsis-h"></i></span>');
             row.PageData.$block.empty().append(sigh).append($('<span class="ttm-pages-active">').append(before).append('<span class="ttm-pages">' + App.translate('%s from %s', [(row.PageData.page + 1), allPagesCount]) + '</span>').append(after));
         }
     }

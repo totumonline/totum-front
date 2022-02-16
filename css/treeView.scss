@@ -43,6 +43,7 @@
 
   .treeRow {
     .ttm-pagination {
+      font-weight: normal;
       padding-top: 0;
     }
 
@@ -57,7 +58,13 @@
 
   &:hover {
     .ttm-pages-active {
+      padding-top: 0;
+      padding-bottom: 0;
       display: inline;
+      button{
+        padding-top: 0;
+        padding-bottom: 0;
+      }
     }
 
     .ttm-pages-arrows {
