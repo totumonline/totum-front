@@ -679,6 +679,9 @@
                                 if (!addedBack) {
                                     if (!br.isOneUserCycle)
                                         tablsUl.append('<li><a href="/Table/' + topPathId + '"><i class="fa fa-arrow-left"></a></li>');
+                                    else{
+                                        tablsUl.css('padding-left', 45);
+                                    }
                                     addedBack = true;
                                 }
                                 if (br.state.selected)
