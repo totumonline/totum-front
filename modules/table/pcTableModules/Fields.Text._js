@@ -126,7 +126,7 @@ fieldTypes.text = {
 
         let formFill = function () {
 
-            field.getValue(oldValueParam, item, !editNow).then(function (json) {
+            field.getValue(oldValueParam, item, (!editNow || editNow==='editField')).then(function (json) {
                 let editor;
                 div.append(element);
                 element.empty().appendTo(editNow === 'editField' ? div : dialog);
