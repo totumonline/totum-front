@@ -329,10 +329,8 @@ $.extend(App.pcTableMain.prototype, {
                             isEqual = false;
                         } else if (item[field.name].v === null && Oldval.v == '') {
                             isEqual = true;
-                        } if (item[field.name].v === Oldval.v) {
-                            isEqual = true;
                         } else {
-                            isEqual = Object.equals(item[field.name].v, Oldval.v) && !field.codeSelectIndividual && field.list;
+                            isEqual = Object.equals(item[field.name].v, Oldval.v) && !field.codeSelectIndividual && (['select', 'tree'].indexOf(field.type)===-1 || field.list);
                         }
 
                         if ((Oldval === undefined || !isEqual || field.name == 'data_src' || field.type == 'comments' || (field.code && !field.codeOnlyInAdd))) {
