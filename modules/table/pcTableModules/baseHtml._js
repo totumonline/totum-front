@@ -2730,8 +2730,9 @@
                 console.log(e, item, field.name);
                 format = {};
             }
-            let isHeighter = (format.height > 33 || format.maxheight > 33);
 
+
+            let isHeighter = (format.height > 33 || format.maxheight > 33 || field.heightFromSection > 33);
 
             if (field.editable && (this.control.editing || field.category === 'filter') && !format.block) {
                 td.addClass('edt');
@@ -2812,7 +2813,14 @@
                 } else if (!(val.e && field.errorText)) {
                     var cellInner = isHeighter ? field.getHighCelltext(val.v, td, item) : field.getCellText(val.v, td, item);
                     if (typeof cellInner === 'object') {
-                        span.html(cellInner)
+                        if(cellInner.then){
+                            span.html('<div class="center"><i class="fa fa-spinner fa-spin"></i></div>')
+                            cellInner.then((cellInner)=>{
+                                span.html(cellInner)
+                            })
+                        }else{
+                            span.html(cellInner)
+                        }
                     } else span.text(cellInner);
                 }
 

@@ -429,7 +429,13 @@
                 }
 
 
+                field.field.heightFromSection = (sec.formatsFromSection || {}).height
+                if (field.field.heightFromSection && typeof field.field.heightFromSection === 'object') {
+                    field.field.heightFromSection = field.field.heightFromSection[field.field.name];
+                }
+
                 let td = pcTable._createCell(pcTable.data_params, field.field).appendTo(tdWrapper);
+
 
                 if (pcTable.isCreatorView) {
                     let extraHeight = 33;
@@ -454,6 +460,7 @@
                         }
                     }
                 }
+
 
                 if (field.format.maxheight) {
                     let style = {'maxHeight': field.format.maxheight};
