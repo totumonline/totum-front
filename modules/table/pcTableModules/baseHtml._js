@@ -1218,7 +1218,7 @@
                 };
                 const addFilterCells = (k, v) => {
 
-                    if (v.hidden) return;
+                    if (v.hidden && !v.showMeWidth) return;
 
                     if (pcTable.isMobile || width === 0 || (ContainerWidth < (width + v.width)) || v.tableBreakBefore) {
                         if (!pcTable.isMobile)
