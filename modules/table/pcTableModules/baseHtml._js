@@ -2813,7 +2813,7 @@
                 } else if (!(val.e && field.errorText)) {
                     var cellInner = isHeighter ? field.getHighCelltext(val.v, td, item) : field.getCellText(val.v, td, item);
                     if (typeof cellInner === 'object') {
-                        if(cellInner.then){
+                        if(cellInner && cellInner.then){
                             span.html('<div class="center"><i class="fa fa-spinner fa-spin"></i></div>')
                             cellInner.then((cellInner)=>{
                                 span.html(cellInner)
