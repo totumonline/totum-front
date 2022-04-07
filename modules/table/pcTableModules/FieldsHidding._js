@@ -719,7 +719,7 @@
             }
 
             let isHidedExtraFields = Object.values(pcTable.fields).some(function (field) {
-                if (field.showInWeb && !field.hidden && !field.showMeWidth) return true;
+                if (field.showInWeb && !field.hidden && !field.__hidden && !field.showMeWidth) return true;
             });
 
             if (!isHidedExtraFields) {

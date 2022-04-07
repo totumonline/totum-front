@@ -679,7 +679,7 @@
                                 if (!addedBack) {
                                     if (!br.isOneUserCycle)
                                         tablsUl.append('<li><a href="/Table/' + topPathId + '"><i class="fa fa-arrow-left"></a></li>');
-                                    else{
+                                    else {
                                         tablsUl.css('padding-left', 45);
                                     }
                                     addedBack = true;
@@ -1154,7 +1154,10 @@
 
             this._filtersBlock.addClass('pcTable-filtersTables pcTable-section');
 
-            if (pcTable.fieldCategories.filter.length) {
+            if (pcTable.fieldCategories.filter.length && pcTable.fieldCategories.filter.some((v) => {
+                return !v.hidden && v.showMeWidth
+            })) {
+
 
                 this.___createClosedSection(this._filtersBlock,
                     $('<div class="pcTable-sectionTitle"><span>' + App.translate('Filters') + '</span></div>')
@@ -1269,7 +1272,7 @@
 
             $.each(pcTable.fieldCategories.filter, function (k, v) {
 
-                if (v.hidden) return;
+                if (v.hidden || !v.showMeWidth) return;
 
                 let cell = pcTable._createCell(pcTable.data_params, v);
                 /*if (v.insertable === true) {
@@ -2813,12 +2816,12 @@
                 } else if (!(val.e && field.errorText)) {
                     var cellInner = isHeighter ? field.getHighCelltext(val.v, td, item) : field.getCellText(val.v, td, item);
                     if (typeof cellInner === 'object') {
-                        if(cellInner && cellInner.then){
+                        if (cellInner && cellInner.then) {
                             span.html('<div class="center"><i class="fa fa-spinner fa-spin"></i></div>')
-                            cellInner.then((cellInner)=>{
+                            cellInner.then((cellInner) => {
                                 span.html(cellInner)
                             })
-                        }else{
+                        } else {
                             span.html(cellInner)
                         }
                     } else span.text(cellInner);
