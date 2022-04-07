@@ -325,10 +325,11 @@ $.extend(App.pcTableMain.prototype, {
 
                         let name = field.name;
                         let isEqual = false;
-
                         if (isForce) {
                             isEqual = false;
                         } else if (item[field.name].v === null && Oldval.v == '') {
+                            isEqual = true;
+                        } if (item[field.name].v === Oldval.v) {
                             isEqual = true;
                         } else {
                             isEqual = Object.equals(item[field.name].v, Oldval.v) && !field.codeSelectIndividual && field.list;

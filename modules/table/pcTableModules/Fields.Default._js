@@ -90,7 +90,7 @@ var defaultField = {
     },
 
     getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
-        var $input = $('<input type="text" class="form-control" name="cell_edit" autocomplete="off" autocorrect="off" />');
+        var $input = $oldInput || $('<input type="text" class="form-control" name="cell_edit" autocomplete="off" autocorrect="off" />');
         if (typeof tabindex !== 'undefined') $input.attr('tabindex', tabindex);
 
         var field = this;
@@ -118,7 +118,7 @@ var defaultField = {
         $input.on('blur', function (event) {
             blurClbk($input, event);
         });
-        return $input.select();
+        return $input;
     },
     checkEditRegExp: function (val) {
         if (!this.warningEditRegExp) return true;
