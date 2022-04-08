@@ -472,6 +472,7 @@
 
             let categories = {
                 'param': App.translate('Header'),
+                'filter': App.translate('Prefilter'),
                 'column': App.translate('Columns'),
                 'footer': App.translate('Footer')
             };

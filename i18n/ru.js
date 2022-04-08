@@ -285,6 +285,7 @@ App.langs.ru =
                 'Header': 'Хэдер',
                 'Columns': 'Колонки',
                 'Footer': 'Футер',
+                'Prefilter': 'Префильтер',
 
                 'Hidden by default': 'Скрыто по умолчанию',
                 'Fields visibility': 'Видимость полей',
