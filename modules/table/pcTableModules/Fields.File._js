@@ -263,6 +263,7 @@
                     fileAdd.click();
                     fileAdd.on('change', function () {
                         save(this.files)
+                        fileAdd.remove();
                     });
                 });
 
