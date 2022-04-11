@@ -358,6 +358,10 @@
                         } else {
                             this.model.save({[itemId]: {[this.tableRow.panels_view.kanban]: newKanban}}).then((json) => {
 
+                                this.dataSorted.splice(this.dataSorted.indexOf(itemId), 1);
+                                this.dataSorted.splice(this.dataSorted.indexOf(nowBeforeId) + 1, 0, itemId);
+
+                                this.table_modify(json);
                                 this._container.getNiceScroll().resize();
                                 App.fullScreenProcesses.hide('sorting');
                             });
