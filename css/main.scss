@@ -124,6 +124,9 @@ input.error {
   .page_content:not(.tree-minifyed) .pcTable-topButtons #TOTUM_FOOTER {
     display: block;
   }
+  .pcTable-title{
+    margin-right: 220px;
+  }
 }
 
 .table-description {
@@ -437,7 +440,7 @@ input:not([type="checkbox"]):focus {
   font-family: 'PTRootUIWeb', sans-serif;
   font-weight: 500;
   padding-bottom: 4px;
-  margin-right: 220px;
+
 
   .updated {
     padding-top: 6px;
