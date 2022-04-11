@@ -95,7 +95,14 @@ fieldTypes.button = {
 
 
         if (format.block || (!this.pcTable.control.editing && !this.pressableOnOnlyRead)) {
+
             let btn = $('<button class="btn btn-default btn-xxs button-field" tabindex="-1" disabled>').text(this.buttonText || '');
+
+            if(td && td.is('.button-wrapper')){
+                btn.removeClass('btn-xxs button-field')
+                btn.addClass('btn-sm')
+            }
+
             NoBorderColorizer(btn);
             if (format.text) {
                 btn.text(format.text)
