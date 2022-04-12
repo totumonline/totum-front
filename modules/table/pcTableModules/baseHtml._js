@@ -607,7 +607,10 @@
                         .on('click', function () {
                             pcTable.editTableCode(info[1], info[2]).then(() => {
                                 App.blink($(this), 3, "green", "color");
-                                checkIsFilled(btn, pcTable.tableRow[info[1]]);
+                                let isCode=pcTable.tableRow[info[1]].split("\n").some((line)=>{
+                                    return !!line.match(/^\s*[a-z0-9]*\=\:\s*[^\s]+/, 'mu')
+                                })
+                                checkIsFilled(btn, isCode);
                             })
                         }).appendTo(creatorPart);
                     checkIsFilled(btn, pcTable.tableRow[info[1]]);
