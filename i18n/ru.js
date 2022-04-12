@@ -49,7 +49,7 @@ App.langs.ru =
                 'Close context data': '<b>Закрыть</b> дополнительную информацию',
                 'Open context data': '<b>Открыть</b> дополнительную информацию',
                 'Element preview is empty': 'Превью элемента пусто',
-                "PATH-TO-DOCUMENTATION": "http://docs.totum.online/",
+                "PATH-TO-DOCUMENTATION": "https://ru.docs.totum.online/",
                 "Email for cron notifications": "Email для нотификаций крона",
                 "Password": "Пароль",
                 "Login": "Логин",

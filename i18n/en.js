@@ -40,7 +40,7 @@ App.langs.en =
             'Creator-tableEditButtons-row_format': 'Row format',
             'Creator-tableEditButtons-table_format': 'Table format',
 
-            "PATH-TO-DOCUMENTATION":"http://docs.totum.online/",
+            "PATH-TO-DOCUMENTATION":"https://docs.totum.online/",
 
             'Close context data': '<b>Close</b> context data',
             'Open context data': '<b>Open</b> context data',

@@ -118,7 +118,7 @@
 
             })
 
-            let btn = $('<a>').attr('href', 'https://docs.totum.online/functions#fn-' + TOTUMjsFuncs[nameL][5])
+            let btn = $('<a>').attr('href', App.translate('PATH-TO-DOCUMENTATION')+'functions#fn-' + TOTUMjsFuncs[nameL][5])
                 .attr('target', '_blank')
                 .html('<button class="btn btn-default btn-sm">' + App.translate('Documentaion') + '</button>');
 
