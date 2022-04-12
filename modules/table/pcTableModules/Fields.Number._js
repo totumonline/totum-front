@@ -4,12 +4,25 @@ fieldTypes.number = {
 
         let val = input.val().trim();
 
+        val = val.replace(/\s+/, ' ');
+
         if ((val === undefined || val === '' || val === null)) {
             if (this.required) {
                 throw App.translate('The field %s must be entered', this.title);
             }
             return '';
-        } else if (this.regexp) {
+        }
+
+        if (val.match(/,/)) {
+            let dectimalSeparator = this.dectimalSeparator || App.dS;
+            if (dectimalSeparator === ',') {
+                val = val.replace(/,/, '.');
+            } else {
+                val = val.replace(/,/g, '');
+            }
+        }
+
+        if (this.regexp) {
             var r = new RegExp(this.regexp);
             if (!r.test(val)) {
                 let notify = this.regexpErrorText || App.translate('Value fails regexp validation: "%s"', this.regexp);
@@ -22,7 +35,7 @@ fieldTypes.number = {
         if (!/^(\+|\*|\%|\/|\:)?(\-?[\d]+((\.|\,)[\d]+)?)%?$/.test(valNew)) {
             throw App.translate('There must be a number');
         }
-        val = val.replace(/,/, '.');
+
         return val;
 
     },

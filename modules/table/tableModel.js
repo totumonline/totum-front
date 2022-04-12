@@ -86,6 +86,11 @@
                 let url = this.url;
 
                 let inProcess = false;
+                let _async = true;
+                if ($data.async === false) {
+                    _async = false
+                    delete $data.async;
+                }
 
 
                 let $d = $.Deferred();
@@ -131,159 +136,159 @@
                 let Model = this;
                 let success = function (json) {
 
-                    let methods = App.lang.modelMethods;
+                        let methods = App.lang.modelMethods;
 
-                    let pcTableObj = $('#table').data('pctable');
-                    if (pcTableObj) {
+                        let pcTableObj = $('#table').data('pctable');
+                        if (pcTableObj) {
 
-                        if (json.LOGS) {
-                            if (!pcTableObj.LOGS) pcTableObj.LOGS = {};
-                            pcTableObj.LOGS = $.extend(pcTableObj.LOGS, json.LOGS);
-                        }
-                        if (json.FullLOGS) {
-                            if (!pcTableObj.FullLOGS) pcTableObj.FullLOGS = [];
-
-                            let logs = {'text': (methods[data_tmp['method']] || data_tmp['method'])};
-                            logs.children = json.FullLOGS;
-                            if (json.FullLOGS.length) {
-                                pcTableObj.FullLOGS.push(logs);
-                                App.blink(pcTableObj.LogButton, 8, '#fff');
+                            if (json.LOGS) {
+                                if (!pcTableObj.LOGS) pcTableObj.LOGS = {};
+                                pcTableObj.LOGS = $.extend(pcTableObj.LOGS, json.LOGS);
                             }
-                        }
-                        if (json.FieldLOGS && Object.keys(json.FieldLOGS).length) {
-                            pcTableObj.FieldLOGS = pcTableObj.FieldLOGS || [];
-                            pcTableObj.FieldLOGS.push({
-                                'data': json.FieldLOGS,
-                                'name': (methods[data_tmp['method']] || data_tmp['method'])
-                            });
-                        }
-                        if (data_tmp['method'] !== 'loadPage' && pcTableObj.PageData && json.allCount !== undefined) {
-                            let changed = false;
-                            if ('offset' in json && json.offset !== null && pcTableObj.PageData.offset !== json.offset) {
-                                changed = true;
-                                pcTableObj.PageData.offset = json.offset;
-                            }
-                            if ('allCount' in json && json.allCount !== null && pcTableObj.PageData.allCount !== json.allCount) {
-                                changed = true;
+                            if (json.FullLOGS) {
+                                if (!pcTableObj.FullLOGS) pcTableObj.FullLOGS = [];
 
-                                if (pcTableObj.tableRow.pagination.match(/desc\s*$/)) {
-                                    pcTableObj.PageData.offset += json.allCount - pcTableObj.PageData.allCount;
+                                let logs = {'text': (methods[data_tmp['method']] || data_tmp['method'])};
+                                logs.children = json.FullLOGS;
+                                if (json.FullLOGS.length) {
+                                    pcTableObj.FullLOGS.push(logs);
+                                    App.blink(pcTableObj.LogButton, 8, '#fff');
                                 }
-
-                                pcTableObj.PageData.allCount = json.allCount
-
                             }
-                            if (changed) {
-                                pcTableObj.PageData.$block.empty().append(pcTableObj._paginationCreateBlock.call(pcTableObj))
+                            if (json.FieldLOGS && Object.keys(json.FieldLOGS).length) {
+                                pcTableObj.FieldLOGS = pcTableObj.FieldLOGS || [];
+                                pcTableObj.FieldLOGS.push({
+                                    'data': json.FieldLOGS,
+                                    'name': (methods[data_tmp['method']] || data_tmp['method'])
+                                });
                             }
-                        }
-                    }
+                            if (data_tmp['method'] !== 'loadPage' && pcTableObj.PageData && json.allCount !== undefined) {
+                                let changed = false;
+                                if ('offset' in json && json.offset !== null && pcTableObj.PageData.offset !== json.offset) {
+                                    changed = true;
+                                    pcTableObj.PageData.offset = json.offset;
+                                }
+                                if ('allCount' in json && json.allCount !== null && pcTableObj.PageData.allCount !== json.allCount) {
+                                    changed = true;
 
-
-                    if (json.tableChanged) {
-                        pcTable.showRefreshButton(json.tableChanged)
-                    }
-
-                    if (!json.error) {
-                        if (json.reload) window.location.href = window.location.href;
-                        else {
-                            if (json.links && json.links.length > 0) Model.showLinks(json);
-                            if (json.interfaceDatas && json.interfaceDatas.length > 0) Model.shoInterfaceDatas(json);
-                            Model.showPanels(json);
-                        }
-                        $d.resolve(json);
-
-                        setTimeout(() => {
-                            if (json.chdata && json.updated && pcTable.editPanels) {
-                                pcTable.editPanels.forEach((panel) => {
-                                    panel.refresh();
-                                })
-                            }
-                        }, 10)
-
-
-                    } else {
-                        var errorText = $('<div>').html(json.error.replace(/\[\[(.*?)\]\]/g, '<b>$1</b>'));
-
-                        if (json.log) {
-                            let btn = $('<button class="btn btn-xxs btn-danger"><i class="fa fa-info" style="padding-top: 3px;" aria-hidden="true"> c</i></button>');
-                            btn.on('click', function () {
-                                BootstrapDialog.show({
-                                    message: $('<pre style="max-height: ' + ($('body').height() - 200) + 'px; overflow: scroll">').css('font-size', '11px').text(JSON.stringify(json.log, null, 1)),
-                                    type: BootstrapDialog.TYPE_DANGER,
-                                    title: App.translate('Calculate log'),
-                                    buttons: [{
-                                        'label': null,
-                                        icon: 'fa fa-times',
-                                        cssClass: 'btn-m btn-default btn-empty-with-icon',
-                                        'action': function (dialog) {
-                                            dialog.close();
-                                        }
-                                    }],
-                                    draggable: true,
-                                    onshown: function (dialog) {
-                                        dialog.$modalContent.position({
-                                            of: window
-                                        })
-                                    },
-                                    onshow: function (dialog) {
-                                        dialog.$modalHeader.css('cursor', 'pointer')
-                                        dialog.$modalContent.css({
-                                            width: 1200
-                                        });
+                                    if (pcTableObj.tableRow.pagination.match(/desc\s*$/)) {
+                                        pcTableObj.PageData.offset += json.allCount - pcTableObj.PageData.allCount;
                                     }
 
-                                });
+                                    pcTableObj.PageData.allCount = json.allCount
 
-                            });
-                            errorText.append(' ');
-                            errorText.append(btn)
-                        }
-                        App.notify(errorText)
-                        $d.reject(json);
-                    }
-                },
-                    fail = function (obj) {
-                    let error, timeout;
-                    if (obj && obj.status === 200) {
-                        if (obj.responseJSON && obj.responseJSON.error) error = obj.responseJSON.error;
-                        else {
-                            error = $('<div>' + App.translate('Operation execution error') + '  </div>');
-                            if (pcTable && pcTable.isCreatorView) {
-                                error.append('<button class="btn danger-backg btn-xs" data-toggle="collapse" data-target="#notify-texh"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></button>');
-                                error.append($('<div id="notify-texh" class="collapse">').append($('<code>').text(obj.responseText)));
+                                }
+                                if (changed) {
+                                    pcTableObj.PageData.$block.empty().append(pcTableObj._paginationCreateBlock.call(pcTableObj))
+                                }
                             }
                         }
-                    } else {
 
-                        if (!RequestObject && obj && obj.statusText != "abort" && obj.statusText != "error") {
-                            error = obj.statusText;
-                            timeout = 200;
 
-                        } else if (RequestObject && RequestObject.jqXHR) {
-                            if (RequestObject.jqXHR.statusText !== "abort") {
-                                error = App.translate('No server connection');
-                                timeout = 200;
-                            }
+                        if (json.tableChanged) {
+                            pcTable.showRefreshButton(json.tableChanged)
                         }
-                    }
 
-                    if (error && ['checkTableIsChanged', 'checkForNotifications'].indexOf($data.method) === -1) {
-                        if (timeout) {
-                            setTimeout(function () {
-                                App.notify(error);
-                            }, timeout)
+                        if (!json.error) {
+                            if (json.reload) window.location.href = window.location.href;
+                            else {
+                                if (json.links && json.links.length > 0) Model.showLinks(json);
+                                if (json.interfaceDatas && json.interfaceDatas.length > 0) Model.shoInterfaceDatas(json);
+                                Model.showPanels(json);
+                            }
+                            $d.resolve(json);
+
+                            setTimeout(() => {
+                                if (json.chdata && json.updated && pcTable.editPanels) {
+                                    pcTable.editPanels.forEach((panel) => {
+                                        panel.refresh();
+                                    })
+                                }
+                            }, 10)
+
+
                         } else {
-                            App.notify(error);
-                        }
-                        if (!obj.responseText) {
-                            //console.log(obj, RequestObject);
+                            var errorText = $('<div>').html(json.error.replace(/\[\[(.*?)\]\]/g, '<b>$1</b>'));
 
-                        }
-                    }
+                            if (json.log) {
+                                let btn = $('<button class="btn btn-xxs btn-danger"><i class="fa fa-info" style="padding-top: 3px;" aria-hidden="true"> c</i></button>');
+                                btn.on('click', function () {
+                                    BootstrapDialog.show({
+                                        message: $('<pre style="max-height: ' + ($('body').height() - 200) + 'px; overflow: scroll">').css('font-size', '11px').text(JSON.stringify(json.log, null, 1)),
+                                        type: BootstrapDialog.TYPE_DANGER,
+                                        title: App.translate('Calculate log'),
+                                        buttons: [{
+                                            'label': null,
+                                            icon: 'fa fa-times',
+                                            cssClass: 'btn-m btn-default btn-empty-with-icon',
+                                            'action': function (dialog) {
+                                                dialog.close();
+                                            }
+                                        }],
+                                        draggable: true,
+                                        onshown: function (dialog) {
+                                            dialog.$modalContent.position({
+                                                of: window
+                                            })
+                                        },
+                                        onshow: function (dialog) {
+                                            dialog.$modalHeader.css('cursor', 'pointer')
+                                            dialog.$modalContent.css({
+                                                width: 1200
+                                            });
+                                        }
 
-                    $d.reject(obj);
-                };
+                                    });
+
+                                });
+                                errorText.append(' ');
+                                errorText.append(btn)
+                            }
+                            App.notify(errorText)
+                            $d.reject(json);
+                        }
+                    },
+                    fail = function (obj) {
+                        let error, timeout;
+                        if (obj && obj.status === 200) {
+                            if (obj.responseJSON && obj.responseJSON.error) error = obj.responseJSON.error;
+                            else {
+                                error = $('<div>' + App.translate('Operation execution error') + '  </div>');
+                                if (pcTable && pcTable.isCreatorView) {
+                                    error.append('<button class="btn danger-backg btn-xs" data-toggle="collapse" data-target="#notify-texh"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></button>');
+                                    error.append($('<div id="notify-texh" class="collapse">').append($('<code>').text(obj.responseText)));
+                                }
+                            }
+                        } else {
+
+                            if (!RequestObject && obj && obj.statusText != "abort" && obj.statusText != "error") {
+                                error = obj.statusText;
+                                timeout = 200;
+
+                            } else if (RequestObject && RequestObject.jqXHR) {
+                                if (RequestObject.jqXHR.statusText !== "abort") {
+                                    error = App.translate('No server connection');
+                                    timeout = 200;
+                                }
+                            }
+                        }
+
+                        if (error && ['checkTableIsChanged', 'checkForNotifications'].indexOf($data.method) === -1) {
+                            if (timeout) {
+                                setTimeout(function () {
+                                    App.notify(error);
+                                }, timeout)
+                            } else {
+                                App.notify(error);
+                            }
+                            if (!obj.responseText) {
+                                //console.log(obj, RequestObject);
+
+                            }
+                        }
+
+                        $d.reject(obj);
+                    };
 
 
                 let ajax = function () {
@@ -306,6 +311,7 @@
                     if (!RequestObject || RequestObject.aborted !== true) {
                         $.ajax({
                             url: url,
+                            async: _async,
                             method: $method,
                             data: data_tmp,
                             dataType: 'json',
@@ -359,7 +365,7 @@
                     return false;
 
                 return this.__ajax('post', {delete_ids: JSON.stringify(ids), method: 'delete'});
-            },
+            }, 
             restore: function (ids) {
                 if (ids.length === 0)
                     return false;
