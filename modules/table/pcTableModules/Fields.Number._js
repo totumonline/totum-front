@@ -14,8 +14,7 @@ fieldTypes.number = {
         }
 
         if (val.match(/,/)) {
-            let dectimalSeparator = this.dectimalSeparator || App.dS;
-            if (dectimalSeparator === ',') {
+            if (this.dectimalSeparator === ',') {
                 val = val.replace(/,/, '.');
             } else {
                 val = val.replace(/,/g, '');

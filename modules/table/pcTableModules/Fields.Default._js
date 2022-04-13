@@ -9,8 +9,8 @@ var defaultField = {
     getPanelVal(val) {
         return val;
     },
-    isCyclesTabButton(){
-      return false
+    isCyclesTabButton() {
+        return false
     },
     getPanelFormats(divForPannelFormats, panelFormats) {
         let field = this;
@@ -90,7 +90,11 @@ var defaultField = {
     },
 
     getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
-        var $input = $oldInput || $('<input type="text" class="form-control" name="cell_edit" autocomplete="off" autocorrect="off" />');
+        var $input = $oldInput;
+        if (!$oldInput || !$oldInput.is('input')) {
+            $input = $('<input type="text" class="form-control" name="cell_edit" autocomplete="off" autocorrect="off" />');
+        }
+
         if (typeof tabindex !== 'undefined') $input.attr('tabindex', tabindex);
 
         var field = this;
@@ -188,9 +192,9 @@ var defaultField = {
         return checkDiv(res);
     },
     focusElement: function (input) {
-        if(input.is('div')){
+        if (input.is('div')) {
             input.find('button').focus();
-        }else{
+        } else {
             input.focus();
         }
         if (input.closest('tr').is('.InsertRow')) {
