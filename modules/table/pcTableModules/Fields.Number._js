@@ -4,7 +4,9 @@ fieldTypes.number = {
 
         let val = input.val().trim();
 
-        val = val.replace(/\s+/, ' ');
+        if (typeof val === 'string') {
+            val = val.replace(/\s+/g, '');
+        }
 
         if ((val === undefined || val === '' || val === null)) {
             if (this.required) {

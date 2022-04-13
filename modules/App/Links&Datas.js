@@ -1201,7 +1201,7 @@
                     setTimeout(function () {
                         def.resolve();
 
-                    }, 2000)
+                    }, 1000)
                 }
             };
 
