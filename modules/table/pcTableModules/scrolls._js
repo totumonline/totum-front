@@ -157,11 +157,7 @@
                 }, 50);
             });
 
-            let cache = {
-                top_offset: 0,
-                bottom_offset: 0,
-                rows: $()
-            };
+            let cache = {};
             $.extend(self, {
                 rows_in_block: 4,
                 item_height: pcTABLE_ROW_HEIGHT,
@@ -250,7 +246,11 @@
                                 }
                                 return k;
                             }).join(',');
-                        if (forceRefreshData || this.checkChanges('data', this_cluster_rows, cache)) {
+
+                        let checkRows=this.checkChanges('data', this_cluster_rows, cache);
+                        let checkCountRows=this.checkChanges('count', pcTable.dataSortedVisible.length, cache);
+
+                        if (forceRefreshData || checkRows || checkCountRows) {
                             this.setHtml(data.rows, data.top_offset, data.bottom_offset, forceRefreshData);
                         }
                         if (forceCheckTableHeight && pcTable._container.getNiceScroll) {

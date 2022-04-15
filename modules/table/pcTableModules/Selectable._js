@@ -307,7 +307,6 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             }
         }
 
-
         if (!pcTable.isMobile) {
             //expand
             let btn = $('<button class="btn btn-sm btn-default"><i class="fa fa-expand" style="padding-top: 3px;" aria-hidden="true"></i></button>');
