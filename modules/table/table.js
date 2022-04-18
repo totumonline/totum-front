@@ -421,7 +421,9 @@
                 });
 
                 this.domObject = this._container.addClass(this.contanerClass).addClass('pcTable-type-' + this.tableRow.type);
-
+                if (!$('#totumTableStyle').length) {
+                    $('head').append($('<style id="totumTableStyle">').text(App.lang.css.table))
+                }
                 if (this.isCreatorView) {
                     this._container.addClass('pcTable-creatorView')
                 }

@@ -27,6 +27,9 @@ App.langs.en =
             'getEditSelect': 'Select loading',
             'delete': 'Deleting'
         },
+        css: {
+            table: '.pcTable-container .loading-row td {background: url("/imgs/loading_en.png") repeat #fff;}'
+        },
         "search_prepare_function": function (string1, string2) {
             string1 = string1.toLowerCase();
             if (string2) {

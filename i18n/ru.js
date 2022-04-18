@@ -19,6 +19,9 @@ App.langs.ru =
             })
             return [string1, string2];
         },
+        css: {
+            table: '.pcTable-container .loading-row td {background: url("/imgs/loading_ru.png") repeat #fff;}'
+        },
         modelMethods: {
             'edit': 'Изменение',
 
