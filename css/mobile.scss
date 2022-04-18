@@ -149,7 +149,7 @@
 
 
   .DataRow td.cell-button .cell-value button.button-field{
-    height: 34px;
+    height: 30px;
   }
   .ttm__burger-wrapper{
     padding-bottom: 10px;
@@ -331,6 +331,10 @@
         background-color: #faf9f8;
       }
 
+      button.button-field{
+        background-color: #fffdf9;
+      }
+
       &.pcTable-filtersTable td:not(.cell-button) {
         background-color: whitesmoke;
       }
@@ -353,7 +357,7 @@
       height: 25px;
       padding-top: 4px;
       padding-bottom: 4px;
-      background-color: oldlace;
+
 
       &:disabled {
         background-color: #faf9f8;
@@ -482,11 +486,7 @@
       }
     }
   }
-  .pcTable-table tbody {
-    td, td.with-code {
-      background-color: #fff;
-    }
-  }
+
   body {
     overflow-y: auto;
   }
