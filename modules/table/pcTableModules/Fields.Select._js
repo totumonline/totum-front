@@ -604,9 +604,9 @@ fieldTypes.select = {
                             }
                             input.data('changed', false);
                         });
-                        input.on('show.bs.select', function () {
+                        /*input.on('show.bs.select', function () {
                             addValues(val);
-                        });
+                        });*/
                         input.on('shown.bs.select', function () {
                             let selectPicker = input.data('selectpicker');
                             selectPicker.$bsContainer.addClass('pcTable-selectpicker');
