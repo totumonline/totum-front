@@ -156,7 +156,7 @@
       opacity: 0.5;
     }
 
-    button {
+    button:not(:first-child) {
       margin-top: -2px;
       margin-left: 10px;
     }

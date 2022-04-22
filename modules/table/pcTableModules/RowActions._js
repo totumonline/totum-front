@@ -70,7 +70,11 @@
         }
         ,
         _addCellId: function (item, $row) {
-            let $tdId = $('<td class="id"><span class="nm">' + item['id'] + '</span></td>');
+            let $tdId = $('<td class="id"><span class="nm"></span></td>');
+
+            if(this._isDisplayngIdEnabled()){
+                $tdId.find('span').text(item['id'])
+            }
             $tdId.appendTo($row);
             this.row_actions_icons_add($tdId);
 

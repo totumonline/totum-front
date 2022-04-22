@@ -25,6 +25,8 @@ App.pcTableMain.prototype.__formatFunctions = {
     fieldhide: function () {
         if (this.f && this.f.fieldhide && Object.keys(this.f.fieldhide).length) {
             this.loadVisibleFields(this.f.fieldhide);
+            this._refreshHead();
+            this._refreshContentTable(true);
         }
     },
     kanban_html: function () {

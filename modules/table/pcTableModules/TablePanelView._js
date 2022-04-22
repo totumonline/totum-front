@@ -251,7 +251,9 @@
             }
 
             let controls = $('<div class="panel-controls">');
-            controls.append('<span class="panle-id">id ' + id + '</span>');
+            if (this._isDisplayngIdEnabled()) {
+                controls.append('<span class="panle-id">id ' + id + '</span>');
+            }
 
             if (this.tableRow.panel) {
                 controls.append('<button class="btn btn-default btn-xxs" data-action="panel"><i class="fa fa-th-large"></i></span>');

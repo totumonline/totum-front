@@ -683,6 +683,10 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     @include idClass();
     padding-top: 0px;
     height: 63px;
+    span.id-name{
+      height: 15px;
+      display: block;
+    }
   }
 }
 

@@ -607,7 +607,7 @@
                         .on('click', function () {
                             pcTable.editTableCode(info[1], info[2]).then(() => {
                                 App.blink($(this), 3, "green", "color");
-                                let isCode=pcTable.tableRow[info[1]].split("\n").some((line)=>{
+                                let isCode = pcTable.tableRow[info[1]].split("\n").some((line) => {
                                     return !!line.match(/^\s*[a-z0-9]*\=\:\s*[^\s]+/, 'mu')
                                 })
                                 checkIsFilled(btn, isCode);
@@ -1684,9 +1684,17 @@
             return $row;
         }
         ,
+        _isDisplayngIdEnabled: function(){
+            return this.isCreatorView || (!this.f.fieldhide || !this.f.fieldhide.id)
+        },
         _createHeadCellId: function () {
             let pcTable = this;
-            let $th = $('<th class="id"><span>id</span></th>');
+            let $th = $('<th class="id"><span class="id-name"></span></th>');
+            let idEnabled = this._isDisplayngIdEnabled();
+
+            if (idEnabled) {
+                $th.find('span').text('id')
+            }
 
             if (pcTable.tableRow.order_field === null || pcTable.tableRow.order_field === 'id') {
                 let span = $th.find('span').css('font-weight', 'bold');
@@ -1731,7 +1739,7 @@
             if (pcTable.isMobile) {
 
             } else {
-                let filterButton = this._getIdFilterButton();
+                let filterButton = idEnabled ? this._getIdFilterButton() : '';
 
                 panel.append($btnNHiding)
                     .append(' ')

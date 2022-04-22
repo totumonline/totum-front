@@ -476,9 +476,10 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                             if (itemName) itemName = itemName.v;
                             itemName = ' "' + itemName + '"';
                         }
+
                         if (!itemName) {
                             itemName = 'id ' + (EditPanelFunc.editItem['id'] || json.row.id);
-                        } else {
+                        } else if(EditPanelFunc.pcTable._isDisplayngIdEnabled()) {
                             itemName = 'id ' + (EditPanelFunc.editItem['id'] || json.row.id) + ' ' + itemName;
                         }
 

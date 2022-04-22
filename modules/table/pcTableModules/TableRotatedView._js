@@ -31,7 +31,7 @@
                     let span = $('<span class="rowName"></span>').appendTo($tdId);
                     if (this.mainFieldName && this.mainFieldName !== 'id' && item[this.mainFieldName] && item[this.mainFieldName].v) {
                         span.html(this.fields[this.mainFieldName].getCellText(item[this.mainFieldName].v, span, item));
-                    } else {
+                    } else if (this._isDisplayngIdEnabled()) {
                         span.text(item['id']);
                         $tdId.addClass('small-rotated-id');
                     }
