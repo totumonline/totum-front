@@ -304,7 +304,7 @@
                     let codes = $.cookie('pcTableLogs') || '[]';
                     codes = JSON.parse(codes);
 
-                    if (codes.length) {
+                    if (codes.length || pcTable.FullLOGS) {
                         LogButtons.addClass('with-logs')
                         setTimeout(() => {
                             App.blink(LogButtons.find('button'), 6, "#fff")
