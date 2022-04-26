@@ -443,7 +443,7 @@
                 {
                     let btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-print"></i></button>')
                         .on('click', function () {
-                            pcTable._print.call(pcTable)
+                            pcTable._printSelect.call(pcTable)
                         }).appendTo(csv);
                 }
 
@@ -968,12 +968,12 @@
                 }
 
 
-                if (!pcTable.isCreatorView && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length) {
+                if (!pcTable.isCreatorView && pcTable.f && pcTable.f.buttons && pcTable.f.buttons.length) {
 
                     const $addButtons = ($btns) => {
                         let width = 0;
                         pcTable.f.buttons.forEach((name) => {
-                            if (pcTable.isReplacedToRowsButtonsField(name)) {
+                            if (pcTable.isReplacedButton(name)) {
                                 let $td = $('<span class="button-wrapper">').data('field', name);
                                 let button = pcTable.fields[name].getCellText(null, $td, pcTable.data_params);
 
@@ -1329,7 +1329,7 @@
                     let sectionDiv;
                     let sections = [];
                     $.each(pcTable.fieldCategories.param, function (k, field) {
-                            if (pcTable.isReplacedToRowsButtonsField(field.name))
+                            if (pcTable.isReplacedButton(field.name))
                                 return;
 
                             let panelColor;
@@ -1848,9 +1848,9 @@
         }
         ,
 
-        isReplacedToRowsButtonsField(fieldName) {
+        isReplacedButton(fieldName) {
             let pcTable = this;
-            return pcTable.fields[fieldName] && pcTable.f && pcTable.f.buttons && pcTable.f.buttons && pcTable.f.buttons.length && pcTable.f.buttons.indexOf(fieldName) !== -1;
+            return pcTable.fields[fieldName] && pcTable.f && ((pcTable.f.buttons && pcTable.f.buttons.length && pcTable.f.buttons.indexOf(fieldName) !== -1) || (pcTable.f.printbuttons && pcTable.f.printbuttons.length && pcTable.f.printbuttons.indexOf(fieldName) !== -1));
         },
         _createHeadCell: function (index, field, panelColor) {
             let pcTable = this;

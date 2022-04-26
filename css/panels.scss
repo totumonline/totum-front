@@ -279,3 +279,13 @@
 button[data-prop-disabled="true"] {
   opacity: 0.5;
 }
+
+.print-choosing{
+  .button-wrapper{
+    padding-top: 5px;
+    .cell-value, button{
+      font-size: 14px;
+      width: 100%;
+    }
+  }
+}

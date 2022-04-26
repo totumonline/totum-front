@@ -1,3 +1,52 @@
+App.pcTableMain.prototype._printSelect = function () {
+    if (this.isCreatorView || !this.f || !this.f.printbuttons || !this.f.printbuttons.length) {
+        this._print();
+        return;
+    }
+    let dialog;
+    let $printSettings = $('<div class="print-choosing"></div>');
+
+    let pcTable = this;
+
+    this.f.printbuttons.forEach((name)=>{
+        let field = this.fields[name];
+        if(field && field.type==='button'){
+            let td = $('<div class="button-wrapper no-width">').data('field', name).appendTo($printSettings);
+            let $btn=field.getCellText(null, td, this.data_params).appendTo(td)
+            $btn.wrap('<span class="cell-value">').on('click',function(){
+                pcTable._buttonClick(td, field);
+                dialog.close();
+            })
+        }
+    })
+
+    let td = $('<div class="button-wrapper no-width">').appendTo($printSettings);
+    let $btn=$('<span class="cell-value"><button class="btn btn-default btn-xxs button-field">'+App.translate('Default printing')+'</button></span>').appendTo(td)
+    $btn.wrap('<span class="cell-value">').on('click',function(){
+        pcTable._print();
+        dialog.close();
+    })
+
+    let buttons = [
+        {
+            label: App.translate('Cancel'),
+            action: function (dialogRef) {
+                dialogRef.close();
+            }
+        }
+    ];
+
+
+    dialog = window.top.BootstrapDialog.show({
+        message: $printSettings,
+        type: null,
+        title: App.translate('Print'),
+        buttons: buttons,
+        draggable: true
+    })
+
+}
+
 App.pcTableMain.prototype._print = function () {
     "use strict";
     let $printSettings = $('<div class="hidding-form">');

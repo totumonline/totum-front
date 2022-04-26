@@ -95,7 +95,7 @@
 
         $.each(fields, function (k, field) {
 
-            if (!pcTable.isCreatorView && pcTable.isReplacedToRowsButtonsField(field.name))
+            if (!pcTable.isCreatorView && pcTable.isReplacedButton(field.name))
                 return;
 
             let lableLowOpacity = false;

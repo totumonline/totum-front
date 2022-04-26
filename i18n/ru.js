@@ -75,6 +75,7 @@ App.langs.ru =
                 "Edit totumCode in %s": "Редактировать Тотум-код в %s",
                 "Edit totumCode in value of %s": "Редактировать Тотум-код в ячейке %s",
 
+                "Default printing":"Печать по-умолчанию",
 
                 /*Kanban*/
                 'Show columns extra info': 'Показать дополнительную информацию колонок',

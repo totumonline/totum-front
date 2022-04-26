@@ -136,7 +136,7 @@ $.extend(App.pcTableMain.prototype, {
                             } else if (field.openContextPanel) {
                                 $td.trigger("contextmenu")
                             }
-                            field.btnOK.call(field, $td, item);
+                            field.btnOK($td, item);
                             resolve(json);
                         }
                     ).fail(function () {
@@ -198,7 +198,7 @@ $.extend(App.pcTableMain.prototype, {
                     let field = pcTable._getFieldBytd($editObj);
                     let $cell = pcTable._createCell(item, field);
                     if (field.type === 'button') {
-                        field.btnOK.call(field, $cell, item);
+                        field.btnOK($cell, item);
                     }
                     $editObj.replaceWith($cell);
                 })

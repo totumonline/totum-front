@@ -66,7 +66,8 @@ fieldTypes.button = {
                     width = this.width > $('#table').width() - 30 ? $('#table').width() - 30 : this.width;
                     td.width(width);
                     btn.width(width);
-                } else {
+                }
+                else if(!td.is('.no-width')) {
                     this.pcTable.rowButtonsCalcWidth();
                     width = this.width > this.pcTable.__$rowsButtons.width() - 10 ? this.pcTable.__$rowsButtons.width() - 10 : this.width;
                     td.width(width);
