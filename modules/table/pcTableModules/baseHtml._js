@@ -296,7 +296,7 @@
                 topButtons = $('<div class="pcTable-topButtons">');
 
                 let $TOTUM_FOOTER = $('#TOTUM_FOOTER');
-                if ($TOTUM_FOOTER.length) {
+                if ($TOTUM_FOOTER.length && (pcTable.isCreatorView || !pcTable.hide_teh_plate)) {
                     topButtons.append($TOTUM_FOOTER);
                 }
                 if (pcTable.isCreatorView || pcTable.shadowedCreator) {
