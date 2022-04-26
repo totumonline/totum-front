@@ -68,6 +68,7 @@ App.langs.ru =
                 "Deploy only in the new": "Разворачивать только в новой",
                 "Use the existing": "Использовать существующую",
                 "Schema": "Схема",
+                "Schema (not public)": "Схема (не public)",
                 "Single installation": "Одинарная установка",
                 "Multiple installation": "Множественная установка",
                 'The value is not found': 'Значение не найдено',
