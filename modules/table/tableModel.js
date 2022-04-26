@@ -365,7 +365,7 @@
                     return false;
 
                 return this.__ajax('post', {delete_ids: JSON.stringify(ids), method: 'delete'});
-            }, 
+            },
             restore: function (ids) {
                 if (ids.length === 0)
                     return false;
@@ -657,9 +657,13 @@
                     lastId: lastId,
                     offset: offset,
                     pageCount: count,
-                    prevLastId: prevLastId
+                    prevLastId: prevLastId,
+                    recFormats: pcTable.formatUseRows ? 1 : null
                 }, null, null, _filters).then(function (json) {
                     pcTable.applyPage(json)
+                    if(pcTable.formatUseRows){
+                        pcTable.table_modify({chdata:{params:json.params}})
+                    }
                 })
             }
 
