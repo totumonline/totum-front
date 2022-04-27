@@ -1417,6 +1417,15 @@
                         },
                     ];
 
+                    if(!editor.codeType || editor.codeType==='format'){
+                        keywords.push({
+                            text: "$#rows",
+                            title: App.translate('RowList of page rows/table'),
+                            render: renderHint,
+                            type: 'item-code-var'
+                        })
+                    }
+
                     const funcSort = function (firsts) {
                         let sort = keywords.slice();
                         let firstsFull = [];
