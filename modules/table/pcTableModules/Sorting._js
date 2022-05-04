@@ -12,10 +12,35 @@ $.extend(App.pcTableMain.prototype, {
 
         let sortFunc;
 
+        const checkSortTextAsValue = function (a, b, aVal, bVal) {
+            let aFormat=data[a][fieldName].f || {};
+            let bFormat=data[b][fieldName].f || {};
+
+            if ((aFormat.textasvalue && "text" in aFormat) || (bFormat.textasvalue && "text" in bFormat)) {
+                if ((aFormat.textasvalue && "text" in aFormat)) {
+                    aVal = aFormat.text;
+                }
+                if ((bFormat.textasvalue && "text" in bFormat)) {
+                    bVal = bFormat.text;
+                }
+                if (aVal > bVal) return sortDirection;
+                else if (aVal == bVal) return 0;
+                else return -sortDirection;
+
+            }
+            return false;
+        }
+
+
         if (isNumber) {
             sortFunc = function (a, b) {
                 let a1 = data[a][fieldName].v;
                 let b1 = data[b][fieldName].v;
+
+                let check = checkSortTextAsValue(a, b, a1, b1);
+                if (check !== false) {
+                    return check
+                }
 
                 let _a1, _b1;
                 let r = 0;
@@ -72,6 +97,11 @@ $.extend(App.pcTableMain.prototype, {
                 a_ = getVal(a);
                 b_ = getVal(b);
 
+                let check = checkSortTextAsValue(a, b, a_, b_);
+                if (check !== false) {
+                    return check
+                }
+
                 if (a_ === b_) return 0;
                 else if (a_ > b_) return sortDirection;
                 else return -sortDirection;
@@ -81,6 +111,12 @@ $.extend(App.pcTableMain.prototype, {
                 let a_, b_;
                 a_ = data[a][fieldName].v + '';
                 b_ = data[b][fieldName].v + '';
+
+                let check = checkSortTextAsValue(a, b, a_, b_);
+                if (check !== false) {
+                    return check
+                }
+
                 if (a_ > b_) return sortDirection;
                 else if (a_ == b_) return 0;
                 else return -sortDirection;
@@ -112,15 +148,16 @@ $.extend(App.pcTableMain.prototype, {
                 sortList();
             } else {
                 let sortTreeFunc = (a, b) => {
-                    a_ = pcTable.treeIndex[a].t || "";
-                    b_ = pcTable.treeIndex[b].t || "";
+                    let a_ = pcTable.treeIndex[a].t || "";
+                    let b_ = pcTable.treeIndex[b].t || "";
+
                     if (a_ === b_) return 0;
                     else if (a_ > b_) return sortDirection;
                     else return -sortDirection;
                 };
-                if(fieldName !== 'tree'){
+                if (fieldName !== 'tree') {
                     sortTreeFunc = (a, b) => {
-                       return sortFunc(pcTable.treeIndex[a].row.id, pcTable.treeIndex[b].row.id)
+                        return sortFunc(pcTable.treeIndex[a].row.id, pcTable.treeIndex[b].row.id)
                     }
                 }
 
@@ -138,7 +175,7 @@ $.extend(App.pcTableMain.prototype, {
             pcTable.dataSorted = pcTable.dataSorted.sort(sortFunc)
         }
 
-        pcTable.dataSortedVisible=[]
+        pcTable.dataSortedVisible = []
         for (let i = 0; i < this.dataSorted.length; i++) {
             let element = this.dataSorted[i];
             if (typeof element === 'object') {

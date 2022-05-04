@@ -1219,24 +1219,26 @@
                     if (tblMatch = str.match(/table:\s*((\$#ntn)|'([a-z_0-9]*)')/)) {
                         let tableName = tblMatch[2] ? editor.table : tblMatch[3];
 
-                        keywords = [];
-                        Object.keys(AllTables[tableName].f).forEach(function (fName) {
-                            keywords.push({
-                                text: fName + "'",
-                                textVis: fName,
-                                title: AllTables[tableName].f[fName][0],
-                                render: renderHint,
-                                type: 'item-string-name', curPos: cur.ch + fName.length + 1,
-                                tab: true
+                        if(AllTables[tableName] && AllTables[tableName].f) {
+                            keywords = [];
+                            Object.keys(AllTables[tableName].f).forEach(function (fName) {
+                                keywords.push({
+                                    text: fName + "'",
+                                    textVis: fName,
+                                    title: AllTables[tableName].f[fName][0],
+                                    render: renderHint,
+                                    type: 'item-string-name', curPos: cur.ch + fName.length + 1,
+                                    tab: true
+                                });
                             });
-                        });
 
-                        keywords.push({
-                            text: 'id' + "'",
-                            textVis: 'id'
-                            , title: '', render: renderHint, type: 'item-string-name', curPos: cur.ch + 3,
-                            tab: true
-                        })
+                            keywords.push({
+                                text: 'id' + "'",
+                                textVis: 'id'
+                                , title: '', render: renderHint, type: 'item-string-name', curPos: cur.ch + 3,
+                                tab: true
+                            })
+                        }
                     }
                 }
 
