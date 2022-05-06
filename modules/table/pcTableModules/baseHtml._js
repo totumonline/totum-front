@@ -658,6 +658,10 @@
                         pathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+).*?$/, '$1');
                         topPathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+\/[^\/]+).*?$/, '$1') + '/';
 
+                        if(sessionStorage.getItem('cycles_table_anchor')){
+                            topPathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+\/[^\/]+).*?$/, sessionStorage.getItem('cycles_table_anchor')) + '/';
+                        }
+
                         let data = sessionStorage.getItem('cycles_filter');
                         if (data) {
                             data = JSON.parse(data);

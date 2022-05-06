@@ -109,6 +109,11 @@
 
                             break;
                         case 'cycle_name':
+
+                            if(sessionStorage.getItem('cycles_table_anchor')){
+                                data[k]['parent']='tree'+sessionStorage.getItem('cycles_table_anchor');
+                            }
+
                             data.push({
                                 type: 'plus'
                                 , id: 'plus-calcs' + v.parent.substring(4)

@@ -562,15 +562,21 @@
             },
             saveFilterAndPage: function () {
                 if (this.tableRow.type === 'cycles') {
-                    if (this.filtersString || this.PageData)
+                    if (this.filtersString || this.PageData) {
                         sessionStorage.setItem('cycles_filter', JSON.stringify({
                             id: this.tableRow.id,
                             filter: this.filtersString,
                             offset: this.PageData ? this.PageData.offset : null,
                             onPage: this.PageData ? this.PageData.onPage : null
                         }))
-                    else
-                        sessionStorage.removeItem('cycles_filter')
+                        let match;
+                        if (match = window.location.pathname.match(/^\/Table\/(\d+)\/$/)) {
+                            sessionStorage.setItem('cycles_table_anchor', match[1]);
+                        }
+                    } else {
+                        sessionStorage.removeItem('cycles_filter');
+                        sessionStorage.removeItem('cycles_table_anchor')
+                    }
                 }
             },
             refreshArraysFieldCategories: function () {
