@@ -658,7 +658,7 @@
                         pathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+).*?$/, '$1');
                         topPathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+\/[^\/]+).*?$/, '$1') + '/';
 
-                        if(sessionStorage.getItem('cycles_table_anchor')){
+                        if (sessionStorage.getItem('cycles_table_anchor')) {
                             topPathId = window.location.pathname.replace(/^\/[^\/]+\/([^\/]+\/[^\/]+).*?$/, sessionStorage.getItem('cycles_table_anchor')) + '/';
                         }
 
@@ -1688,7 +1688,7 @@
             return $row;
         }
         ,
-        _isDisplayngIdEnabled: function(){
+        _isDisplayngIdEnabled: function () {
             return this.isCreatorView || (!this.f.fieldhide || !this.f.fieldhide.id)
         },
         _createHeadCellId: function () {
@@ -1935,6 +1935,7 @@
                     creatorIcons.append('<i class="fa ' + getCategoryIcon(field.category) + ' roles"></i>');
                 }
 
+
                 if (field.showInWeb && !field.isHiddenField && !field.showMeWidth) {
                     $th.addClass('eye-hidden');
                 }
@@ -2046,6 +2047,13 @@
                         roles = getRoles(field.xmlRoles)
                     }
                     creatorIcons.append($('<i class="fa fa-exchange roles"></i>').attr('title', roles));
+                }
+                if (pcTable.f) {
+                    if (pcTable.f.printbuttons && pcTable.f.printbuttons.indexOf && pcTable.f.printbuttons.indexOf(field.name) !== -1) {
+                        creatorIcons.append('<i class="roles reordered">P</i>');
+                    } else if (pcTable.f.buttons && pcTable.f.buttons.indexOf && pcTable.f.buttons.indexOf(field.name) !== -1) {
+                        creatorIcons.append('<i class="roles reordered">B</i>');
+                    }
                 }
 
             }
