@@ -426,6 +426,9 @@ App.langs.ru =
                 'Tree search': 'Поиск по дереву',
                 'isCreatorSelector-NotCreatorView': 'Отключить админ-слой',
                 'isCreatorSelector-CommonView': 'Отключить спецвид',
+
+                'Dbstring is incorrect': 'Ошибочная строка',
+                'Create config and upload scheme': 'Создать конфиг и залить схему',
             }
     }
 ;
