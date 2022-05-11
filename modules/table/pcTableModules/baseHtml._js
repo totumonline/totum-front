@@ -2851,7 +2851,7 @@
                 }
 
                 if (field.CodeActionOnClickAsUrl) {
-                    span.html($('<span class="asUrl">').html(span.html()));
+                    span.addClass('asUrl');
                 }
 
             }
