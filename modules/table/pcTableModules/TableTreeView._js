@@ -214,6 +214,27 @@
             }
 
         }
+
+        this._csvExport = function (type) {
+            "use strict";
+            let pcTable = this;
+
+            let ids=[];
+            pcTable.dataSortedVisible.forEach((branch)=>{
+                if(branch.row && branch.row.id){
+                    ids.push(branch.row.id)
+                }else if(typeof branch === 'string'){
+                    ids.push(branch)
+                }
+            })
+
+            this.model.csvExport(ids, type, Object.keys(App.filter(pcTable.fields, (x, field) => !!field.showMeWidth))).then(function (json) {
+                if (json.csv) {
+                    let blob = new Blob([json.csv], {type: "text/csv;charset=utf-8"});
+                    saveAs(blob, pcTable.tableRow.title + '.' + pcTable.model.tableData.updated.dt + '.csv');
+                }
+            })
+        }
     }
     App.pcTableMain.prototype._treeFolderRowAddDropdown = function (span, row) {
         /*actions*/
