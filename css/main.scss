@@ -124,7 +124,7 @@ input.error {
   .page_content:not(.tree-minifyed) .pcTable-topButtons #TOTUM_FOOTER {
     display: block;
   }
-  .pcTable-title{
+  .pcTable-title {
     margin-right: 220px;
   }
 }
@@ -384,7 +384,8 @@ footer {
   i {
     padding-right: 3px;
   }
-  &.comment{
+
+  &.comment {
     text-align: center;
     background-color: #fafafa;
   }
@@ -479,10 +480,11 @@ input:not([type="checkbox"]):focus {
     overflow-x: auto;
     overflow-y: hidden;
 
-    li{
+    li {
       cursor: pointer;
     }
-    li:active{
+
+    li:active {
       cursor: auto;
     }
 
@@ -684,7 +686,8 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     @include idClass();
     padding-top: 0px;
     height: 63px;
-    span.id-name{
+
+    span.id-name {
       height: 15px;
       display: block;
     }
@@ -1435,8 +1438,9 @@ th {
       .text-edit-button {
         width: 100%;
       }
-      .bootstrap-select button, button.source-add{
-          border-width: 2px;
+
+      .bootstrap-select button, button.source-add {
+        border-width: 2px;
       }
 
 
@@ -1514,11 +1518,13 @@ th {
             background-color: $btn-primary-bgcolor;
           }
         }
-        button.source-add + div{
+
+        button.source-add + div {
           padding-right: 4px;
         }
       }
-      .cell-value{
+
+      .cell-value {
         padding-left: 4px;
       }
     }
@@ -1773,6 +1779,11 @@ th.id .pcTable-filters.for-selected .btn {
 
     &.error input {
       border-color: red;
+    }
+
+    .btn-group.open .dropdown-toggle {
+      box-shadow: none;
+      padding: 6px 25px 6px 12px;
     }
   }
 
@@ -2197,7 +2208,8 @@ input {
       border-color: transparent;
       box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
     }
-    &:focus{
+
+    &:focus {
       background-color: #ffe486;
     }
   }
@@ -2212,6 +2224,7 @@ input {
     border-color: transparent;
     box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
   }
+
   height: 22px;
 }
 
