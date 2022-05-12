@@ -1,21 +1,29 @@
 $(function () {
 
-    let DocsButton= $('#docs-link');
-
+    let DocsButton = $('#docs-link');
 
 
     const addDocsClick = function () {
         let type = $(this).data('type');
 
-        let selectDiv = $('<div class="tech-table" id="DocsPopover" data-type="'+type+'" style="min-height: 250px"></div>');
+        let selectDiv = $('<div class="tech-table" id="DocsPopover" data-type="' + type + '" style="min-height: 250px"></div>');
 
-        $.post('https://docs.totum.online/index_'+type+'.json', function (json) {
-            if (json && json.length){
-                json.forEach(function(row){
-                    selectDiv.append('<div style="'+(row[2] || "")+'"><i class="fa fa-external-link"></i> <a href="http://docs.totum.online'+row[1]+'" target="totum-docs">'+row[0]+'</a></div>');
-                });
-            }
-        });
+
+        const get = (host) => {
+            $.get(host + 'index_' + type + '.json', function (json) {
+                if (json && json.length) {
+                    json.forEach(function (row) {
+                        selectDiv.append('<div style="' + (row[2] || "") + '"><i class="fa fa-external-link"></i> <a href="' + host.substr(0, host.length-1) + row[1] + '" target="totum-docs">' + row[0] + '</a></div>');
+                    });
+                }
+            }).fail(() => {
+                if (host !== 'https://docs.totum.online/') {
+                    get('https://docs.totum.online/')
+                }
+            })
+        }
+        get(App.translate('PATH-TO-DOCUMENTATION'));
+
 
         DocsButton.popover({
             html: true,

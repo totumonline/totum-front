@@ -22,7 +22,7 @@
                 return false;
             });
             pcTable._table.on('click', '.DataRow .id button.edit', function () {
-                pcTable.rows_edit.call(pcTable, $(this).closest('tr'))
+                pcTable.rows_edit($(this).closest('tr'))
             });
 
             /*dropdown Панель на id строки*/
@@ -45,7 +45,7 @@
         },
         _idCheckButton: $('<button class="btn btn-xxs chbox btn-default" data-action="checkbox"><span class="fa fa-square-o"></span></button>')
         ,
-        _checkStatusBar: $('<div class="check-status-bar"><span class="check-mark">✓ </span><span data-name="count_checked_rows">0</span><span class="from-mark"> из </span><span data-name="count_visible_rows">0</span></div>')
+        _checkStatusBar: $('<div class="check-status-bar"><span class="check-mark">✓ </span><span data-name="count_checked_rows">0</span><span class="from-mark">' + App.translate(' from ') + '</span><span data-name="count_visible_rows">0</span></div>')
         ,
         _headCellIdButtonsState: function () {
             "use strict";
@@ -70,7 +70,11 @@
         }
         ,
         _addCellId: function (item, $row) {
-            let $tdId = $('<td class="id"><span class="nm">' + item['id'] + '</span></td>');
+            let $tdId = $('<td class="id"><span class="nm"></span></td>');
+
+            if(this._isDisplayngIdEnabled()){
+                $tdId.find('span').text(item['id'])
+            }
             $tdId.appendTo($row);
             this.row_actions_icons_add($tdId);
 
@@ -179,7 +183,7 @@
             return this.__checkedRows;
         }
         ,
-        row_actions_check: function (item, isGroupAction) {
+        row_actions_check: function (item, isGroupAction, prepend) {
 
             item.$checked = true;
 
@@ -197,7 +201,11 @@
             }
 
             if (!isGroupAction) {
-                this.__checkedRows.push(item.id);
+                if (prepend) {
+                    this.__checkedRows.unshift(item.id);
+                } else {
+                    this.__checkedRows.push(item.id);
+                }
                 this._headCellIdButtonsState();
             }
 
@@ -258,6 +266,23 @@
 
         }
         ,
+        getRemoveTitle: function (type, cnt) {
+            switch (type) {
+                case "question_many":
+                    return this.tableRow.deleting === 'hide' ? App.translate('Surely to hide %s rows?', cnt) : App.translate('Surely to delete %s rows?', cnt);
+                case "question":
+                    return this.tableRow.deleting === 'hide' ? App.translate('Surely to hide the row?', cnt) : App.translate('Surely to delete the row?', cnt);
+                case "forTimer_many":
+                    return this.tableRow.deleting === 'hide' ? App.translate('Hiding %s rows', cnt) : App.translate('Deleting %s rows', cnt);
+                case "forTimer":
+                    return this.tableRow.deleting === 'hide' ? App.translate('Hiding the row %s', cnt) : App.translate('Deleting the row %s', cnt);
+                case "lower":
+                    return this.tableRow.deleting === 'hide' ? App.translate('Hide').toLowerCase() : App.translate('Delete').toLowerCase();
+                default:
+                    return this.tableRow.deleting === 'hide' ? App.translate('Hide') : App.translate('Delete');
+            }
+
+        },
         row_actions_panel_show: function ($tdId) {
             let $tr = $tdId.closest('tr');
             let item = this._getItemByTr($tr);
@@ -267,27 +292,28 @@
             let text = $('<div id="row-mobile-panel"></div>');
 
             if (this.tableRow.panel !== true) {
-                text.append($('<div class="menu-item"><i class="fa fa-th-large"></i> Открыть панель</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-th-large"></i> ' + App.translate('Open the panel') + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_panel"><i class="fa fa-th-large"></i> Открыть панель</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_panel"><i class="fa fa-th-large"></i> ' + App.translate('Open the panel') + '</div>').attr('data-tr', trId));
             }
 
             if (this.control.duplicating !== true || this.f.blockduplicate || item.f.blockduplicate) {
-                text.append($('<div class="menu-item"><i class="fa fa-clone"></i> Дублировать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-clone"></i> ' + App.translate('Duplicate') + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"></i> Дублировать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"></i> ' + App.translate('Duplicate') + '</div>').attr('data-tr', trId));
             }
 
             if (['calcs', 'globcalcs'].indexOf(this.tableRow.type) !== -1) {
-                text.append($('<div class="menu-item"><i class="fa fa-refresh"></i> Пересчитать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate') + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> Пересчитать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate') + '</div>').attr('data-tr', trId));
             }
 
+
             if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
-                text.append($('<div class="menu-item"><i class="fa fa-times"></i> Удалить</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-times"></i> ' + this.getRemoveTitle() + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> Удалить</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> ' + this.getRemoveTitle() + '</div>').attr('data-tr', trId));
             }
 
             let dialog = App.mobilePanel(item[this.mainFieldName].v || 'id: ' + trId, text);
@@ -307,15 +333,21 @@
         }
         ,
 
-        table_modify: function (json, $trIdBefore, editedObj) {//$trIdBefore - это для вставки дублированных строк
+        table_modify: function (json, $trIdBefore, editedObj, withoutRefreshes) {//$trIdBefore - это для вставки дублированных строк
             "use strict";
             let pcTable = this;
             let insertIndex = 0;
             let insertVisibleIndex = 0;
             let editFieldName = editedObj ? editedObj.data('field') : undefined;
 
+            let refreshContentTable = false;
 
-            if (pcTable.isPanel) {
+            if (json.updated) {
+                pcTable.model.tableData.updated = JSON.parse(json.updated);
+                pcTable._refreshTitle();
+            }
+
+            if (pcTable.isPanel && json.chdata) {
                 delete json.chdata.params;
             }
 
@@ -329,15 +361,22 @@
                 let deleted = json.chdata.deleted || [];
                 let addedRows = [];
 
-                if (json.chdata.rows) {
-                    if (json.refresh && json.chdata.rows) {
-                        Object.keys(pcTable.data).forEach(function (id) {
-                            if (json.chdata.rows[id] === undefined) {
-                                deleted.push(parseInt(id));
-                            }
-                        });
-                    }
 
+                if (json.refresh && json.chdata.rows) {
+                    Object.keys(pcTable.data).forEach(function (id) {
+                        if (json.chdata.rows[id] === undefined) {
+                            deleted.push(parseInt(id));
+                        }
+                    });
+                }
+
+                if (deleted.length) {
+                    $.each(deleted, function (k, v) {
+                        pcTable._deleteItemById.call(pcTable, v);
+                    });
+                }
+
+                if (json.chdata.rows) {
                     if (json.chdata.tree) {
                         let ids = {};
                         json.chdata.tree.forEach((tv, i) => {
@@ -361,15 +400,18 @@
                         if (item === undefined) {
                             addedRows.push(v);
                         } else {
-
-                            pcTable.refreshRow(item.$tr, item, v);
+                            pcTable.refreshRow(item.$tr, item, v, withoutRefreshes);
                         }
                     });
+
                     if (addedRows.length) {
                         if (App.isEmpty(pcTable.data) && pcTable._content) {
                             pcTable._content.find('.pcTable-noDataRow').remove();
                         }
-                        let reorderRows = [];
+                        if (pcTable.tableRow.order_desc === true) {
+                            addedRows = addedRows.reverse();
+                        }
+
                         $.each(addedRows, function (k, v) {
                             v.$visible = true;
                             v.$checked = false;
@@ -390,8 +432,6 @@
                                 if ((v.__after && (!$trIdBefore || $trIdBefore.id !== v.__after))) {
                                     nowInsertIndex = pcTable.dataSorted.indexOf(v.__after) + 1;
                                     nowInsertVisibleIndex = pcTable.dataSortedVisible.indexOf(v.__after) + 1;
-                                } else if ('order' in json.chdata) {
-                                    reorderRows.push(v.id)
                                 }
 
                                 pcTable.dataSorted.splice(nowInsertIndex, 0, v.id);
@@ -403,30 +443,6 @@
                             }
 
                         });
-
-                        /*reorderRows.forEach(function (id) {
-                            let place = json.chdata.order.indexOf(id);
-                            let newPlace = 0;
-                            let newPlaceVisible = 0;
-                            if (place > 0) {
-                                let beforeId = json.chdata.order[place - 1];
-                                newPlace = pcTable.dataSorted.indexOf(beforeId) + 1
-                                newPlaceVisible = pcTable.dataSortedVisible.indexOf(beforeId) + 1
-                            }
-                            let oldPlace = pcTable.dataSorted.indexOf(id);
-                            let oldPlaceVisible = pcTable.dataSortedVisible.indexOf(id);
-                            if (oldPlace !== newPlace) {
-                                pcTable.dataSorted.splice(newPlace, 0, id);
-                                let oldPlace = pcTable.dataSorted.indexOf(id);
-                                pcTable.dataSorted.splice(oldPlace, 1);
-                            }
-                            if (oldPlaceVisible !== newPlaceVisible) {
-                                pcTable.dataSortedVisible.splice(newPlaceVisible, 0, id);
-                                let oldPlaceVisible = pcTable.dataSortedVisible.indexOf(id);
-                                pcTable.dataSortedVisible.splice(oldPlaceVisible, 1);
-                            }
-                        })*/
-
 
                         if ($trIdBefore && !pcTable.isMobile) {
                             setTimeout(function () {
@@ -442,13 +458,9 @@
                     }
                 }
 
-                if (deleted.length) {
-                    $.each(deleted, function (k, v) {
-                        pcTable._deleteItemById.call(pcTable, v);
-                    });
-                    if (App.isEmpty(pcTable.data) && pcTable._content && pcTable._content.find('.' + this.noDataRowClass).length === 0) {
-                        pcTable._content.append(pcTable._createNoDataRow());
-                    }
+
+                if (App.isEmpty(pcTable.data) && pcTable._content && pcTable._content.find('.' + this.noDataRowClass).length === 0) {
+                    pcTable._content.append(pcTable._createNoDataRow());
                 }
 
                 if (deleted.length || addedRows.length || (json.chdata.nsorted_ids && pcTable.nSorted && !Object.equals(json.chdata.nsorted_ids, pcTable.dataSorted))) {
@@ -468,18 +480,23 @@
                         }
                     }
 
-                    this._refreshContentTable(0, false, true);
-                    this._container.getNiceScroll().resize();
+                    refreshContentTable = true;
+
                 }
 
                 if (json.chdata.order) {
-                    this.dataSorted = json.chdata.order;
-                    pcTable.dataSortedVisible = [];
-                    pcTable.dataSorted.forEach((id) => {
-                        if (this.data[id].$visible)
-                            pcTable.dataSortedVisible.push(id)
-                    })
-                    this._refreshContentTable(0, false, true);
+                    if (this.setOrdersForRows) {
+                        this.setOrdersForRows(json.chdata.order)
+                    } else {
+                        this.dataSorted = json.chdata.order;
+                        pcTable.dataSortedVisible = [];
+                        pcTable.dataSorted.forEach((id) => {
+                            if (this.data[id].$visible)
+                                pcTable.dataSortedVisible.push(id)
+                        })
+                    }
+                    refreshContentTable = true;
+
                 }
 
                 let paramsChanges = {};
@@ -488,12 +505,18 @@
                         ['v', 'v_', 'f', 'e', 'h', 'c', 'ch'].forEach(function (part) {
                             if (pcTable.data_params[k] && (v[part] !== undefined || pcTable.data_params[k][part])) {
                                 if (!Object.equals(pcTable.data_params[k][part], v[part]) || k === editFieldName) {
-                                    paramsChanges[k] = part;
+                                    paramsChanges[k] = paramsChanges[k] || part;
                                     pcTable.data_params[k][part] = v[part];
                                 }
                             }
                         });
                     });
+                }
+
+                if (json.chdata.treeCounts) {
+                    Object.keys(json.chdata.treeCounts).forEach((v) => {
+                        this.treeIndex[v].count = json.chdata.treeCounts[v]
+                    })
                 }
 
                 if (json.chdata.fields) {
@@ -505,8 +528,10 @@
                     });
                 }
                 if (json.chdata.params || json.chdata.fields) {
-                    pcTable._refreshParamsBlock(paramsChanges, true);
-                    pcTable._refreshFootersBlock(paramsChanges, true);
+                    if (!withoutRefreshes) {
+                        pcTable._refreshParamsBlock(paramsChanges, true);
+                        pcTable._refreshFootersBlock(paramsChanges, true);
+                    }
 
                     if (pcTable.f && pcTable.f.buttons && pcTable.f.buttons.some) {
                         pcTable.f.buttons.some((name) => {
@@ -516,25 +541,7 @@
                     }
                 }
                 if (json.chdata.f) {
-                    let newf = json.chdata.f;
-                    ['blockadd', 'buttons', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment'].forEach(function (k) {
-                        if (k in newf || k in pcTable.f) {
-                            if (typeof newf[k] == "object") {
-                                if (!Object.equals(newf[k], pcTable.f[k])) {
-                                    let old = Object.assign({}, pcTable.f[k]);
-                                    pcTable.f[k] = newf[k];
-                                    if (pcTable.__formatFunctions[k]) {
-                                        pcTable.__formatFunctions[k].call(pcTable, newf[k], old);
-                                    }
-                                }
-                            } else if (newf[k] !== pcTable.f[k]) {
-                                pcTable.f[k] = newf[k];
-                                if (pcTable.__formatFunctions[k]) {
-                                    pcTable.__formatFunctions[k].call(pcTable, newf[k]);
-                                }
-                            }
-                        }
-                    })
+                    this.apptyTableFormats(json.chdata.f)
                 }
                 if (App.isEmpty(pcTable.data) && pcTable._content) {
                     pcTable._content.empty().append(this._createNoDataRow());
@@ -543,32 +550,110 @@
                 if (this.treeRefresh) {
                     this.treeApply();
                 }
+
+
             }
 
 
-            if (json.updated) {
-                pcTable.model.tableData.updated = JSON.parse(json.updated);
-                pcTable._refreshTitle();
-            }
             if (!pcTable.isPanel) {
                 if (json.filtersString) {
                     pcTable._refreshFiltersBlock.call(pcTable, json)
                 }
                 pcTable._headCellIdButtonsState();
+                refreshContentTable = true;
+            }
 
-                pcTable.ScrollClasterized.insertToDOM(null, true);
+            if (!withoutRefreshes && refreshContentTable) {
+                this._refreshContentTable(0, false, true);
+                this._container.getNiceScroll().resize();
             }
         }
         ,
+        apptyTableFormats: function (newf) {
+            ['blockadd', 'buttons', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment', 'tabletext', 'browsertitle', 'fieldhide', 'kanban_html', 'interlace'].forEach((k) => {
+                if (k in newf || k in this.f) {
+                    if (typeof newf[k] == "object") {
+                        if (!Object.equals(newf[k], this.f[k])) {
+                            let old = Object.assign({}, this.f[k]);
+                            this.f[k] = newf[k];
+                            if (this.__formatFunctions[k]) {
+                                this.__formatFunctions[k].call(this, newf[k], old);
+                            }
+                        }
+                    } else if (newf[k] !== this.f[k]) {
+                        this.f[k] = newf[k];
+                        if (this.__formatFunctions[k]) {
+                            this.__formatFunctions[k].call(this, newf[k]);
+                        }
+                    }
+                }
+            })
+            this.applyOrder(newf.order)
+            this.applyHideRows(newf.hideRows, newf.showRows)
+        },
+        applyOrder: function (order) {
+            if (order && order.length) {
+                let _order = {};
+                let order_other = [];
+                this.dataSorted.forEach((id) => {
+                    let ind = order.indexOf(id);
+                    if (ind !== -1) {
+                        _order[ind] = id;
+                    } else {
+                        order_other.push(id)
+                    }
+                })
+                this.dataSorted = [...Object.values(_order), ...order_other];
+                this.__applyFilters(true);
+            }
+        }
+        ,
+        applyHideRows: function (hide, show) {
+            if (hide && hide.length || show && show.length) {
+                hide = hide || [];
+                show = show || [];
+
+                let visible = this.filters['id'] || [];
+                if (!visible.length) {
+                    visible = [...this.dataSorted];
+                    show = [];
+                } else {
+                    show.forEach((id) => {
+                        if (visible.indexOf(id) === -1 || this.dataSorted.indexOf(parseInt(id)) !== -1) {
+                            visible.push(id.toString());
+                        }
+                    })
+                }
+                let newVisible = [];
+                visible.forEach((id) => {
+                    if (!hide.some((_id) => _id.toString() === id.toString())) {
+                        newVisible.push(id.toString());
+                    }
+                })
+                if (newVisible.length === this.dataSorted.length) {
+                    delete this.filters['id'];
+                } else {
+                    this.filters['id'] = newVisible;
+                }
+                this.__applyFilters(true);
+            }
+        },
         rows_edit: function ($tr) {
             "use strict";
             let pcTable = this;
             let checkedRows = this.row_actions_get_checkedIds();
-
-            if ($tr && (checkedRows.indexOf(pcTable._getItemByTr($tr).id) === -1)) {
-                this.row_actions_check(pcTable._getItemByTr($tr));
-                checkedRows = this.row_actions_get_checkedIds();
+            if ($tr) {
+                let id = pcTable._getItemByTr($tr).id;
+                let index = checkedRows.indexOf(id);
+                if (index === -1) {
+                    this.row_actions_check(pcTable._getItemByTr($tr), false, true);
+                    checkedRows = this.row_actions_get_checkedIds();
+                } else {
+                    checkedRows.splice(index, 1);
+                    checkedRows.unshift(id);
+                }
             }
+
             pcTable._row_edit.call(pcTable, checkedRows.slice());
             return false;
         }
@@ -583,30 +668,36 @@
 
 
             if (this.control.duplicating !== true || pcTable.f.blockduplicate || item.f.blockduplicate) {
-                text.append($('<div class="menu-item"><i class="fa fa-clone"></i> Дублировать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-clone"></i> ' + App.translate('Duplicate') + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"></i> Дублировать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"></i> ' + App.translate('Duplicate') + '</div>').attr('data-tr', trId));
             }
 
             if (['calcs', 'globcalcs'].indexOf(pcTable.tableRow.type) !== -1) {
-                text.append($('<div class="menu-item"><i class="fa fa-refresh"></i> Пересчитать</div>').css('color', 'gray'));
+                text.append($('<div class="menu-item"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate') + '</div>').css('color', 'gray'));
             } else {
-                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> Пересчитать</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate') + '</div>').attr('data-tr', trId));
             }
 
             if (pcTable.isCreatorView && pcTable.tableRow.type === 'cycles') {
-                text.append($('<div class="menu-item cycle_refresh color-danger"><i class="fa fa-refresh"></i> Пересчитать цикл</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item cycle_refresh color-danger"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate cycle') + '</div>').attr('data-tr', trId));
             }
 
 
             if (this.isRestoreView) {
-                text.append($('<div class="menu-item row_restore"><i class="fa fa-recycle"></i> Восстановить</div>').attr('data-tr', trId));
+                text.append($('<div class="menu-item row_restore"><i class="fa fa-recycle"></i> ' + App.translate('Restore') + '</div>').attr('data-tr', trId));
             } else {
                 if (!this.control.deleting || this.f.blockdelete || (item.f && (item.f.block || item.f.blockdelete))) {
-                    text.append($('<div class="menu-item"><i class="fa fa-times"></i> Удалить</div>').css('color', 'gray'));
+                    text.append($('<div class="menu-item"><i class="fa fa-times"></i> ' + this.getRemoveTitle() + '</div>').css('color', 'gray'));
                 } else {
-                    text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> Удалить</div>').attr('data-tr', trId));
+                    text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> ' + this.getRemoveTitle() + '</div>').attr('data-tr', trId));
                 }
+            }
+
+            if (item.f && item.f.rowcomment) {
+                text.append($('<div class="menu-item comment"><i class="fa fa-info"></i></div>').on('click', () => {
+                    App.notify(item.f.rowcomment);
+                }));
             }
 
             let popoverId = App.popNotify({
@@ -626,7 +717,6 @@
                 text.remove();
             }).find('.arrow').css('left', '11px').end()
                 .find('.popover-content').css('padding', '5px');
-
 
             return false;
         }
@@ -660,13 +750,8 @@
                         }
                         mainBlockField = ' "' + mainBlockField + '"';
                     }
-                    let $ntf = $("<span>").html('Строка <b>id ' + isBlockedRow.id + '</b>');
-                    if (mainBlockField !== '') {
-                        let b = $ntf.find('b');
-                        b.text(b.text() + mainBlockField);
-                    }
-                    $ntf.append(' заблокирована');
-                    App.notify($ntf, 'Действие не выполнено');
+                    let $ntf = $("<span>").html(App.translate("Row <b>id %s %s</b> is blocked", [isBlockedRow.id, mainBlockField]));
+                    App.notify($ntf, App.translate('Action not executed'));
 
                     return false;
                 }
@@ -694,7 +779,7 @@
             if (checkedRows && checkedRows.length) {
                 let buttons = [
                     {
-                        label: 'Пересчитать',
+                        label: App.translate('Recalculate'),
                         action: function (dialogRef) {
                             pcTable.model.refresh_rows(checkedRows).then(function (json) {
                                 pcTable.table_modify.call(pcTable, json);
@@ -705,7 +790,7 @@
                         }
                     },
                     {
-                        label: 'Отмена',
+                        label: App.translate('Cancel'),
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
@@ -714,8 +799,8 @@
                 ];
 
                 BootstrapDialog.show({
-                    message: 'Точно пересчитать ' + checkedRows.length + ' строк?',
-                    title: 'Пересчет',
+                    message: App.translate('Surely to recalculate %s rows?', checkedRows.length),
+                    title: App.translate('Recalculating'),
                     buttons: buttons,
                     onhidden: function () {
                         if (checkedRows.length === 1 && checkedRows[0] == checkedOneId) {
@@ -733,7 +818,7 @@
             if (checkedRows && checkedRows.length) {
                 let buttons = [
                     {
-                        label: 'Пересчитать',
+                        label: App.translate('Recalculate'),
                         action: function (dialogRef) {
                             pcTable.model.refresh_cycles(checkedRows).then(function (json) {
                                 pcTable.table_modify.call(pcTable, json);
@@ -744,7 +829,7 @@
                         }
                     },
                     {
-                        label: 'Отмена',
+                        label: App.translate('Cancel'),
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
@@ -753,8 +838,8 @@
                 ];
 
                 BootstrapDialog.show({
-                    message: 'Точно пересчитать ' + checkedRows.length + ' циклов?',
-                    title: 'Пересчет',
+                    message: App.translate('Surely to recalculate %s cycles?', checkedRows.length),
+                    title: App.translate('Recalculating'),
                     buttons: buttons,
                     draggable: true
                 })
@@ -769,7 +854,7 @@
             if (checkedRows && checkedRows.length) {
                 let buttons = [
                     {
-                        label: 'Дублировать',
+                        label: App.translate('Duplicate'),
                         cssClass: 'btn-danger',
                         action: function (dialogRef_main) {
                             let unic_replaces = {};
@@ -805,7 +890,7 @@
                             }
 
                             //Замена значений уникальных полей
-                            if (unic_fields.length) {
+                            if (unic_fields.length && !pcTable.tableRow.on_duplicate) {
                                 let $uniqTable = $('<table class="simpleTable"><thead><tr><td class="id">id</td></tr></thead><tbody></tbody></table>');
                                 let $head = $uniqTable.find('thead tr');
                                 let $body = $uniqTable.find('tbody');
@@ -880,14 +965,14 @@
 
                                 let buttons = [
                                     {
-                                        label: 'Дублировать',
+                                        label: App.translate('Duplicate'),
                                         cssClass: 'btn-m btn-warning',
                                         action: function (dialogRef) {
                                             duplicate(dialogRef);
                                         }
                                     },
                                     {
-                                        label: 'Отмена',
+                                        label: App.translate('Cancel'),
                                         action: function (dialog2) {
                                             dialog2.close();
                                             dialogRef_main.close();
@@ -898,7 +983,7 @@
 
                                 BootstrapDialog.show({
                                     message: $uniqTable,
-                                    title: 'Заполните значения для уникальных полей',
+                                    title: App.translate('Fill in the values for unique fields'),
                                     buttons: buttons,
                                     draggable: true
                                 })
@@ -907,7 +992,7 @@
                             }
                         }
                     }, {
-                        label: 'Отмена',
+                        label: App.translate('Cancel'),
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
@@ -916,8 +1001,8 @@
                 ];
 
                 BootstrapDialog.show({
-                    message: 'Точно дублировать ' + checkedRows.length + ' строк?',
-                    title: 'Дублирование',
+                    message: App.translate('Surely to duplicate %s rows?', checkedRows.length),
+                    title: App.translate('Duplicating'),
                     buttons: buttons,
                     draggable: true
                 })
@@ -930,22 +1015,22 @@
             let checkedOneId = checkedRows.length === 1 ? checkedRows[0] : null;
             if (checkedRows && checkedRows.length) {
 
-                let $message = 'Точно удалить ' + checkedRows.length + ' строк?';
-                let $messageTimer = 'Удаление ' + checkedRows.length + ' строк?';
+                let $message = this.getRemoveTitle("question_many", checkedRows.length);
+                let $messageTimer = this.getRemoveTitle("forTimer_many", checkedRows.length);
                 if (checkedRows.length == 1) {
                     let item = 'id-' + checkedRows[0];
                     if (pcTable.mainFieldName != 'id') {
                         item = pcTable.data[checkedRows[0]][pcTable.mainFieldName];
                         item = 'id-' + checkedRows[0] + ' "' + (item.v_ && item.v_[0] ? item.v_[0] : item.v) + '"';
                     }
-                    $message = 'Точно удалить строку ' + item + '?';
-                    $messageTimer = 'Удаление строки ' + item + '?';
+                    $message = this.getRemoveTitle("question");
+                    $messageTimer = this.getRemoveTitle("forTimer", item);
                 }
 
 
                 let buttons = [
                     {
-                        label: 'Удалить',
+                        label: this.getRemoveTitle(),
                         cssClass: 'btn-danger',
                         action: function (dialogRef) {
                             dialogRef.close();
@@ -962,7 +1047,7 @@
                             }
                         }
                     }, {
-                        label: 'Отмена',
+                        label: App.translate('Cancel'),
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
@@ -973,7 +1058,7 @@
 
                 BootstrapDialog.show({
                     message: $message,
-                    title: 'Удаление',
+                    title: $messageTimer,
                     buttons: buttons,
                     onhidden: function () {
                         if (checkedRows.length === 1 && checkedRows[0] == checkedOneId) {
@@ -990,20 +1075,20 @@
             let checkedOneId = checkedRows.length === 1 ? checkedRows[0] : null;
             if (checkedRows && checkedRows.length) {
 
-                let $message = 'Точно восстановить ' + checkedRows.length + ' строк?';
+                let $message = App.translate('Surely to restore %s rows?', checkedRows.length);
                 if (checkedRows.length == 1) {
                     let item = 'id-' + checkedRows[0];
                     if (pcTable.mainFieldName != 'id') {
                         item = pcTable.data[checkedRows[0]][pcTable.mainFieldName];
                         item = 'id-' + checkedRows[0] + ' "' + (item.v_ && item.v_[0] ? item.v_[0] : item.v) + '"';
                     }
-                    $message = 'Точно восстановить строку ' + item + '?';
+                    $message = App.translate('Surely to restore the row %s?', item);
                 }
 
 
                 let buttons = [
                     {
-                        label: 'Восстановить',
+                        label: App.translate('Restore'),
                         cssClass: 'btn-danger',
                         action: function (dialogRef) {
                             dialogRef.close();
@@ -1013,7 +1098,7 @@
                             });
                         }
                     }, {
-                        label: 'Отмена',
+                        label: App.translate('Cancel'),
                         action: function (dialogRef) {
                             dialogRef.close();
                         }
@@ -1024,7 +1109,7 @@
 
                 BootstrapDialog.show({
                     message: $message,
-                    title: 'Восстановление',
+                    title: App.translate('Restoring'),
                     buttons: buttons,
                     onhidden: function () {
                         if (checkedRows.length === 1 && checkedRows[0] == checkedOneId) {

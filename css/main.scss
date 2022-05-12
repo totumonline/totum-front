@@ -11,7 +11,11 @@ body {
 }
 
 td, th {
-  background-clip: padding-box;
+  background-clip: border-box;
+}
+
+th {
+  cursor: pointer;
 }
 
 input.error {
@@ -26,6 +30,37 @@ input.error {
   margin-top: 10px;
   padding: 3px;
   padding-bottom: 10px;
+}
+
+.function-help {
+
+  .func-template {
+    background-color: #f6f6f6;
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+
+  white-space: normal;
+
+  .req {
+    font-weight: bold;
+  }
+
+  .multi {
+    text-decoration: underline;
+  }
+
+  .db {
+    color: orange;
+  }
+
+  span {
+    padding-right: 5px;
+  }
+
+  .button {
+    margin-top: 5px;
+  }
 }
 
 .creator-hidden {
@@ -79,21 +114,18 @@ input.error {
   }
 }
 
-@media (min-width: 600px) {
+@media (min-width: 1200px) {
   .page_content.tree-minifyed .pcTable-topButtons #TOTUM_FOOTER {
     display: block;
   }
 }
 
-@media (min-width: 1120px) {
+@media (min-width: 1500px) {
   .page_content:not(.tree-minifyed) .pcTable-topButtons #TOTUM_FOOTER {
     display: block;
   }
-}
-
-@media (min-width: 600px) {
-  .page_content.tree-minifyed .pcTable-topButtons #TOTUM_FOOTER {
-    display: block;
+  .pcTable-title{
+    margin-right: 220px;
   }
 }
 
@@ -101,8 +133,15 @@ input.error {
   margin-bottom: 15px;
   font-size: 14px;
   padding-right: 20px;
-  font-family: "Open Sans";
+  font-family: "PTRootUIWeb";
   line-height: 21px;
+  position: relative;
+
+  .close-table-description {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
 }
 
 #pk .iframed {
@@ -186,8 +225,10 @@ footer {
 
 .source-link {
   padding-top: 8px;
+
   a {
     color: #656565;
+
     &:hover {
       color: #656565;
     }
@@ -293,6 +334,7 @@ footer {
 
 .btn-group.open .dropdown-toggle {
   box-shadow: none;
+  padding: 4px 7px;
 }
 
 
@@ -341,6 +383,10 @@ footer {
 
   i {
     padding-right: 3px;
+  }
+  &.comment{
+    text-align: center;
+    background-color: #fafafa;
   }
 }
 
@@ -391,10 +437,11 @@ input:not([type="checkbox"]):focus {
 }
 
 .pcTable-title {
-  font-size: 24px;
-  font-family: 'Open Sans', sans-serif;
+  font-size: 26px;
+  font-family: 'PTRootUIWeb', sans-serif;
   font-weight: 500;
   padding-bottom: 4px;
+
 
   .updated {
     padding-top: 6px;
@@ -432,6 +479,13 @@ input:not([type="checkbox"]):focus {
     overflow-x: auto;
     overflow-y: hidden;
 
+    li{
+      cursor: pointer;
+    }
+    li:active{
+      cursor: auto;
+    }
+
     &::-webkit-scrollbar {
       height: 5px;
       margin-bottom: -5px;
@@ -450,7 +504,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
 
 @mixin idClass() {
   width: $idWidth;
-  background-color: $rowsBackColor;
+  background-color: whitesmoke;
   font-size: 10px;
   text-align: right;
   padding: 0;
@@ -534,7 +588,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     padding: 3px;
 
     .text-center {
-      padding-top: 5px;
+      padding-top: 4px;
     }
   }
   &.with-code {
@@ -612,7 +666,8 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     background-color: lighten($btn-danger-bgcolor, 20);
   }
   span.cell-title {
-
+    font-family: PTRootUIWeb;
+    font-weight: 500;
     white-space: nowrap;
     color: #4a4a4a;
   }
@@ -627,8 +682,12 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
   vertical-align: top;
   &.id {
     @include idClass();
-    padding-top: 8px;
+    padding-top: 0px;
     height: 63px;
+    span.id-name{
+      height: 15px;
+      display: block;
+    }
   }
 }
 
@@ -686,6 +745,7 @@ th {
     &.with-filter {
       padding-bottom: 23px;
     }
+
   }
 }
 
@@ -701,6 +761,11 @@ th {
   .creator-buttons {
     padding-top: 10px;
     display: inline;
+
+    #addField {
+      background-color: #ff8585;
+      color: #fff;
+    }
 
     .copy_me, .btn-danger {
       color: $btn-danger-bgcolor;
@@ -729,6 +794,7 @@ th {
 
 .common-table-title {
   margin-left: 15px;
+  white-space: nowrap;
 
   .btn {
     margin-right: 5px;
@@ -795,9 +861,10 @@ th {
     }
 
     thead th:not(.id) {
-      padding-top: 20px;
+      padding-top: 11px;
     }
   }
+
 }
 
 
@@ -843,9 +910,8 @@ th {
   }
 }
 
-@mixin form-control {
-  height: 27px;
-  font-size: 12px;
+.pcTable-table th:not(.id) {
+  background-color: whitesmoke;
 }
 
 .pcTable-container {
@@ -860,6 +926,9 @@ th {
   position: relative;
 
   .pcTable-sectionTitle {
+    font-family: "PTRootUIWeb";
+    font-weight: 500;
+
     i, span {
       cursor: pointer
     }
@@ -904,7 +973,7 @@ th {
       }
     }
 
-    &.sec-no-titles {
+    &:not(.closed).sec-no-titles {
       .pcTable-floatInner > div {
         td {
           &.cell-button {
@@ -933,7 +1002,7 @@ th {
       }
     }
 
-    &:not(.sectionWithPannels) .pcTable-sectionTitle {
+    &:not(.sectionWithPannels):not(.closed) .pcTable-sectionTitle {
       padding-bottom: 5px;
     }
   }
@@ -964,7 +1033,12 @@ th {
   }
 
   .form-control {
-    @include form-control();
+    height: 27px;
+    font-size: 12px;
+  }
+
+  input.form-control {
+    font-size: 13px;
   }
 
   &.no-fields .innerContainer {
@@ -990,6 +1064,8 @@ th {
   }
 
   .pcTable-rowsTitle {
+    font-family: PTRootUIWeb;
+    font-weight: 500;
     padding-left: $idWidth - 18;
     padding-top: 10px;
 
@@ -1027,6 +1103,7 @@ th {
       }
     }
 
+
     .scroll-top-button, .summarizer {
       position: fixed;
       bottom: 20px;
@@ -1056,6 +1133,10 @@ th {
 
   span[data-unit-type]:after {
     content: attr(data-unit-type);
+  }
+
+  span[data-unit-type-before]:before {
+    content: attr(data-unit-type-before);
   }
 
   .copy_me {
@@ -1136,6 +1217,14 @@ th {
 .pcTable-filtersTable {
   border-bottom: 1px solid #f1f1f1;
 
+  i.fa.fa-spinner {
+    margin-top: -5px;
+    display: block;
+  }
+
+  .form-control {
+    height: 28px;
+  }
 }
 
 .pcTable-hiddenFieldsTables {
@@ -1161,13 +1250,13 @@ th {
   margin-left: $idWidth;
 }
 
-.pcTable-tableText {
+.pcTable-tableText, .table-description {
   &:empty {
     display: none;
   }
 
-  font-size: 14px;
-  font-family: 'Open Sans';
+  font-size: 16px;
+  font-family: 'PTRootUIWeb';
   line-height: 21px;
 
   margin-bottom: 20px;
@@ -1175,6 +1264,11 @@ th {
   padding: 10px 20px;
   margin-right: 20px;
   margin-top: 15px;
+  margin-left: -20px;
+}
+
+.pcTable-tableText {
+  margin-left: 50px
 }
 
 .pcTable-tableComment {
@@ -1341,9 +1435,45 @@ th {
       .text-edit-button {
         width: 100%;
       }
+      .bootstrap-select button, button.source-add{
+          border-width: 2px;
+      }
+
 
       td {
+        .btn, .btn:active {
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075)
+        }
+
+        .form-control {
+          height: 26px;
+        }
+
+        &.cell-button {
+          padding-top: 3px !important;
+
+          button {
+            padding: 4px 7px;
+            height: 26px;
+
+          }
+        }
+
+        .bootstrap-select .btn-sm, .source-add {
+          padding: 3px 7px;
+        }
+
+        .bootstrap-select.form-control {
+          background-color: transparent;
+          height: auto;
+        }
+
+        padding: 3px;
         background-color: $btn-warning-bgcolor;
+
+        &.active {
+          background-color: darken($btn-warning-bgcolor, 20%);
+        }
 
         &.ins-handed {
           input {
@@ -1363,6 +1493,10 @@ th {
       td.with-code {
         background-color: $btn-warning-bgcolor;
 
+        &.active {
+          background-color: darken($btn-warning-bgcolor, 20%);
+        }
+
         input, select, button {
           background-color: $tdWithCodeColor;
         }
@@ -1380,6 +1514,12 @@ th {
             background-color: $btn-primary-bgcolor;
           }
         }
+        button.source-add + div{
+          padding-right: 4px;
+        }
+      }
+      .cell-value{
+        padding-left: 4px;
       }
     }
 
@@ -1403,6 +1543,11 @@ th {
 
       td {
         max-height: 35px;
+        background-clip: padding-box;
+
+        .form-control {
+          height: 28px;
+        }
       }
     }
 
@@ -1497,6 +1642,11 @@ th {
         bottom: 7px
       }
     }
+  }
+
+  .pcTable-topButtons {
+    height: 25px;
+    box-sizing: border-box;
   }
 
   .pcTable-table tbody {
@@ -1618,6 +1768,7 @@ th.id .pcTable-filters.for-selected .btn {
 
     input[type="checkbox"] {
       display: block;
+      margin-top: 4px;
     }
 
     &.error input {
@@ -1640,18 +1791,56 @@ th.id .pcTable-filters.for-selected .btn {
   background-color: #fcfcfc;
 }
 
-.InsertPanel .cell-wrapper {
-  padding-right: 10px;
-  padding-left: 10px;
-  padding-bottom: 15px;
-  padding-top: 10px;
-  margin-top: 10px;
-  margin-right: 0;
-  border-radius: 5px;
-  box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
-  //font-family: 'Open Sans', serif;
+.InsertPanel .cell-wrapper, .fieldparams-edit-panel .jsonForm {
+  &:not(.fieldparams-edit-panel) {
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-bottom: 15px;
+    padding-top: 10px;
+    margin-top: 10px;
+    margin-right: 0;
+    border-radius: 5px;
+    box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+    //font-family: 'Open Sans', serif;
 
-  width: 100%;
+    width: 100%;
+    position: relative;
+
+    break-inside: avoid;
+    background-color: #fff;
+
+    &:first-child {
+      margin-top: 0px;
+    }
+  }
+
+  .progressBorder {
+    border-top: 2px solid transparent;
+    display: block;
+    position: absolute;
+    top: 0;
+    width: calc(100% - 20px);
+  }
+
+  &.admin-see {
+    background-color: lighten($btn-danger-bgcolor, 20);
+  }
+
+  .select-val {
+    @include selectVal();
+    font-size: 13px;
+    padding-left: 10px;
+
+    .loaded-preview {
+      padding-bottom: 5px;
+      padding-top: 5px;
+      padding-right: 5px;
+    }
+  }
+
+  .previews {
+    background-color: #fafafa;
+  }
 
   > .btns .btn {
     border-color: transparent;
@@ -1661,14 +1850,32 @@ th.id .pcTable-filters.for-selected .btn {
         box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
       }
     }
+
+    &.backgroundButton {
+      height: 26px;
+      width: 26px;
+      border-radius: 26px;
+
+      &:hover {
+        box-shadow: none
+      }
+
+      position: relative;
+      cursor: auto;
+
+      > span {
+        height: 6px;
+        width: 6px;
+        position: absolute;
+        border-radius: 6px;
+        left: 9px;
+        top: 9px;
+      }
+    }
   }
 
   > .cell > span i {
     padding-right: 5px;
-  }
-
-  &:first-child {
-    margin-top: 0px;
   }
 
   .form-control, [data-field-type="select"] .bootstrap-select button {
@@ -1693,20 +1900,20 @@ th.id .pcTable-filters.for-selected .btn {
     }
   }
 
-  break-inside: avoid;
-  background-color: #fff;
+
   //overflow: hidden;
   label {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-bottom: 10px;
-    font-weight: 400;
+    font-weight: 500;
     font-size: 14px;
+    font-family: "PTRootUIWeb";
   }
 
   .form-control {
-    @include form-control();
+    font-size: 13px;
     height: auto;
   }
 
@@ -1748,7 +1955,7 @@ th.id .pcTable-filters.for-selected .btn {
       height: 28px;
       background-color: #faf9f8;
       border-color: transparent;
-
+      font-size: 12px;
     }
 
     &.with-source-add-button {
@@ -1782,7 +1989,7 @@ ul.CodeMirror-hints {
   }
 
   .edit-row-panel {
-    .modal-body {
+    .modal-body, .modal-header {
       background-color: #faf9f8;
     }
   }
@@ -1815,7 +2022,7 @@ ul.CodeMirror-hints {
 
     &.edit-field-panel .modal-dialog {
       .InsertPanel {
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: minmax(0%, 1fr) minmax(0%, 1fr) minmax(0%, 1fr);
         grid-gap: 10px;
       }
     }
@@ -1884,7 +2091,7 @@ ul.CodeMirror-hints {
 
 #main-page {
   font-size: 14px;
-  font-family: "Open Sans";
+  font-family: "PTRootUIWeb";
   padding: 0 20px 10px 70px;
   overflow: hidden;
 }
@@ -1917,7 +2124,7 @@ input {
 
 .bootstrap-dialog .modal-header {
   padding-left: 15px;
-  background-color: #faf9f8;
+  background-color: #fff;
 }
 
 .i-show-table {
@@ -1942,7 +2149,7 @@ input {
 
 .edit-in-form {
   padding: 3px;
-  padding-top: 5px;
+  padding-top: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
@@ -1990,6 +2197,9 @@ input {
       border-color: transparent;
       box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
     }
+    &:focus{
+      background-color: #ffe486;
+    }
   }
 }
 
@@ -2002,6 +2212,7 @@ input {
     border-color: transparent;
     box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
   }
+  height: 22px;
 }
 
 .creator-icons {
@@ -2012,6 +2223,28 @@ input {
   text-overflow: clip;
   cursor: pointer;
 
+  -webkit-user-select: auto;
+  -moz-user-select: text;
+  -khtml-user-select: auto;
+  user-select: text;
+
+  .full-title {
+    white-space: normal;
+    font-size: 15px;
+    font-family: PTRootUIWeb;
+    font-weight: 500;
+  }
+
+  .name {
+    display: inline-block;
+    max-width: 143px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    text-indent: 0;
+    padding-bottom: 1px;
+  }
+
   i {
     margin-left: 3px;
     font-size: 11px;
@@ -2020,6 +2253,11 @@ input {
 
     &.roles {
       margin-left: 3px;
+
+      &.fa-lower {
+        color: magenta;
+        opacity: 0.5;
+      }
 
       &:first-child {
         margin-left: 0px;
@@ -2043,9 +2281,15 @@ input {
   .creator-icons {
     div {
       padding-left: 15px;
-      text-indent: -7px;
+      text-indent: -5px;
       color: #ff8585;
       white-space: normal;
+    }
+
+    div:first-child {
+      color: inherit;
+      text-indent: 0;
+      margin-left: -10px;
     }
 
     display: block;
@@ -2068,7 +2312,7 @@ input {
       padding-top: 5px;
     }
 
-    button {
+    button:not(.copy-me) {
       text-align: center;
       margin-left: 3px;
 
@@ -2084,6 +2328,16 @@ input {
       &.offed {
         background-color: #fafafa;
         color: #333;
+      }
+    }
+
+    button.copy-me {
+      padding: 2px;
+      width: 25px;
+      margin-left: 10px;
+
+      i {
+        margin: 0;
       }
     }
   }
@@ -2118,6 +2372,34 @@ input {
   opacity: 0.25;
 }
 
+.float-footer-buttons {
+  position: fixed;
+  bottom: 20px;
+  z-index: 1100;
+
+  .btn + .btn {
+    margin-bottom: 0;
+    margin-left: 5px;
+  }
+
+  .fa-lock {
+    padding: 9px 13px;
+  }
+
+  .btn.with-lock:disabled {
+    padding: 0;
+  }
+}
+
+.modal-footer {
+  .fa-lock {
+    padding: 9px 13px;
+  }
+
+  .btn.with-lock:disabled {
+    padding: 0;
+  }
+}
 
 @import "fields/string.scss";
 @import "fields/file.scss";
@@ -2148,6 +2430,7 @@ input {
 @import "treeView";
 @import "tables_tabs";
 @import "panelView";
+@import "calcs-table";
 @import "mobile";
 
 

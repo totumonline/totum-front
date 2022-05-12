@@ -41,7 +41,7 @@
                 offset = _offset;
                 onPage = _onPage
             },
-            addFiltersData: function (filters) {
+            addExtraData: function (filters) {
                 "use strict";
                 extraData = $.extend(true, {}, extraData, filters);
             },
@@ -51,7 +51,7 @@
                 let model = this;
                 setTimeout(function () {
                     model.getDefferedProcess().then(func);
-                }, 50);
+                }, 170);
             },
             getDefferedProcess: function () {
                 return new Promise((resolve, reject) => {
@@ -67,17 +67,30 @@
                 App.showDatas.call(pcTable.model, json.interfaceDatas, null, window);
                 delete json.interfaceDatas;
             }, showPanels: function (json) {
-                App.showPanels(json.panels);
-                delete json.panels;
+                if (json.showPanels) {
+                    App.showPanels(json.showPanels, pcTable);
+                    delete json.showPanels;
+                }
             },
             addPcTable: function (pcTableIn) {
                 pcTable = pcTableIn;
+            },
+            getPcTable: function () {
+                return pcTable;
+            },
+            getSessHash: function () {
+                return tableData.sess_hash;
             },
             __ajax: function ($method, $data, RequestObject, withoutLoading, filters) {
                 "use strict";
                 let url = this.url;
 
                 let inProcess = false;
+                let _async = true;
+                if ($data.async === false) {
+                    _async = false
+                    delete $data.async;
+                }
 
 
                 let $d = $.Deferred();
@@ -108,7 +121,7 @@
                 if (data_tmp.data !== undefined && typeof data_tmp.data === 'object') {
                     data_tmp.data = JSON.stringify(data_tmp.data);
                 }
-                if (dataRows) {
+                if (dataRows && !data_tmp.ids) {
                     data_tmp.ids = JSON.stringify(Object.keys(dataRows));
                 }
                 if (!('offset' in $data) && offset !== undefined) {
@@ -123,155 +136,159 @@
                 let Model = this;
                 let success = function (json) {
 
-                    let methods = {
-                        'edit': 'Изменение',
-                        'checkInsertRow': 'Предварительное добавление',
-                        'duplicate': 'Дублирование',
-                        'refresh_rows': 'Пересчет строк',
-                        'loadPage': 'Загрузка страницы',
+                        let methods = App.lang.modelMethods;
 
-                        'getTableData': 'Загрузка информации о таблице',
-                        'refresh': 'Обновление данных таблицы',
-                        'checkEditRow': 'Предварительный расчет панели',
-                        'saveEditRow': 'Сохранение панели',
-                        'save': 'Изменение поля',
-                        'click': 'Нажатие кнопки',
-                        'selectSourceTableAction': 'Вызов панели',
-                        'add': 'Добавление строки',
-                        'getEditSelect': 'Загрузка селекта',
-                        'delete': 'Удаление'
-                    };
+                        let pcTableObj = $('#table').data('pctable');
+                        if (pcTableObj) {
 
-                    let pcTableObj = $('#table').data('pctable');
-                    if (pcTableObj) {
-
-                        if (json.LOGS) {
-                            if (!pcTableObj.LOGS) pcTableObj.LOGS = {};
-                            pcTableObj.LOGS = $.extend(pcTableObj.LOGS, json.LOGS);
-                        }
-                        if (json.FullLOGS) {
-                            if (!pcTableObj.FullLOGS) pcTableObj.FullLOGS = [];
-
-                            let logs = {'text': (methods[data_tmp['method']] || data_tmp['method'])};
-                            logs.children = json.FullLOGS;
-                            if (json.FullLOGS.length) {
-                                pcTableObj.FullLOGS.push(logs);
-                                App.blink(pcTableObj.LogButton, 8, '#fff');
+                            if (json.LOGS) {
+                                if (!pcTableObj.LOGS) pcTableObj.LOGS = {};
+                                pcTableObj.LOGS = $.extend(pcTableObj.LOGS, json.LOGS);
                             }
-                        }
-                        if (json.FieldLOGS && Object.keys(json.FieldLOGS).length) {
-                            pcTableObj.FieldLOGS = pcTableObj.FieldLOGS || [];
-                            pcTableObj.FieldLOGS.push({
-                                'data': json.FieldLOGS,
-                                'name': (methods[data_tmp['method']] || data_tmp['method'])
-                            });
-                        }
-                        if (data_tmp['method'] !== 'loadPage' && pcTableObj.PageData && json.allCount !== undefined) {
-                            let changed = false;
-                            if ('offset' in json && json.offset !== null && pcTableObj.PageData.offset !== json.offset) {
-                                changed = true;
-                                pcTableObj.PageData.offset = json.offset;
-                            }
-                            if ('allCount' in json && json.allCount !== null && pcTableObj.PageData.allCount !== json.allCount) {
-                                changed = true;
-                                pcTableObj.PageData.allCount = json.allCount
-                            }
-                            if (changed) {
-                                pcTableObj.PageData.$block.empty().append(pcTableObj._paginationCreateBlock.call(pcTableObj))
-                            }
-                        }
-                    }
+                            if (json.FullLOGS) {
+                                if (!pcTableObj.FullLOGS) pcTableObj.FullLOGS = [];
 
+                                let logs = {'text': (methods[data_tmp['method']] || data_tmp['method'])};
+                                logs.children = json.FullLOGS;
+                                if (json.FullLOGS.length) {
+                                    pcTableObj.FullLOGS.push(logs);
+                                    App.blink(pcTableObj.LogButton, 8, '#fff');
+                                }
+                            }
+                            if (json.FieldLOGS && Object.keys(json.FieldLOGS).length) {
+                                pcTableObj.FieldLOGS = pcTableObj.FieldLOGS || [];
+                                pcTableObj.FieldLOGS.push({
+                                    'data': json.FieldLOGS,
+                                    'name': (methods[data_tmp['method']] || data_tmp['method'])
+                                });
+                            }
+                            if (data_tmp['method'] !== 'loadPage' && pcTableObj.PageData && json.allCount !== undefined) {
+                                let changed = false;
+                                if ('offset' in json && json.offset !== null && pcTableObj.PageData.offset !== json.offset) {
+                                    changed = true;
+                                    pcTableObj.PageData.offset = json.offset;
+                                }
+                                if ('allCount' in json && json.allCount !== null && pcTableObj.PageData.allCount !== json.allCount) {
+                                    changed = true;
 
-                    if (!json.error) {
-                        if (json.reload) window.location.href = window.location.href;
-                        else {
-                            if (json.links && json.links.length > 0) Model.showLinks(json);
-                            if (json.interfaceDatas && json.interfaceDatas.length > 0) Model.shoInterfaceDatas(json);
-                            if (json.panels && json.panels.length > 0) Model.showPanels(json);
-                        }
-                        $d.resolve(json);
-                    } else {
-                        var errorText = $('<div>').html(json.error.replace(/\[\[(.*?)\]\]/g, '<b>$1</b>'));
-
-                        if (json.log) {
-                            let btn = $('<button class="btn btn-xxs btn-danger"><i class="fa fa-info" style="padding-top: 3px;" aria-hidden="true"> c</i></button>');
-                            btn.on('click', function () {
-                                BootstrapDialog.show({
-                                    message: $('<pre style="max-height: ' + ($('body').height() - 200) + 'px; overflow: scroll">').css('font-size', '11px').text(JSON.stringify(json.log, null, 1)),
-                                    type: BootstrapDialog.TYPE_DANGER,
-                                    title: 'Лог расчета',
-                                    buttons: [{
-                                        'label': null,
-                                        icon: 'fa fa-times',
-                                        cssClass: 'btn-m btn-default btn-empty-with-icon',
-                                        'action': function (dialog) {
-                                            dialog.close();
-                                        }
-                                    }],
-                                    draggable: true,
-                                    onshown: function (dialog) {
-                                        dialog.$modalContent.position({
-                                            of: window
-                                        })
-                                    },
-                                    onshow: function (dialog) {
-                                        dialog.$modalHeader.css('cursor', 'pointer')
-                                        dialog.$modalContent.css({
-                                            width: 1200
-                                        });
+                                    if (pcTableObj.tableRow.pagination.match(/desc\s*$/)) {
+                                        pcTableObj.PageData.offset += json.allCount - pcTableObj.PageData.allCount;
                                     }
 
-                                });
+                                    pcTableObj.PageData.allCount = json.allCount
 
-                            });
-                            errorText.append(' ');
-                            errorText.append(btn)
-                        }
-                        App.notify(errorText)
-                        $d.reject(json);
-                    }
-                }, fail = function (obj) {
-                    let error, timeout;
-                    if (obj && obj.status === 200) {
-                        if (obj.responseJSON && obj.responseJSON.error) error = obj.responseJSON.error;
-                        else {
-                            error = $('<div>Ошибка выполнения операции  </div>');
-                            if (pcTable && pcTable.isCreatorView) {
-                                error.append('<button class="btn danger-backg btn-xs" data-toggle="collapse" data-target="#notify-texh"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></button>');
-                                error.append($('<div id="notify-texh" class="collapse">').append($('<code>').text(obj.responseText)));
+                                }
+                                if (changed) {
+                                    pcTableObj.PageData.$block.empty().append(pcTableObj._paginationCreateBlock.call(pcTableObj))
+                                }
                             }
                         }
-                    } else {
 
-                        if (!RequestObject && obj && obj.statusText != "abort" && obj.statusText != "error") {
-                            error = obj.statusText;
-                            timeout = 200;
 
-                        } else if (RequestObject && RequestObject.jqXHR) {
-                            if (RequestObject.jqXHR.statusText !== "abort") {
-                                error = 'Нет соединения с сервером';
-                                timeout = 200;
-                            }
+                        if (json.tableChanged) {
+                            pcTable.showRefreshButton(json.tableChanged)
                         }
-                    }
 
-                    if (error && ['checkTableIsChanged', 'checkForNotifications'].indexOf($data.method) === -1) {
-                        if (timeout) {
-                            setTimeout(function () {
-                                App.notify(error);
-                            }, timeout)
+                        if (!json.error) {
+                            if (json.reload) window.location.href = window.location.href;
+                            else {
+                                if (json.links && json.links.length > 0) Model.showLinks(json);
+                                if (json.interfaceDatas && json.interfaceDatas.length > 0) Model.shoInterfaceDatas(json);
+                                Model.showPanels(json);
+                            }
+                            $d.resolve(json);
+
+                            setTimeout(() => {
+                                if (json.chdata && json.updated && pcTable.editPanels) {
+                                    pcTable.editPanels.forEach((panel) => {
+                                        panel.refresh();
+                                    })
+                                }
+                            }, 10)
+
+
                         } else {
-                            App.notify(error);
-                        }
-                        if (!obj.responseText) {
-                            //console.log(obj, RequestObject);
+                            var errorText = $('<div>').html(json.error.replace(/\[\[(.*?)\]\]/g, '<b>$1</b>'));
 
-                        }
-                    }
+                            if (json.log) {
+                                let btn = $('<button class="btn btn-xxs btn-danger"><i class="fa fa-info" style="padding-top: 3px;" aria-hidden="true"> c</i></button>');
+                                btn.on('click', function () {
+                                    BootstrapDialog.show({
+                                        message: $('<pre style="max-height: ' + ($('body').height() - 200) + 'px; overflow: scroll">').css('font-size', '11px').text(JSON.stringify(json.log, null, 1)),
+                                        type: BootstrapDialog.TYPE_DANGER,
+                                        title: App.translate('Calculate log'),
+                                        buttons: [{
+                                            'label': null,
+                                            icon: 'fa fa-times',
+                                            cssClass: 'btn-m btn-default btn-empty-with-icon',
+                                            'action': function (dialog) {
+                                                dialog.close();
+                                            }
+                                        }],
+                                        draggable: true,
+                                        onshown: function (dialog) {
+                                            dialog.$modalContent.position({
+                                                of: window
+                                            })
+                                        },
+                                        onshow: function (dialog) {
+                                            dialog.$modalHeader.css('cursor', 'pointer')
+                                            dialog.$modalContent.css({
+                                                width: 1200
+                                            });
+                                        }
 
-                    $d.reject(obj);
-                };
+                                    });
+
+                                });
+                                errorText.append(' ');
+                                errorText.append(btn)
+                            }
+                            App.notify(errorText)
+                            $d.reject(json);
+                        }
+                    },
+                    fail = function (obj) {
+                        let error, timeout;
+                        if (obj && obj.status === 200) {
+                            if (obj.responseJSON && obj.responseJSON.error) error = obj.responseJSON.error;
+                            else {
+                                error = $('<div>' + App.translate('Operation execution error') + '  </div>');
+                                if (pcTable && pcTable.isCreatorView) {
+                                    error.append('<button class="btn danger-backg btn-xs" data-toggle="collapse" data-target="#notify-texh"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></button>');
+                                    error.append($('<div id="notify-texh" class="collapse">').append($('<code>').text(obj.responseText)));
+                                }
+                            }
+                        } else {
+
+                            if (!RequestObject && obj && obj.statusText != "abort" && obj.statusText != "error") {
+                                error = obj.statusText;
+                                timeout = 200;
+
+                            } else if (RequestObject && RequestObject.jqXHR) {
+                                if (RequestObject.jqXHR.statusText !== "abort") {
+                                    error = App.translate('No server connection');
+                                    timeout = 200;
+                                }
+                            }
+                        }
+
+                        if (error && ['checkTableIsChanged', 'checkForNotifications'].indexOf($data.method) === -1) {
+                            if (timeout) {
+                                setTimeout(function () {
+                                    App.notify(error);
+                                }, timeout)
+                            } else {
+                                App.notify(error);
+                            }
+                            if (!obj.responseText) {
+                                //console.log(obj, RequestObject);
+
+                            }
+                        }
+
+                        $d.reject(obj);
+                    };
 
 
                 let ajax = function () {
@@ -283,23 +300,31 @@
                             return;
                         }
                         startedQuery = (new Date()).getTime();
-                        if (/\?/.test(url)) {
-                            url += '&';
-                        } else url += '?';
-                        url += 'rn=' + Math.round(Math.random() * 100000) + (data_tmp['method'] || '');
-                    }
-                    $.ajax({
-                        url: url,
-                        method: $method,
-                        data: data_tmp,
-                        dataType: 'json',
-                        beforeSend: function (jqXHR, settings) {
-                            if (RequestObject) {
-                                RequestObject.jqXHR = jqXHR;
-                            }
-
+                        if (!url.match(/:\/\//)) {
+                            url = window.location.protocol + '//' + window.location.host + url;
                         }
-                    }).then(success).fail(fail)
+                        let _url = new URL(url);
+                        _url.searchParams.delete('rn')
+                        _url.searchParams.append('rn', Math.round(Math.random() * 100000) + (data_tmp['method'] || ''));
+                        url = _url.toString();
+                    }
+                    if (!RequestObject || RequestObject.aborted !== true) {
+                        $.ajax({
+                            url: url,
+                            async: _async,
+                            method: $method,
+                            data: data_tmp,
+                            dataType: 'json',
+                            beforeSend: function (jqXHR, settings) {
+                                if (RequestObject) {
+                                    RequestObject.jqXHR = jqXHR;
+                                }
+
+                            }
+                        }).then(success).fail(fail)
+                    } else {
+                        fail({statusText: "abort"});
+                    }
                 };
                 ajax();
 
@@ -380,11 +405,14 @@
                 "use strict";
                 return this.__ajax('post', {fieldName: fieldName, fieldVal: val, method: 'checkUnic'});
             },
-            add: function (data) {
-                return this.__ajax('post', {data: data, method: 'add'});
+            add: function (hash, data, idsString) {
+                return this.__ajax('post', {hash: hash, method: 'add', data: data, ids: idsString});
             },
             getValue: function (data, table_id) {
                 return this.__ajax('post', {data: data, method: 'getValue', table_id: table_id});
+            },
+            getIdByFieldValue: function (data) {
+                return this.__ajax('post', {data: data, method: 'getIdByFieldValue'});
             },
             getNotificationsTable: function () {
                 return this.__ajax('post', {method: "getNotificationsTable"});
@@ -395,7 +423,7 @@
             setTableFavorite: function (status) {
                 return this.__ajax('post', {status: status, method: 'setTableFavorite'});
             },
-            checkInsertRow: function (data, editedFields) {
+            checkInsertRow: function (data, hash, clearField, loadSelects) {
                 var sendData = {};
                 $.each(data, function (k, v) {
                     if (v != undefined) {
@@ -404,25 +432,30 @@
                 });
                 return this.__ajax('post', {
                     data: sendData,
-                    editedFields: JSON.stringify(editedFields),
+                    hash: hash,
+                    clearField: clearField,
+                    loadSelects: loadSelects,
                     method: 'checkInsertRow'
                 });
             },
-            checkEditRow: function (data) {
+            checkEditRow: function (data, loadSelects) {
                 var sendData = {};
                 $.each(data, function (k, v) {
                     if (v != undefined) {
                         sendData[k] = v;
                     }
                 });
-                return this.__ajax('post', {data: sendData, method: 'checkEditRow'});
+                return this.__ajax('post', {data: sendData, method: 'checkEditRow', loadSelects: loadSelects});
             },
-            checkTableIsChanged: function () {
+            viewRow: function (id) {
+                return this.__ajax('post', {id: id, method: 'viewRow'});
+            },
+            checkTableIsChanged: function (RequestObject) {
                 return this.__ajax('post', {
                     method: 'checkTableIsChanged',
                     table_id: pcTable.tableRow.id,
-                    cycle_id: pcTable.tableRow.cycle_id
-                });
+                    cycle_id: pcTable.tableRow.cycle_id,
+                }, RequestObject);
             },
             checkForNotifications: function (periodicity, activeNotifications, RequestObject) {
                 return this.__ajax('post', {
@@ -438,6 +471,13 @@
                     num: num,
                     item: item,
                     type: type,
+                });
+            },
+            seachUserTables: function (searchString, excludeTop) {
+                return this.__ajax('post', {
+                    method: 'seachUserTables',
+                    q: searchString,
+                    et: excludeTop
                 });
             },
             selectSourceTableAction: function (field_name, data) {
@@ -456,14 +496,14 @@
                 });
                 return this.__ajax('post', {data: sendData, method: 'saveEditRow'});
             },
-            getEditSelect: function (item, fieldName, q, parentid, withLoading) {
+            getEditSelect: function (item, fieldName, q, parentid, withLoading, RequestObject) {
                 var sendData = {};
                 return this.__ajax('post', {
                     data: {item: item, field: fieldName},
                     q: q,
                     parentId: parentid,
                     method: 'getEditSelect'
-                }, undefined, !withLoading);
+                }, RequestObject, !withLoading);
             },
             loadPreviewHtml: function (fieldName, item, val) {
                 return this.__ajax('post', {
@@ -484,6 +524,15 @@
                     });
                 }
                 return this.__ajax('post', {data: data, method: 'edit'}, null, null, _filters);
+            },
+            saveLinkToEdit: function (hash, data, special, search, RequestObject) {
+                return this.__ajax('post', {
+                    special: special,
+                    data: data,
+                    shash: hash,
+                    search: search,
+                    method: 'saveLinkToEdit'
+                }, RequestObject);
             },
             click: function (data) {
                 return this.__ajax('post', {data: data, method: 'click'});
@@ -510,11 +559,11 @@
             panelsView: function (switcher) {
                 return this.__ajax('post', {method: 'panelsViewCookie', switcher: switcher ? 1 : 0});
             },
-            refresh: function (func, refreshType, withoutIds) {
+            refresh: function (func, refreshType, withoutIds, getList) {
 
                 func = func || function (json) {
-                    pcTable.table_modify.call(pcTable, json);
-                    pcTable.reloaded.call(pcTable);
+                    pcTable.table_modify(json);
+                    pcTable.reloaded();
                 };
                 let tree;
                 if (pcTable.treeIndex) {
@@ -528,12 +577,13 @@
                     method: 'refresh',
                     tree: tree,
                     recalculate: refreshType === 'recalculate' ? true : null,
-                    withoutIds: withoutIds ? true : null
+                    withoutIds: withoutIds,
+                    getList: getList
                 }).then(function (json) {
                     try {
                         func(json)
                     } catch (e) {
-                        window.location.reload();
+                        App.windowReloadWithHash(pcTable.model);
                     }
                 })
             },
@@ -559,7 +609,7 @@
                 return this.__ajax('post', {method: 'printTable', settings: JSON.stringify(settings)});
             }
             ,
-            getAllTables: function () {
+            getAllTables: async function () {
                 return this.__ajax('post', {method: 'getAllTables'});
             },
             calcFieldsLog: function (data, name) {
@@ -574,6 +624,9 @@
             },
             panelButtonsClear: function (hash) {
                 return this.__ajax('post', {method: 'panelButtonsClear', hash: hash})
+            },
+            linkJsonClick: function (hash, json) {
+                return this.__ajax('post', {method: 'linkJsonClick', hash: hash, json: json})
             },
             buttonsClick: function (hash, index) {
                 return this.__ajax('post', {method: 'linkButtonsClick', hash: hash, index: index})
@@ -590,7 +643,7 @@
             }, userButtonsClick: function (hash, index) {
                 return this.__ajax('post', {method: 'userButtonsClick', hash: hash, index: index})
             }, filesUpload: function (files, hash) {
-                return this.__ajax('post', {method: 'filesUpload', "files":JSON.stringify(files), hash:hash});
+                return this.__ajax('post', {method: 'filesUpload', "files": JSON.stringify(files), hash: hash});
             },
             loadPage: function (pcTable, lastId, count, prevLastId, offset) {
                 let _filters = {};
@@ -604,38 +657,13 @@
                     lastId: lastId,
                     offset: offset,
                     pageCount: count,
-                    prevLastId: prevLastId
+                    prevLastId: prevLastId,
+                    recFormats: pcTable.formatUseRows ? 1 : null
                 }, null, null, _filters).then(function (json) {
-                    pcTable.loadedPage = json.page;
-                    pcTable.rows = json.rows;
-
-                    let ids;
-                    if (json.rows.length) {
-                        ids = {
-                            firstId: json.rows[0].id,
-                            lastId: json.rows[json.rows.length - 1].id,
-
-                        }
-                    } else {
-                        ids = {
-                            firstId: 0,
-                            lastId: 0
-                        }
+                    pcTable.applyPage(json)
+                    if(pcTable.formatUseRows){
+                        pcTable.table_modify({chdata:{params:json.params}})
                     }
-                    pcTable.PageData = {
-                        ...pcTable.PageData, ...{
-                            offset: json.offset
-                            , allCount: json.allCount
-                            , loading: false
-
-                        }, ...ids
-                    }
-
-                    pcTable.initRowsData.call(pcTable);
-                    pcTable._refreshContentTable.call(pcTable, false, true);
-                    pcTable.__applyFilters.call(pcTable, true);
-                    pcTable.PageData.$block.empty().append(pcTable._paginationCreateBlock.call(pcTable));
-                    pcTable.selectedCells.summarizer.check();
                 })
             }
 

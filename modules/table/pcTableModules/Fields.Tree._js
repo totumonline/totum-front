@@ -6,41 +6,47 @@
         getEditVal: function (div) {
             return div.data('val');
         },
+        getCheckedIds: function (dialog) {
+            let checked_ids = [];
+            let checked = dialog.data('jstree').jstree("get_selected", true);
+            checked.forEach(function (node) {
+                checked_ids.push(node.id);
+            });
+
+            if (!this.multiple) {
+                checked_ids = checked_ids[0] || '';
+            }
+
+            return checked_ids;
+        },
         getEditElement: function ($oldInput, oldValueParam, item, enterClbk, escClbk, blurClbk, tabindex, editNow) {
             let field = this;
             let div = $oldInput || $('<div>');
             let dialog = div.data('dialog') || $('<div>').css('min-height', 200);
             div.data('dialog', dialog);
             let buttons, btn;
+            let Dialog;
 
             oldValueParam = oldValueParam.v || '';
 
             const save = function (dlg, event, notEnter) {
-                let checked_ids = [];
-                let checked = dialog.data('jstree').jstree("get_selected", true);
-                checked.forEach(function (node) {
-                    checked_ids.push(node.id);
-                });
 
-                if (!field.multiple) {
-                    checked_ids = checked_ids[0] || '';
-                }
 
-                div.data('val', checked_ids);
+                div.data('val', field.getCheckedIds(dialog));
                 if (!notEnter) {
                     enterClbk(div, {});
                     dlg.close();
                 }
             };
             let formFill = function (dlg) {
-                field.treePanel.call(field, dialog, item, oldValueParam);
+                field.treePanel.call(field, (editNow === 'editField' ? div : dialog), item, oldValueParam);
             };
 
 
             buttons = [];
 
             let btnsSave = {
-                'label': "Сохранить",
+                'label': App.translate('Save') + ' Alt+S',
                 cssClass: 'btn-m btn-warning',
                 action: save
             }, btnsClose = {
@@ -53,7 +59,7 @@
                 }
             };
 
-            let title = '<b>' + (this.title) + '</b>';
+            let title = '<b>' + (this.title) + '</b>' + this.pcTable._getRowTitleByMainField(item, ' (%s)');
             let eventName = 'ctrlS.commentdialog';
             const onshown = function (dialog) {
                 if (!field.pcTable.isMobile) {
@@ -66,86 +72,101 @@
                 if (dialog.$modalBody.find('textarea').length === 0) {
                     formFill(dialog);
                 }
-                $('body').on(eventName, function (event) {
+                dialog.$modalContent.closest('body').on(eventName, function (event) {
                     save(dialog, event, false);
                 });
 
             };
             if (editNow) {
-                let btnClicked = false;
-                setTimeout(function () {
-
-                    let cdiv = div.closest('td').find('.cdiv');
-                    if (cdiv.length > 0) {
-                        cdiv.data('bs.popover').options.content.find('.btn').each(function () {
-                            btn = $(this);
-                            let buttn = {};
-                            buttn.label = btn.data('name');
-                            buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
-                            buttn.icon = btn.find('i').attr('class');
-                            buttn.save = btn.data('save');
-                            buttn.click = btn.data('click');
-                            buttn.action = function (dialog) {
-                                if (buttn.save) {
-                                    save(dialog, {}, true);
-                                }
-                                buttn.click({});
-                                btnClicked = true;
-                                dialog.close();
-                            };
-
-                            buttons.push(buttn)
-                        });
-                        cdiv.popover('destroy');
-                    } else {
-                        buttons.push(btnsSave);
-                        buttons.push(btnsClose)
-                    }
-
-                    if (field.pcTable.isMobile) {
-                        App.mobilePanel(title, dialog, {
-                            buttons: buttons,
-                            onhide: function (dialog) {
-                                $('body').off(eventName);
-                                if (!btnClicked) {
-                                    blurClbk(div, {});
-                                }
-                            },
-                            onshow: onshown
-                        })
-                    } else {
-                        BootstrapDialog.show({
-                            message: dialog,
-                            type: null,
-                            title: title,
-                            cssClass: 'fieldparams-edit-panel',
-                            draggable: true,
-                            buttons: buttons,
-                            onhide: function (dialog) {
-                                $('body').off(eventName);
-                                if (!btnClicked) {
-                                    blurClbk(div, {});
-                                }
-                            },
-                            onshown: function (dialog) {
-                                dialog.$modalContent.position({
-                                    of: $('body'),
-                                    my: 'top+50px',
-                                    at: 'top'
-                                });
-                            },
-                            onshow: onshown
-
-                        });
-                    }
-                }, 1);
+                if (editNow === 'editField') {
+                    formFill();
+                } else {
 
 
-                div.text('Редактирование в форме').addClass('edit-in-form');
+                    let btnClicked = false;
+                    setTimeout(function () {
+
+                        let cdiv = div.closest('td').find('.cdiv');
+                        if (cdiv.length > 0) {
+                            cdiv.data('bs.popover').options.content.find('.btn').each(function () {
+                                btn = $(this);
+                                let buttn = {};
+                                buttn.label = btn.data('name');
+                                buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
+                                buttn.icon = btn.find('i').attr('class');
+                                buttn.save = btn.data('save');
+                                buttn.click = btn.data('click');
+                                buttn.action = function (dialog) {
+                                    if (buttn.save) {
+                                        save(dialog, {}, true);
+                                    }
+                                    buttn.click({});
+                                    btnClicked = true;
+                                    dialog.close();
+                                };
+
+                                buttons.push(buttn)
+                            });
+                            cdiv.popover('destroy');
+                        } else {
+                            buttons.push(btnsSave);
+                            buttons.push(btnsClose)
+                        }
+
+                        if (field.pcTable.isMobile) {
+                            App.mobilePanel(title, dialog, {
+                                buttons: buttons,
+                                onhide: function (dialog) {
+                                    $('body').off(eventName);
+                                    if (!btnClicked) {
+                                        blurClbk(div, {});
+                                    }
+                                },
+                                onshow: onshown
+                            })
+                        } else {
+                            Dialog = window.top.BootstrapDialog.show({
+                                message: dialog,
+                                type: null,
+                                title: title,
+                                cssClass: 'fieldparams-edit-panel',
+                                draggable: true,
+                                buttons: buttons,
+                                onhide: function (dialog) {
+                                    $(window.top.document).find('body').off(eventName);
+                                    if (!btnClicked) {
+                                        blurClbk(div, {});
+                                    }
+                                },
+                                onshown: function (dialog) {
+                                    dialog.$modalContent.position({
+                                        of: $(window.top.document).find('body'),
+                                        my: 'top+50px',
+                                        at: 'top'
+                                    });
+                                },
+                                onshow: onshown
+
+                            });
+                            div.data('Dialog', Dialog)
+                        }
+                    }, 1);
+
+
+                    div.text(App.translate('Editing in the form')).addClass('edit-in-form');
+                    setTimeout(() => {
+                        div.closest('td').css('background-color', '#ffddb4')
+                    })
+                }
             } else {
                 let showned = false;
-                div.off().on('focus click', 'button', function () {
+                div.off().on('click keydown', function (ev) {
                     if (showned) return false;
+                    if (ev.key === 'Tab') {
+                        blurClbk(dialog, ev, null, true);
+                        return
+                    }
+
                     showned = true;
                     let buttonsClick = buttons.slice(0);
                     buttonsClick.push(btnsSave);
@@ -164,7 +185,7 @@
                             onshow: onshown
                         })
                     } else {
-                        BootstrapDialog.show({
+                        window.top.BootstrapDialog.show({
                             message: dialog,
                             type: null,
                             cssClass: 'fieldparams-edit-panel',
@@ -174,7 +195,7 @@
                             buttons: buttonsClick,
                             onhide: function (event) {
                                 showned = false;
-                                $('body').off(eventName);
+                                $(window.top.document).find('body').off(eventName);
                                 escClbk(div, event);
                             },
                             onshow: onshown
@@ -184,7 +205,7 @@
                 });
 
                 if (div.find('button').length === 0) {
-                    btn = $('<button class="btn btn-default btn-sm text-edit-button">').text('Редактирование в форме');
+                    btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Editing in the form'));
                     if (tabindex) btn.attr('tabindex', tabindex);
 
                     div.append(btn);
@@ -204,6 +225,7 @@
             let plugins = ["themes", 'json_data', 'search'];//, 'massload'
             if (field.multiple) {
                 plugins.push('checkbox');
+
             }
             let $search = $('<div class="tree-search"><input class="form-control" type="text"></div>');
             let $searchInput = $search.find('input');
@@ -240,24 +262,64 @@
             $treeblock.data('jstree', $mes);
 
             if (!this.multiple && this.withEmptyVal) {
-                $mes.on("click", 'li.jstree-node[aria-selected="true"]', function (e) {
-                    $mes.jstree(true).deselect_node($(this));
-                    return false;
+               let val = item[field.name].v;
+                $mes.on("select_node.jstree", function (evt, data) {
+                    if (val === data.node.id) {
+                        data.instance.deselect_node(data.instance.get_node(data.node.id));
+                    }else{
+                        val = data.node.id
+                    }
                 })
-
             }
+
             let reloadStates = null;
 
             $mes.on("init.jstree", function (e, data) {
                 data.instance.settings.checkbox.cascade = '';
 
-                let c = $.jstree.core.prototype.redraw_node
 
-                if (field.changeSelectTable) {
+                if (field.changeSelectTable || field.multiple) {
+
+                    let c = $mes.jstree(true).redraw_node;
+                    let _jsTree = $mes.jstree(true);
+                    const select_node = (id, type) => {
+                        let data = _jsTree.get_node(id);
+                        if (type > 0) {
+                            _jsTree.select_node(data);
+                            if (type === 2) {
+                                if (data.state.loaded === false) {
+                                    _jsTree.load_node(data, (data) => {
+                                        data.children.forEach((id) => {
+                                            select_node(id, type);
+                                        })
+                                    })
+                                } else {
+                                    data.children.forEach((id) => {
+                                        select_node(id, type);
+                                    })
+                                }
+                            }
+                        } else {
+                            _jsTree.deselect_node(data);
+                            if (data.state.loaded === false) {
+                                _jsTree.load_node(data, (data) => {
+                                    data.children.forEach((id) => {
+                                        select_node(id, type);
+                                    })
+                                })
+                            } else {
+                                data.children.forEach((id) => {
+                                    select_node(id, type);
+                                })
+                            }
+                        }
+                    }
+
                     $mes.jstree(true).redraw_node = function (node, deep, is_callback, force_render) {
-                        let _node = c.bind(this)(node, deep, is_callback, force_render);
-                        let data = $mes.jstree(true).get_node(node);
-                        let canEdit = true;
+                        let $icon1;
+                        let _node = c.apply(this, arguments);
+                        let data = this.get_node(node);
+                        let canEdit = field.changeSelectTable;
                         let canAdd = field.changeSelectTable === 2 && field.parentName;
                         if (!field.treeAutoTree) {
                             if (!data.original.id.toString().match(/^\d+$/)) {
@@ -270,6 +332,26 @@
                             $mes.jstree(true).refresh(false, true);
                         }
                         let $icon = $(_node).find('>a i:first');
+
+                        if (field.multiple && (data.state.loaded === false || !(!data.children || !data.children.length))) {
+                            $icon1 = $('<i class="fa fa-hand-lizard-o jstree-children-manage-lizard"></i>');
+                            $icon.after($icon1);
+                            $icon = $icon1.on('click', () => {
+                                data.state.cascadeStep = (data.state.cascadeStep > 1 ? 0 : (data.state.cascadeStep || 0) + 1);
+                                if (data.state.loaded === false) {
+                                    this.load_node(data, (data) => {
+                                        data.children.forEach((id) => {
+                                            select_node(id, data.state.cascadeStep)
+                                        })
+                                    })
+                                } else {
+                                    data.children.forEach((id) => {
+                                        select_node(id, data.state.cascadeStep)
+                                    })
+                                }
+                                return false;
+                            });
+                        }
                         if (canEdit) {
                             $icon1 = $('<i class="fa fa-edit edit-tree-icon"></i>');
                             $icon.after($icon1);
@@ -310,6 +392,8 @@
                                 return false
                             })
                         }
+
+
                         return _node;
                     };
                 }
@@ -321,8 +405,11 @@
                     search_callback: function (q, title) {
                         if (!title) return false;
 
-                        let qs = q.toLowerCase().replace('ё', 'е').split(" ");
-                        let text = title.text.toLowerCase().replace('ё', 'е');
+                        let qs = q.toLowerCase();
+                        let text = title.text.toLowerCase();
+
+                        [text, qs] = App.lang.search_prepare_function(text, qs);
+                        qs = qs.split(" ");
 
                         return !qs.some(function (q) {
                             return text.indexOf(q) === -1
@@ -377,9 +464,6 @@
                         "icons": false,
                         'name': 'default'
                     }
-                }
-                , checkbox: {
-                    //  three_state: false,
                 },
                 "plugins": plugins
             });
@@ -456,8 +540,9 @@
                 let span = $('<span class="tree-view">').css('padding-left', row.level * 22).append(folder);
                 if (format.expand !== false) {
                     folder.addClass('treeRow');
-                    span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
-                }else{
+                    field.pcTable._treeFolderRowAddDropdown(span, item.__tree)
+                    //span.append($('<button class="btn btn-default btn-xxs treeRow dbl"><i class="fa fa-arrows-v"></i></button>').data('treeRow', row.v));
+                } else {
                     folder.css('margin-right', 8)
                 }
 
@@ -465,7 +550,7 @@
                     span.append($('<button class="btn btn-default btn-xxs treeRow ins"><i class="fa fa-plus"></i></button>'));
                 }
 
-                span.append(format.text || row.t);
+                span.append($('<span class="tree-span-text">').text(format.text || row.t));
                 return span;
             } else {
                 let arrayVals = item[field.name].v_;
@@ -476,10 +561,15 @@
                             else if (fieldValue.length === 1) return field.getElementSpan(fieldValue[0], arrayVals[0]);
                             else {
                                 if (field.multySelectView === "0" && !field.FullView) {
-                                    return $('<span class="select-item">' + fieldValue.length + ' эл.<span>')
+                                    return $('<span class="select-item">' + App.translate('%s el.', fieldValue.length) + '<span>')
                                 } else {
                                     let span = $('<span class="select-item">');
-                                    fieldValue.forEach((fVal, i) => span.append(field.getElementSpan(fVal, arrayVals[i])));
+                                    fieldValue.forEach((fVal, i) => {
+                                        if (td.is('td') && field.multiSeparator && i > 0) {
+                                            span.append($('<span class="separator">').text(field.multiSeparator));
+                                        }
+                                        span.append(field.getElementSpan(fVal, arrayVals[i]))
+                                    });
                                     return span;
                                 }
                             }
@@ -551,18 +641,30 @@
         },
         getElementString: function (val, arrayVal) {
             "use strict";
+            let notEmptyVal, r;
             if (val === null || val === undefined) {
                 if (!arrayVal || !arrayVal[0]) return this.withEmptyVal || '';
+            } else {
+                notEmptyVal = true;
             }
 
             if (arrayVal[0] === null || arrayVal[0] === '') {
+                r = '[' + (this.withEmptyVal || '') + ']';
+            } else if (this.FullView) {
+                r = arrayVal[2] || arrayVal[0];
+            } else {
+                r = arrayVal[0];
+            }
 
-                return '[' + (this.withEmptyVal || '') + ']';
+            if (notEmptyVal && this.multiple && this.unitType) {
+                if (this.before) {
+                    r = this.unitType + ' ' + r;
+                } else {
+                    r += ' ' + this.unitType;
+                }
             }
-            if (this.FullView) {
-                return arrayVal[2] || arrayVal[0];
-            }
-            return arrayVal[0];
+
+            return r;
         }
     };
 })();

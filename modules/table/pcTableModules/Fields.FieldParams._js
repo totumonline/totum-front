@@ -27,6 +27,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
         let saved = false;
         let clback = function () {
+            form.trigger('change');
         };
 
         let firstLoad;
@@ -35,8 +36,29 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
         } catch (e) {
         }
 
+        App.tableTypes = App.tableTypes || {};
 
-        let formFill = function (oldValueParam) {
+        let formFill = async function (oldValueParam) {
+            if (!App.tableTypes[item['table_id']['v']]) {
+                let type;
+                if (item['table_id']['v'] != $('#table').data('pctable').tableRow.id) {
+                    if (!field.pcTable.model.getTableParam) {
+                        field.pcTable.model.getTableParam = function (tableId, type) {
+                            return this.__ajax('post', {
+                                method: 'getTableParam',
+                                tableId: tableId,
+                                param: type
+                            })
+                        }
+                    }
+                    let json = await field.pcTable.model.getTableParam(item['table_id']['v'], 'type')
+                    type = json.type;
+                } else {
+                    type = $('#table').data('pctable').tableRow.type;
+                }
+                App.tableTypes[item['table_id']['v']] = type;
+            }
+
 
             let jsonFields = field.jsonFields;
             let left, right;
@@ -57,6 +79,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     }
                     if (fieldSettings['names']) {
                         if (fieldSettings['names'].indexOf(item['name']['v']) === -1) return false;
+                    }
+                    if (fieldSettings['tables']) {
+                        if (fieldSettings['tables'].indexOf(App.tableTypes[item['table_id']['v']]) === -1) return false;
                     }
 
 
@@ -109,7 +134,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                             form.find('[data-parent="' + fName.toLowerCase() + '"]').hide().find('input[type="checkbox"]').prop('checked', false).trigger('change');
                         }
                     };
-                    let divInput = field.__addInput.call(field, fName, fieldSettings, thisValue, item, clback);
+                    let divInput = field.__addInput.call(field, fName, fieldSettings, thisValue, item, clback, form);
 
                     if ((fieldSettings.align || 'center') !== 'center') {
                         if (!left) {
@@ -150,11 +175,10 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
                 let editorsRefresh = function () {
                     dialog.find('.codeEditor, .HTMLEditor').each(function () {
-                        if ($(this).data('editor')) {
+                        if ($(this).data('editor') && $(this).data('editor').refresh) {
                             $(this).data('editor').refresh();
                         }
                     });
-
                 };
 
                 async function addfields(fieldType) {
@@ -214,14 +238,15 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     };
 
 
-                    let typeInput = addInput('type', fieldsList, fieldsLevelFuncs).find('select');
+                    let input = addInput('type', fieldsList, fieldsLevelFuncs);
+                    let typeInput = input.find('select');
 
                     typeInput.on('change', function () {
                         addfields($(this).val())
                     });
 
                     fieldsList.forEach(function (fName) {
-                        addInput(fName, fieldsList, fieldsLevelFuncs);
+                        let t = addInput(fName, fieldsList, fieldsLevelFuncs);
                     });
 
                     editorsRefresh();
@@ -258,11 +283,11 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                             try {
                                 val = element.data('editor').get();
                                 if (typeof val !== "object") {
-                                    throw 'Ошибка структуры поля';
+                                    throw App.translate('Field structure error');
                                 }
                             } catch (err) {
-                                App.notify('Ошибка структуры поля ' + nameField);
-                                throw 'Ошибка структуры поля';
+                                App.notify(App.translate('Field %s structure error', nameField));
+                                throw App.translate('Field structure error');
                             }
                             break;
                         case "html":
@@ -306,7 +331,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
         buttons = [
             {
-                'label': "Сохранить",
+                'label': App.translate('Save') + ' Alt+S',
                 cssClass: 'btn-m btn-warning',
                 action: save
             }, {
@@ -325,7 +350,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             window.top.BootstrapDialog.show({
                 message: dialog,
                 type: BootstrapDialog.TYPE_DANGER,
-                title: 'Параметры поля <b>' + (item.title.v) + '</b>',
+                title: App.translate('Field <b>%s</b> parameters', item.title.v),
                 buttons: buttons,
                 cssClass: 'fieldparams-edit-panel',
                 draggable: true,
@@ -356,52 +381,42 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             });
 
 
-            div.text('Редактирование в форме').addClass('edit-in-form');
+            div.text(App.translate('Editing in the form')).addClass('edit-in-form');
+            setTimeout(() => {
+                div.closest('td').css('background-color', '#ffddb4')
+            })
         } else {
-            /*let clicked = false;
-            div.on('focus click', 'button', function () {
-                if (clicked) return;
-                clicked = true;
-
-                var div = $(this).closest('div');
-                window.top.BootstrapDialog.show({
-                    message: dialog,
-                    type: BootstrapDialog.TYPE_DANGER,
-                    cssClass: 'fieldparams-edit-panel',
-                    title: 'Параметры поля <b>' + (item.title.v) + '</b>',
-                    buttons: buttons,
-                    draggable: true,
-                    size: BootstrapDialog.SIZE_WIDE,
-                    onhide: function (event) {
-                        escClbk(div, event);
-                        $('body').off(eventName);
-                        clicked = false;
-                    },
-                    onshown: function (dialog) {
-                        dialog.$modalDialog.width(1000);
-                        dialog.$modalHeader.css('cursor', 'pointer')
-                        formFill(oldValueParam.v);
-                        $('body').on(eventName, function (event) {
-                            save(dialog);
-                        });
-                    }
-                })
-            });
-
-            let btn = $('<button class="btn btn-danger btn-sm text-edit-button">').text('Редактировать параметры');
-            if (tabindex) btn.attr('tabindex', tabindex);
-
-            div.append(btn);*/
-
             formFill(oldValueParam.v)
             div.append(form)
             div.addClass('fieldparams-edit-panel')
+            setTimeout(() => {
+                let blocked = false;
+                let insertPanel = div.closest('.InsertPanel');
+                let versionVal = insertPanel.find('div[data-name="version"] select').val();
+                insertPanel.on('keyup.jsonFormEvent change.jsonFormEvent', '.cell:not([data-name="data_src"]) input, .cell:not([data-name="data_src"]) select', function (event) {
+                    if (!blocked) {
+                        if ($(this).closest('[data-name="version"]').length && versionVal === $(this).val()) {
+                            return;
+                        }
+                        blocked = true;
+                        div.find('.jsonForm').prepend('<div id="fieldParamsLocker"><i class="fa fa-lock"></i><div class="unlock-click">' + App.translate('Click hear to unlock') + '</div></div>')
+                        $('.jsonForm #fieldParamsLocker').one('click', () => {
+                            $('.jsonForm #fieldParamsLocker').remove();
+                            blocked = false;
+                        });
+                    }
+                })
+                div.find('.jsonForm').on('remove', () => {
+                    insertPanel.off('jsonFormEvent')
+                })
+            })
         }
 
         return div.data('val', oldValueParam.v).data('input', form);//.attr('data-category', category).attr('data-category', category);
 
     },
-    __addInput: function (fName, f, Val, item, callback) {
+    __addInput: function (fName, f, Val, item, callback, form) {
+
         let field = this;
         var f = f || {};
         var type = f.type;
@@ -442,7 +457,30 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     editor.getScrollerElement().style.minHeight = '150px';
 
                     editor.table = item.table_name && item.table_name.v ? item.table_name.v : null;
+                    editor.codeType = fName;
+                    editor.cycle_id = field.pcTable.tableRow.cycle_id;
+
+                    App.CodemirrorFocusBlur(editor)
+
+                    if (fName == 'codeAction' && form.find('div[data-name="type"] select').val() !== 'button') {
+                        if (!input.data('checking')) {
+                            input.append('<div class="code-checkboxes-warning-panel">' + App.translate('There is no any active trigger.') + '</div>');
+                            const checkWarningFunction = () => {
+                                if (!input.is('.disabled') && input.next().find(':checked').length === 0) {
+                                    input.addClass('code-checkboxes-active-warning')
+                                } else {
+                                    input.removeClass('code-checkboxes-active-warning')
+                                }
+                            }
+                            checkWarningFunction();
+
+                            input.data('checking', true)
+                            input.parent().on('change', '[data-name="codeAction"] input,[data-name="CodeActionOnAdd"] input,[data-name="CodeActionOnChange"] input,[data-name="CodeActionOnDelete"] input,[data-name="CodeActionOnClick"] input', checkWarningFunction)
+                        }
+                    }
+
                 })
+
 
                 break;
 
@@ -453,7 +491,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             case 'json':
                 element = $('<div class="JSONEditor">').height(500).on('blur', callback);
                 var editor = new JSONEditor(element.get(0), {});
-                var btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">Вручную</a>').on('click', function () {
+                var btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
                     var div = $('<div>');
                     var textarea = $('<textarea class="form-control" style="height: 250px;">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
 
@@ -461,17 +499,17 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     BootstrapDialog.show({
                         message: div,
                         type: null,
-                        title: 'Ручное изменение json-поля',
+                        title: App.translate('Manually changing the json field'),
                         buttons: [
                             {
-                                'label': "Сохранить",
+                                'label': App.translate('Save'),
                                 cssClass: 'btn-m btn-warning',
                                 action: function (dialog) {
                                     try {
                                         editor.setText(textarea.val());
                                         dialog.close();
                                     } catch (e) {
-                                        window.top.App.modal('Ошибка формата JSON')
+                                        window.top.App.modal(App.translate('JSON format error'))
                                     }
                                 }
                             }, {
@@ -506,7 +544,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 element.find('.jsoneditor-menu').append(btn);
 
                 if (fName === 'chartOptions') {
-                    let btn2 = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">Заполнить настройками по умолчанию</a>');
+                    let btn2 = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Fill in by the default settings') + '</a>');
                     btn2.on('click', () => {
                         let vl = $('div[data-name="chartType"] select').val();
 
@@ -622,7 +660,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
         if (type === 'checkbox') {
             input.prepend($('<label class="field-param-lable">').html(title)
                 .addClass('form-check-label').prepend(element)
-                .append('<a href="http://docs.totum.online/fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
+                .append('<a href="' + App.translate('PATH-TO-DOCUMENTATION') + 'fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
             input.addClass('checkbox');
             $switcher = element;
             if (!element.is(':checked')) {
@@ -631,7 +669,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             }
         } else {
             input.prepend($('<label class="field-param-lable">').html(title)
-                .append('<a href="http://docs.totum.online/fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
+                .append('<a href="' + App.translate('PATH-TO-DOCUMENTATION') + 'fields#fields-settings-' + fName + '" target="_blank"><i class="fa fa-question-circle-o"></i></a>'));
 
             if (element) {
                 element.data('type', type);
@@ -667,6 +705,11 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                         Val.isOnCheck = true;
                         input.removeClass('disabled');
                         Val.changed();
+                        $(this).closest('div').find('.codeEditor, .HTMLEditor').each(function () {
+                            if ($(this).data('editor')) {
+                                $(this).data('editor').refresh();
+                            }
+                        });
                     }
                 } else {
                     if (Val.isOnCheck !== false) {
@@ -707,7 +750,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
         return JSON.stringify(data, null, 2);*/
     },
     getCellText: function (fieldValue) {
-        return 'Настройки поля';
+        return App.translate('Field settings');
     }
 })
 ;

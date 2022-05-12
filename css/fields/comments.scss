@@ -1,21 +1,43 @@
 @import "../vars";
-#selectPanel .field-value .comments{
+
+#selectPanel .field-value .comments {
   span {
     display: inline;
   }
 }
-.pcTable-container td .cell-value{
-  .notViewed{
+
+.pcTable-container td .cell-value {
+  .notViewed {
     border-bottom: 2px solid $btn-danger-bgcolor;
   }
 }
-.com_author{
+
+.com_author {
   font-weight: bold;
 }
-.comments-line{
+
+.com_edit {
+  text-align: right;
+  span + .fa {
+    margin-left: 15px;
+  }
+}
+
+.com_dt {
+  float: right
+}
+
+.comments-line {
   padding-bottom: 14px;
   white-space: pre-wrap;
 }
-.comments-input{
+
+#selectPanelBig {
+  .comments-line {
+    padding-right: 10px;
+  }
+}
+
+.comments-input {
   padding-top: 10px;
 }

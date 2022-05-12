@@ -157,11 +157,7 @@
                 }, 50);
             });
 
-            let cache = {
-                top_offset: 0,
-                bottom_offset: 0,
-                rows: $()
-            };
+            let cache = {};
             $.extend(self, {
                 rows_in_block: 4,
                 item_height: pcTABLE_ROW_HEIGHT,
@@ -228,6 +224,12 @@
                 insertToDOM: function (cluster, forceCheckTableHeight, forceRefreshData) {
                     // explore row's height
 
+                    if (forceRefreshData) {
+                        Object.keys(pcTable.data).forEach((id)=>{
+                            delete pcTable.data[id].$tr
+                        })
+                    }
+
                     if (pcTable.isMobile) {
                         this.setHtml(pcTable.dataSortedVisible, 0, 0, forceRefreshData);
                     } else {
@@ -244,7 +246,11 @@
                                 }
                                 return k;
                             }).join(',');
-                        if (forceRefreshData || this.checkChanges('data', this_cluster_rows, cache)) {
+
+                        let checkRows=this.checkChanges('data', this_cluster_rows, cache);
+                        let checkCountRows=this.checkChanges('count', pcTable.dataSortedVisible.length, cache);
+
+                        if (forceRefreshData || checkRows || checkCountRows) {
                             this.setHtml(data.rows, data.top_offset, data.bottom_offset, forceRefreshData);
                         }
                         if (forceCheckTableHeight && pcTable._container.getNiceScroll) {
@@ -259,12 +265,16 @@
                         pcTable._removeEditing.call(pcTable, element);
                     });
                     let $trs = pcTable._content.empty().get(0);
-                    if (top) $trs.appendChild($('<tr style="height: ' + top + 'px;" class="loading-row"><td colspan="' + (pcTable.fieldCategories.column.length + 1) + '"></td></tr>').get(0));
+                    if (top) {
+                        $trs.appendChild($('<tr style="height: ' + top + 'px;" class="loading-row"><td colspan="' + (pcTable.fieldCategories.column.length + 1) + '"></td></tr>').get(0));
+                    }else{
+                        $trs.appendChild($('<tr style="height: 0px;" class="loading-row"></tr>').get(0));
+                    }
 
                     if (pcTable.dataSorted.length === 0) {
                         $trs.appendChild(pcTable._createNoDataRow().get(0));
                     } else if (pcTable.dataSortedVisible.length === 0) {
-                        $trs.appendChild(pcTable._createNoDataRow('По условиям фильтрации не выбрана ни одна строка').get(0));
+                        $trs.appendChild(pcTable._createNoDataRow(App.translate('No rows are selected by the filtering conditions')).get(0));
                     } else {
                         for (let i in rows) {
                             let row = rows[i];

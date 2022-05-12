@@ -23,19 +23,19 @@
                         form.submit();
                         dialog.close();
                     },
-                    label: 'Отправить пароль на email'
+                    label: App.translate('Send password to email')
                 },
                 {
                     action: function (dialog) {
                         dialog.close();
                     },
-                    label: 'Отмена'
+                    label: App.translate('Cancel')
                 }
             ];
 
             BootstrapDialog.show({
                 message: $fieldsDiv,
-                title: 'Новый пароль',
+                title: App.translate('New password'),
                 buttons: buttons,
                 draggable: true
             })
@@ -56,19 +56,19 @@
                         form.submit();
                         dialog.close();
                     },
-                    label: 'Зарегистрировать и отправить пароль на email'
+                    label: App.translate('Register and send password to email')
                 },
                 {
                     action: function (dialog) {
                         dialog.close();
                     },
-                    label: 'Отмена'
+                    label: App.translate('Cancel')
                 }
             ];
 
             BootstrapDialog.show({
                 message: $fieldsDiv,
-                title: 'Регистрация',
+                title: App.translate('Registration'),
                 buttons: buttons,
                 draggable: true
             })
@@ -78,8 +78,8 @@
             let authForm = $('#auth_form');
             $('body').html('<div style="width: 600px; margin: auto; padding-top: 50px; font-size: 16px; text-align: center;" id="comeinBlock">' +
                 '<img src="/imgs/start.png" alt="">' +
-                '<div style="padding-bottom: 10px;">Сервис оптимизирован под броузеры Chrome, Safari, Yandex, FireFox последних версий.</div>' +
-                '<div><a href="#" id="comein" class="btn-default btn">Все равно хочу посмотреть</a></div></div>');
+                '<div style="padding-bottom: 10px;">' + App.translate('Service is optimized for browsers Chrome, Safari, Yandex, FireFox latest versions') + '.</div>' +
+                '<div><a href="#" id="comein" class="btn-default btn">' + App.translate('I still want to see it') + '</a></div></div>');
             $('#comein').on('click', function () {
                 sessionStorage.setItem('browserConfirm', true);
                 $('#comeinBlock').remove();

@@ -1,5 +1,15 @@
+
+
+
+
 div.jsoneditor-tree {
   min-height: 200px;
+  max-height: calc(99vh - 250px);
+}
+@media screen and ( max-height: 500px ) {
+  div.jsoneditor-tree {
+    min-height: 50px;
+  }
 }
 
 div[data-field-type="text"].nonowrap {

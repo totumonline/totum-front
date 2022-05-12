@@ -95,24 +95,29 @@
                             data.push({
                                 type: 'plus'
                                 , id: 'plus-table' + v.id.substring(4)
-                                , text: 'Таблицу'
+                                , text: App.translate('treeAddTable')
                                 , parent: v.id
                                 , li_attr: {class: "jstree-creatorView"}
                             });
                             data.push({
                                 type: 'plus'
                                 , id: 'plus-folder' + v.id.substring(4)
-                                , text: 'Папку/Ссылку'
+                                , text: App.translate('treeAddFolder')
                                 , parent: v.id
                                 , li_attr: {class: "jstree-creatorView"}
                             });
 
                             break;
                         case 'cycle_name':
+
+                            if(sessionStorage.getItem('cycles_table_anchor')){
+                                data[k]['parent']='tree'+sessionStorage.getItem('cycles_table_anchor');
+                            }
+
                             data.push({
                                 type: 'plus'
                                 , id: 'plus-calcs' + v.parent.substring(4)
-                                , text: 'Таблицу'
+                                , text: App.translate('treeAddTable')
                                 , parent: v.id
                                 , li_attr: {class: "jstree-creatorView"}
                             });
@@ -130,14 +135,14 @@
                 data.push({
                     type: 'plus'
                     , id: 'plus-table' + match[1]
-                    , text: 'Таблицу'
+                    , text: App.translate('treeAddTable')
                     , parent: '#'
                     , li_attr: {class: "jstree-creatorView"}
                 });
                 data.push({
                     type: 'plus'
                     , id: 'plus-folder' + match[1]
-                    , text: 'Папку/Ссылку'
+                    , text: App.translate('treeAddFolder')
                     , parent: '#'
                     , li_attr: {class: "jstree-creatorView"}
                 });
@@ -199,6 +204,76 @@
                 })
             }
 
+            if (!isMobile) {
+
+                let input = $('<input placeholder="' + App.translate('Tree search') + '" class="form-control">');
+                let elseSearch = $('<div id="serverSearch"></div>')
+                $leftTree.before(input);
+                $leftTree.after(elseSearch);
+                input.wrap('<div id="searchArea">');
+
+                let model;
+                const getElseSeach = (q, top) => {
+                    if (!model) {
+                        model = App.models.table('/Table/');
+                        model.addPcTable({model: model});
+                    }
+                    return new Promise((resolve) => {
+                        model.seachUserTables(q, top).then((json) => {
+                            let html = $('<div>');
+                            json.trees.forEach((br) => {
+                                let div = $('<div>').append($('<a>').attr('href', br.href || '/Table/' + br.id).text(br['title']));
+                                if (br.icon) {
+                                    div.prepend('<i class="icon fa fa-' + br.icon + '"></i>')
+                                }
+                                html.append(div);
+                            })
+
+                            json.tables.forEach((tb) => {
+                                let div = $('<div>').append($('<a>').attr('href', '/Table/' + tb.top + '/' + tb.id).text(tb['title']));
+                                if (tb.icon) {
+                                    div.prepend('<i class="icon fa fa-' + tb.icon + '"></i>')
+                                } else {
+                                    let icon = {
+                                        globcalcs: 'calculator',
+                                        calcs: 'calculator',
+                                        tmp: 'clock-o',
+                                        simple: 'table',
+                                        cycles: 'circle-o',
+                                    }[tb.type];
+                                    div.prepend('<i class="icon fa fa-' + icon + '"></i>')
+                                }
+                                html.append(div);
+                            })
+
+                            resolve(html.children())
+                        })
+                    })
+                };
+
+                let timeout;
+                input.on('keyup', () => {
+                    if (timeout) clearTimeout(timeout);
+                    timeout = setTimeout(async () => {
+                        let val = input.val().trim();
+                        $leftTree.jstree(true).show_all();
+                        $leftTree.jstree("search", val);
+                        if (val != "") {
+                            elseSearch.html(await getElseSeach(val, (window.top_branch || (window.location.pathname.match(/\/Table\/(\d+)/) || {1: 0})[1])))
+                        } else {
+                            elseSearch.html('');
+                        }
+                        niceScrollResize();
+                    }, 50)
+                })
+
+                $leftTree.on('search.jstree', function (nodes, str, res) {
+                    if (str.nodes.length === 0) {
+                        $leftTree.jstree(true).hide_all();
+                    }
+                })
+            }
+
             let $scrollTreeBlock = $('#LeftTree');
             let treeScrollPath = () => {
                 return 'tree_scroll_part_' + (window.top_branch || (window.location.pathname.match(/\/Table\/(\d+)/) || {1: 0})[1]);
@@ -220,7 +295,7 @@
                     "types": {
                         "folder": {},
                         "plus": {"icon": "fa fa-plus"},
-                        "cycle_name": {"icon": "fa fa-dot-circle-o"},
+                        "cycle_name": {"icon": "fa fa-dot-circle-o", "select_node":false},
                         "text": {"icon": "jstree-file"},
                         "table": {"icon": "jstree-file"},
                         "table_simple": App.tableTypes.simple,
@@ -231,7 +306,36 @@
                         "table_cycles": App.tableTypes.cycles,
                         "table_data": {"icon": "jstree-file"},
                     },
-                    "plugins": ["types", "themes"]
+                    "plugins": ["types", "themes", "search"],
+                    "search": {
+                        "case_sensitive": false,
+                        "show_only_matches": true,
+                        "search_callback": function (str, node) {
+
+                            if (node.original.type === 'folder') return false;
+
+                            //search for all of the words entered
+                            var word, words = [];
+                            var searchFor = str.toLowerCase().replace(/^\s+/g, '').replace(/\s+$/g, '');
+                            if (searchFor.indexOf(' ') >= 0) {
+                                words = searchFor.split(' ');
+                            } else {
+                                words = [searchFor];
+                            }
+                            const checkForStr = (str) => {
+                                for (var i = 0; i < words.length; i++) {
+                                    word = words[i];
+                                    if ((str).toString().toLowerCase().indexOf(word) === -1) {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            };
+                            return checkForStr(node.text || "") || isCreatorView && checkForStr(node.original.name || "")
+
+                        }
+
+                    }
                 });
                 niceScrollResize();
             };
@@ -283,6 +387,12 @@
                         break;
                     case 'link':
                         window.location.href = d.node.a_attr.href;
+                        break;
+                    case 'tab_button':
+                        App.clickToCyclesTabButton(d.node.id)
+                        break;
+                    case 'cycle_name':
+                       return false;
                         break;
                     case 'folder':
                     case 'project':
@@ -343,12 +453,14 @@
                     $('body>.page_content').addClass('tree-minifyed');
                     $('#LeftTree').getNiceScroll().resize();
                     if (isTreeOnPageSide) {
+                        $mainPage.append($('#branch-title, #searchArea, #serverSearch'));
                         $mainPage.append($leftTree);
                         $leftTree.trigger('after_open')
                     }
                 } else {
                     $('body>.page_content').removeClass('tree-minifyed');
                     if (isTreeOnPageSide) {
+                        $('.TreeContainer').append($('#branch-title, #searchArea, #serverSearch'));
                         $('.TreeContainer').append($leftTree);
                         $leftTree.trigger('after_open');
                     }

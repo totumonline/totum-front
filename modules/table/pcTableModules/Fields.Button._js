@@ -1,5 +1,6 @@
 fieldTypes.button = {
     icon: 'fa-hand-pointer-o',
+    required: false,
     getPanelText: function (fieldValue, td, item) {
         let $btn = this.getCellText(fieldValue, td, item);
         $btn.on('click', () => {
@@ -11,16 +12,22 @@ fieldTypes.button = {
         $btn.wrap('<div>');
         return $btn.parent();
     },
+    isCyclesTabButton() {
+        let pcTable = this.pcTable, field = this;
+        return pcTable.tableRow.type === 'cycles' && field.category === 'column' && field.name.match(/^tab_/)
+    },
     getCellText: function (fieldValue, td, item) {
         let field = this, format = {};
         if (this.category === 'column') {
             if (item.id) {
                 format = $.extend({}, (field.pcTable.f || {}), (item.f || {}), (item[field.name].f || {}));
-            } else {
+            } else if (!this.buttonActiveOnInsert) {
                 format.block = true;
                 if (item[field.name] && item[field.name].f && item[field.name].f.icon) {
                     format.icon = item[field.name].f.icon;
                 }
+            } else {
+                format = $.extend({}, (item[field.name].f || {}));
             }
         } else {
             format = $.extend({}, (field.pcTable.f || {}), (item[field.name].f || {}));
@@ -44,7 +51,7 @@ fieldTypes.button = {
                 if (style.td) {
                     td.css(style.td);
                 }
-            } else if (td.is('.button-wrapper')) {
+            } else if (td && td.is('.button-wrapper')) {
                 let css = {};
                 if (format.background) {
                     css.backgroundColor = format.background;
@@ -59,7 +66,8 @@ fieldTypes.button = {
                     width = this.width > $('#table').width() - 30 ? $('#table').width() - 30 : this.width;
                     td.width(width);
                     btn.width(width);
-                } else {
+                }
+                else if(!td.is('.no-width')) {
                     this.pcTable.rowButtonsCalcWidth();
                     width = this.width > this.pcTable.__$rowsButtons.width() - 10 ? this.pcTable.__$rowsButtons.width() - 10 : this.width;
                     td.width(width);
@@ -88,14 +96,21 @@ fieldTypes.button = {
 
 
         if (format.block || (!this.pcTable.control.editing && !this.pressableOnOnlyRead)) {
+
             let btn = $('<button class="btn btn-default btn-xxs button-field" tabindex="-1" disabled>').text(this.buttonText || '');
+
+            if(td && td.is('.button-wrapper')){
+                btn.removeClass('btn-xxs button-field')
+                btn.addClass('btn-sm')
+            }
+
             NoBorderColorizer(btn);
             if (format.text) {
                 btn.text(format.text)
             }
 
 
-            if (format.comment) {
+            if (format.comment && !td.is('.cell')) {
                 let i;
                 i = $('<i class="cell-icon fa fa-info"></i>');
                 btn.prepend(i);
@@ -117,7 +132,7 @@ fieldTypes.button = {
         if (format.text) {
             btn.text(format.text)
         }
-        if (format.comment) {
+        if (format.comment && !td.is('.cell')) {
             let i;
             i = $('<i class="cell-icon fa fa-info"></i>');
             btn.prepend(i);
@@ -134,10 +149,44 @@ fieldTypes.button = {
 
         return btn;
     },
+    getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
+        var $input = this.getCellText(undefined, undefined, item);
+        if (typeof tabindex !== 'undefined') $input.attr('tabindex', tabindex);
+
+        let clicked = false;
+        const clickFunc = (event) => {
+            if (clicked) return;
+            clicked = true;
+            let html = $input.html();
+            $input.html('<i class="fa fa-spinner"></i>');
+            this.pcTable.model.doAfterProcesses(() => {
+                this.pcTable.model.click({
+                    item: this.pcTable._insertRowHash,
+                    fieldName: this.name
+                }).then(() => {
+                    $input.html(html);
+                    clicked = false;
+                    enterClbk($input, event, true)
+                })
+            })
+        };
+        $input.on('click', clickFunc).removeClass('btn-xxs').addClass('btn-sm text-edit-button').on('keydown', (event) => {
+            switch (event.key) {
+                case 'Tab':
+                    enterClbk($input, event);
+                    break;
+                case 'Enter':
+                    enterClbk($input, clickFunc);
+                    break;
+            }
+        })
+
+        return $input;
+    },
     btnOK: function ($td, item) {
         let btn = $td.find('button.button-field');
         let field = this;
-        btn.text('Выполнено');
+        btn.text(App.translate('Done'));
         $td.data('clicked', true);
 
         setTimeout(function () {

@@ -23,7 +23,7 @@
         "editRoles": {"isOn": false, "Val": ["1"]},
         "hidden": {"isOn": true, "Val": false},
         "warningEditPanel": {"isOn": true, "Val": false},
-        "warningEditText": {"isOn": false, "Val": "Точно изменить?"},
+        "warningEditText": {"isOn": false, "Val": App.translate('Surely to change?')},
         "warningEditRegExp": {"isOn": false, "Val": "/^someValue$/"},
         "url": {"isOn": true, "Val": false},
         "openIn": {"isOn": false, "Val": "iframe"},
@@ -89,6 +89,9 @@
 
 
     let fieldTypes = {};
+    setTimeout(() => {
+        App.FieldTypes = fieldTypes;
+    })
 
 //=include pcTableModules/Fields.Default._js
 //=include pcTableModules/Fields.Text._js
@@ -199,25 +202,6 @@
         }
 
         if (this.isCreatorView) {
-            if ($('#isCreator').length === 0) {
-                let checkbox = $('<span id="isCreator" class="btn btn-sm"><i class="fa-user-circle fa"></i></span>');
-                let input = checkbox;
-                if (!this.isMobile && !localStorage.getItem('notCreator')) {
-                    input.addClass('btn-danger');
-                } else {
-                    input.addClass('btn-warning');
-                    $('.plus-top-branch').hide();
-                }
-                input.on('click', () => {
-                    if (!localStorage.getItem('notCreator')) {
-                        localStorage.setItem('notCreator', true)
-                    } else {
-                        localStorage.removeItem('notCreator')
-                    }
-                    window.location.reload(true);
-                })
-                $('#docs-link').before(checkbox)
-            }
             if (this.isMobile || localStorage.getItem('notCreator')) {
                 this.isCreatorView = false;
             }
@@ -238,8 +222,13 @@
             this.beforeSpaceHide = false;
         }
 
+        this.model.addPcTable(this);
 
         if (element) {
+            if (config.links && config.links.length > 0) this.model.showLinks(config);
+            if (config.interfaceDatas && config.interfaceDatas.length > 0) this.model.shoInterfaceDatas(config);
+            this.model.showPanels(config);
+
             this.refreshArraysFieldCategories(true);
             let $element = $(element);
             $element.data(pcTable_DATA_KEY, this);
@@ -254,11 +243,12 @@
             }
             this._init();
             this.render(config.addVars);
+            this.applyHideRows(this.f.hideRows, this.f.showRows)
         } else {
             this.initForPanel(config)
         }
 
-        this.model.addPcTable(this);
+
         //if (this.tableRow.type === 'tmp') {}
         return this;
     };
@@ -393,9 +383,34 @@
                 this.model.setLoadedTableData(this.data);
             },
             closeCallbacks: [],
+            closeCallbackAdd: function (func, name, timeout) {
+                const add = () => {
+                    this.closeCallbacks.push({
+                        type: name,
+                        func: func
+                    })
+                }
+                if (timeout) {
+                    setTimeout(() => {
+                        add()
+                    }, timeout)
+                } else {
+                    add();
+                }
+            },
+            closeCallbackRemove: function (name) {
+                this.closeCallbacks.forEach((o, i) => {
+                    if (o.type === name) {
+                        this.closeCallbacks.splice(i, 1)
+                    }
+                })
+            },
+            isObjectOpened: function () {
+                return this.domObject.is(':visible');
+            },
             _init: function () {
                 let pcTable = this;
-
+                this._setBrowserTitle();
                 $(document).on({
                     dragover: function () {
                         return false;
@@ -405,25 +420,36 @@
                     }
                 });
 
-                this._container.addClass(this.contanerClass).addClass('pcTable-type-' + this.tableRow.type);
-
+                this.domObject = this._container.addClass(this.contanerClass).addClass('pcTable-type-' + this.tableRow.type);
+                if (!$('#totumTableStyle').length) {
+                    $('head').append($('<style id="totumTableStyle">').text(App.lang.css.table))
+                }
+                if (this.isCreatorView) {
+                    this._container.addClass('pcTable-creatorView')
+                }
 
                 let navTopLine = $('#nav-top-line');
-                navTopLine.addClass('pcTable-type-' + this.tableRow.type);
-                if (this.tableRow.type === 'tmp') {
-                    navTopLine.text('Будьте внимательны - это временная таблица');
+
+                if (this.tableRow.type === 'tmp' && this.isCreatorView) {
+                    navTopLine.text(App.translate('Attention, please - this is a temporary table'));
+                    navTopLine.addClass('pcTable-type-' + this.tableRow.type);
                 }
 
                 this._innerContainer = $('<div class="innerContainer">');
+                this.__formatFunctions.interlace.call(this, true);
 
 
                 let closeCallbacksActive = false;
-                const closeCallbacksFunc = function () {
+                const closeCallbacksFunc = function (event) {
                     if (!closeCallbacksActive) {
                         closeCallbacksActive = true;
                         let cnt = pcTable.closeCallbacks.length;
                         pcTable.closeCallbacks.forEach(function (func) {
-                            func();
+                            if (typeof func === 'function') {
+                                func(event);
+                            } else {
+                                func.func(event);
+                            }
                         });
                         pcTable.closeCallbacks.splice(0, cnt);
                         closeCallbacksActive = false;
@@ -433,25 +459,52 @@
                 $('body').on('keyup', function (event) {
                     if (event.which === 27) {
                         pcTable._container.trigger('escPressed');
-                        closeCallbacksFunc();
+                        closeCallbacksFunc(event);
                     }
                 });
-                $('body').on('click', closeCallbacksFunc);
+                $('body').on('click _click', closeCallbacksFunc);
+
+
                 pcTable._container.on('scroll', closeCallbacksFunc);
                 pcTable._innerContainer.on('scroll', closeCallbacksFunc);
 
-                if (this.isCreatorView) {
-                    this._container.on('click contextmenu', '.creator-icons:not([aria-describedby])', function (event) {
-                        let self = $(this);
-                        pcTable.creatorIconsPopover(self)
-                    })
-                    this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
-                        let self = $(this);
-                        let icons = self.closest('th').find('.creator-icons');
-                        if (!icons.is('[aria-describedby]')) {
-                            pcTable.creatorIconsPopover(icons);
-                        }
-                    })
+                /*top th panel*/
+                if (this.viewType !== 'panels') {
+                    if (this.isCreatorView) {
+
+                        this._container.on('click contextmenu', 'th', function (event) {
+
+                            if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
+                            else {
+                                let th = $(this);
+                                if (!th.attr('aria-describedby')) {
+                                    setTimeout(() => {
+                                        pcTable.creatorIconsPopover(th)
+                                    })
+                                }
+                            }
+                        })
+                        /*this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
+                            let self = $(this);
+                            let icons = self.closest('th').find('.creator-icons');
+                            if (!icons.is('[aria-describedby]')) {
+                                pcTable.creatorIconsPopover(icons);
+                            }
+                            return false;
+                        })*/
+                    } else {
+                        this._container.on('click contextmenu', 'th', function (event) {
+                            if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
+                            else {
+                                let th = $(this);
+                                if (!th.attr('aria-describedby')) {
+                                    setTimeout(() => {
+                                        pcTable.workerIconsPopover(th)
+                                    })
+                                }
+                            }
+                        })
+                    }
                 }
                 pcTable._container.on('contextmenu', function (event) {
                     let self = $(event.target);
@@ -469,27 +522,61 @@
                 this.initRowsData()
 
 
+                let windowSize = window.innerWidth;
+                let windowSizeHeight = window.innerHeight;
+
                 if (!this.isMobile) {
                     let timeoutResize;
                     $(window).resize(function () {
                         if (timeoutResize) clearTimeout(timeoutResize);
                         timeoutResize = setTimeout(function () {
-                            pcTable.setWidthes();
+                            if (Math.abs(windowSize - window.innerWidth) > 20 || Math.abs(windowSizeHeight - window.innerHeight) > 20) {
+                                pcTable.setWidthes();
+                            }
+                            windowSize = window.innerWidth;
+                            windowSizeHeight = window.innerHeight;
                         }, 500);
                     });
+                } else {
+                    $(window).on('resize', function () {
+                        if (windowSize === false) return;
+
+                        if (Math.abs(windowSize - window.innerWidth) > 20) {
+                            windowSize = false;
+                            let button = $('<button class="btn btn-lg">').text(App.translate('Reload')).on('click', () => {
+                                App.windowReloadWithHash(pcTable.model);
+                            }).wrap('<div id="ttm--mobile-resize-reload">')
+                            let wrapper = button.parent();
+
+                            let top = $('<div class="top">');
+                            top.text($('.totum-brand span').text());
+                            wrapper.append(top)
+
+                            $('body').html(wrapper)
+                        } else {
+                            windowSize = window.innerWidth;
+                        }
+                    });
                 }
+
             },
             saveFilterAndPage: function () {
                 if (this.tableRow.type === 'cycles') {
-                    if (this.filtersString || this.PageData)
+                    if (this.filtersString || this.PageData) {
                         sessionStorage.setItem('cycles_filter', JSON.stringify({
                             id: this.tableRow.id,
                             filter: this.filtersString,
                             offset: this.PageData ? this.PageData.offset : null,
                             onPage: this.PageData ? this.PageData.onPage : null
                         }))
-                    else
-                        sessionStorage.removeItem('cycles_filter')
+                        let match;
+                        if (match = window.location.pathname.match(/^\/Table\/(\d+)\/$/)) {
+                            sessionStorage.setItem('cycles_table_anchor', match[1]);
+                        }
+                    } else {
+                        sessionStorage.removeItem('cycles_filter');
+                        sessionStorage.removeItem('cycles_table_anchor')
+                    }
                 }
             },
             refreshArraysFieldCategories: function () {
@@ -499,7 +586,8 @@
                 pcTable.hidden_fields = pcTable.hidden_fields || {};
 
                 $.each(pcTable.hidden_fields, function (k, field) {
-                    pcTable.hidden_fields[k] = $.extend({}, field, fieldTypes[field.type], field);
+                    pcTable.hidden_fields[k] = $.extend({}, defaultField, fieldTypes[field.type], field);
+                    pcTable.hidden_fields[k].pcTable = pcTable;
                     pcTable.hidden_fields[k].isHiddenField = true;
                 });
 
@@ -527,12 +615,15 @@
                 const initField = function (name, field) {
                     field.pcTable = pcTable;
 
-                    if (withoutCategories.indexOf(field.category) !== -1) return;
 
                     if (fieldTypes[field.type]) {
                         field = $.extend({}, defaultField, fieldTypes[field.type], field);
                     } else {
                         field = $.extend({}, defaultField, field);
+                    }
+
+                    if (field.type == 'button' && field.buttonActiveOnInsert) {
+                        field.insertable = true;
                     }
 
                     if (field.showInWebOtherOrd) {
@@ -549,14 +640,18 @@
 
                     pcTable.fields[name] = field;
 
+                    if (withoutCategories.indexOf(field.category) !== -1) return;
+
                     if (field.showInWeb) {
                         if (field.category === 'column') {
                             if (field.name !== 'n') {
                                 pcTable.fieldCategories['panel_fields'].push(field);
                             }
-                            if ((field.name === 'tree' && field.category === 'column' && field.treeViewType)) {
+                            if ((field.name === 'tree' && field.category === 'column' && field.treeViewType && !$.cookie('ttm__commonTableView'))) {
                                 pcTable.isTreeView = true;
                                 pcTable.fieldCategories[field.category].unshift(field);
+                            } else if (!pcTable.isCreatorView && field.isCyclesTabButton()) {
+                                return;
                             } else {
                                 pcTable.fieldCategories[field.category].push(field);
                             }
@@ -564,6 +659,7 @@
                             pcTable.fieldCategories[field.category].push(field);
                         }
                     } else if (field.name) {
+
                         pcTable.hidden_fields[field.name] = field;
                     }
                 };
@@ -576,7 +672,7 @@
 
 
                 if (reorderedFields) {
-                    ['param', 'column', 'filter', 'footer'].forEach(function (category) {
+                    ['param', 'column', 'filter', 'footer', 'panel_fields'].forEach(function (category) {
                         pcTable.fieldCategories[category].sort(function (field_a, field_b) {
                             return field_a.ord - field_b.ord;
                         })
@@ -594,19 +690,58 @@
                 }
 
             },
-            creatorIconsPopover: async function (icons) {
-                if (icons.closest('.popover').length === 0) {
+            workerIconsPopover: async function (th, title) {
+                title = title || this.fields[th.data('field')].title;
+                if (!th.attr('aria-describedby') && title) {
                     let div = $('<div style="width:200px" class="creator-icons">');
+                    let unitType = this.fields[th.data('field')].unitType ? ', ' + this.fields[th.data('field')].unitType : '';
+                    div.append($('<div class="full-title">').text((title || this.fields[th.data('field')].title) + unitType));
 
+                    let placement = 'top';
 
-                    icons.find('i').each(function (i, icon) {
+                    if (th.get(0).getBoundingClientRect().top < 100) {
+                        placement = 'bottom'
+                    }
+
+                    App.popNotify({
+                        isParams: true,
+                        $text: div,
+                        element: th,
+                        trigger: 'manual',
+                        placement: placement,
+                        container: $('body')
+                    });
+
+                    this.closeCallbacks.push(function () {
+                        if (th && th.length) th.popover('destroy');
+                    })
+                }
+            },
+            creatorIconsPopover: async function (th) {
+                if (!th.attr('aria-describedby')) {
+                    let div = $('<div style="width:200px" class="creator-icons">');
+                    let unitType = this.fields[th.data('field')].unitType ? ', ' + this.fields[th.data('field')].unitType : '';
+                    div.append($('<div class="full-title">').text(this.fields[th.data('field')].title + unitType));
+
+                    th.find('i:not(.fa-caret-down):not(.fa-info)').each((i, icon) => {
                         if (['fa-star', 'fa-star-o', 'fa-cogs'].some((c) => {
                             return $(icon).hasClass(c)
                         })) return;
                         let el = $('<div>').append(icon.outerHTML);
 
                         if (i === 0) {
-                            el.append(' ' + icons.closest('th').find('.field_name').text());
+                            el.append(' ').append($('<span class="name"></span>').text(th.data('field')));
+                            let btnCopy = $('<button class="btn btn-sm btn-default copy-me" title="' + App.translate('Copy') + ' "><i class="fa fa-copy"></i></button>');
+                            btnCopy.on('click', function () {
+                                App.copyMe(th.data('field'));
+                                let button = $(this);
+                                button.width(button.width());
+                                button.html('<i class="fa fa-cog"></i>');
+                                setTimeout(function () {
+                                    button.html('<i class="fa fa-copy"></i>');
+                                }, 1000);
+                                return false;
+                            }).appendTo(el);
                         }
 
                         if (icon.title) el.append(' ' + icon.title);
@@ -614,7 +749,7 @@
                     });
 
                     let buttons = [];
-                    let field = this.fields[icons.closest('th').data('field')];
+                    let field = this.fields[th.closest('th').data('field')];
                     let settingsData;
                     const getSettings = async function () {
                         return new Promise((resolve, reject) => {
@@ -625,7 +760,12 @@
                     }
 
 
-                    let codes = {"code": "Код", "codeAction": "Действ", "codeSelect": "Селект", "format": "Формат"};
+                    let codes = {
+                        "code": App.translate('Code'),
+                        "codeAction": App.translate('ActionShort'),
+                        "codeSelect": App.translate('SelectShort'),
+                        "format": App.translate('FormatShort')
+                    };
                     let codesKeys = Object.keys(codes);
                     for (let i = 0; i < codesKeys.length; i++) {
                         let name = codesKeys[i];
@@ -680,7 +820,7 @@
                                         App.blink(field.$th.find('.creator-icons i'), 3, "green", 'color');
                                     }, 100)
                                 } else {
-                                    App.blink(icons.find('i'), 3, "green", 'color')
+                                    App.blink(th.find('i'), 3, "green", 'color')
                                 }
 
                             }, () => {
@@ -689,19 +829,60 @@
                     }
 
 
+                    let placement = 'top';
+
+                    if (th.get(0).getBoundingClientRect().top < 100) {
+                        placement = 'bottom'
+                    }
+
                     App.popNotify({
                         isParams: true,
                         $text: div,
-                        element: icons,
+                        element: th,
                         trigger: 'manual',
-                        placement: 'top'
+                        placement: placement,
+                        container: $('body')
                     });
-                    setTimeout(() => {
-                        this.closeCallbacks.push(function () {
-                            if (icons && icons.length) icons.popover('destroy');
-                        })
-                    }, 200);
+                    this.closeCallbacks.push(function () {
+                        if (th && th.length) th.popover('destroy');
+                    })
                 }
+            },
+            editTableCode: function (fieldName, codeType) {
+                return new Promise((resolve, reject) => {
+                    let pcTable = this;
+                    App.getPcTableById(1).then(function (pcTableTable) {
+                        pcTableTable.model.checkEditRow({id: pcTable.tableRow.id}).then(function (json) {
+
+                            let title = '<span style="">' + pcTableTable.fields[fieldName].title + '</span>';
+
+
+                            App.totumCodeEdit(
+                                json.row[fieldName].v, title, {
+                                    cycle_id: pcTable.tableRow.cycle_id,
+                                    table: pcTable.tableRow.name,
+                                    codeType: codeType
+                                },
+                                [],
+                                false
+                            )
+                                .then((data) => {
+                                    pcTableTable.model.save({[pcTable.tableRow.id]: {[fieldName]: data.code}}).then(() => {
+                                        pcTable.tableRow[fieldName] = data.code;
+                                        if (codeType === 'format') {
+                                            pcTable.model.refresh();
+                                        }
+                                        resolve();
+                                    }).fail(reject);
+                                }, function (e) {
+                                    reject()
+                                })
+
+
+                        });
+                    })
+                })
+
             },
             editFieldCode: function (fieldName, codeType, settings) {
                 return new Promise((resolve, reject) => {
@@ -738,16 +919,16 @@
                             }
 
 
-                            let title = '<span style="text-transform:uppercase">' + settings.fieldSettings[codeType].title + '</span>'
-                                + ' | ' + field.title
-                                + ' | ' + field.name
-                                + ' | ' + field.type
-                                + ' | ' + (field.category === 'param' ? 'header' : field.category)
-                                + ' | sort: ' + field.ord;
+                            let title = '<span style="">' + settings.fieldSettings[codeType].title + '</span>'
+                                + ' ' + field.name;
 
 
                             App.totumCodeEdit(
-                                json.row.data_src.v[codeType].Val, title, field.pcTable.tableRow.name,
+                                json.row.data_src.v[codeType].Val, title, {
+                                    cycle_id: field.pcTable.tableRow.cycle_id,
+                                    table: field.pcTable.tableRow.name,
+                                    codeType: codeType
+                                },
                                 checkboxes,
                                 (codeType !== 'codeSelect' && json.row.data_src.v[codeType] && json.row.data_src.v[codeType].isOn)
                             )
@@ -793,7 +974,7 @@
                                                 pcTable.model.refresh();
                                             } else if (codeType === 'codeSelect') {
 
-                                                window.location.reload()
+                                                App.windowReloadWithHash(pcTable.model);
 
                                             } else {
 
@@ -808,7 +989,6 @@
                                         }).fail(reject);
                                     }).fail(reject);
                                 }, function (e) {
-                                    console.log(e);
                                     reject()
                                 })
 
@@ -828,7 +1008,7 @@
 
                     if (this.viewType === 'panels' && !this.isMobile)
                         this._renderTablePanelView();
-                    else if (!this.isTreeView && this.tableRow.rotated_view) {
+                    else if (!this.isTreeView && (this.tableRow.rotated_view && !$.cookie('ttm__commonTableView'))) {
                         this._renderRotatedView();
                     }
 
@@ -840,7 +1020,6 @@
                     }
                     this._addSelectable();
                     this._addEditable();
-                    this._addSave();
 
                     this.row_actions_add();
 
@@ -870,18 +1049,6 @@
                 }
 
             ,
-            _addSave: function () {
-                $('body').on('keyup', function (event) {
-                    if (event.ctrlKey || event.metaKey) {
-                        if (String.fromCharCode(event.which).toLowerCase() === 's' && $('#bigOneCodemirror').length === 0) {
-                            $('body').trigger('ctrlS')
-                        }
-                    }
-                });
-
-            }
-            ,
-
             reloaded: function () {
 
                 let notify = $('#refresh-notify');
@@ -889,64 +1056,148 @@
                     notify.closest('.alert').remove();
                     this.checkTableIsChanged(parseInt(this.checkIsUpdated) * 2000);
                 }
+
+                if (this._insertRow) {
+                    this._createInsertRow(this._insertRow)
+                }
             }
             ,
-            checkTableIsChanged: function (timeout) {
-                let pcTable = this;
+            showRefreshButton(tableUpdated) {
+                if (!this.checkTableIsChangedObject)
+                    return;
+                this.checkTableIsChangedObject.abort();
+                if (this.checkTableIsChangedObject.changed) return;
+                this.checkTableIsChangedObject.changed = true;
 
-                if (document.hidden) {
-                    setTimeout(function () {
-                        pcTable.checkTableIsChanged.call(pcTable, timeout);
-                    }, 1000);
-                } else {
-                    pcTable.model.checkTableIsChanged.call(pcTable.model).then(function (json) {
-                        if (json.no || pcTable.model.tableData.updated.code === json.code) {
-                            pcTable.checkTableIsChanged.call(pcTable, timeout);
+                let nft = $.notify({
+                    message: '<div id="refresh-notify"><span>' + App.translate('The table was changed by the user <b>%s</b> at <b>%s</b>', [tableUpdated.username, App.dateFormats.covert(tableUpdated.dt, 'YY-MM-DD HH:mm', App.lang.timeDateFormatNoYear)]) + '</span> <button class="btn btn-warning btn-sm" style="margin-right: 20px;">' +
+                        App.translate("Refresh") + '</button></div>'
+                }, {
+                    type: 'warning',
+                    allow_dismiss: false,
+                    delay: 0
+                });
+                nft.$ele.find('#refresh-notify button').on('click', () => {
+                    delete this.checkTableIsChangedObject.changed;
+                    let pagination = undefined;
+                    if (this.PageData) {
+                        if (this.PageData.offset === 0) {
+                            pagination = 'page';
+                        } else if (this.PageData.offset >= Math.ceil(this.PageData.allCount / this.PageData.onPage) * this.PageData.onPage) {
+                            if (Object.keys(this.data).length === this.PageData.onPage)
+                                pagination = -1;
+                            else
+                                pagination = 'page';
+                        }
 
-                        } else {
-                            let checkIsNotAlreadyChanged = function () {
-                                if (pcTable.model.tableData.updated.code === json.code) {
-                                    pcTable.checkTableIsChanged.call(pcTable, timeout);
-                                } else {
+                    }
 
-                                    $.notify({
-                                        message: '<div id="refresh-notify"><span>Таблица была изменена пользователем <b>' +
-                                            json.username + '</b> в <b>' + App.dateFormats.covert(json.dt, 'YY-MM-DD HH:mm', 'HH:mm DD.MM')
-                                            + '</b> </span><button class="btn btn-warning btn-sm" style="margin-right: 20px;">' +
-                                            'Обновить</button></div>'
-                                    }, {
-                                        type: 'warning',
-                                        allow_dismiss: false,
-                                        delay: 0
-                                    });
+                    let func;
+                    if (pagination) {
+                        func = (json) => {
+                            this.applyPage(json.chdata, json.allCount, pagination === -1 ? (json.allCount - this.PageData.onPage) : undefined)
+                            delete json.chdata.rows;
+                            this.table_modify(json);
+                            this.reloaded();
+                        }
+                    } else {
+                        func = (json) => {
+                            /*this.PageData = {
+                                 ...this.PageData, ...{
+                                     offset: json.chdata.offset
+                                     , allCount: json.allCount
+                                     , loading: false
+                                 }
+                             }
+                             this.PageData.$block.empty().append(this._paginationCreateBlock());*/
 
-                                    $('#refresh-notify button').on('click', function () {
-                                        pcTable.model.refresh()
-                                    });
-                                }
-                            };
-                            pcTable.model.doAfterProcesses(
-                                function () {
-                                    setTimeout(checkIsNotAlreadyChanged, 200)
-                                }
-                            )
+                            this.table_modify(json);
+                            this.reloaded();
+                        }
+                    }
 
+                    this.model.refresh(func, undefined, pagination, pagination ? true : false);
+                });
+            }
+            ,
+            checkTableIsChanged: function () {
+                if (!this.checkTableIsChangedObject) {
+                    this.checkTableIsChangedObject = {
+                        abort: () => {
+                            if (this.checkTableIsChangedObject.jqXHR && this.checkTableIsChangedObject.jqXHR.abort)
+                                this.checkTableIsChangedObject.jqXHR.abort();
+                            this.checkTableIsChangedObject.aborted = true;
+
+                        }
+
+                    };
+                    document.addEventListener("visibilitychange", () => {
+                        if (this.checkTableIsChangedObject.changed) return;
+
+                        switch (document.visibilityState) {
+                            case 'hidden':
+                                this.checkTableIsChangedObject.abort();
+                                break;
+                            case 'visible':
+                                this.checkTableIsChanged();
+                                break;
                         }
                     });
                 }
 
-            }
-            ,
-            _getTableMainFieldName: function (fields, mainFieldId) {
-                let fieldName;
-                Object.keys(fields).some(function (f) {
-                    let field = fields[f];
-                    if (field.id == mainFieldId) {
-                        fieldName = field.name;
-                        return true;
+                this.checkTableIsChangedObject.abort();
+                delete this.checkTableIsChangedObject.aborted;
+
+                this.model.checkTableIsChanged(this.checkTableIsChangedObject).then((json) => {
+                    if (json.no || this.model.tableData.updated.code === json.code) {
+                        this.checkTableIsChanged();
+                    } else {
+                        let checkIsNotAlreadyChanged = () => {
+                            if (this.model.tableData.updated.code === json.code) {
+                                this.checkTableIsChanged();
+                            } else {
+                                this.showRefreshButton(json);
+                            }
+                        };
+                        this.model.doAfterProcesses(
+                            function () {
+                                setTimeout(checkIsNotAlreadyChanged, 200)
+                            }
+                        )
+
                     }
                 });
-                return fieldName;
+            }
+            ,
+            _getRowTitleByMainField: function (item, format) {
+                let itemTitle = '';
+                if (item.id) {
+                    let mainField = this.mainFieldName;
+                    if (item[mainField]) {
+                        if (item[mainField].v_ !== undefined) {
+                            if (typeof item[mainField].v_ === 'array') {
+                                item[mainField].v_.forEach(function (v_, i) {
+                                    let d = $('<span>').text(this.fields[mainField].getElementString((item[mainField].v ? item[mainField].v[i] : null), v_));
+                                    if (v_[1]) {
+                                        d.addClass('deleted_value')
+                                    }
+                                    itemTitle = d.html();
+                                })
+                            } else {
+                                itemTitle = $('<div>').text(this.fields[mainField].getElementString(item[mainField].v, item[mainField].v_)).html();
+                            }
+                        } else if (item[mainField].v !== undefined) {
+                            itemTitle = $('<div>').text(item[mainField].v).html();
+                        }
+                    } else {
+                        itemTitle = 'id: ' + item.id;
+                    }
+                }
+
+                if (format && itemTitle) {
+                    itemTitle = format.replace('%s', itemTitle);
+                }
+                return itemTitle;
             }
             ,
             _getFieldbyName: function (fieldName) {
@@ -1028,7 +1279,7 @@
                         }
                     })
 
-                    if (ind !== -1) {
+                    if (ind !== undefined) {
                         this[array].splice(ind, 1);
                     }
                 }, this);

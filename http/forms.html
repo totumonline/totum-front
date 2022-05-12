@@ -20,8 +20,10 @@
             div.innerHTML = '<div>Не загрузилось :(</div>';
         };
         newScript.onload = (event) => {
-            address = src.match(/^(.*?\/)[^\/]*$/)[1] + address;
-            address = 'http://localhost:8080/Forms/' + path;
+            //address = src.match(/^(.*?\/)[^\/]*$/)[1] + address;
+           // address = 'http://localhost:8080/Forms/' + path;
+
+            address = 'https://calc-totum.totum.online/Forms/elements'
 
             ttmForm(div, address, true, post, get, input);
         };

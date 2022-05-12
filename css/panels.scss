@@ -1,5 +1,6 @@
 .totum-math-operations {
   margin-bottom: 20px;
+
   th {
     height: 32px;
     width: 150px;
@@ -8,7 +9,8 @@
   th:last-child {
     width: 200px;
   }
-  td{
+
+  td {
     padding-top: 5px;
   }
 
@@ -25,6 +27,22 @@
 }
 
 .edit-row-panel {
+  .format-text, .format-comment {
+    padding: 5px;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+
+  .format-text + .format-comment {
+    margin-top: 0px;
+  }
+
+  .format-comment {
+    i {
+      padding-right: 5px;
+    }
+  }
+
   .cell-wrapper::not([data-name="data_src"]) {
     input[type=checkbox] {
       margin-top: 0;
@@ -103,7 +121,11 @@
     }
 
     span.date {
-      padding-right: 20px;
+      float: right;
+      clear: right;
+    }
+    div.edited {
+      float: right;
     }
 
     span.user {
@@ -116,10 +138,10 @@
     }
 
     .new-comment {
-      border: 1px solid #E2CBCC;
+      background-color: seashell;
       padding: 5px;
       border-radius: 5px;
-      margin: 10px;
+      margin: 10px 0;
       margin-left: 0;
     }
   }
@@ -134,6 +156,24 @@
 }
 
 .fieldparams-edit-panel {
+  #fieldParamsLocker {
+    z-index: 1000;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #aaaaaa;
+    opacity: 0.3;
+    font-size: 100px;
+    text-align: center;
+    padding-top: 50px;
+    color: #fff;
+    .unlock-click{
+      font-size: 35px
+    }
+  }
+
   .field {
     .bootstrap-select button, input {
       border: 1px solid transparent !important;
@@ -143,12 +183,16 @@
 
   .fParams-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr);
     grid-gap: 20px;
   }
 
   .form-control {
     font-size: 14px !important;
+  }
+
+  label span {
+    font-size: 15px;
   }
 }
 
@@ -234,4 +278,14 @@
 
 button[data-prop-disabled="true"] {
   opacity: 0.5;
+}
+
+.print-choosing{
+  .button-wrapper{
+    padding-top: 5px;
+    .cell-value, button{
+      font-size: 14px;
+      width: 100%;
+    }
+  }
 }

@@ -2,8 +2,6 @@
     const show_img = function (img, file) {
         img.attr('data-fileviewpreview', JSON.stringify({'name': file.name, file: file.file}))
     }
-
-
     fieldTypes.file = {
         icon: 'fa-file-image-o',
         getSize: function (size) {
@@ -19,14 +17,12 @@
             const file_images = function (file) {
                 let img;
                 if (['png', 'jpg'].indexOf(file.ext) !== -1) {
-                    img = $('<img src="/fls/' + file.file + '_thumb.jpg" style="z-index: 200; max-height: 24px; padding-right: 4px;" class="file-image-preview" data-filename="' + file.file + '"/>');
+                    img = $('<img src="/fls/' + file.file + '_thumb.jpg" style="z-index: 200; max-height: 24px; margin-right: 4px;" class="file-image-preview" data-filename="' + file.file + '"/>');
                     show_img(img, file);
-                }
-                else if(file.ext === 'pdf'){
-                    img = '<img src="/imgs/file_ico_pdf.png" style="max-height: 24px;  padding-right: 4px;" class="file-pdf-preview" data-filename="/fls/' + file.file + '"/>';
-                }
-                else {
-                    img = '<img src="/imgs/file_ico.png" style="max-height: 24px;  padding-right: 4px;"/>';
+                } else if (file.ext === 'pdf') {
+                    img = '<img src="/imgs/file_ico_pdf.png" style="max-height: 24px;  margin-right: 4px;" class="file-pdf-preview" data-filename="/fls/' + file.file + '"/>';
+                } else {
+                    img = '<img src="/imgs/file_ico.png" style="max-height: 24px;  margin-right: 4px;"/>';
                 }
                 let a = $('<a href="/fls/' + file.file + '"  class="file-sell-text" download="' + $('<div>').text(file.name).html() + '" style="padding-right: 5px"></a>');
                 div.append(img)
@@ -66,7 +62,9 @@
                     _class = 'with-img';
                     show_img(img, file);
                 }
-                $('<div>').addClass(_class).appendTo(div).append(img).append($('<br/><a href="/fls/' + file.file + '" download="' + $('<div>').text(file.name).html() + '">').text(file.name)).append(field.getSize(file.size));
+                $('<div>').addClass(_class).appendTo(div).append(img).append(
+                    $('<div class="file-label">').html($('<a href="/fls/' + file.file + '" download="' + $('<div>').text(file.name).html() + '">').text(file.name)).append(field.getSize(file.size))
+                );
 
                 if (toCopy !== '') toCopy += "\n";
                 toCopy += window.location.protocol + '//' + window.location.host + '/fls/' + file.file;
@@ -75,7 +73,7 @@
         }
         ,
         getEditVal: function (div) {
-            if (this.required && div.data('val') == '') throw 'Поле должно быть заполнено';
+            if (this.required && div.data('val') == '') throw App.translate('The field must be entered');
             return div.data('val');
         }
         ,
@@ -100,7 +98,7 @@
                     ext: file.ext
                 };
                 let regExpName = new RegExp('^' + field.pcTable.tableRow.id + '_' + (item.id ? item.id : ''));
-                
+
                 addDiv.data('file', fl);
                 addDiv.find('.name').text(file.name);
                 addDiv.find('.size').text(field.getSize(file.size));
@@ -118,25 +116,28 @@
                 if (file.tmpfile) {
                     addDiv.addClass('addFile');
                     let process = addDiv.find('.progressbar');
-                    process.text('Требуется сохранение элемента для привязки файла');
+                    process.text(App.translate('Required to save the item for file binding'));
                 }
                 return addDiv;
             };
 
             const saveDisable = function (disable) {
-                dialog.$modalFooter.find('button:first').prop('disabled', disable);
+                dialogBody.closest('.modal-content').find('.modal-footer button:first').prop('disabled', disable);
             };
 
             const formFill = function () {
                 dialogBody.empty();
+                if (editNow === 'editField') {
+                    dialogBody = div
+                }
                 let fileAdd = $('<input type="file" name = "file" ' + (field.multiple ? 'multiple' : '') + ' accept="' + field.accept + '" style="display: block; position: absolute; top: -3000px"/>');//fileInput
 
                 let addForm = $('<div>').appendTo(dialogBody);
-                let btn = $('<button class="btn btn-default btn-sm">Добавить файл' + (field.multiple ? 'ы' : '') + '</button>');
+                let btn = $('<button class="btn btn-default btn-sm">' + App.translate(field.multiple ? 'Adding files' : 'Adding file') + '</button>');
                 addForm.append(btn);
                 btn.wrap('<div class="addFilesButton">');
                 btn.wrap('<div>');
-                let dropZone = $('<div class="ttm-dropzone" id="ttmDropzone">Перетащите сюда файл</div>').insertAfter(btn.parent())
+                let dropZone = $('<div class="ttm-dropzone" id="ttmDropzone">' + App.translate('Drag and drop the file here') + '</div>').insertAfter(btn.parent())
                 dropZone.on('dragenter', () => dropZone.addClass('highlight'))
                 dropZone.on('dragleave', () => dropZone.removeClass('highlight'))
                 dropZone.on('drop', (e) => {
@@ -144,7 +145,7 @@
                     dropZone.removeClass('highlight')
                     if (!dropZone.is('.disabled')) {
                         if (!this.multiple && e.originalEvent.dataTransfer.files.length > 1) {
-                            App.notify('Поле принимает только один файл', 'Ошибка')
+                            App.notify(App.translate('The field accepts only one file'), App.translate('Error'))
                             return false
                         }
                         save(e.originalEvent.dataTransfer.files)
@@ -201,7 +202,7 @@
                             xhr.upload.onprogress = function (event) {
                                 process.css('box-shadow', 'inset ' + Math.round(parseInt(process.width()) * event.loaded / event.total).toString() + 'px 0px 0 0 #85FF82');
                                 if (event.loaded === event.total) {
-                                    process.text('Проверка файла сервером');
+                                    process.text(App.translate('Checking the file with the server'));
                                 }
                             };
 
@@ -213,7 +214,7 @@
                                     try {
                                         let ans = JSON.parse(this.responseText);
                                         if (ans.fname) {
-                                            process.text('Готово');
+                                            process.text(App.translate('Done'));
                                             addDiv.data('file').tmpfile = ans.fname;
                                             return;
                                         }
@@ -222,7 +223,10 @@
                                     }
                                 }
                                 addDiv.data('file', null);
-                                process.text('Ошибка').css({'box-shadow': 'none', 'background-color': '#ffe486'})
+                                process.text(App.translate('Error')).css({
+                                    'box-shadow': 'none',
+                                    'background-color': '#ffe486'
+                                })
 
                             };
 
@@ -259,6 +263,7 @@
                     fileAdd.click();
                     fileAdd.on('change', function () {
                         save(this.files)
+                        fileAdd.remove();
                     });
                 });
 
@@ -282,7 +287,7 @@
 
             buttons = [
                 {
-                    'label': "Сохранить",
+                    'label': App.translate('Save') + ' Alt+S',
                     cssClass: 'btn-m btn-warning',
                     action: save
                 }, {
@@ -296,7 +301,7 @@
                 }
             ];
 
-            let title = 'Форма файлов <b>' + (this.title) + '</b>';
+            let title = App.translate('Files form <b>%s</b>', (this.title)) + this.pcTable._getRowTitleByMainField(item, ' (%s)');
             let eventName = 'ctrlS.textdialog';
 
             let showDialog = function (div) {
@@ -319,7 +324,7 @@
                         }
                     })
                 } else {
-                    dialog = BootstrapDialog.show({
+                    dialog = window.top.BootstrapDialog.show({
                         message: dialogBody,
                         type: null,
                         cssClass: 'fieldparams-edit-panel',
@@ -338,6 +343,7 @@
                                 width: 600
                             });
                             formFill();
+                            dialog.$modalContent.find('.addFilesButton').focus();
 
                             $('body').on(eventName, function (event) {
                                 save(dialog);
@@ -345,21 +351,32 @@
 
                         }
                     })
+                    div.data('Dialog', dialog);
                 }
 
 
             };
 
             if (editNow) {
-
-                showDialog(div);
-                div.text('Редактирование в форме').addClass('edit-in-form');
+                if (editNow === 'editField') {
+                    formFill();
+                } else {
+                    showDialog(div);
+                    div.text(App.translate('Editing in the form')).addClass('edit-in-form');
+                    setTimeout(() => {
+                        div.closest('td').css('background-color', '#ffddb4')
+                    })
+                }
             } else {
-                div.on('focus click', 'button', function () {
-                    showDialog($(this).closest('div'))
+                div.on('click keydown', 'button', function (event) {
+                    if (['Tab', 'Esc'].indexOf(event.key) === -1) {
+                        showDialog($(this).closest('div'))
+                    } else if (event.key === 'Tab') {
+                        blurClbk(div, {});
+                    }
                 });
 
-                let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text('Редактировать поле');
+                let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Edit field'));
                 if (tabindex) btn.attr('tabindex', tabindex);
 
                 div.append(btn);

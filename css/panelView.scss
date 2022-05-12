@@ -1,5 +1,6 @@
 .innerContainer.panelsView {
   padding-top: 10px;
+
   &:not(.kanbanInnerContainer) {
     overflow: visible;
   }
@@ -19,8 +20,20 @@
       cursor: pointer;
       border: 1px solid transparent;
 
+
+
+
       &.selected {
         //background-color: #c8f8ff80;
+      }
+
+      .cell-button button{
+        background-color: whitesmoke;
+      }
+
+
+      td > .fa {
+        padding-right: 4px;
       }
 
       box-shadow: 0 0 7px 0px #0000000f;
@@ -37,9 +50,11 @@
 
         td {
           width: 100%;
+          background-color: #fafafa;
+          border-color: transparent;
 
           button.button-field {
-            height: 100%;
+            margin-top: -3px;
           }
 
           &.nonowrap {
@@ -52,8 +67,8 @@
         th {
           height: 25px;
           color: #9a9a9a;
-
-          padding: 0 5px
+          font-family: PTRootUIWeb;
+          padding: 5px 5px 0;
         }
       }
 
@@ -65,6 +80,14 @@
 
   }
 
+  .kanban .kanban-disabled:hover, .kanban .kanban-disabled *:hover {
+    cursor: not-allowed;
+  }
+
+  .kanban.kanban-enabled {
+    background-color: #f5f4f4;
+  }
+
   .kanbanWrapper {
     display: grid;
     grid-gap: 20px;
@@ -72,26 +95,52 @@
     &.cln {
       position: fixed;
       top: 60px;
+      overflow: hidden;
 
       .kanban-title {
         box-shadow: 0 0 7px 0px #0000000f
       }
     }
 
+    .kanban_html_arrow{
+      border-color: transparent;
+      color: #adadad;
+      height: 44px;
+      background-color: #f1f1f1;
+      &:hover {
+        box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+      }
+      font-size: 22px;
+    }
+
+    .kanban_left_buttons{
+      text-align: center;
+    }
+
+    .kanban-html {
+      overflow: auto;
+      padding: 10px 15px;
+
+      border-bottom: 1px dashed #ddd;
+      margin-bottom: 10px;
+    }
+
     .kanban-title {
+      font-family: PTRootUIWeb;
+      font-weight: 500;
       padding: 20px;
       font-size: 20px;
       background-color: #f1f1f1;
       padding: 10px 15px 10px 15px;
       font-size: 16px;
-      border-radius: 4px;
       margin-bottom: 10px;
     }
 
     .kanban-cards {
       margin-left: -5px;
       margin-right: -5px;
-      .empty-kanban{
+
+      .empty-kanban {
         padding-left: 15px;
 
       }
@@ -103,17 +152,17 @@
     margin-top: 15px;
     padding-left: 2px;
 
-    .fa, span{
+    .fa, span {
       opacity: 0.5;
     }
 
-    button {
+    button:not(:first-child) {
       margin-top: -2px;
       margin-left: 10px;
     }
   }
 
-  .pcTable-floatInner>div{
+  .pcTable-floatInner > div {
     margin-bottom: 5px;
   }
 }

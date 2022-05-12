@@ -1,4 +1,4 @@
-#selectPanel.text {
+#selectPanel.text, #selectPanelBig {
   img {
     margin: 0 5px 0px 0;
   }
@@ -14,7 +14,8 @@
   }
 
   .with-img a:last-child {
-    max-width: 162px;
+    max-width: 250px;
+    white-space: nowrap;
   }
 
 
@@ -23,6 +24,7 @@
 .modal-dialog .file-mini-panel {
   display: flex;
   flex-wrap: wrap;
+
   > div {
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
@@ -101,18 +103,47 @@
 .file-mini-panel div {
   padding-top: 15px;
 
+  .file-label {
+    padding-top: 3px;
+    font-weight: bold;
+  }
+
+  img {
+    border-radius: 4px;
+  }
+
   &:first-child {
     padding-top: 0;
+  }
+}
+
+#pk {
+  .pcTable-floatBlock .pcTable-floatInner > div td span.cell-value[data-type="file"] {
+    margin-top: 0;
+    img{
+      margin-top: 0;
+    }
+  }
+
+  .file-image-preview {
+    border-radius: 2px;
+  }
+
+  [data-field-type="file"] {
+    img {
+      border-radius: 2px;
+    }
   }
 }
 
 .InsertPanel {
   [data-field-type="file"] {
     .ttm--panel-data {
-      .panel-preview{
+      .panel-preview {
         overflow: auto;
       }
     }
+
     .panel-preview, .ttm--panel-data {
       max-height: 200px;
       overflow: auto;

@@ -17,7 +17,7 @@ fieldTypes.text = {
     getValue: function (value, item, isModulPanel) {
         "use strict";
 
-        if (isModulPanel || (typeof value === 'string' && value.length < this.viewTextMaxLength)) {
+        if (isModulPanel || (typeof value === 'string' && value.length < this.viewTextMaxLength && !this.notLoaded)) {
             let def = $.Deferred();
             setTimeout(function () {
 
@@ -40,7 +40,7 @@ fieldTypes.text = {
             div = $('<div>');
             div.html(App.textWithLinks(text));
         } else {
-            div = $('<div class="codeEditor">');
+            div = $('<div class="codeEditor CodeMirror-readonly">');
             if (text && text.trim()) {
                 let field = this;
                 let options = {
@@ -78,7 +78,7 @@ fieldTypes.text = {
         fieldValue = fieldValue.toString();
         let field = this;
 
-        if (fieldValue.length <= this.viewTextMaxLength) return field.getPanelTextWithLinks(fieldValue, false).data('text', fieldValue);
+        if (fieldValue.length <= this.viewTextMaxLength && !this.notLoaded) return field.getPanelTextWithLinks(fieldValue, false).data('text', fieldValue);
 
         let def = $.Deferred();
 
@@ -118,7 +118,7 @@ fieldTypes.text = {
 
         let field = this;
         let div = $('<div>');
-        let dialog = $('<div>').css('min-height', 200);
+        let dialog = $('<div>');
         let buttons;
         let element = $('<div class="HTMLEditor">');
 
@@ -126,10 +126,10 @@ fieldTypes.text = {
 
         let formFill = function () {
 
-            field.getValue(oldValueParam, item, !editNow).then(function (json) {
+            field.getValue(oldValueParam, item, (!editNow || editNow==='editField')).then(function (json) {
                 let editor;
                 div.append(element);
-                element.empty().appendTo(dialog);
+                element.empty().appendTo(editNow === 'editField' ? div : dialog);
 
                 if (field.textType === 'json') {
 
@@ -139,23 +139,28 @@ fieldTypes.text = {
                             editor.setText(json.value);
                         }
                     } catch (e) {
-                        window.top.App.modal('Ошибка формата JSON ')
+                        window.top.App.modal(App.translate('JSON format error'))
                     }
-                    element.css('min-height', 200);
 
-                    let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">Вручную</a>').on('click', function () {
+
+                    let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
                         let div = $('<div>');
-                        let textarea = $('<textarea class="form-control" style="height: 350px;">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
+                        let textarea = $('<textarea class="form-control">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
+                        if (window.innerHeight > 460) {
+                            textarea.css('height', 350)
+                            element.css('min-height', 200);
+                        }
+
                         let buttons = [
                             {
-                                'label': "Сохранить",
+                                'label': App.translate('Save') + ' Alt+S',
                                 cssClass: 'btn-m btn-warning',
                                 action: function (dialog) {
                                     try {
                                         editor.setText(textarea.val());
                                         dialog.close();
                                     } catch (e) {
-                                        window.top.App.modal('Ошибка формата JSON')
+                                        window.top.App.modal(App.translate('JSON format error'))
                                     }
                                 }
                             }, {
@@ -169,12 +174,12 @@ fieldTypes.text = {
                         ];
 
                         if (field.pcTable.isMobile) {
-                            App.mobilePanel('Ручное изменение json-поля', div, {buttons: buttons})
+                            App.mobilePanel(App.translate('Manually changing the json field'), div, {buttons: buttons})
                         } else {
                             BootstrapDialog.show({
                                 message: div,
                                 type: null,
-                                title: 'Ручное изменение json-поля',
+                                title: App.translate('Manually changing the json field'),
                                 buttons: buttons,
                                 cssClass: 'fieldparams-edit-panel',
                                 draggable: true,
@@ -199,16 +204,17 @@ fieldTypes.text = {
                     let mode = field.getMode();
 
 
-                    let el = $('<div>').appendTo(element);
+                    let el = $('<div>').height('100%').appendTo(element);
                     let options = {
-                        value: json.value.toString(),
+                        value: (json.value || '').toString(),
                         mode: mode,
                         minHeight: '150px',
                         readOnly: false,
                         theme: 'eclipse',
                         lineNumbers: true,
                         indentWithTabs: true,
-                        autoCloseTags: true
+                        autoCloseTags: true,
+                        bigOneDialog: editNow === 'editField'
                     };
 
                     if (mode === 'text') {
@@ -216,19 +222,36 @@ fieldTypes.text = {
                         options.lineWrapping = true;
                     }
 
-                    editor = CodeMirror(el.get(0), options);
+                    editor = window.top.CodeMirror(el.get(0), options);
                     editor.on('paste', function (cm, event) {
                         setTimeout(function () {
                             editor.refresh();
                         }, 1);
                     });
+
+                    if (mode === 'totum') {
+                        App.CodemirrorFocusBlur(editor)
+                    }
+
                     if (field.pcTable && field.pcTable.tableRow.name === 'tables') {
                         editor.table = item.name.v || item.name;
+                        editor.cycle_id = field.pcTable.tableRow.cycle_id;
+                        editor.codeType = {
+                            'default_action': 'codeAction',
+                            'on_duplicate': 'codeAction',
+                            'row_format': 'format',
+                            'table_format': 'format'
+                        }[field.name];
                     }
-                    editor.getScrollerElement().style.minHeight = '350px';
-                    editor.focus();
 
+                    if (window.innerHeight > 585) {
+                        editor.getScrollerElement().style.minHeight = '350px';
+                        dialog.css('min-height', 200)
+                    }
+
+                    editor.focus();
                 }
+
 
                 element.data('editor', editor);
                 div.data('editor', editor);
@@ -253,7 +276,7 @@ fieldTypes.text = {
         buttons = [];
 
         let btnsSave = {
-            'label': "Сохранить",
+            'label': App.translate('Save') + ' Alt+S',
             cssClass: 'btn-m btn-warning',
             action: save
         }, btnsClose = {
@@ -268,7 +291,7 @@ fieldTypes.text = {
 
         if (['xml', 'html'].indexOf(field.textType) !== -1) {
             buttons.unshift({
-                label: 'Форматировать',
+                label: App.translate('Format'),
                 action: function () {
                     let editor = element.data('editor');
                     let totalLines = editor.lineCount();
@@ -278,103 +301,121 @@ fieldTypes.text = {
             });
         }
 
-        let title = 'Текст поля <b>' + (this.title) + ', ' + field.textType + '</b>';
+
         let eventName = 'ctrlS.textedit';
 
+        let title = () => {
+            return App.translate('Field <b>%s</b> text', this.title) + ', <b>' + field.textType + '</b>' + this.pcTable._getRowTitleByMainField(item, ' (%s)');
+        }
+
         if (editNow) {
-            let btnClicked = false;
-            setTimeout(function () {
-                let cdiv = div.closest('td').find('.cdiv');
-                if (cdiv.length > 0) {
-                    cdiv.data('bs.popover').options.content.find('.btn').each(function () {
-                        let btn = $(this);
-                        let buttn = {};
-                        buttn.label = btn.data('name');
-                        buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
-                        buttn.icon = btn.find('i').attr('class');
-                        buttn.save = btn.data('save');
-                        buttn.click = btn.data('click');
-                        buttn.action = function (dialog) {
-                            if (buttn.save) {
-                                save(dialog, {}, true);
+            if (editNow === 'editField') {
+                setTimeout(formFill, 1)
+            } else {
+
+                let btnClicked = false;
+                setTimeout(function () {
+                    let cdiv = div.closest('td').find('.cdiv');
+                    if (cdiv.length > 0) {
+                        cdiv.data('bs.popover').options.content.find('.btn').each(function () {
+                            let btn = $(this);
+                            let buttn = {};
+                            buttn.label = btn.data('name');
+                            buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
+                            buttn.icon = btn.find('i').attr('class');
+                            buttn.save = btn.data('save');
+                            buttn.click = btn.data('click');
+                            buttn.action = function (dialog) {
+                                if (buttn.save) {
+                                    save(dialog, {}, true);
+                                }
+                                buttn.click({});
+                                btnClicked = true;
+                                dialog.close();
+                            };
+
+                            buttons.push(buttn)
+                        });
+                        cdiv.popover('destroy');
+                    } else {
+                        buttons.push(btnsSave);
+                        buttons.push(btnsClose)
+                    }
+
+                    if (field.pcTable.isMobile) {
+
+                        App.mobilePanel(title(), dialog, {
+                            buttons: buttons, onhide: function (dialog) {
+                                $('body').off(eventName);
+                                if (!btnClicked) {
+                                    blurClbk(div, {});
+                                }
+                            },
+                            onshown: function (dialog) {
+                                formFill();
+                            },
+                            onshow: function (dialog) {
+                                $('body').on(eventName, function (event) {
+                                    save(dialog, event);
+                                    return false;
+                                });
                             }
-                            buttn.click({});
-                            btnClicked = true;
-                            dialog.close();
-                        };
+                        })
 
-                        buttons.push(buttn)
-                    });
-                    cdiv.popover('destroy');
-                } else {
-                    buttons.push(btnsSave);
-                    buttons.push(btnsClose)
-                }
+                    } else {
+                        let Dialog = window.top.BootstrapDialog.show({
+                            message: dialog,
+                            type: null,
+                            title: title(),
+                            cssClass: 'fieldparams-edit-panel',
+                            draggable: true,
+                            buttons: buttons,
+                            onhide: function (dialog) {
+                                $(window.top.document).find('body').off(eventName);
+                                if (!btnClicked) {
+                                    escClbk(div, {});
+                                }
+                            },
+                            onshown: function (dialog) {
+                                dialog.$modalContent.position({
+                                    of: $(window.top.document).find('body'),
+                                    my: 'top+50px',
+                                    at: 'top'
+                                });
+                                formFill();
+                            },
+                            onshow: function (dialog) {
+                                dialog.$modalHeader.css('cursor', 'pointer')
+                                dialog.$modalContent.css({
+                                    width: '100%'
+                                });
 
-                if (field.pcTable.isMobile) {
-
-                    App.mobilePanel(title, dialog, {
-                        buttons: buttons, onhide: function (dialog) {
-                            $('body').off(eventName);
-                            if (!btnClicked) {
-                                blurClbk(div, {});
+                                $(window.top.document).find('body').on(eventName, function (event) {
+                                    save(dialog, event);
+                                    return false;
+                                });
                             }
-                        },
-                        onshown: function (dialog) {
-                            formFill();
-                        },
-                        onshow: function (dialog) {
-                            $('body').on(eventName, function (event) {
-                                save(dialog, event);
-                                return false;
-                            });
-                        }
-                    })
 
-                } else {
-                    BootstrapDialog.show({
-                        message: dialog,
-                        type: null,
-                        title: title,
-                        cssClass: 'fieldparams-edit-panel',
-                        draggable: true,
-                        buttons: buttons,
-                        onhide: function (dialog) {
-                            $('body').off(eventName);
-                            if (!btnClicked) {
-                                escClbk(div, {});
-                            }
-                        },
-                        onshown: function (dialog) {
-                            dialog.$modalContent.position({
-                                of: $('body'),
-                                my: 'top+50px',
-                                at: 'top'
-                            });
-                            formFill();
-                        },
-                        onshow: function (dialog) {
-                            dialog.$modalHeader.css('cursor', 'pointer')
-                            dialog.$modalContent.css({
-                                width: '100%'
-                            });
-
-                            $('body').on(eventName, function (event) {
-                                save(dialog, event);
-                                return false;
-                            });
-                        }
-
-                    });
-                }
+                        });
+                        div.data('Dialog', Dialog)
+                    }
 
 
-            }, 1);
-
-
-            div.text('Редактирование в форме').addClass('edit-in-form');
+                }, 1);
+                div.text(App.translate('Editing in the form')).addClass('edit-in-form');
+                setTimeout(() => {
+                    div.closest('td').css('background-color', '#ffddb4')
+                })
+            }
         } else {
-            div.on('focus click', 'button', function () {
+
+
+            div.on('keydown click', function (event) {
+                if (event.key === 'Tab') {
+                    blurClbk(dialog, event, null, true);
+                    return
+                }
+
                 let _buttons = buttons.splice();
                 _buttons.push(btnsSave);
                 _buttons.push(btnsClose);
@@ -382,7 +423,7 @@ fieldTypes.text = {
                 var div = $(this).closest('div');
                 if (field.pcTable.isMobile) {
 
-                    App.mobilePanel(title, dialog, {
+                    App.mobilePanel(title(), dialog, {
                         buttons: _buttons,
                         onhide: function (event) {
                             $('body').off(eventName);
@@ -398,15 +439,15 @@ fieldTypes.text = {
                     })
 
                 } else {
-                    BootstrapDialog.show({
+                    window.top.BootstrapDialog.show({
                         message: dialog,
                         type: null,
                         cssClass: 'fieldparams-edit-panel',
-                        title: title,
+                        title: title(),
                         buttons: _buttons,
                         draggable: true,
                         onhide: function (event) {
-                            $('body').off(eventName);
+                            $(window.top.document).find('body').off(eventName);
                             escClbk(div, event);
                         },
                         onshown: function (dialog) {
@@ -416,7 +457,7 @@ fieldTypes.text = {
                             dialog.$modalContent.css({
                                 width: 900
                             });
-                            $('body').on(eventName, function (event) {
+                            $(window.top.document).find('body').on(eventName, function (event) {
                                 save(dialog, event);
                                 return false;
                             });
@@ -425,7 +466,7 @@ fieldTypes.text = {
                 }
             });
 
-            let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text('Редактировать текст');
+            let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Edit text'));
             if (tabindex) btn.attr('tabindex', tabindex);
 
             div.append(btn);
@@ -439,8 +480,8 @@ fieldTypes.text = {
     getCellTextInPanel: function (fieldValue, td, item) {
         return this.getPanelTextWithLinks(fieldValue);
     },
-    addPlaceholder(input, placeholder){
-        setTimeout(function (){
+    addPlaceholder(input, placeholder) {
+        setTimeout(function () {
             input.data('editor').setOption('placeholder', placeholder);
             input.data('editor').refresh();
         }, 100)

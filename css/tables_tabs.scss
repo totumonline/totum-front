@@ -5,8 +5,10 @@
 
   }
 
-  .nav-tabs > li > a {
-    color: #555 !important;
+  .nav-tabs > li {
+    > a {
+      color: #555 !important;
+    }
   }
 
   padding-left: 40px;
@@ -17,13 +19,16 @@
   }
 
   .nav-tabs {
+    padding-left: 55px;
     border-bottom-color: transparent;
     >li>a:hover{
       border-color: transparent;
     }
-    >li.active>a{
-      border-color: transparent;
-      background-color: #fafafa;
+    >li.active {
+      > a {
+        border-color: transparent;
+        background-color: #fafafa;
+      }
     }
   }
 

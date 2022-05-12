@@ -10,10 +10,11 @@ button {
 
 .btn.button-field {
   text-shadow: none;
-  background-color:#fff;
+  background-color: #fff;
 }
-#selectPanel .btn.button-field{
-  background-color:#fafafa;
+
+#selectPanel .btn.button-field {
+  background-color: #fafafa;
 }
 
 td.cell-button, span.cell-button {
@@ -25,6 +26,7 @@ td.cell-button, span.cell-button {
       border-color: transparent;
       box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
     }
+
     i {
       margin-right: 3px;
     }
@@ -37,7 +39,7 @@ td.cell-button, span.cell-button {
       opacity: 1;
     }
 
-    height: 19px;
+    height: 25px;
   }
 
   button:not(.ibtn) {
@@ -45,18 +47,44 @@ td.cell-button, span.cell-button {
   }
 }
 
-.pcTable-floatBlock .pcTable-floatInner > div.no-border td.cell-button {
-  padding: 2px 4px;
+.DataRow {
+  td.cell-button .cell-value {
+    button.button-field {
+      height: 24px;
+    }
+  }
+}
 
-  button {
-    height: 25px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    background-color: #fffdf9;
+.pcTable-floatBlock .pcTable-floatInner {
 
-    &:disabled {
-      background-color: #faf9f8;
-      box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+  > div td.cell-button .cell-value {
+    padding-top: 0;
+    margin-top: -1px;
+
+    button.button-field {
+      height: 25px;
+    }
+  }
+
+  > div.no-border td.cell-button {
+    padding: 5px 4px;
+
+    button {
+      height: 25px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      background-color: #fffdf9;
+
+      &:disabled {
+        background-color: #faf9f8;
+        box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+      }
+    }
+  }
+
+  td.cell-button {
+    i.fa-spinner {
+      padding-top: 6px;
     }
   }
 }
@@ -66,6 +94,11 @@ td.cell-button, span.cell-button {
     td.cell-button button.button-field {
       height: 28px;
       padding-top: 5px;
+    }
+  }
+  .pcTable-buttons .cell-button {
+    i.fa-spinner {
+      padding-top: 12px;
     }
   }
 }
@@ -80,16 +113,6 @@ td.cell-button, span.cell-button {
         border-color: transparent;
       }
     }
-    .text-center{
-      padding-top: 2px;
-    }
-  }
-  td.cell-button {
-    padding-top: 4px !important;
-  }
-  div.no-border {
-    td.cell-button {
-      padding-top: 2px !important;
-    }
+
   }
 }

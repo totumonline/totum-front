@@ -1,5 +1,5 @@
 (function () {
-    App.totumCodeEdit = function (code, title, table, checkboxes, canBeSwitchOff) {
+    App.totumCodeEdit = function (code, title, codeData, checkboxes, canBeSwitchOff) {
         return new Promise((resolve, reject) => {
 
             let newCodemirrorDiv = $('<div class="HTMLEditor" id="bigOneCodemirror" style="height: 100%;"></div>');
@@ -7,14 +7,27 @@
 
             let eventName = 'ctrlS.CodeEdit';
 
+            let panelClassSwitcher = () =>{};
+            let chsDiv;
+            if (checkboxes && checkboxes.length && codeData && codeData.codeType === 'codeAction' && checkboxes) {
+                wrapper.append('<div class="code-checkboxes-warning-panel">' + App.translate('There is no any active trigger.') + '</div>')
+
+                panelClassSwitcher = () => {
+                    if (chsDiv.find(':checked').length === 0) {
+                        wrapper.addClass('code-checkboxes-active-warning');
+                    } else {
+                        wrapper.removeClass('code-checkboxes-active-warning');
+                    }
+                }
+            }
+
 
             let value = code;
             let editorMax;
             let resolved = false
 
-            let chsDiv;
 
-            if (checkboxes) {
+            if (checkboxes && checkboxes.length) {
                 chsDiv = $('<div class="flex">').appendTo(wrapper);
                 checkboxes.forEach(([name, title, val]) => {
                     let ch = $('<input type="checkbox">').attr('name', name);
@@ -26,6 +39,8 @@
                     }
                     chsDiv.append(chDiv)
                 });
+                chsDiv.on('change', 'input', panelClassSwitcher)
+                panelClassSwitcher()
             }
 
 
@@ -49,25 +64,32 @@
                 Dialog.close();
             }
             $('body').on(eventName, () => {
-
                 save();
             });
+
             let buttons = [
                 {
                     action: save,
                     cssClass: 'btn-warning btn-save',
-                    label: 'Cохранить'
+                    label: App.translate('Save') + ' Alt+S'
+                },
+                {
+                    action: () => {
+                        Dialog.close();
+                    },
+                    cssClass: 'btn-default btn-save',
+                    label: '<i class="fa fa-times"></i>'
                 }
 
             ];
             if (canBeSwitchOff)
                 buttons.unshift({
                     action: () => {
-                        App.confirmation("Отключить код " + title, {
-                            "Отмена": (dialog) => {
+                        App.confirmation(App.translate("Disable code") + " " + title, {
+                            [App.translate('Cancel')]: (dialog) => {
                                 dialog.close();
                             },
-                            'Отключить': (dialog) => {
+                            [App.translate("Disable")]: (dialog) => {
                                 resolved = true;
                                 resolve({
                                     code: editorMax.getValue(),
@@ -77,10 +99,10 @@
                                 dialog.close();
                                 Dialog.close();
                             }
-                        }, "Отключение кода")
+                        }, App.translate("Code disabling"))
                     },
                     cssClass: 'btn-default btn-save',
-                    label: 'Отключить'
+                    label: App.translate("Disable")
                 })
 
             window.top.BootstrapDialog.show({
@@ -111,7 +133,7 @@
                 },
 
                 onshown: function (dialog) {
-                    editorMax = CodeMirror(newCodemirrorDiv.get(0), {
+                    editorMax = window.top.CodeMirror(newCodemirrorDiv.get(0), {
                         mode: "totum",
                         value: value,
                         theme: 'eclipse',
@@ -121,11 +143,17 @@
                         bigOneDialog: save
                     });
 
-                    if (table) editorMax.table = table;
+                    if (codeData) {
+                        Object.keys(codeData).forEach((k) => {
+                            editorMax[k] = codeData[k]
+                        })
+                    }
 
                     let minheight = Math.round(dialog.$modalContent.height() - dialog.$modalHeader.outerHeight() - 40);
                     editorMax.getScrollerElement().style.minHeight = minheight + 'px';
                     newCodemirrorDiv.find('.CodeMirror').css('min-heught', minheight);
+                    App.CodemirrorFocusBlur(editorMax)
+
                     editorMax.focus();
                     dialog.$modalContent.position({
                         my: 'center top',

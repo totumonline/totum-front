@@ -2,19 +2,21 @@
 
 .pcTable-table {
   .n {
-    background-color: $rowsBackColor;
+    background-color: whitesmoke;
     border-top-color: $rowsBackColor;
     border-bottom-color: $rowsBackColor;
     text-align: center;
 
-
+    &.just-inserted{
+      background-color: #ffddb4;
+    }
 
 
   }
 
 
   &.reordered {
-    .n {
+    .n:not(.just-inserted) {
       background-color: lighten($btn-warning-bgcolor, 9%);
     }
   }
@@ -59,6 +61,12 @@
     right: 1px;
   }
 }
+
+.pcTable-table:not(.with-checks) .n .arrow-disabled{
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 
 .pcTable-table.with-checks .n .fa-angle-down:before {
   content: "\f149";

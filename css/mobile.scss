@@ -53,6 +53,7 @@
     #leftTree {
       width: 100%;
       display: block;
+
     }
 
     .modal-header {
@@ -87,11 +88,10 @@
 }
 
 .pcTable-tabls {
-  .nav-tabs{
+  .nav-tabs {
     border-bottom: none;
   }
 }
-
 
 
 @media(min-device-width: 1200px) {
@@ -147,6 +147,28 @@
 
 @media(max-device-width: 1199px) {
 
+
+  .DataRow td.cell-button .cell-value button.button-field{
+    height: 30px;
+  }
+  .ttm__burger-wrapper{
+    padding-bottom: 10px;
+  }
+
+
+  .table-description {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  #leftTree {
+    font-size: 15px;
+  }
+
+  #pk .alert {
+    min-width: 300px;
+    max-width: 90%;
+  }
   #selectPanelBig, #selectPanel {
     .panel-buttons {
       button {
@@ -155,7 +177,7 @@
     }
   }
 
-  .plus-top-branch{
+  .plus-top-branch {
     display: none !important;
   }
   .cell-value {
@@ -223,10 +245,10 @@
     }
 
     .pcTable-filters {
-      top: 20px;
+      /*top: 20px;
       right: 4px;
       margin-top: 0;
-
+*/
       .btn {
         margin-left: 5px;
         border-color: transparent;
@@ -297,6 +319,31 @@
     padding-top: 9px;
   }
 
+  .DataRow .cell-button {
+    .text-center {
+      line-height: 35px;
+    }
+  }
+
+  #pk {
+    .pcTable-paramsTables, .pcTable-footersTables, .pcTable-filtersTable:not(#go-buttons) {
+      td:not(.cell-button) {
+        background-color: #faf9f8;
+      }
+
+      button.button-field{
+        background-color: #fffdf9;
+      }
+
+      &.pcTable-filtersTable td:not(.cell-button) {
+        background-color: whitesmoke;
+      }
+
+      th {
+        padding-bottom: 0;
+      }
+    }
+  }
 
   .cell-button {
     .ibtn {
@@ -305,11 +352,12 @@
 
     }
 
+
     button.button-field {
       height: 25px;
       padding-top: 4px;
       padding-bottom: 4px;
-      background-color: #fffdf9;
+
 
       &:disabled {
         background-color: #faf9f8;
@@ -328,9 +376,10 @@
       }
     }
 
-    .button-go{
+    .button-go {
       background-color: #fff;
     }
+
     &.with_danger button.button-go {
       background-color: mistyrose;
     }
@@ -361,6 +410,7 @@
 
     .pcTable-title {
       font-size: 20px;
+      margin-right: 0px;
     }
 
     .pcTable-rowsTable {
@@ -374,7 +424,8 @@
     .pcTable-title, .table-description, .pcTable-sectionTitle {
       padding-left: 5px;
     }
-    .table-description{
+
+    .table-description {
       padding-right: 0;
     }
 
@@ -435,11 +486,7 @@
       }
     }
   }
-  .pcTable-table tbody {
-    td, td.with-code {
-      background-color: #fff;
-    }
-  }
+
   body {
     overflow-y: auto;
   }
@@ -455,9 +502,6 @@
     width: 420px !important;
     max-width: calc(100vw - 20px);
   }
-  .edit-row-panel {
-
-  }
 
   .pcTable-paramsTable, .pcTable-filtersTable, .pcTable-hiddenFieldsTable, .pcTable-beforeSpace, .pcTable-footersTable {
     width: 100%;
@@ -465,6 +509,26 @@
   }
   .pcTable-buttons {
     padding-left: 10px;
+
+    .ttm__burger-wrapper {
+      button {
+        width: 40px;
+        background-color: $btn-warning-bgcolor;
+        border-radius: 3px;
+        padding: 5px;
+        margin-left: 5px;
+      }
+    }
+
+    .ttm__burger-buttons {
+      text-align: center;
+      max-width: 400px;
+      width: calc(100vw / 2);
+
+      .button-wrapper.cell-button {
+        margin: 0;
+      }
+    }
   }
   .pcTable-tableText {
     margin-left: 5px;
@@ -500,6 +564,32 @@
 
     .pcTable-scrollWrapper {
       padding-bottom: 0px;
+    }
+  }
+}
+
+#pk {
+  #ttm--mobile-resize-reload {
+    text-align: center;
+    height: 100vh;
+
+    .top {
+      background-image: url(/fls/6_main_img.png);
+      padding-left: 65px;
+      font-size: 30px;
+      background-repeat: no-repeat;
+      text-align: left;
+      background-position-x: 10px;
+    }
+
+    button {
+      position: absolute;
+      top: calc(100vh / 2 - 45px);
+      left: calc(100vw / 2 - 70px);
+      height: 50px;
+      width: 140px;
+      box-sizing: border-box;
+      background-color: aliceblue;
     }
   }
 }

@@ -1,7 +1,7 @@
 fieldTypes.date = {
     icon: 'fa-calendar-o',
     getEditVal: function (input) {
-        if (this.required && input.val().trim() == '') throw 'Поле должно быть заполнено';
+        if (this.required && input.val().trim() == '') throw App.translate('The field must be entered');
         if (!input.val().trim()) return '';
         let date = input.data('calendar').data('DateTimePicker').date();
 
@@ -42,15 +42,20 @@ fieldTypes.date = {
             }
         });
         let timeoutObject;
-
-        $input.on('keyup', function (event) {
+        $input.on('keydown', function (event) {
             if (timeoutObject) clearTimeout(timeoutObject);
-            if (event.keyCode === 13) {
+            if (event.keyCode === 13 || event.keyCode === 9) {
                 setDateTimePickerDate();
-                enterClbk($(this), event);
+                if (popover && popover.is(':visible')) {
+                    popover.hide();
+                }
+                enterClbk($(this), event, event.keyCode === 13 ? 'enter' : false);
             } else if (event.keyCode === 27) {
                 escClbk($(this), event);
-            } else if (event.keyCode >= 48) {
+            }
+        })
+        $input.on('keyup', function (event) {
+            if (event.keyCode >= 48) {
                 timeoutObject = setTimeout(function () {
                     setDateTimePickerDate();
                 }, 2000);
@@ -61,10 +66,12 @@ fieldTypes.date = {
         const setDateTimePickerDate = function () {
             "use strict";
             let val = $input.val();
-
+            let _format = format;
             if (val) {
-                val = moment(val, format);
-
+                if (!format.match(/Y{4}/) && format.match(/Y{2}/) && val.length - moment().format(format).length === 2) {
+                    _format = _format.replace('YY', 'YYYY')
+                }
+                val = moment(val, _format);
             } else {
                 val = "";
             }
@@ -96,15 +103,18 @@ fieldTypes.date = {
                 });
 
             } else {
-                $input.on('focus click', function () {
-                    if (!popover) {
-                        popoverId = App.popNotify(cParent, $input);
-                        popover = $('#' + popoverId);
+                const showPopover = function () {
+                    if (popover) {
+                        $input.popover('destroy')
                     }
+                    popoverId = App.popNotify(cParent, $input, null);
+                    popover = $($input.get(0).ownerDocument.getElementById(popoverId));
+
                     calendar.data("DateTimePicker").show();
                     popover.show();
                     setDateTimePickerDate();
-                });
+                };
+                $input.on('focus mouskeydown', showPopover);
             }
 
         }, 20);
@@ -124,7 +134,7 @@ fieldTypes.date = {
             format: format,
             useCurrent: false,
             showClose: false,
-            locale: 'ru',
+            locale: App.lang.localeDatetimepicker,
             sideBySide: true,
             collapse: false
             // defaultDate: moment().format("YYYY-MM-DD 00:00")
@@ -176,7 +186,7 @@ fieldTypes.date = {
     addDataToFilter: function (filterVals, valObj) {
 
         let hash;
-        let val='Пустое'
+        let val = App.translate('Empty')
         if (valObj.v === null || valObj.v === '') {
             hash = ''.hashCode();
         } else {

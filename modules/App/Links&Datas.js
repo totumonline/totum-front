@@ -2,6 +2,10 @@
     let iframeNum = 0;
     let dialogOffset = -1;
 
+    const getNotificationPanel = (id, buttonText) => {
+        return '<div id="' + id + '">' + App.translate('__clock_shelve_panel') + ' <button>' + buttonText + '</button></button></div>'
+    }
+
     let notificationManager, _notifications, getNotificationOffset = function (withManager) {
             let offset = {x: 20, y: 70};
             let isMobile = screen.width <= window.MOBILE_MAX_WIDTH;
@@ -34,14 +38,16 @@
                         onHide();
                         notificationManager.remove();
                         notificationManager = null;
-                        _model.notificationUpdate(Object.keys(notifications), 'deactivate').then(function () {
+                        _model.notificationUpdate('ALL_ACTIVE', 'deactivate').then(function () {
                         })
                         Object.values(notifications).forEach((notifications) => {
                             notifications.forEach((nf) => {
                                 nf.$modal.remove();
                             })
                         })
-                        notifications = [];
+                        Object.keys(notifications).forEach(key => {
+                            delete notifications[key];
+                        });
                     }).on('remove', () => {
                     if (clocks) {
                         clocks.popover('destroy')
@@ -52,14 +58,12 @@
                     if ($(this).is('.active')) return false;
                     $(this).addClass('active')
                     clocks = $(this);
-                    $div = $('<div>' +
-                        '<div id="notification_clock_panel_all"><span class="clocks-na">На</span> <input type="number" step="1" value="10" class="form-control"/> <select class="form-control"><option  selected value="1">минут</option><option value="2">часов</option><option value="3">дней</option></select> <button>Отложить все</button></button></div>'
-                        + '</div>');
+                    $div = $('<div>').append(getNotificationPanel('notification_clock_panel_all', App.translate('Shelve all')));
                     $div.on('click', 'button', function () {
                         let num = $div.find('input').val();
                         let select = $div.find('select').val();
                         onHide();
-                        _model.notificationUpdate(Object.keys(notifications), 'later', num, select).then(function () {
+                        _model.notificationUpdate('ALL_ACTIVE', 'later', num, select).then(function () {
                         })
                         notificationManager.remove();
                         notificationManager = null;
@@ -68,7 +72,9 @@
                                 nf.$modal.remove();
                             })
                         })
-                        notifications = [];
+                        Object.keys(notifications).forEach(key => {
+                            delete notifications[key];
+                        });
                     });
 
 
@@ -137,8 +143,15 @@
                             cssClass: 'target-iframe',
                             onhidden: function () {
                                 if (linkObject.refresh) {
-                                    let pcTable = $('#table').data('pctable');
-                                    model.refresh(null, linkObject.refresh)
+                                    if (model.getPcTable().isObjectOpened()) {
+                                        model.refresh(null, linkObject.refresh)
+                                    } else {
+                                        try {
+                                            $('#table').data('pctable').model.refresh();
+                                        } catch (e) {
+                                        }
+
+                                    }
                                     //window.location.reload();
                                 }
                             },
@@ -163,7 +176,7 @@
                             },
                             buttons: [
                                 {
-                                    'label': "Обновить",
+                                    'label': App.translate("Refresh"),
                                     cssClass: 'btn-m btn-default',
                                     'action': function () {
                                         $iframe.get(0).contentWindow.location.reload();
@@ -171,7 +184,7 @@
                                     }
                                 },
                                 {
-                                    'label': "Открыть",
+                                    'label': App.translate('Open'),
                                     cssClass: 'btn-m btn-default',
                                     'action': function (dialog) {
                                         openLinkLocation('self');
@@ -179,7 +192,7 @@
                                     }
                                 },
                                 {
-                                    'label': "Вкладка",
+                                    'label': App.translate("Tab"),
                                     cssClass: 'btn-m btn-default',
                                     'action': function (dialog) {
                                         window.open($iframe.get(0).contentWindow.location, '_blank');
@@ -290,7 +303,15 @@
                                 cssClass: 'target-iframe',
                                 onhidden: function () {
                                     if (linkObject.refresh) {
-                                        model.refresh(null, linkObject.refresh)
+                                        if (model.getPcTable().isObjectOpened()) {
+                                            model.refresh(null, linkObject.refresh)
+                                        } else {
+                                            try {
+                                                $('#table').data('pctable').model.refresh();
+                                            } catch (e) {
+                                            }
+
+                                        }
                                     }
                                     dialogOffset--;
                                 },
@@ -317,14 +338,14 @@
                                 },
                                 buttons: [
                                     {
-                                        'label': "Обновить",
+                                        'label': App.translate("Refresh"),
                                         cssClass: 'btn-m btn-default',
                                         'action': function () {
                                             $iframe.get(0).contentWindow.location.reload();
                                         }
                                     },
                                     {
-                                        'label': "Открыть",
+                                        'label': App.translate('Open'),
                                         cssClass: 'btn-m btn-default',
                                         'action': function (dialog) {
                                             try {
@@ -338,7 +359,7 @@
                                         }
                                     },
                                     {
-                                        'label': "Вкладка",
+                                        'label': App.translate("Tab"),
                                         cssClass: 'btn-m btn-default',
                                         'action': function (dialog) {
                                             window.open($iframe.get(0).contentWindow.location, '_blank');
@@ -380,6 +401,208 @@
 
         });
     };
+
+
+    App.editField = function (model, data) {
+        let resolve, reject
+        let promise = new Promise((r1, r2) => {
+            resolve = r1, reject = 2;
+        })
+
+        if (data[1].refresh) {
+            promise.then(() => {
+                switch (data[1].refresh) {
+                    case 'reload':
+                        App.windowReloadWithHash(model);
+                        break;
+                    default:
+                        model.refresh();
+                }
+
+            })
+
+        }
+
+        let field = $.extend({}, App.FieldTypes[data[1].field.type], data[1].field);
+        field.pcTable = model.getPcTable();
+
+        let Dialog, input;
+
+
+        if (['fieldParams', 'button', 'link'].indexOf(field.type) !== -1) {
+            App.notify(App.translate('You can\'t put the Settings field type in linkToEdit'), App.translate('Error'));
+            return;
+        } else if (field.type === 'text' || field.type === 'listRow') {
+            field.getEditVal = (input) => {
+                if (field.type === 'listRow' || field.textType === 'json') {
+                    return JSON.stringify(input.data('editor').get())
+                } else {
+                    return input.data('editor').getValue();
+                }
+            }
+        } else if (field.type === 'select') {
+            field.getEditSelect = (itemTmp, name, q, _, __, RequestObject) => {
+                return model.saveLinkToEdit(data[1].hash, null, null, {
+                    q: (q || ''),
+                    checkedVals: input ? field.getEditVal(input) : data[1].value.v
+                }, RequestObject)
+            }
+        } else if (field.type === 'tree') {
+            field.getEditVal = function (div) {
+                return this.getCheckedIds(div);
+            }
+            field.getEditSelect = (item, q, parentId) => {
+                let $deffered = $.Deferred();
+                model.saveLinkToEdit(data[1].hash, null, null, {
+                    q: (q || ''),
+                    parentId: parentId,
+                    checkedVals: input ? field.getEditVal(input) : data[1].value.v
+                }).then((data) => {
+                    $deffered.resolve([data.list, data.indexed])
+                }).fail(() => {
+                    $deffered.reject();
+                });
+                return $deffered;
+            }
+        } else if (field.type === 'comments') {
+            field.getValueFromServer = () => {
+                return model.saveLinkToEdit(data[1].hash, null, null, {
+                    comment: 'getValues'
+                })
+            }
+            field.getEditVal = (element) => {
+                return element.find('textarea').val().trim()
+            }
+        } else if (field.type === 'file') {
+            field.getEditVal = (element) => {
+                let files = [];
+                element.closest('.modal-content').find('.modal-body .filePart').each(function () {
+                    let fileDiv = $(this), file = fileDiv.data('file');
+                    if (file) {
+                        files.push(file)
+                    }
+                });
+                return files
+            }
+        }
+
+
+        let val = data[1].value;
+        let title = data[1].title;
+        let td = $('<div>');
+        let special, editVal;
+
+
+        let btns = [
+            {
+                action: (dialog) => {
+                    save();
+                },
+                cssClass: 'btn-warning btn-save',
+                label: App.translate('Save')
+            }
+        ];
+        if (field.code && !field.codeOnlyInAdd) {
+            if (val.h) {
+                btns.push({
+                    action: (dialog) => {
+                        special = 'setValuesToDefaults';
+                        editVal = null;
+                        save();
+                    },
+                    cssClass: 'btn-warning btn-save',
+                    label: '<i class="fa fa-eraser"></i>'
+                })
+            } else {
+                btns.push({
+                    action: (dialog) => {
+                        editVal = val.v;
+                        special = 'setValuesToPinned';
+                        save();
+                    },
+                    cssClass: 'btn-warning btn-save',
+                    label: '<i class="fa fa-hand-rock-o"></i>'
+                })
+            }
+
+        }
+
+
+        btns.push({
+            action: (dialog) => {
+                dialog.close();
+            },
+            cssClass: '',
+            label: '<i class="fa fa-times"></i>'
+        })
+
+
+        const save = (confirmed) => {
+            if (editVal === undefined) {
+                try {
+                    editVal = field.getEditVal(input);
+                } catch (error) {
+                    let notify = $('#' + App.popNotify(error, td, 'default'));
+                    notify.css('z-index', 1000);
+                    return;
+                }
+                if (!special && !field.isDataModified(editVal, val.v)) {
+                    Dialog.close();
+                    return;
+                }
+            }
+            if (!confirmed && (field.warningEditPanel) && field.checkEditRegExp.call(field, editVal)) {
+                App.confirmation((field.warningEditText || App.translate('Surely to change?')), {
+                    'OK': function (_dialog) {
+                        save(true);
+                        _dialog.close();
+                    },
+                    [App.translate("Cancel")]: function (_dialog) {
+                        revert();
+                        _dialog.close();
+                    }
+                }, App.translate('Change warning'));
+                return;
+            }
+
+            App.fullScreenProcesses.showCog();
+            model.saveLinkToEdit(data[1].hash, editVal, special)
+                .then(
+                    (json) => {
+                        resolve(json)
+                        Dialog.close();
+                    }
+                ).always(() => {
+                App.fullScreenProcesses.hideCog();
+            });
+        };
+
+        const dialogShow = () => {
+            Dialog = window.top.BootstrapDialog.show({
+                message: td,
+                type: null,
+                title: title,
+                cssClass: ['text', 'listRow'].indexOf(field.type) !== -1 ? 'fieldparams-edit-panel' : 'one-column-panel',
+                draggable: true,
+                buttons: btns,
+                onhidden: () => {
+                    resolve();
+                },
+            });
+        };
+
+        input = field.getEditElement(td, val, {}, () => {
+            //save()
+        }, () => {
+        }, () => {
+        }, 1, 'editField');
+        td.append(input);
+
+        dialogShow();
+        setTimeout(() => {
+            input.focus()
+        }, 20)
+    }
     App.showDatas = function (datas, notificationId, wnd) {
         let dialogs = [];
         let model = this;
@@ -391,7 +614,7 @@
                     inputFile.on('change', function () {
                         let promices = [];
                         if (this.files.length > data[1].limit) {
-                            App.notify('Превышен лимит файлов для закачки');
+                            App.notify(App.translate('Upload limit exceeded'));
                         } else {
 
                             for (var i = 0; i < this.files.length; i++) {
@@ -437,32 +660,77 @@
                         saveAs(blob, file.name);
                     })
                     break;
+                case 'editField':
+
+                    App.editField(model, data)
+
+                    break;
                 case 'input':
                     let input, Dialog;
                     let html = $('<div>').html(data[1].html);
-                    if (html.find('#ttmInput').length) {
-                        input = html.find('#ttmInput');
-                    } else {
-                        input = $('<input type="text" class="form-control" id="ttmInput">');
-                        if (data[1].type) {
-                            input.attr('type', data[1].type)
-                            if (data[1].type === 'password') {
-                                input.attr('autocomplete', "off")
-                            }
+
+                    let getVal;
+                    if (data[1].type === 'select') {
+
+                        let pcTable = {...model.pcTable};
+                        let field = $.extend({}, App.FieldTypes.select, {
+                            name: 'inputSelect',
+                            multiple: data[1].multiple
+                        });
+                        field.pcTable = model.getPcTable();
+
+                        model.inputClick = function (hash, val, selectData) {
+                            return this.__ajax('post', {
+                                method: 'linkInputClick',
+                                hash: hash,
+                                val: val,
+                                search: selectData
+                            })
                         }
-                        if (data[1].value)
-                            input.val(data[1].value)
-                        html.append(input);
-                        input.wrap('<div>');
-                        input.on('keydown', (event) => {
-                            if (event.keyCode === 13) {
-                                save();
+                        field.getEditSelect = (itemTmp, name, q, _, __, RequestObject) => {
+                            return model.inputClick(data[1].hash, null, {
+                                q: (q || ''),
+                                checkedVals: input ? field.getEditVal(input) : data[1].value
+                            }, RequestObject)
+                        }
+                        getVal = () => {
+                            return field.getEditVal(input)
+                        }
+                        input = field.getEditElement(html, {v:data[1].value}, [], () => {
+                        }, () => {
+                        }, () => {
+                        }, 1, 'editField')
+                        html.html(input)
+                    } else {
+
+                        if (html.find('#ttmInput').length) {
+                            input = html.find('#ttmInput');
+                        } else {
+                            input = $('<input type="text" class="form-control" id="ttmInput">');
+                            if (data[1].type) {
+                                input.attr('type', data[1].type)
+                                if (data[1].type === 'password') {
+                                    input.attr('autocomplete', "off")
+                                }
                             }
-                        })
+                            if (data[1].value)
+                                input.val(data[1].value)
+                            html.append(input);
+                            input.wrap('<div>');
+                            input.on('keydown', (event) => {
+                                if (event.keyCode === 13) {
+                                    save();
+                                }
+                            })
+                        }
+
+                        getVal = () => {
+                            return input.val()
+                        }
                     }
 
                     let save = function () {
-                        model.inputClick(data[1].hash, input.val()).then(function () {
+                        model.inputClick(data[1].hash, getVal()).then(function () {
                             if (data[1].close && wnd && wnd.closeMe) {
                                 window.closeMe();
                             } else if (data[1].refresh) {
@@ -479,10 +747,10 @@
                     props = {
                         buttons: [
                             {
-                                label: (data[1]['button'] || 'Сохранить'), action: save
+                                label: (data[1]['button'] || App.translate('Save')), action: save
                             }
                             , {
-                                label: 'Отмена', action: function (dialog) {
+                                label: App.translate('Cancel'), action: function (dialog) {
                                     dialog.close();
                                 }
                             }
@@ -606,9 +874,7 @@
                     notification.$ele.on('click', '.timer:not(.disabled)', function () {
                         let clocks = $(this);
                         clocks.addClass('disabled');
-                        $div = $('<div>' +
-                            '<div id="notification_clock_panel"><span class="clocks-na">На</span> <input type="number" step="1" value="10" class="form-control"/> <select class="form-control"><option  selected value="1">минут</option><option value="2">часов</option><option value="3">дней</option></select> <button>Отложить</button></button></div>'
-                            + '</div>');
+                        $div = $('<div>').append(getNotificationPanel('notification_clock_panel', App.translate('Shelve')));
                         $div.on('click', 'button', function () {
 
                             let num = $div.find('input').val();
@@ -660,7 +926,9 @@
     };
     App.getPcTableById = function (id, elseData, element, config_else) {
         let $d = $.Deferred();
-        (new App.models.table('/Table/0/' + id.toString(), {}, {})).getTableData(elseData ? elseData.sess_hash : null).then(function (config) {
+        elseData = elseData || {};
+        let uri = '/Table/0/' + (elseData.cycle_id ? '0/' + elseData.cycle_id + '/' : '') + id.toString();
+        (new App.models.table(uri, {}, {})).getTableData(elseData.sess_hash).then(function (config) {
 
             if (config_else && (config_else.withHeader === false || config_else.withFooter === false)) {
                 let fields = [];
@@ -672,7 +940,7 @@
                 delete config_else.withFooter;
             }
 
-            config.model = new App.models.table('/Table/0/' + id.toString(), $.extend({'updated': config.updated}, elseData || {}));
+            config.model = new App.models.table(uri, $.extend({'updated': config.updated}, elseData));
 
             $.extend(true, config, config_else);
 
@@ -681,7 +949,7 @@
         });
         return $d.promise();
     };
-    App.showPanels = function (panels) {
+    App.showPanels = function (panels, InPcTable) {
         if (window.top != window) return window.top.App.showPanels.call(window.top, panels)
 
         let pcTables = {};
@@ -698,7 +966,8 @@
             }
 
             const show = function (pcTable) {
-                (new EditPanel(pcTable.tableRow.id, null, data, panels.length > 0, fixed)).then(function (json, isNext) {
+
+                (new EditPanel(pcTable, null, data, panels.length > 0, fixed)).then(function (json, isNext) {
                     if (json || isNext) {
                         if (panels.length) {
                             showPanel();
@@ -706,8 +975,7 @@
                         }
                     }
                     if (panel.refresh) {
-                        let pcTable = $('#table').data('pctable');
-                        pcTable.model.refresh(null, panel.refresh)
+                        InPcTable.model.refresh(null, panel.refresh)
                     }
                     def.resolve();
                 });
@@ -719,6 +987,11 @@
                 } else {
                     (new App.models.table(panel.uri, {}, {})).getTableData().then(function (config) {
                         config.model = new App.models.table(panel.uri, {'updated': config.updated});
+
+                        if (data.id) {
+                            config.rows = [{id: data.id}];
+                        }
+
                         pcTables[panel.uri] = new App.pcTableMain(null, config);
 
                         show(pcTables[panel.uri]);
@@ -787,7 +1060,7 @@
             onhidden: function () {
                 if (refresh) {
                     if (refresh === 'strong') {
-                        window.location.reload()
+                        App.windowReloadWithHash(model);
                     } else {
                         model.refresh(null, refresh)
                     }
@@ -812,8 +1085,21 @@
 
     function showJson(data, model) {
         let div = $('<div>');
-        new JSONEditor(div.get(0), {mode: "view"}, data['json'])
-        dialog(data['title'], div, data.width, data.refresh, null, model)
+        let mode = data['hash'] ? {} : {mode: "view"};
+        let editor = new JSONEditor(div.get(0), mode, data['json'])
+        let btns = [];
+        if (data['hash']) {
+            btns.push({
+                'action': (dialog) => {
+                    model.linkJsonClick(data['hash'], JSON.stringify(editor.get()));
+                    dialog.close();
+                },
+                'label': data['buttontext'],
+                cssClass: 'btn-warning btn-save'
+            })
+        }
+
+        dialog(data['title'], div, data.width, data.refresh, null, model, btns)
     }
 
     function showNotificationTable(data, closeMe) {
@@ -859,7 +1145,7 @@
         let btns = [];
         if ($('#table').data('pctable') && $('#table').data('pctable').isCreatorView) {
             btns.push({
-                'label': "В новой вкладке",
+                'label': App.translate("In a new tab"),
                 cssClass: 'btn-m btn-danger',
                 'action': function (dialog) {
                     let wnd = window.open($iframe.get(0).contentWindow.location, '_blank');
@@ -898,8 +1184,11 @@
             let tempFrameWindow = tempFrame.contentWindow ? tempFrame.contentWindow : tempFrame.contentDocument.defaultView;
 
 
-            tempFrameWindow.document.head.innerHTML = '<style>' + styles + '</style>';
-            tempFrameWindow.document.body.innerHTML = body;
+            setTimeout(() => {
+                tempFrameWindow.document.body.innerHTML = '<style>' + styles + '</style>'+body;
+                $(tempFrameWindow.document.body).find('.nicescroll-rails').remove();
+            }, 50)
+
             let iBody = tempFrameWindow.document.body;
 
             let def = $.Deferred();
@@ -912,7 +1201,7 @@
                     setTimeout(function () {
                         def.resolve();
 
-                    }, 2000)
+                    }, 1000)
                 }
             };
 
@@ -925,6 +1214,8 @@
                 iCheck = 0;
                 checkScroll();
             };
+
+
             checkBodyHeight();
             def.then(function () {
                 App.fullScreenProcesses.hideCog();
@@ -934,9 +1225,9 @@
                     tempFrameWindow.print();
                 }, 250);
 
-                setTimeout(function () {
-                    // iframe.remove();
-                }, 10000);
+                /*setTimeout(function () {
+                     iframe.remove();
+                }, 10000);*/
             });
         }
     }

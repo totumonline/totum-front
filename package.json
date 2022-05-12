@@ -1,6 +1,6 @@
 {
   "name": "totum-front",
-  "version": "1.1.29",
+  "version": "1.2.30",
   "description": "totum-front",
   "license": "MIT",
   "repository": "https://github.com/totumonline/totum-front",
@@ -44,6 +44,7 @@
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.9.10",
     "babelify": "^10.0.0",
+    "chart.js": "^2.9.4",
     "date-fns": "^2.16.1",
     "material-ui-dropzone": "^3.5.0",
     "moment": "^2.29.1",
@@ -57,7 +58,6 @@
     "copy-to-base": "cp http/js/* ../../../http/js/ && cp http/css/* ../../../http/css/",
     "run-dev-gulp": "gulp DEVELOP",
     "run-all-prod-gulp": "gulp",
-    "run-quick-prod-gulp": "gulp QUICK-PROD",
-
+    "run-quick-prod-gulp": "gulp QUICK-PROD"
   }
 }

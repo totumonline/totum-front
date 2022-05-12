@@ -113,8 +113,4 @@
             cm.setSelection(from, cm.getCursor(false));
         });
     });
-
-    $(function () {
-
-    });
 })();

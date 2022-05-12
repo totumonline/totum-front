@@ -1,10 +1,46 @@
 App.pcTableMain.prototype.__formatFunctions = {
+    interlace: function (firstStart) {
+
+        if (firstStart && !this.f.interlace) return;
+        let interlaceStyle = $('#ttmTableStyles').length ? $('#ttmTableStyles') : $('<style>').attr('id', 'ttmTableStyles').appendTo(this._container);
+
+        let text = '';
+        if (this.f.interlace.toString().match(/^[0-9]{1,3}$/) && parseInt(this.f.interlace) <= 100) {
+            text += ' tr.DataRow:nth-of-type(odd) td {box-shadow: inset 0 0 100px 100px rgba(0,0,0,' + (parseInt(this.f.interlace) / 100) + ')}'
+        } else {
+            let colors = this.f.interlace.split('/');
+            colors.forEach((v, i) => {
+                if (v.match(/\#?[0-9A-F]+/i)) {
+                    if (i == 1) {
+                        text += ' tr.DataRow:nth-of-type(odd) td {background-color: ' + v + ';}'
+                    } else {
+                        text += ' tr.DataRow:nth-of-type(even) td {background-color: ' + v + ';}'
+                    }
+                }
+            })
+        }
+        interlaceStyle.text(text)
+
+    },
+    fieldhide: function () {
+        if (this.f && this.f.fieldhide && Object.keys(this.f.fieldhide).length) {
+            this.loadVisibleFields(this.f.fieldhide);
+            this._refreshHead();
+            this._refreshContentTable(true);
+        }
+    },
+    kanban_html: function () {
+        this._refreshContentTable();
+    },
     blockadd: function () {
         this._closeInsertRow();
         this._rowsButtons();
     },
     tablecomment: function () {
         this._rowsButtons();
+    },
+    browsertitle: function () {
+        this._setBrowserTitle();
     },
     buttons: function () {
         this._rerendParamsblock();
@@ -19,6 +55,9 @@ App.pcTableMain.prototype.__formatFunctions = {
         this._refreshFootersBlock();
     }, tabletitle: function () {
         this._refreshTitle();
+    },
+    tabletext: function () {
+        this._refreshTableText();
     }
     , text: function () {
         this._refreshTableText();
@@ -28,7 +67,7 @@ App.pcTableMain.prototype.__formatFunctions = {
     }, fieldtitle: function (newvals, oldVals) {
         let categories = {};
 
-        const getCat=function (field) {
+        const getCat = function (field) {
             return field.category == 'footer' && field.column ? 'tableFooter' : field.category;
         };
 

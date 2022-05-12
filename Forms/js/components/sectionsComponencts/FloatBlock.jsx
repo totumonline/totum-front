@@ -19,7 +19,22 @@ export const getFieldGap = function (gap, blockNum, field) {
 }
 
 
-export const FloatBlock = ({fields, plateh, platemh, Plates, outline, format, data, Titles, sectionWithPannels, width, fillAll, setFillTrue, model, gap}) => {
+export const FloatBlock = ({
+                               fields,
+                               plateh,
+                               platemh,
+                               Plates,
+                               outline,
+                               format,
+                               data,
+                               Titles,
+                               sectionWithPannels,
+                               width,
+                               fillAll,
+                               setFillTrue,
+                               model,
+                               gap
+                           }) => {
     let innerBlocks = [], innerBlock, innerBlockNum;
     let glueBlocks = [], glueBlock;
     let blockPassed = false;
@@ -76,7 +91,7 @@ export const FloatBlock = ({fields, plateh, platemh, Plates, outline, format, da
         let _gap = 0
         fields.forEach((field, i) => {
             if (isNotFirst || i) {
-                _gap += getFieldGap(gap, (format[field.name].blockNum || 0).toString(), field);
+                _gap += parseInt(getFieldGap(gap, (format[field.name].blockNum || 0).toString(), field));
             }
         })
         return _gap
@@ -176,7 +191,7 @@ const getWidthInner = function (innerBlockGlues, getGaps, isMin) {
             sumWidth = 0;
             line = glueBlock.line;
         }
-        sumWidth += (isMin?glueBlock.minwidth:glueBlock.width) + getGaps(sumWidth, glueBlock.fields);
+        sumWidth += parseInt(isMin ? glueBlock.minwidth : glueBlock.width) + getGaps(sumWidth, glueBlock.fields);
     });
     if (maxWidth < sumWidth)
         maxWidth = sumWidth;

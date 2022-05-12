@@ -1,12 +1,12 @@
 App.pcTableMain.prototype.reOrderRows = function (btnId, $direction) {
     let pcTable = this;
     if (pcTable.tableRow.with_order_field && !pcTable.nSorted) {
-        App.notify('Для работы поля порядок перезагрузите таблицу');
+        App.notify(App.translate('To operate the order field, reload the table'));
         return false;
     }
 
     if(pcTable.isRestoreView){
-        App.notify('Режим восстановления строк. Сортировка отключена');
+        App.notify(App.translate('Rows restore mode. Sorting disabled'));
         return false;
     }
 
@@ -19,7 +19,7 @@ App.pcTableMain.prototype.reOrderRows = function (btnId, $direction) {
         let indVisBtn = this.dataSortedVisible.indexOf(btnId) + ($direction === 'after' ? 1 : -1);
         if (indVisBtn < 0 || !(indVisBtn in this.dataSortedVisible)) return;
         if (this.data[this.dataSortedVisible[indVisBtn]].f && this.data[this.dataSortedVisible[indVisBtn]].f.blockorder) {
-            App.notify('Нельзя перемещать строку ' + this.getRowTitle(this.data[this.dataSortedVisible[indVisBtn]]));
+            App.notify(App.translate('You cannot move the row %s', this.getRowTitle(this.data[this.dataSortedVisible[indVisBtn]])));
             return;
         }
 
@@ -31,7 +31,7 @@ App.pcTableMain.prototype.reOrderRows = function (btnId, $direction) {
 
     } else {
         if (pcTable.row_actions_get_checkedIds().indexOf(btnId) !== -1) {
-            App.notify('В качестве якоря для перемещения нужно выбрать не отмеченную строку');
+            App.notify(App.translate('The unchecked row should be selected as the anchor for the move'));
             return false;
         }
         let idsLength = this.row_actions_get_checkedIds().length;
@@ -75,11 +75,15 @@ App.pcTableMain.prototype.reOrderRowsSave = function () {
 
     this.model.saveOrder(this.dataSorted)
         .then(function (json) {
+            pcTable.dataSorted.forEach((id)=>{
+                if(pcTable.data[id] && pcTable.data[id].__inserted){
+                    delete pcTable.data[id].__inserted
+                }
+            })
             pcTable.table_modify(json);
             pcTable._orderSaveBtn.prop('disabled', false).find('i').attr('class', 'fa fa-save');
             $('table.pcTable-table').removeClass('reordered');
             //pcTable._table.removeClass('reordered');
-
         });
 
 };

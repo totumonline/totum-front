@@ -22,7 +22,7 @@
                         }
                         panelTimer.close();
                     },
-                    label: 'Отмена'
+                    label: App.translate('Cancel')
                 }]
         });
         let timeoutFunc = function () {

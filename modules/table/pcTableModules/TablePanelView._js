@@ -62,17 +62,26 @@
                         td.text(val)
                     }
                     if (Field.unitType && val !== '') {
-                        td.append(' ' + Field.unitType);
+                        if (Field.before) {
+                            td.prepend(Field.unitType + ' ');
+                        } else {
+                            td.append(' ' + Field.unitType);
+                        }
+
                     }
                 }
 
                 if (format.comment) {
-                    td.prepend($('<i class="fa fa-help">').attr('title', format.comment))
+                    td.prepend($('<i class="fa fa-info">').attr('title', format.comment))
                 } else if (format.icon) {
                     td.prepend($('<i class="fa">').addClass('fa-' + format.icon))
                 }
 
                 td.attr('data-field-type', Field.type).addClass('nonowrap');
+
+                if (Field.editable && Field.pcTable.control.editing && !format.block) {
+                    td.addClass('panel-edt');
+                }
 
                 if (format.showhand !== false && data[field.field].h) {
                     let val = data[field.field], $hand;
@@ -82,6 +91,24 @@
                         $hand = $('<i class="fa fa-hand-rock-o pull-right cell-icon" aria-hidden="true"></i>');
                     }
                     td.append($hand)
+                }
+
+                if (Field.editable && this.control.editing && !format.block) {
+                    td.on('dblclick', function () {
+                        let background = td.css('backgroundColor');
+                        let html = td.html();
+                        td.html('Редактирование в поле').css('background-color', '#ffddb4')
+                        pcTable.editSingleFieldInPanel(Field, data.id).then((json) => {
+                            if (json) {
+                                pcTable.table_modify(json);
+                            } else {
+                                td.css('background-color', background)
+                                td.html(html)
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+                    })
                 }
 
             } else {
@@ -129,7 +156,7 @@
             if (format.progress && format.progresscolor) {
                 let addProgress = function () {
                     if (!td.isAttached()) {
-                        setTimeout(addProgress, 50);
+                        setTimeout(addProgress, 1);
                     } else {
                         let progress = Math.round(td.outerWidth() * parseInt(format.progress) / 100);
                         td.css('box-shadow', 'inset ' + progress.toString() + 'px 0px 0 0 ' + format.progresscolor);
@@ -224,7 +251,9 @@
             }
 
             let controls = $('<div class="panel-controls">');
-            controls.append('<span class="panle-id">id ' + id + '</span>');
+            if (this._isDisplayngIdEnabled()) {
+                controls.append('<span class="panle-id">id ' + id + '</span>');
+            }
 
             if (this.tableRow.panel) {
                 controls.append('<button class="btn btn-default btn-xxs" data-action="panel"><i class="fa fa-th-large"></i></span>');
@@ -244,9 +273,9 @@
         return div;
     }
     const addSortable = function (div) {
-        if (this.kanban) {
+        if ((this.kanban && this.fields[this.tableRow.panels_view.kanban].editable) || this.tableRow.with_order_field) {
 
-            const saveOrder = ($item) => {
+            const saveOrder = ($item, withoutRefreshes) => {
                 let $d = $.Deferred();
 
                 let order = [];
@@ -261,7 +290,7 @@
                     this.dataSorted.push(...order);
 
                     return this.model.saveOrder(order).then((json) => {
-                        this.table_modify(json);
+                        this.table_modify(json, null, null, withoutRefreshes);
                     });
                 } else {
                     $d.resolve();
@@ -271,30 +300,78 @@
 
             $(div).find('.kanban').sortable({
                 items: '.panelsView-card',
-                connectWith: this.fields[this.tableRow.panels_view.kanban].editable ? '.kanban' : "",
-                stop: (event, ui) => {
+                connectWith: this.kanban && this.fields[this.tableRow.panels_view.kanban].editable ? '.kanban' : '',
+                over: (event, ui) => {
                     let $item = $(ui.item);
                     let itemId = $item.data('id');
-                    let nowBeforeId = $item.prev().data('id');
-                    App.fullScreenProcesses.show('sorting');
+                    let kanban = this.data[itemId][this.tableRow.panels_view.kanban].v || '';
+                    let newKanban = ui.placeholder.closest('.kanban').data('value');
+                    if (this.data[itemId][this.tableRow.panels_view.kanban].v == newKanban && !this.tableRow.with_order_field) {
+                        ui.item.addClass('kanban-disabled')
+                    } else {
+                        ui.item.removeClass('kanban-disabled')
+                        ui.placeholder.closest('.kanban').addClass('kanban-enabled')
+                    }
+                },
+                out: (event, ui) => {
+                    if (!(this.kanban && this.fields[this.tableRow.panels_view.kanban].editable)) {
+                        ui.item.addClass('kanban-disabled')
+                    }
+                    ui.placeholder.closest('.kanban').removeClass('kanban-enabled')
+                },
+                start: (event, ui) => {
+                    if (!(this.kanban && this.fields[this.tableRow.panels_view.kanban].editable)) {
+                        $(div).find('.kanban').not($(ui.item).closest('.kanban')).addClass('kanban-disabled')
+                    }
+                    ui.item.data('prev', $(ui.item).prev().data('id'));
+                },
+                stop: (event, ui) => {
+                    $(div).find('.kanban').removeClass('kanban-enabled')
+                    $(ui.item).removeClass('kanban-disabled')
 
-                    let kanban = this.data[itemId][this.tableRow.panels_view.kanban];
-                    if (this.data[itemId][this.tableRow.panels_view.kanban] != $item.parent().data('value')) {
-                        kanban = $item.closest('.kanban').data('value');
-                        this.model.save({[itemId]: {[this.tableRow.panels_view.kanban]: kanban}}).then((json) => {
-                            if (this.tableRow.with_order_field) {
-                                saveOrder($item).always(() => {
+                    let $item = $(ui.item);
+
+
+                    let itemId = $item.data('id');
+
+
+                    let kanban = this.data[itemId][this.tableRow.panels_view.kanban].v || '';
+                    let newKanban = $item.closest('.kanban').data('value');
+
+                    if ($item.data('prev') === $(ui.item).prev().data('id') && kanban == newKanban) {
+                        return;
+                    }
+
+                    let nowBeforeId = $item.prev().data('id');
+                    $item.closest('.kanban').removeClass('kanban-disabled')
+
+                    if (kanban != newKanban) {
+                        App.fullScreenProcesses.show('sorting');
+
+
+                        if (this.tableRow.with_order_field) {
+                            saveOrder($item, true).always(() => {
+                                this.model.save({[itemId]: {[this.tableRow.panels_view.kanban]: newKanban}}).then((json) => {
+                                    this.table_modify(json);
                                     this._container.getNiceScroll().resize();
                                     App.fullScreenProcesses.hide('sorting');
-                                })
-                            } else {
+                                });
+                            })
+                        } else {
+                            this.model.save({[itemId]: {[this.tableRow.panels_view.kanban]: newKanban}}).then((json) => {
+
+                                this.dataSorted.splice(this.dataSorted.indexOf(itemId), 1);
+                                this.dataSorted.splice(this.dataSorted.indexOf(nowBeforeId) + 1, 0, itemId);
+
                                 this.table_modify(json);
                                 this._container.getNiceScroll().resize();
                                 App.fullScreenProcesses.hide('sorting');
-                            }
-                        });
+                            });
+                        }
+
                     } else {
                         if (this.tableRow.with_order_field) {
+                            App.fullScreenProcesses.show('sorting');
                             saveOrder($item).always(() => {
                                 App.fullScreenProcesses.hide('sorting');
                             })
@@ -302,38 +379,6 @@
                     }
                 }
             })
-        } else {
-            if (!$(div).data('sortableAdded')) {
-                $(div).data('sortableAdded', 1);
-                $(div).sortable({
-                    stop: (event, ui) => {
-                        let $item = $(ui.item);
-                        let itemId = $item.data('id');
-                        let nowBeforeId = $item.prev().data('id');
-
-                        let old = [...this.dataSorted];
-                        this.dataSorted.splice(this.dataSorted.indexOf(itemId), 1);
-                        if (nowBeforeId) {
-                            this.dataSorted.splice(this.dataSorted.indexOf(nowBeforeId) + 1, 0, itemId);
-                        } else {
-                            this.dataSorted.splice(0, 0, itemId);
-                        }
-                        this.dataSortedVisible = [];
-                        this.dataSorted.forEach((id) => {
-                            if (this.data[id].$visible) this.dataSortedVisible.push(id);
-                        });
-                        if (!Object.equals(old, this.dataSorted)) {
-                            App.fullScreenProcesses.show('sorting');
-                            this.model.saveOrder(this.dataSorted).then((json) => {
-                                this.table_modify(json);
-                            }).always(() => {
-                                App.fullScreenProcesses.hide('sorting');
-                            });
-                        }
-
-                    }
-                })
-            }
         }
     }
     const createPanelsContent = function () {
@@ -343,6 +388,7 @@
             if ((this.tableRow.with_order_field || this.kanban) && this.control.editing && !(this.f.blockorder || this.f.blockedit)) {
                 setTimeout(() => {
                     addSortable.call(this, d)
+
                 }, 1)
             }
         });
@@ -356,17 +402,39 @@
                 this._innerContainer.addClass('kanbanInnerContainer');
                 $div.addClass('kanbanWrapper').empty()
 
+
                 $div.css('grid-template-columns', "1fr ".repeat(this.kanban.length));
                 let width = 0;
+
+                let kanban_html = this.kanban_html || this.f.kanban_html || null;
+
                 this.kanban.forEach((v) => {
                     let divWidth = (this.tableRow.panels_view.panels_in_kanban || 1) * (parseInt(this.tableRow.panels_view.width) + 10) - 10;
 
                     v.$div = $('<div class="kanban"></div>').data('value', v[0]).width(divWidth);
 
+
                     if (width)
                         width += 20;
-                    width += divWidth
-                    v.$div.append($('<div class="kanban-title">').text(v[1]).attr('data-value', v[0]))
+                    width += divWidth;
+                    let title = $('<div class="kanban-title">').text(v[1]).attr('data-value', v[0]);
+                    v.$div.append(title)
+                    if (this.tableRow.panels_view.kanban_colors) {
+                        if (this.tableRow.panels_view.kanban_colors[v[0]])
+                            title.css({'background-color': this.tableRow.panels_view.kanban_colors[v[0]]})
+                    }
+                    if (this.tableRow.panels_view.kanban_html_type && kanban_html) {
+                        let html = $('<div class="kanban-html">');
+
+                        html.height(this.tableRow.panels_view.kanban_html_height);
+
+                        title.after(html);
+                        if (kanban_html[v[0]]) {
+                            html.html(kanban_html[v[0]])
+                        }
+                    }
+
+
                     let $cards = $('<div class="kanban-cards">');
                     v.$div.append($cards);
                     let kId = v[0];
@@ -380,9 +448,39 @@
                             }
                         })
                     } else {
-                        $cards.append('<div class="empty-kanban">Нет данных</div>');
+                        $cards.append('<div class="empty-kanban">' + App.translate('No data') + '</div>');
                     }
                 })
+
+                if (this.tableRow.panels_view.kanban_html_type === 'hide') {
+                    $div.css('grid-template-columns', "40px " + ("1fr ".repeat(this.kanban.length)));
+                    $div.css('margin-left', "-60px");
+
+                    let buttonsDiv = $('<div class="kanban_left_buttons">').prependTo($div)
+                    let btn = $('<button class="btn btn-default btn-sm kanban_html_arrow"></button>');
+                    buttonsDiv.prepend(btn)
+                    if (!this.kanban_html) {
+                        btn.html('<i class="fa fa-arrow-down"></i>').attr('title', App.translate('Show columns extra info')).on('click', () => {
+                            if (!this.model.getKanbanHtml) {
+                                this.model.getKanbanHtml = function () {
+                                    return this.__ajax('post', {method: 'getKanbanHtml'});
+                                }
+                            }
+                            this.model.getKanbanHtml().then((json) => {
+                                this.kanban_html = json.kanban_html;
+                                this._refreshContentTable();
+                            })
+
+                        })
+                    } else {
+                        btn.html('<i class="fa fa-arrow-up"></i>').attr('title', App.translate('Hide columns extra info')).on('click', () => {
+                            this.kanban_html = null;
+                            this._refreshContentTable();
+                        })
+                    }
+
+                }
+
                 $div.width(width);
                 this.tableWidth = width;
             } else {
@@ -394,16 +492,17 @@
             }
 
         } else {
-            $div.append('<div class="no-panels">Нет данных</div>');
+            $div.append('<div class="no-panels">' + App.translate('No data') + '</div>');
         }
         setTimeout(() => {
             this._container.getNiceScroll().resize();
+
         })
 
         return $div;
     };
 
-    const render = function () {
+    const renderTable = function () {
         let pcTable = this;
         this._sorting = {};
         this._table = $("<table>")
@@ -436,6 +535,11 @@
         rowsParent
             .append(this._createRowsTitle(rowsParent))
             .append(this._createFiltersBlock())
+            .append(() => {
+                if (this.tableRow.pagination && this.tableRow.pagination !== '0/0') {
+                    return this._pagination();
+                }
+            })
             .append(this._rowsButtons())
             .append(this._innerContainer);
 
@@ -468,19 +572,41 @@
 
 
         let selectedDiv;
-        this._content.on('contextmenu', '.panelsView-card td', function () {
+        this._content.on('contextmenu', '.panelsView-card td', function (event) {
             if (selectedDiv) {
                 selectedDiv.removeClass('selected')
             }
+            if (event.type === 'click' && event.originalEvent && event.originalEvent.path && $(event.originalEvent.path[0]).is('button')) {
+                return;
+            }
+
             let td = $(this);
-            let item = pcTable.data[td.closest('.panelsView-card').data('id')];
-            let field = td.data('name');
-            if (td.data('panel') && td.data('panel').isAttached() && pcTable.selectedCells.selectPanel === td.data('panel')) {
-                pcTable.selectedCells.selectPanelDestroy();
-                td.data('panel', null);
+            if (!selectedDiv || selectedDiv.get(0) !== td.get(0) || !pcTable.selectedCells.selectPanel) {
+                let item = pcTable.data[td.closest('.panelsView-card').data('id')];
+                let field = td.data('name');
+                if (td.data('panel') && td.data('panel').isAttached() && pcTable.selectedCells.selectPanel === td.data('panel')) {
+                    td.data('panel', null);
+                } else {
+                    td.data('panel', pcTable.selectedCells.selectPanel = pcTable.getSelectPanel.call(pcTable, pcTable.fields[field], item, td));
+                    selectedDiv = td.addClass('selected')
+                }
             } else {
-                td.data('panel', pcTable.selectedCells.selectPanel = pcTable.getSelectPanel.call(pcTable, pcTable.fields[field], item, td));
+                selectedDiv = null;
+            }
+        });
+        this._content.on('click', '.panelsView-card td', function (event) {
+            if (selectedDiv) {
+                selectedDiv.removeClass('selected')
+            }
+            if (event.originalEvent && event.originalEvent.path && $(event.originalEvent.path[0]).is('button')) {
+                return;
+            }
+
+            let td = $(this);
+            if (!selectedDiv || selectedDiv.get(0) !== td.get(0)) {
                 selectedDiv = td.addClass('selected')
+            } else {
+                selectedDiv = null;
             }
         });
 
@@ -489,6 +615,9 @@
         this._content.on('click', '.panelsView-card', function (event) {
             if (event.originalEvent && event.originalEvent.path && !$(event.originalEvent.path[0]).is('button, .fa')) {
                 let td = $(this);
+                if (td.is('.cell-button')) {
+                    return;
+                }
                 if (selected && selected.get(0) === td.get(0)) {
                     td.removeClass('selected');
                     selected = null
@@ -504,20 +633,41 @@
             this._hideHell_storage.checkIssetFields.call(this)
         }
     }
-    const refreshRow = function (tr, item, newData) {
+    const refreshRow = function (tr, item, newData, onlyChanged) {
         if (tr.is('.panelsView-card')) {
+            let changed = false;
+            if (newData && onlyChanged) {
+                Object.keys(newData).some((k) => {
+                    if (newData[k] !== null && typeof newData[k] == 'object') {
+                        if (newData[k].changed) {
+                            changed = true;
+                            return true;
+                        } else if (!Object.equals(newData[k], item[k]) && (k in this.fields) && this.fields[k].type !== "listRow") {
+                            changed = true;
+                            return true;
+                        }
+                    } else if (newData[k] != item[k]) {
+                        changed = true;
+                        return true;
+                    }
+                    item[k] = newData[k];
+                })
+            }
+
             $.extend(item, newData);
-            this._getRowCard(item.id);
+            if (!onlyChanged || changed) {
+                this._getRowCard(item.id);
+            }
         }
-
-
     }
 
     App.pcTableMain.prototype._renderTablePanelView = function () {
 
         this.loadFilters();
+        this.model.addExtraData({'panelsView': true})
 
-        this._renderTable = render.bind(this);
+
+        this._renderTable = renderTable.bind(this);
         this._getRowCard = getRowCard.bind(this);
 
         this._refreshHead = () => {
@@ -529,6 +679,8 @@
                 },
                 insertToDOM: () => {
                     this._refreshContentTable();
+                },
+                emptyCache: () => {
                 }
             };
         }
@@ -538,22 +690,27 @@
             let wrapper, cln, topButton, attached = false;
             const scrollFunc = () => {
                 wrapper = wrapper || this._container.find('.kanbanWrapper.pcTable-floatBlock');
+
+
                 let offset = wrapper.offset();
                 if (offset.top < 0) {
                     if (!cln) {
                         let css = {
-                            left: offset.left,
+                            left: offset.left + this._innerContainer.scrollLeft(),
                             'grid-template-columns': wrapper.css('grid-template-columns'),
                             width: wrapper.width()
                         }
                         cln = $('<div class="kanbanWrapper pcTable-floatBlock cln">').css(css);
+                        cln.width(this._innerContainer.width())
+
+
                         $('.kanban').each(function () {
                             let exs = $(this);
                             let knb = $("<div class='kanban'>").width(exs.width()).append(exs.find('.kanban-title').clone())
                             cln.append(knb)
                         })
                         let pcTable = this;
-                        topButton=$('<button class="scroll-top-button"><i class="fa fa-arrow-up"></i></button>').on('click', function () {
+                        topButton = $('<button class="scroll-top-button"><i class="fa fa-arrow-up"></i></button>').on('click', function () {
                             pcTable._container.scrollTop(pcTable._container.find('.pcTable-rowsWrapper').offset().top - pcTable.scrollWrapper.offset().top);
                         });
                     }
@@ -561,6 +718,8 @@
                         attached = true;
                         this._innerContainer.append(cln)
                         this._innerContainer.append(topButton)
+
+                        cln.scrollLeft(this._innerContainer.scrollLeft())
                     }
                 } else if (attached) {
                     attached = false;
@@ -575,14 +734,26 @@
                 }, 50);
             });
 
+            let scroll_horizontal_debounce;
+            this._innerContainer.on('scroll', () => {
+                clearTimeout(scroll_horizontal_debounce);
+                scroll_horizontal_debounce = setTimeout(() => {
+                    if (cln) {
+                        cln.scrollLeft(this._innerContainer.scrollLeft())
+                    }
+                }, 50)
+            })
+
             this.rowButtonsCalcWidth = function () {
 
-                if (this.tableWidth < this.tableRow.panels_view.width) {
-                    this.__$rowsButtons.width(this.tableRow.panels_view.width)
-                } else if (this.tableWidth < this._innerContainer.width()) {
-                    this.__$rowsButtons.width(this.tableWidth)
-                } else if (!this.isMobile) {
-                    this.__$rowsButtons.width(this._innerContainer.width())
+                if (this.__$rowsButtons) {
+                    if (this.tableWidth < this.tableRow.panels_view.width) {
+                        this.__$rowsButtons.width(this.tableRow.panels_view.width)
+                    } else if (this.tableWidth < this._innerContainer.width()) {
+                        this.__$rowsButtons.width(this.tableWidth)
+                    } else if (!this.isMobile) {
+                        this.__$rowsButtons.width(this._innerContainer.width())
+                    }
                 }
             }
         } else {

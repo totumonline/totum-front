@@ -22,9 +22,11 @@ $(function () {
                 case 'hidden':
                     if (RequestObject.jqXHR && RequestObject.jqXHR.abort)
                         RequestObject.jqXHR.abort();
-                    RequestObject = {};
+                    RequestObject.aborted = true;
                     break;
                 case 'visible':
+
+                    delete RequestObject.aborted;
 
                     model.checkForNotifications(periodicity, Object.keys(activeNotifications), RequestObject).then(function (json) {
                         if (json.notifications && json.notifications.length) {

@@ -13,12 +13,14 @@ fieldTypes.checkbox = {
 
         if (tabindex) $input.attr('tabindex', tabindex);
         let action = false;
-        $input.on('keyup', function (event) {
-            if (event.keyCode == 13) {
-                action = true;
-                setTimeout(function () {
-                    enterClbk($input, event);
-                }, 20);
+        $input.on('keydown', function (event) {
+            switch (event.keyCode) {
+                case  13:
+                case  9:
+                    action = true;
+                    setTimeout(function () {
+                        enterClbk($input, event);
+                    }, 20);
 
             }
         });
@@ -39,7 +41,7 @@ fieldTypes.checkbox = {
 
         $input.on('click', function (event) {
             action = true;
-            enterClbk($input, event);
+            enterClbk($input, event, 'enter');
         });
         return $input;
     }

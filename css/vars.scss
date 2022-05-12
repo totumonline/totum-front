@@ -12,3 +12,24 @@ $rowsBackColor: #faf9f8;
 $tmp-table-background-line-color: #f2eeee;
 
 $btn-danger-background-new: coral;
+
+@mixin selectVal(){
+  .loaded-preview{
+    padding-left: 6px;
+    margin-bottom: 5px;
+    background-color: #fafafa;
+    .title{
+      &:not(:first-child){
+        padding-top: 3px;
+      }
+      font-family: PTRootUIWeb;
+      font-weight: bold;
+    }
+  }
+  .btn{
+    margin-right: 3px;
+    margin-top: 1px;
+    height: 19px;
+    padding-top: 0px;
+  }
+}

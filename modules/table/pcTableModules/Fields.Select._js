@@ -1,6 +1,5 @@
 fieldTypes.select = {
-    icon: 'fa-th-list',
-    getEditVal: function (div) {
+    icon: 'fa-th-list', getEditVal: function (div) {
         if (div.data('input')) {
             var val = div.data('input').selectpicker('val');
             if (val === null) {
@@ -8,65 +7,71 @@ fieldTypes.select = {
             }
             return val;
         }
-    },
-    loadPreviewPanel(panel, fieldName, item, val) {
+    }, loadPreviewPanel(panel, fieldName, item, val) {
         let $def = $.Deferred();
+        let field = this;
         panel.html('<div class="center"><i class="fa fa-spinner fa-spin"></i></div>');
         this.pcTable.model.loadPreviewHtml(fieldName, item, val).then(function (json) {
             if (panel) {
 
                 let html = $('<div>');
-                json.previews.forEach(
-                    function (preview) {
-                        let $_html = $('<div class="preview">');
+                json.previews.forEach(function (preview) {
+                    let $_html = $('<div class="preview">');
 
-                        switch (preview[2]) {
-                            case 'file':
-                                window.imgRand = window.imgRand || Math.random();
+                    switch (preview[2]) {
+                        case 'file':
+                            window.imgRand = window.imgRand || Math.random();
 
-                                if (Array.isArray(preview[1])) {
-                                    preview[1].forEach(function (file) {
-                                        if (['jpg', 'png'].indexOf(file.ext) !== -1) {
-                                            $_html.append($('<a href="/fls/' + file.file + '" target="_blank">').html('<img src="/fls/' + file.file + '_thumb.jpg?rand=' + window.imgRand + '"/><br/>'));
-                                        }
-                                        $_html.append($('<a href="/fls/' + file.file + '" target="_blank">').text(file.name + ' ' + Math.round(file.size / 1024).toLocaleString('ru-RU') + ' Kb'));
-                                    });
-                                }
-                                break;
-                            case 'html':
-                                $_html.text(preview[0]);
-                                break;
-                            case 'text':
-                                $_html.text(App.textWithLinks(preview[1]));
-                                break;
-                            case 'currency':
-                            case 'number':
-                                if (preview[2] === 'currency') {
-                                    try {
-                                        $_html.text(parseFloat(preview[1]).toLocaleString('ru-RU'));
-                                    } catch (e) {
-                                        $_html.text(preview[1]);
+                            if (Array.isArray(preview[1])) {
+                                preview[1].forEach(function (file) {
+                                    if (['jpg', 'png'].indexOf(file.ext) !== -1) {
+                                        $_html.append($('<a href="/fls/' + file.file + '" target="_blank">').html('<img src="/fls/' + file.file + '_thumb.jpg?rand=' + window.imgRand + '"/><br/>'));
                                     }
-                                } else {
+                                    $_html.append($('<div class="file-label">').html($('<a href="/fls/' + file.file + '" target="_blank">').text(file.name + ' ' + Math.round(file.size / 1024).toLocaleString(App.langLocale) + ' Kb')));
+
+                                });
+                            }
+                            break;
+                        case 'html':
+                            $_html.text(preview[0]);
+                            break;
+                        case 'text':
+                            $_html.text(App.textWithLinks(preview[1]));
+                            break;
+                        case 'currency':
+                        case 'number':
+                            if (preview[2] === 'currency' || preview[3].currency) {
+                                try {
+                                    $_html.text(App.numberFormat(parseFloat(preview[1]), preview[3].dectimalPlaces, preview[3].dectimalSeparator, preview[3].thousandthSeparator, preview[3].prefix, preview[3].postfix));
+                                } catch (e) {
                                     $_html.text(preview[1]);
                                 }
+                            } else {
+                                $_html.text(preview[1]);
+                            }
 
-                                if (preview[3]['unitType']) {
+                            if (preview[3]['unitType']) {
+                                if (preview[3].before) {
+                                    $_html.prepend(preview[3]['unitType'] + ' ');
+                                } else {
                                     $_html.append(' ' + preview[3]['unitType']);
                                 }
+                            }
 
-                                break;
-                            case 'url':
-                                $_html = $('<div>').append($('<a target="_blank">').text(preview[1]).attr('href', preview[1]));
-                                break;
-                            default:
-                                $_html = $('<div>').text(preview[1]);
-                        }
-
-                        html.append($('<div class="title">').text(preview[0]));
-                        html.append($_html);
+                            break;
+                        case 'url':
+                            $_html = $('<div>').append($('<a target="_blank">').text(preview[1]).attr('href', preview[1]));
+                            break;
+                        default:
+                            $_html = $('<div>').text(preview[1]);
                     }
-                );
+
+                    html.append($('<div class="title">').text(preview[0]));
+                    html.append($_html);
+                });
+                if (json.previews.length === 0) {
+                    html.text(App.translate('Element preview is empty'))
+                }
                 panel.empty().append(html);
             }
             $def.resolve()
@@ -74,8 +79,7 @@ fieldTypes.select = {
             $def.reject();
         });
         return $def;
-    },
-    previewPanel: function (span, li) {
+    }, previewPanel: function (span, li) {
 
         let panel = $('<div id="selectPanel" class="text preview" style="white-space: pre-wrap; height: 200px;">');
         let field = this;
@@ -92,12 +96,7 @@ fieldTypes.select = {
         }
 
         li.popover({
-            html: true,
-            content: panel,
-            trigger: 'manual',
-            container: 'body',
-            placement: 'auto right',
-            animation: false
+            html: true, content: panel, trigger: 'manual', container: 'body', placement: 'auto right', animation: false
         }).popover('show');
         let popover = $('#' + li.attr('aria-describedby')).css('z-index', 10000);
 
@@ -130,24 +129,18 @@ fieldTypes.select = {
 
         field.loadPreviewPanel(panel, span.data('field'), item, span.data('val')).then(function () {
             const _t = function () {
-                if (li && !li.height()) destroyPopover();
-                else setTimeout(_t, 500);
+                if (li && !li.height()) destroyPopover(); else setTimeout(_t, 500);
             };
             _t();
         });
 
-    },
-    getEditElement: function ($oldParent, oldValue, item, enterClbk, escClbk, blurClbk, tabindex, _, cell) {
+    }, getEditElement: function ($oldParent, oldValue, item, enterClbk, escClbk, blurClbk, tabindex, _, cell) {
         "use strict";
 
         if (!oldValue) oldValue = {};
         oldValue = $.extend(true, {}, oldValue);
 
-        let field = this,
-            input,
-            divParent,
-            LISTs,
-            val = oldValue.v || null;
+        let field = this, input, divParent, LISTs, val = oldValue.v || null;
 
         if (field.multiple && typeof val === 'string') {
             try {
@@ -166,19 +159,25 @@ fieldTypes.select = {
         } else {
             divParent = $('<div>');
             LISTs = {
-                isListForLoad: true,
-                innerList: [],
-                innerIndexed: [],
-                isSliced: true,
-                isPreview: false
+                isListForLoad: true, innerList: [], innerIndexed: [], isSliced: true, isPreview: false
             };
             if (field.list) {
                 LISTs = field.list;
             }
         }
 
-
+        let selectQueries = [];
+        divParent.on('remove', () => {
+            selectQueries.forEach((RequestObject) => {
+                if (RequestObject.jqXHR && RequestObject.jqXHR.abort) {
+                    RequestObject.jqXHR.abort();
+                } else {
+                    RequestObject.aborted = true;
+                }
+            })
+        })
         let GetLoadListDeffered = function (q) {
+
             let def = $.Deferred();
             let itemTmp = {};
             Object.keys(item).forEach(function (k) {
@@ -198,12 +197,25 @@ fieldTypes.select = {
                 }
             });
             if (divParent.isAttached()) {
-                divParent.append('<i class="fa fa-cog fa-spin fa-3x loading" style="position: absolute; z-index: 1' +
-                    '    right: 1px;' +
-                    '    top: 1px;' +
-                    '    font-size: 8px;"/>');
+                divParent.append('<i class="fa fa-cog fa-spin fa-3x loading" style="position: absolute; z-index: 1' + '    right: 1px;' + '    top: 1px;' + '    font-size: 8px;"/>');
             }
-            field.pcTable.model.getEditSelect(itemTmp, field.name, q, null).then(function (json) {
+            let RequestObject = {};
+            selectQueries.push(RequestObject);
+
+            let res;
+
+            if (field.getEditSelect) {
+                res = field.getEditSelect(itemTmp, field.name, q, null, null, RequestObject);
+            } else {
+                if (field.loadedSelect) {
+                    res = $.Deferred();
+                    res.resolve({...field.loadedSelect});
+                    delete field.loadedSelect;
+                } else {
+                    res = field.pcTable.model.getEditSelect(itemTmp, field.name, q, null, null, RequestObject);
+                }
+            }
+            res.then(function (json) {
                 divParent.find('.loading').remove();
 
                 LISTs.innerList = json.list ? json.list : [];
@@ -248,8 +260,11 @@ fieldTypes.select = {
 
                 const addValues = function (val, q) {
                     "use strict";
-                    let optgroups = {'Выбранное': $('<optgroup label="Выбранное">'), '': $('<optgroup label="">')};
-                    let checked = optgroups['Выбранное'];
+                    let optgroups = {
+                        [App.translate('Selected')]: $('<optgroup label="' + App.translate('Selected') + '">'),
+                        '': $('<optgroup label="">')
+                    };
+                    let checked = optgroups[App.translate('Selected')];
                     const createOption = function (val, text, deleted, subtext) {
                         subtext = subtext ? $('<small class="text-muted">').text(subtext) : '';
 
@@ -279,9 +294,14 @@ fieldTypes.select = {
                         return true;
                     };
                     if (q && q !== '') {
-                        let qs = q.toLowerCase().replace('ё', 'е').split(" ");
+                        let [qs] = App.lang.search_prepare_function(q);
+
+                        qs = qs.split(" ");
                         isLikedFunc = function (v) {
-                            let text = v !== null ? v.toString().toLowerCase().replace('ё', 'е') : "";
+                            let text = "";
+                            if (v !== null) {
+                                [text] = App.lang.search_prepare_function(v.toString());
+                            }
                             return !qs.some(function (q) {
                                 return text.indexOf(q) === -1
                             })
@@ -363,7 +383,7 @@ fieldTypes.select = {
                     });
 
                     if (LISTs.isSliced === true) {
-                        let opt = createOption(0, 'Данные не полны. Воспользуйтесь поиском!');
+                        let opt = createOption(0, App.translate('The data is incomplete. Use the search!'));
                         opt.prop('disabled', true);
                         opt.css('text-align', 'center');
                         input.append(opt);
@@ -378,15 +398,14 @@ fieldTypes.select = {
                     const getTitle = function () {
 
 
-                        let title = '-----';
+                        let title = '—';
                         if (field.category === 'filter') {
-                            title = 'Пустое';
+                            title = App.translate('Empty');
                             if (field.selectFilterWithEmptyText) {
                                 title = field.selectFilterWithEmptyText
                             }
-                        } else if (field.withEmptyVal && field.withEmptyVal.trim() !== '') title = field.withEmptyVal;
-                        else if (field.multiple && cell && cell.closest('.InsertPanel').length) {
-                            title = "Выберите";
+                        } else if (field.withEmptyVal && field.withEmptyVal.trim() !== '') title = field.withEmptyVal; else if (field.multiple && cell && cell.closest('.InsertPanel').length) {
+                            title = App.translate('Select');
                             onlyElements = true;
                         }
                         return title;
@@ -432,7 +451,6 @@ fieldTypes.select = {
                             input.data('selectpicker').$button.click();
                             return true;
                         }
-
                         let q = $(this).val();
                         if (Q !== q) {
                             Q = q;
@@ -470,7 +488,10 @@ fieldTypes.select = {
                             }
                         });
                         $selectContainer.on('keydown.selectContainer.' + input.data('AppUin'), function (event) {
-
+                            if (event.key === 'Tab') {
+                                enterClbk(divParent, event);
+                                return false;
+                            }
                             if (event.keyCode === 27) {
                                 input.data('keyPressed', 'Esc');
                                 escClbk(divParent, event);
@@ -492,6 +513,8 @@ fieldTypes.select = {
                         }).on('keyup', function (event) {
                             input.removeData('keyPressed');
                             input.removeData('enterPressed');
+
+
                         });
 
                         setTimeout(function () {
@@ -499,18 +522,43 @@ fieldTypes.select = {
                                 let cdiv = input.closest('td').find('.cdiv')
                                 let popover = cdiv.data('bs.popover');
 
-                                popover.applyPlacement(popover.getCalculatedOffset('top', popover.getPosition(), popover.$tip.width() + 8, popover.$tip.height() + 33), 'top');
-                                popover.$tip.removeClass('bottom').addClass('top')
+                                if (popover) {
+                                    popover.applyPlacement(popover.getCalculatedOffset('top', popover.getPosition(), popover.$tip.width() + 8, popover.$tip.height() + 33), 'top');
+                                    popover.$tip.removeClass('bottom').addClass('top')
+                                }
                             }
 
                         }, 10)
+                    } else if (input.closest('.InsertRow').length === 1) {
+                        let $selectContainer = input.data('container');
+                        $selectContainer.on('keydown.selectContainer.' + input.data('AppUin'), function (event) {
+                            if (event.key === 'Tab') {
+                                if ((input.data('selectpicker').$newElement.get(0).contains(event.originalEvent.target) || input.data('selectpicker').$menu.get(0).contains(event.originalEvent.target))) {
+                                    if (input.data('selectpicker').$menu.is('.open')) {
+                                        input.selectpicker('toggle')
+                                    }
+                                    enterClbk(divParent, event);
+                                }
+                                return false;
+                            }
+                        });
+
+                        input.data('selectpicker').$newElement.on('keydown', (ev) => {
+                            if (ev.code === 'Tab') {
+                                enterClbk(divParent, event);
+                                ev.stopPropagation();
+                            }
+                        })
                     }
 
-                    input.on('hidden.bs.select', function () {
+                    input.on('hidden.bs.select', function (event) {
                         let changed = input.data('changed');
-                        let event = {};
                         let keyPressed = input.data('keyPressed');
                         if (keyPressed) event[keyPressed] = true;
+
+                        if (changed) {
+                            event = {type: 'changed'}
+                        }
 
                         if (!field.multiple) {
                             setTimeout(function () {
@@ -523,9 +571,9 @@ fieldTypes.select = {
                         }
                         input.data('changed', false);
                     });
-                    input.on('show.bs.select', function () {
+                    /*input.on('show.bs.select', function () {
                         addValues(val);
-                    });
+                    });*/
                     input.on('shown.bs.select', function () {
                         let selectPicker = input.data('selectpicker');
                         selectPicker.$bsContainer.addClass('pcTable-selectpicker');
@@ -537,10 +585,18 @@ fieldTypes.select = {
                             selectPicker.$menuInner.height(300)
                         }
                         let position = selectPicker.$menu.get(0).getBoundingClientRect();
+
+
                         if (position.right > window.innerWidth - 20) {
                             let diff = position.right - window.innerWidth + 20;
                             let width = selectPicker.$menuInner.width();
-                            selectPicker.$menuInner.width(width - diff).css('overflow-x', 'scroll');
+                            let newWidth = width - diff;
+                            selectPicker.$menuInner.width(newWidth).css('overflow-x', 'scroll');
+                            setTimeout(() => {
+                                selectPicker.$bsContainer.width(newWidth);
+
+
+                            })
                         } else {
                             selectPicker.$menuInner.width('auto')
                         }
@@ -633,12 +689,12 @@ fieldTypes.select = {
         }
 
         return divParent;
-    },
-    getEditPanelText: function (fieldValue, item) {
-        if (this.multiple)
-            return this.getPanelText(fieldValue.v, null, item)
-    },
-    getPanelText: function (fieldValue, td, item) {
+    }, getEditPanelText: function (fieldValue, item) {
+        if (this.multiple) return this.getPanelText(fieldValue.v, null, item)
+
+    }
+
+    , getPanelText: function (fieldValue, td, item) {
         let field = this;
         let $div = $('<div>');
         let listVals = item[field['name']].v_;
@@ -648,19 +704,39 @@ fieldTypes.select = {
         if (listVals) {
             $.each(listVals, function (k, val) {
                 "use strict";
-                let d = $('<div>').text(val[0] + (field.multiple && field.unitType ? ' ' + field.unitType : ''));
+                let d = $('<div class="select-val">').text((field.multiple && field.unitType && field.before ? field.unitType + ' ' : '') + val[0] + (field.multiple && field.unitType && !field.before ? ' ' + field.unitType : ''));
 
                 if (val[1]) {
                     d.addClass('deleted_value')
                 } else if (listVals.length !== 1) {
                     d.add('select-item');
                 }
+                if (field.withPreview && listVals.length !== 1) {
+                    let eye = $('<button class="btn btn-xxs btn-default "><i class="fa fa-eye"></i></button>').on('click', () => {
+
+                        if (eye.data('opened')) {
+                            eye.data('pr').hide();
+                            eye.data('opened', false)
+                        } else {
+                            if (!eye.data('pr')) {
+                                let pr = $('<div class="loaded-preview">').appendTo(d);
+                                field.loadPreviewPanel(pr, field.name, item, [item[field['name']].v[k]]).then(function () {
+                                });
+                                eye.data('pr', pr)
+                            } else {
+                                eye.data('pr').show()
+                            }
+                            eye.data('opened', true)
+                        }
+                    });
+                    d.prepend(eye)
+                }
+
                 $div.append(d);
             });
         } else {
             if (fieldValue === null || fieldValue === '') {
-                if (field.withEmptyVal) return field.withEmptyVal;
-                else return '';
+                if (field.withEmptyVal) return field.withEmptyVal; else return '';
             }
 
             let fieldValues = fieldValue;
@@ -691,8 +767,15 @@ fieldTypes.select = {
             }
         }
         return $div.children();
-    },
-    getCellText: function (fieldValue, td, item) {
+    }, getCellTextInPanel: function (fieldValue, td, item) {
+        let multySelectView = this.multySelectView;
+        delete this.multySelectView;
+        let r = this.getCellText(fieldValue, td, item);
+        if (multySelectView !== undefined) {
+            this.multySelectView = multySelectView;
+        }
+        return r;
+    }, getCellText: function (fieldValue, td, item) {
         let field = this;
         let text = '';
         let $div = $('<div>');
@@ -703,11 +786,12 @@ fieldTypes.select = {
 
         if (listVals) {
             if (field.multiple && listVals.length > 1 && (field.multySelectView == 0)) {
-                $div.append('<span class="select-item">' + listVals.length + ' элементов<span>');
+                $div.append('<span class="select-item">' + App.translate('%s elements', listVals.length) + '<span>');
             } else {
                 if (listVals.length === 0) {
                     $div.append('<span class="select-item">' + this.getElementString(null) + '</span>');
                 } else {
+
                     $.each(listVals, function (k, val) {
                         "use strict";
                         let d = $('<span>');
@@ -727,14 +811,18 @@ fieldTypes.select = {
                         } else if (listVals.length !== 1) {
                             d.add('select-item');
                         }
+
+                        if (td.is('td') && field.multiSeparator && k > 0) {
+                            $div.append($('<span class="separator">').text(field.multiSeparator));
+                        }
+
                         $div.append(d);
                     });
                 }
             }
         } else {
             if (fieldValue === null || fieldValue === '') {
-                if (field.withEmptyVal) return field.withEmptyVal;
-                else return '';
+                if (field.withEmptyVal) return field.withEmptyVal; else return '';
             }
 
             let fieldValues = fieldValue;
@@ -765,26 +853,31 @@ fieldTypes.select = {
             }
         }
         return $div.children();
-    },
-    focusElement: function (div) {
+    }, focusElement: function (div) {
         let button = div.find('button');
         let field = this;
         if (button.length == 0) {
             setTimeout(function () {
                 field.focusElement(div)
             }, 50)
-        } else
-            button.focus();
+        } else {
+            if (div.closest('tr').is('.InsertRow')) {
+                this.pcTable._insertRow.find('.active').removeClass('active');
+                div.closest('td').addClass('active');
+                if (button.attr('aria-expanded') !== 'true') {
+                    button.click();
+                }
+            }
 
-    },
-    isDataModified: function (edited, fromItem) {
+            div.data('input').data('selectpicker').$searchbox.focus();
+        }
+    }, isDataModified: function (edited, fromItem) {
 
         if ([null, ''].indexOf(edited) !== -1 && [null, ''].indexOf(fromItem) !== -1) return false;
         if ([null, ''].indexOf(edited) !== -1 || [null, ''].indexOf(fromItem) !== -1) return true;
 
         return !Object.equals(fromItem, edited);
-    },
-    checkEditRegExp: function (val) {
+    }, checkEditRegExp: function (val) {
         if (!this.warningEditRegExp) return true;
         try {
             if (this.multiple && Array.isArray(val)) {
@@ -794,13 +887,12 @@ fieldTypes.select = {
         } catch (e) {
             return true;
         }
-    },
-    addDataToFilter: function (filterVals, valObj) {
+    }, addDataToFilter: function (filterVals, valObj) {
 
         const addFiltersData = function (valObjElem) {
             let hash;
             let str = valObjElem[0];
-            let val = "Пустое";
+            let val = App.translate('Empty');
             if (str === null || str === '') {
                 hash = ''.hashCode();
             } else {
@@ -821,12 +913,13 @@ fieldTypes.select = {
             addFiltersData(valObj.v_)
         }
 
-    },
-    getElementString: function (val, arrayVal) {
+    }, getElementString: function (val, arrayVal) {
         "use strict";
-        let r;
+        let r, notEmptyVal
         if (val === null || val === undefined) {
             if (!arrayVal || !arrayVal[0]) r = this.withEmptyVal || '';
+        } else {
+            notEmptyVal = true;
         }
 
         if (r === undefined && (arrayVal[0] === null || arrayVal[0] === '')) {
@@ -838,10 +931,13 @@ fieldTypes.select = {
             r = arrayVal[0];
         }
 
-        if (this.multiple && this.unitType) {
-            r += ' ' + this.unitType;
+        if (notEmptyVal && this.multiple && this.unitType) {
+            if (this.before) {
+                r = this.unitType + ' ' + r;
+            } else {
+                r += ' ' + this.unitType;
+            }
         }
-
         return r;
     }, sourceButtonClick: function (item, isAdd) {
         let $d = $.Deferred();

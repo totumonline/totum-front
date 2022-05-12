@@ -95,12 +95,8 @@
 
         $.each(fields, function (k, field) {
 
-            if (!pcTable.isCreatorView && pcTable.isReplacedToRowsButtonsField(field.name))
+            if (!pcTable.isCreatorView && pcTable.isReplacedButton(field.name))
                 return;
-
-            /*if (field.panelColor !== undefined) {
-                panelColor = field.panelColor;
-            } else field.panelColor = panelColor;*/
 
             let lableLowOpacity = false;
             if (field.sectionTitle !== undefined) {
@@ -264,6 +260,8 @@
             $div.css('marginLeft', _gap)
         }
         sections.forEach((sec) => {
+            if (!sec.fields || !sec.fields.length) return;
+
             //' + (sec.isNoTitles ? 'sec-no-titles' : '') + '
             let sDv = $('<div class="pcTable-section ">').appendTo($paramsBlock);
             let sectionGap = sec.sectionGap;
@@ -318,7 +316,7 @@
 
                 pcTable.data_params[field.field.name] = pcTable.data_params[field.field.name] || {}
 
-                field.format = pcTable.data_params[field.field.name].f || {};
+                field.format = {...(pcTable.data_params[field.field.name].f || {})};
 
                 Object.keys(sec.formatsFromSection).forEach((k) => {
                     let val = getSectionOrFormatParam(k, field.field.name, sec.formatsFromSection, field.format);
@@ -417,21 +415,27 @@
                 let tdWrapper = $('<div class="td-wrapper">').appendTo(fieldCell);
 
                 if (field.format.titleleft || field.format.titleright) {
-                    fieldCell.css('display', 'grid');
+                    fieldCell.css('display', 'inline-grid');
                     if (pcTable.isCreatorView) {
                         tdWrapper.css('margin-top', '18px')
                     }
 
                     if (field.format.titleleft) {
-                        fieldCell.css('grid-template-columns', field.format.titleleft + ' 1fr')
+                        fieldCell.css('grid-template-columns', field.format.titleleft + ' minmax(0, 1fr)')
                     } else {
                         tdWrapper.prependTo(fieldCell)
-                        fieldCell.css('grid-template-columns', '1fr ' + field.format.titleright)
+                        fieldCell.css('grid-template-columns', 'minmax(0, 1fr) ' + field.format.titleright)
                     }
                 }
 
 
+                field.field.heightFromSection = (sec.formatsFromSection || {}).height
+                if (field.field.heightFromSection && typeof field.field.heightFromSection === 'object') {
+                    field.field.heightFromSection = field.field.heightFromSection[field.field.name];
+                }
+
                 let td = pcTable._createCell(pcTable.data_params, field.field).appendTo(tdWrapper);
+
 
                 if (pcTable.isCreatorView) {
                     let extraHeight = 33;
@@ -456,6 +460,7 @@
                         }
                     }
                 }
+
 
                 if (field.format.maxheight) {
                     let style = {'maxHeight': field.format.maxheight};

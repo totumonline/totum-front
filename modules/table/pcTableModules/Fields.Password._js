@@ -4,7 +4,7 @@ fieldTypes.password = {
         var val=input.val().trim();
         var error = false;
         if (val === undefined || val === '' || val === null) {
-            notify = 'Поле ' + this.title + ' должно быть заполнено';
+            notify = App.translate('The field %s must be entered', this.title);
             error = true;
         }
         if (error) throw notify;
@@ -15,7 +15,7 @@ fieldTypes.password = {
         return '**PASSWORD**';
     },
     getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
-        var $input = $('<input type="password" name="cell_edit" class="form-control"  autocomplete="new-password" autocorrect="off" placeholder="'+(oldValue && oldValue.v?'Поменять пароль':'Новый пароль')+'"/>');
+        var $input = $('<input type="password" name="cell_edit" class="form-control"  autocomplete="new-password" autocorrect="off" placeholder="'+App.translate(oldValue && oldValue.v?'Change the password':'New password')+'"/>');
 
         $input.on('save-me', function (event) {
             enterClbk($(this), event);
@@ -26,12 +26,14 @@ fieldTypes.password = {
 
         var field = this;
         oldValue=oldValue.v;
-        $input.on('keyup', function (event) {
+        $input.on('keydown', function (event) {
             switch (event.keyCode) {
                 case 13:
+                case 9:
                     try{
                         $input.data('enterClicked', true);
                         enterClbk($(this), event);
+                        return false;
                     }
                     catch (err){
                         $input.data('enterClicked', false);
@@ -41,6 +43,7 @@ fieldTypes.password = {
                     break;
                 case 27:
                     escClbk($(this), event);
+                    return false;
                     break;
             }
         })
@@ -49,8 +52,8 @@ fieldTypes.password = {
             blurClbk($input, event);
             return;
         }
-        $input.one('blur', function (event) {
-            setTimeout(function(){blur(event)}, 50);
+        $input.on('blur', function (event) {
+            blur(event);
         });
         return $input.select();
     },

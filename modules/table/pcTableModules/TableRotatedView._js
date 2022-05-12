@@ -2,28 +2,38 @@
     $.extend(App.pcTableMain.prototype, {
         _renderRotatedView: function () {
             let pcTable = this;
+            pcTable.viewType = 'rotated';
 
+            this._innerContainer.on('click', 'td.id', function () {
+                let $tdId = $(this);
+                if (!$tdId.attr('aria-describedby')) {
+                    setTimeout(() => {
+                        pcTable.workerIconsPopover($tdId, $tdId.find('.rowName').text())
+                    })
+                }
+            })
             $.extend(this, {
                 isRotatedView: true,
 
-                rowButtonsCalcWidth : function () {
+                rowButtonsCalcWidth: function () {
                     if (!this.isMobile) {
-                        let width=this._table.offset().left + this._table.width() - 80;
-                        if(width<this._innerContainer.width())
+                        let width = this._table.width()-80;
+                        if (width < this._innerContainer.width())
                             this.__$rowsButtons.width(width)
-                        else{
-                            this._innerContainer.width()
+                        else {
+                            this.__$rowsButtons.width(this._innerContainer.width())
                         }
                     }
                 },
                 _addCellId: function (item, $row) {
                     let $tdId = $('<td class="id"></td>');
+
                     let span = $('<span class="rowName"></span>').appendTo($tdId);
-                    if(this.mainFieldName && this.mainFieldName!=='id' && item[this.mainFieldName] && item[this.mainFieldName].v){
-                            span.text(item[this.mainFieldName].v);
-                        $('<span class="rowId">' + item['id'] + '</span>').appendTo($tdId);
-                    }else{
+                    if (this.mainFieldName && this.mainFieldName !== 'id' && item[this.mainFieldName] && item[this.mainFieldName].v) {
+                        span.html(this.fields[this.mainFieldName].getCellText(item[this.mainFieldName].v, span, item));
+                    } else if (this._isDisplayngIdEnabled()) {
                         span.text(item['id']);
+                        $tdId.addClass('small-rotated-id');
                     }
 
                     $tdId.appendTo($row);
@@ -41,12 +51,11 @@
                     let $th = $('<th class="id"></th>');
                     let panel = $('<div class="pcTable-filters"></div>');
 
-
                     /*******Кнопка показать поле n*****/
                     let OrderClass = 'btn-warning';
 
                     let $btnNHiding = $('<button class="btn btn-default btn-xxs" id="n-expander"><i class="fa fa-sort"></i></button>')
-                        $btnNHiding.prop('disabled', true)
+                    $btnNHiding.prop('disabled', true)
 
                     if (!pcTable.isMobile) {
                         let filterButton = this._getIdFilterButton();
@@ -103,7 +112,7 @@
                             if (pcTable.dataSorted.length === 0) {
                                 $trs.appendChild(pcTable._createNoDataRow().get(0));
                             } else if (pcTable.dataSortedVisible.length === 0) {
-                                $trs.appendChild(pcTable._createNoDataRow('По условиям фильтрации не выбрана ни одна строка').get(0));
+                                $trs.appendChild(pcTable._createNoDataRow(App.translate('No rows are selected by the filtering conditions')).get(0));
                             } else {
                                 for (let i in rows) {
                                     let row = rows[i];
@@ -122,7 +131,16 @@
                         }
                     };
                 }
-            })
+            });
+
+                const loadPage = pcTable.model.loadPage;
+                pcTable.model.loadPage = function () {
+                    let r=loadPage.call(this, ...arguments);
+                    r.then(()=>{
+                        pcTable.rowButtonsCalcWidth();
+                    })
+                    return r;
+                };
         }
     })
 })();
