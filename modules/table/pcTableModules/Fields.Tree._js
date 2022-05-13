@@ -405,15 +405,8 @@
                     search_callback: function (q, title) {
                         if (!title) return false;
 
-                        let qs = q.toLowerCase();
-                        let text = title.text.toLowerCase();
-
-                        [text, qs] = App.lang.search_prepare_function(text, qs);
-                        qs = qs.split(" ");
-
-                        return !qs.some(function (q) {
-                            return text.indexOf(q) === -1
-                        })
+                        let isLikedFunc = App.lang.filtersExtenders(q);
+                        return isLikedFunc(title.text);
                     },
                     'ajax': function (q, cd) {
                         var self = this;

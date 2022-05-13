@@ -290,23 +290,7 @@ fieldTypes.select = {
                         return option;
                     };
 
-                    let isLikedFunc = function () {
-                        return true;
-                    };
-                    if (q && q !== '') {
-                        let [qs] = App.lang.search_prepare_function(q);
-
-                        qs = qs.split(" ");
-                        isLikedFunc = function (v) {
-                            let text = "";
-                            if (v !== null) {
-                                [text] = App.lang.search_prepare_function(v.toString());
-                            }
-                            return !qs.some(function (q) {
-                                return text.indexOf(q) === -1
-                            })
-                        }
-                    }
+                    let isLikedFunc = App.lang.filtersExtenders(q);
 
                     let vals = {};
                     let checkedVal;

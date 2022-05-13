@@ -1,3 +1,4 @@
+/*
 (function () {
     $.expr.pseudos.multiincludes = function (obj, index, meta) {
         let $obj = $(obj).find('a');
@@ -11,4 +12,4 @@
         });
     };
 
-})();
+})();*/
