@@ -72,6 +72,7 @@
                                 })
                             }
                             break;
+
                         case '^':
                             isLikedFunc = (v) => {
                                 let text = prepareV(v);
@@ -83,10 +84,27 @@
                                 })
                             }
                             break;
+                        case '!^':
+                            isLikedFunc = (v) => {
+                                let text = prepareV(v);
+                                text = text.split(" ");
+                                return qA.every(function (q) {
+                                    return !text.some(function (w) {
+                                        return w.indexOf(q) === 0
+                                    });
+                                })
+                            }
+                            break;
                         case '^=':
                             isLikedFunc = (v) => {
                                 let text = prepareV(v);
                                 return text.indexOf(qs) === 0;
+                            }
+                            break;
+                        case '!^=':
+                            isLikedFunc = (v) => {
+                                let text = prepareV(v);
+                                return text.indexOf(qs) !== 0;
                             }
                             break;
                     }
