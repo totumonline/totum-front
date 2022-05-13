@@ -9,6 +9,7 @@ App.langs.en =
         "dateFormat":'DD/MM/YY',
         "dateTimeFormat":'DD/MM/YY HH:mm',
         "timeDateFormatNoYear": 'HH:mm DD/MM',
+        filtersExtenders: App.commonFiltersExtenders,
         modelMethods: {
             'edit': 'Editing',
             'checkInsertRow': 'Pre-addition',

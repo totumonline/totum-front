@@ -318,7 +318,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
             let fieldName = th.is('.id') ? 'id' : th.data('field');
 
             let selectDiv = $('<div class="filter-div-button">');
-            let select = $('<select class="selectpicker" data-size="6" multiple title="' + App.translate("Select values") + '" data-style="btn-sm btn-default" data-width="css-width" data-live-search="true" data-selected-text-format="count">').appendTo(selectDiv);
+            let select = $('<select class="selectpicker" data-size="6" multiple title="' + App.translate("Select values") + '" style="display: none" data-style="btn-sm btn-default" data-width="css-width" data-live-search="true" data-selected-text-format="count">').appendTo(selectDiv);
 
             const popoverDestroy = function () {
                 try {
@@ -444,30 +444,9 @@ App.pcTableMain.prototype.__addFilterable = function () {
                     '': $('<optgroup label="">')
                 };
 
-                let isLikedFunc = function () {
-                    return true;
-                };
-                if (q && q !== '') {
-                    let qs = q;
-
-                    [qs] = App.lang.search_prepare_function(qs);
-
-                    qs = qs.split(" ");
-                    isLikedFunc = function (v) {
-                        let text;
-                        if (v === null) {
-                            text = "";
-                        } else {
-                            text = v.toString();
-                            [text] = App.lang.search_prepare_function(text);
-                        }
+                let isLikedFunc = App.lang.filtersExtenders(q);
 
 
-                        return !qs.some(function (q) {
-                            return text.indexOf(q) === -1
-                        })
-                    }
-                }
                 let isCutted = false;
                 let notChoised = 0;
 
@@ -518,6 +497,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
             });
 
             select.selectpicker('render').selectpicker('toggle');
+            select.data('selectpicker').$newElement.addClass('open')
 
             btn.one('remove', () => {
                 setTimeout(() => {
@@ -566,6 +546,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
 
                 setTimeout(function () {
                     h_select.selectpicker('render').selectpicker("val", pcTable.filters[fieldName + "/h"] || "");
+
                     try {
                         h_select.data('selectpicker').$menu.offset({
                             bottom: 15,
@@ -615,9 +596,10 @@ App.pcTableMain.prototype.__addFilterable = function () {
                             of: btn
                         }).find('.arrow').css('left', '12px')
                     }
-                    select.data('selectpicker')._searchStyle = function () {
+
+                    /*select.data('selectpicker')._searchStyle = function () {
                         return 'multiincludes';
-                    };
+                    };*/
 
 
                     let searchTimeout;

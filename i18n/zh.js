@@ -19,6 +19,7 @@ App.langs.zh =
             })
             return [string1, string2];
         },
+        filtersExtenders: App.commonFiltersExtenders,
         css: {
             table: '.pcTable-container .loading-row td {background: url("/imgs/loading_ru.png") repeat #fff;}'
         },
