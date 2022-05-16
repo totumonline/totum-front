@@ -118,7 +118,7 @@
 
             })
 
-            let btn = $('<a>').attr('href', App.translate('PATH-TO-DOCUMENTATION')+'functions#fn-' + TOTUMjsFuncs[nameL][5])
+            let btn = $('<a>').attr('href', App.translate('PATH-TO-DOCUMENTATION') + 'functions#fn-' + TOTUMjsFuncs[nameL][5])
                 .attr('target', '_blank')
                 .html('<button class="btn btn-default btn-sm">' + App.translate('Documentaion') + '</button>');
 
@@ -791,7 +791,28 @@
                         state.func = func;
 
                         stream.next();
-                        return 'function';
+                        let closed = (() => {
+                            let closed = ' notclosed';
+                            let otherLine = stream.string.substring(stream.pos);
+                            let q, smb;
+                            let qs = ['"', "'", '`'];
+                            for (let i = 0; i < otherLine.length; i++) {
+                                smb = otherLine[i];
+                                if (smb == ')') {
+                                    if (!q) {
+                                        closed = '';
+                                        break;
+                                    }
+                                } else if (q === smb) {
+                                    q = null;
+                                } else if (!q && qs.indexOf(smb) !== -1) {
+                                    q = smb;
+                                }
+                            }
+                            return closed;
+                        })()
+
+                        return 'function' + closed;
                     }
 
                     if (state.inFunction) {
@@ -1219,7 +1240,7 @@
                     if (tblMatch = str.match(/table:\s*((\$#ntn)|'([a-z_0-9]*)')/)) {
                         let tableName = tblMatch[2] ? editor.table : tblMatch[3];
 
-                        if(AllTables[tableName] && AllTables[tableName].f) {
+                        if (AllTables[tableName] && AllTables[tableName].f) {
                             keywords = [];
                             Object.keys(AllTables[tableName].f).forEach(function (fName) {
                                 keywords.push({
@@ -1419,7 +1440,7 @@
                         },
                     ];
 
-                    if(!editor.codeType || editor.codeType==='format'){
+                    if (!editor.codeType || editor.codeType === 'format') {
                         keywords.push({
                             text: "$#rows",
                             title: App.translate('RowList of page rows/table'),
