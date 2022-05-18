@@ -547,6 +547,11 @@ App.pcTableMain.prototype.__addFilterable = function () {
                 setTimeout(function () {
                     h_select.selectpicker('render').selectpicker("val", pcTable.filters[fieldName + "/h"] || "");
 
+                    h_select.data('selectpicker').$button.on('click', ()=>{
+                        select.data('selectpicker').$newElement.removeClass('open')
+                    })
+
+
                     try {
                         h_select.data('selectpicker').$menu.offset({
                             bottom: 15,
