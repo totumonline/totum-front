@@ -469,42 +469,40 @@
                 pcTable._innerContainer.on('scroll', closeCallbacksFunc);
 
                 /*top th panel*/
-                if (this.viewType !== 'panels') {
-                    if (this.isCreatorView) {
+                if (this.isCreatorView) {
 
-                        this._container.on('click contextmenu', 'th', function (event) {
+                    this._container.on('click contextmenu', 'th:not(.panelsView-card-item)', function (event) {
 
-                            if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
-                            else {
-                                let th = $(this);
-                                if (!th.attr('aria-describedby')) {
-                                    setTimeout(() => {
-                                        pcTable.creatorIconsPopover(th)
-                                    })
-                                }
+                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
+                        else {
+                            let th = $(this);
+                            if (!th.attr('aria-describedby')) {
+                                setTimeout(() => {
+                                    pcTable.creatorIconsPopover(th)
+                                })
                             }
-                        })
-                        /*this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
-                            let self = $(this);
-                            let icons = self.closest('th').find('.creator-icons');
-                            if (!icons.is('[aria-describedby]')) {
-                                pcTable.creatorIconsPopover(icons);
+                        }
+                    })
+                    /*this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
+                        let self = $(this);
+                        let icons = self.closest('th').find('.creator-icons');
+                        if (!icons.is('[aria-describedby]')) {
+                            pcTable.creatorIconsPopover(icons);
+                        }
+                        return false;
+                    })*/
+                } else {
+                    this._container.on('click contextmenu', 'th:not(.panelsView-card-item)', function (event) {
+                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
+                        else {
+                            let th = $(this);
+                            if (!th.attr('aria-describedby')) {
+                                setTimeout(() => {
+                                    pcTable.workerIconsPopover(th)
+                                })
                             }
-                            return false;
-                        })*/
-                    } else {
-                        this._container.on('click contextmenu', 'th', function (event) {
-                            if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
-                            else {
-                                let th = $(this);
-                                if (!th.attr('aria-describedby')) {
-                                    setTimeout(() => {
-                                        pcTable.workerIconsPopover(th)
-                                    })
-                                }
-                            }
-                        })
-                    }
+                        }
+                    })
                 }
                 pcTable._container.on('contextmenu', function (event) {
                     let self = $(event.target);
@@ -1013,7 +1011,7 @@
                             let path, cName = 'panelSwitcher';
                             if ($.cookie(cName) !== '0') {
                                 if (this.tableRow.type === 'calcs') {
-                                    cName+= this.tableRow.id;
+                                    cName += this.tableRow.id;
                                     path = window.location.pathname.replace(/\d+\/\d+\/?$/, '')
                                 } else {
                                     path = window.location.pathname
