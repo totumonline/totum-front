@@ -349,6 +349,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                     App.mobilePanel(title(), dialog, {
                         buttons: _buttons,
                         onhide: function (event) {
+                            showned = false;
                             $('body').off(eventName);
                             escClbk(div, event);
                         },
@@ -368,6 +369,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                         draggable: true,
                         buttons: _buttons,
                         onhide: function (event) {
+                            showned = false;
                             $(window.top.document.body).off(eventName);
                             escClbk(div, event);
                         },
