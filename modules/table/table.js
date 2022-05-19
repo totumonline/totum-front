@@ -570,6 +570,8 @@
                         let match;
                         if (match = window.location.pathname.match(/^\/Table\/(\d+)\/$/)) {
                             sessionStorage.setItem('cycles_table_anchor', match[1]);
+                        }else{
+                            sessionStorage.removeItem('cycles_table_anchor')
                         }
                     } else {
                         sessionStorage.removeItem('cycles_filter');
