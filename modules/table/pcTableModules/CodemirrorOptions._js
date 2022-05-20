@@ -1472,7 +1472,10 @@
                     }
 
 
-                } else if (match = token.string.match(/(.*)(#?\$)([a-z_0-9]*)/i)) {
+                } else if (token.string.slice(0, 2) === '$@'){
+                    //process vars - no keywords
+                }
+                else if (match = token.string.match(/(.*)(#?\$)([a-z_0-9]*)/i)) {
 
                     keywords = [];
                     token.string = match[3];
