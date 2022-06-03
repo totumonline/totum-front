@@ -13,20 +13,84 @@ $.extend(App.pcTableMain.prototype, {
         let sortFunc;
 
         const checkSortTextAsValue = function (a, b, aVal, bVal) {
-            let aFormat=data[a][fieldName].f || {};
-            let bFormat=data[b][fieldName].f || {};
+            let aFormat = data[a][fieldName].f || {};
+            let bFormat = data[b][fieldName].f || {};
 
             if ((aFormat.textasvalue && "text" in aFormat) || (bFormat.textasvalue && "text" in bFormat)) {
+
+                if (aFormat.textasvalue === 'true') {
+                    aFormat.textasvalue = true;
+                } else if (aFormat.textasvalue === 'false' || !aFormat.textasvalue) {
+                    aFormat.textasvalue = false;
+                }
+                if (bFormat.textasvalue === 'true') {
+                    bFormat.textasvalue = true;
+                } else if (bFormat.textasvalue === 'false' || !bFormat.textasvalue) {
+                    bFormat.textasvalue = false;
+                }
+
+                if (aFormat.textasvalue != bFormat.textasvalue) {
+                    if (aFormat.textasvalue === false) {
+                        return -sortDirection;
+                    } else if (bFormat.textasvalue === false) {
+                        return sortDirection;
+                    } else if (aFormat.textasvalue === true) {
+                        return -sortDirection;
+                    } else if (bFormat.textasvalue === true) {
+                        return sortDirection;
+                    } else if (aFormat.textasvalue === "str") {
+                        return sortDirection;
+                    } else if (bFormat.textasvalue === "str") {
+                        return -sortDirection;
+                    }
+                }
+
+
                 if ((aFormat.textasvalue && "text" in aFormat)) {
                     aVal = aFormat.text;
                 }
                 if ((bFormat.textasvalue && "text" in bFormat)) {
                     bVal = bFormat.text;
                 }
+                if (aFormat.textasvalue === true) {
+                    try {
+                        let a = Big(aVal);
+                        let b = Big(bVal);
+                        if (a.gt(b)) return sortDirection;
+                        else if (a.eq(b)) return 0;
+                        return -sortDirection;
+                    } catch (e) {
+                    }
+                } else if (aFormat.textasvalue === "str") {
+                    aVal = '!' + aVal;
+                    bVal = '!' + bVal;
+                }
+
+                if (typeof aFormat.textasvalue === "string" && aFormat.textasvalue.substr(0, 3) === "num" && typeof bFormat.textasvalue === "string" && bFormat.textasvalue.substr(0, 3) === "num") {
+                    let d1=(aFormat.textasvalue.split('|')[1] || field.dectimalSeparator);
+                    let d2=(bFormat.textasvalue.split('|')[1] || field.dectimalSeparator);
+
+                    let reg = new RegExp('[^0-9\\' + d1+ ']')
+                    aVal = aVal.replace(reg, '');
+                    aVal = aVal.replace(d1, '.');
+                    let reg2 = new RegExp('[^0-9\\' + d2 + ']')
+                    bVal = bVal.replace(reg2, '');
+                    bVal = bVal.replace(d2, '.');
+
+                    try {
+                        let a = Big(aVal);
+                        let b = Big(bVal);
+                        if (a.gt(b)) return sortDirection;
+                        else if (a.eq(b)) return 0;
+                        return -sortDirection;
+                    } catch (e) {
+                    }
+                }
+
+
                 if (aVal > bVal) return sortDirection;
                 else if (aVal == bVal) return 0;
                 else return -sortDirection;
-
             }
             return false;
         }
