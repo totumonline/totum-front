@@ -33,6 +33,10 @@ var defaultField = {
                             let $buttons = [];
                             frow.value.forEach((b) => {
                                 let btn = $('<button class="btn btn-default btn-xxs">').text(b.text);
+
+                                if (b.icon) {
+                                    btn.prepend($('<i class="fa"></i>').addClass("fa-" + b.icon));
+                                }
                                 $buttons.push(btn)
                                 if (b.color) {
                                     btn.css('color', b.color)
