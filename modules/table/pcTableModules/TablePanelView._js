@@ -489,6 +489,8 @@
                     let card = this._getRowCard(id);
                     $div.append(card);
                 })
+
+                this.rowButtonsCalcWidth();
             }
 
         } else {
