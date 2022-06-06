@@ -291,7 +291,7 @@
                 }).appendTo($divPopoverArrowDown)
         }
 
-        if (this.isInsertable() && this.fields.tree.treeViewType !== 'self') {
+        if (this.isInsertable() && this.fields.tree.treeViewType !== 'self' && this.fields.tree.insertable) {
             $('<div class="menu-item"><i class="fa fa-th-large"></i> ' + App.translate('Add a row') + '</div>')
                 .on('click', () => {
                     if (this.tableRow.type === 'cycles') {

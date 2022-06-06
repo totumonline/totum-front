@@ -539,7 +539,7 @@
                     folder.css('margin-right', 8)
                 }
 
-                if (this.treeViewType === 'self' && this.pcTable.isInsertable()) {
+                if (this.treeViewType === 'self' && this.pcTable.isInsertable() && field.insertable) {
                     span.append($('<button class="btn btn-default btn-xxs treeRow ins"><i class="fa fa-plus"></i></button>'));
                 }
 
