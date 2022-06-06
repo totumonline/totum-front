@@ -2645,24 +2645,20 @@
             // this._addCellNo(item, $row);
 
             let i = 0;
-            let len = this.fieldCategories.visibleColumns.length;
-            if (this.fieldCategories.visibleColumns[i] && this.fieldCategories.visibleColumns[i].name === 'n') {
+            for (let i = 0; i < this.fieldCategories.visibleColumns.length; ++i) {
                 let field = this.fieldCategories.visibleColumns[i];
-                let td = $('<td>');
-                $row.append(td.append('<span class="cell-value">').append(field.getCellText(null, td, item)));
-                if (item.__inserted) {
-                    td.addClass('just-inserted')
-                }
-                ++i;
-            }
-
-            for (i; i < len; ++i) {
-                let field = this.fieldCategories.visibleColumns[i];
-                let td;
-
-                $row.append(td = pcTable._createCell(item, field));
-                if (chData.indexOf(field.name) > -1) {
-                    pcTable._colorizeElement(td, pcTable_COLORS.saved);
+                if (field && field.name === 'n') {
+                    let td = $('<td>');
+                    $row.append(td.append('<span class="cell-value">').append(field.getCellText(null, td, item)));
+                    if (item.__inserted) {
+                        td.addClass('just-inserted')
+                    }
+                } else {
+                    let td;
+                    $row.append(td = pcTable._createCell(item, field));
+                    if (chData.indexOf(field.name) > -1) {
+                        pcTable._colorizeElement(td, pcTable_COLORS.saved);
+                    }
                 }
             }
 
@@ -2834,7 +2830,7 @@
                     }
                 }
 
-                let StringAsUrl = field.type==='string' && field.url;
+                let StringAsUrl = field.type === 'string' && field.url;
                 if (format.text && !StringAsUrl && field.type != "button" && !(pcTable.isTreeView && field.name === 'tree' && item.__tree && (field.treeViewType === 'self' || (item.tree_category && item.tree_category.v)))) {
                     span.text(format.text);
                 } else if (!(val.e && field.errorText)) {
@@ -2850,7 +2846,7 @@
                         }
                     } else span.text(cellInner);
 
-                    if(StringAsUrl && format.text){
+                    if (StringAsUrl && format.text) {
                         span.find('a').text(format.text)
                     }
                 }
