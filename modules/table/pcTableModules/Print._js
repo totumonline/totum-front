@@ -136,7 +136,7 @@ App.pcTableMain.prototype._printTable = function (settings) {
         pcTable.dataSortedVisible.forEach((r) => {
             if (typeof r === 'object') {
                 if(pcTable.fields.tree.treeViewType==='other'){
-                    ids.push({tree: r.v})
+                    //ids.push({tree: r.v})
                 }else{
                     ids.push(r.row.id)
                 }
