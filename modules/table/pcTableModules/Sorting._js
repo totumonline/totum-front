@@ -70,10 +70,10 @@ $.extend(App.pcTableMain.prototype, {
                     let d1=(aFormat.textasvalue.split('|')[1] || field.dectimalSeparator);
                     let d2=(bFormat.textasvalue.split('|')[1] || field.dectimalSeparator);
 
-                    let reg = new RegExp('[^0-9\\' + d1+ ']')
+                    let reg = new RegExp('[^0-9\\' + d1+ ']', 'g')
                     aVal = aVal.replace(reg, '');
                     aVal = aVal.replace(d1, '.');
-                    let reg2 = new RegExp('[^0-9\\' + d2 + ']')
+                    let reg2 = new RegExp('[^0-9\\' + d2 + ']', 'g')
                     bVal = bVal.replace(reg2, '');
                     bVal = bVal.replace(d2, '.');
 
