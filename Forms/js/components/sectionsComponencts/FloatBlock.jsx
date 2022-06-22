@@ -18,6 +18,22 @@ export const getFieldGap = function (gap, blockNum, field) {
     return _gap;
 }
 
+const getSectionOrFormatParam = function (param, fieldName, section, format) {
+
+
+    if (param in format) return format[param];
+    else if ((param in section) && section[param]) {
+
+        if (typeof section[param] === 'object') {
+            if (fieldName in section[param]) return section[param][fieldName]
+            else return section[param]['_ALL']
+        }
+        return section[param];
+    }
+
+    return null;
+}
+
 
 export const FloatBlock = ({
                                fields,
@@ -33,6 +49,7 @@ export const FloatBlock = ({
                                fillAll,
                                setFillTrue,
                                model,
+                               formatsFromSection,
                                gap
                            }) => {
     let innerBlocks = [], innerBlock, innerBlockNum;
@@ -52,6 +69,14 @@ export const FloatBlock = ({
 
 
         let _format = format[field.name];
+
+        Object.keys(formatsFromSection).forEach((k) => {
+            let val = getSectionOrFormatParam(k, field.name, formatsFromSection, _format);
+            if (val !== null) {
+                _format[k] = val
+            }
+        })
+
         let blockNum = (_format.blocknum || 0).toString();
         if (!innerBlockNum || innerBlockNum !== blockNum) {
             innerBlockNum = blockNum;

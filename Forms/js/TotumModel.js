@@ -49,6 +49,10 @@ class TotumModel {
 
         try {
             json = JSON.parse(text);
+
+            if (json.sess_hash) {
+                this.sess_hash = json.sess_hash;
+            }
         } catch (e) {
             console.error('Ответ не в формате json: ' + text);
             return null;

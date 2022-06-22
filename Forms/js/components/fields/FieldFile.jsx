@@ -11,6 +11,7 @@ export class FieldFile extends FieldDefault {
         super(props)
         this.addBindings();
         this.filesArray(this.props.data.v_);
+        
     }
 
     /* shouldComponentUpdate(nextProps) {

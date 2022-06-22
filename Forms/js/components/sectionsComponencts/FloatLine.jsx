@@ -12,7 +12,7 @@ const getFormatHeight = function (plateh, blocknum, passBlock) {
         heights = plateh
     }
     if (heights) {
-        height = passBlock ? heights['small'] : heights['big']
+        height = passBlock ? heights['_small'] : heights['_big']
         if (height) {
             return height;
         }
@@ -341,16 +341,16 @@ export const FloatLine = ({innerBlocks, plateh, platemh, Plates, outline, data, 
         if (outline) {
 
             if (blocknum in outline) {
-                styles.borderColor = blockPassed ? outline[blocknum]['small'] : outline[blocknum]['big'];
+                styles.borderColor = blockPassed ? outline[blocknum]['_small'] : outline[blocknum]['_big'];
             } else {
-                styles.borderColor = blockPassed ? outline['small'] : outline['big'];
+                styles.borderColor = blockPassed ? outline['_small'] : outline['_big'];
             }
         }
         if (Plates) {
             if (blocknum in Plates) {
-                styles.backgroundColor = blockPassed ? Plates[blocknum]['small'] : Plates[blocknum]['big'];
+                styles.backgroundColor = blockPassed ? Plates[blocknum]['_small'] : Plates[blocknum]['_big'];
             } else {
-                styles.backgroundColor = blockPassed ? Plates['small'] : Plates['big'];
+                styles.backgroundColor = blockPassed ? Plates['_small'] : Plates['_big'];
             }
         }
         {
