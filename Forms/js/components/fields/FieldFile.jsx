@@ -10,8 +10,9 @@ export class FieldFile extends FieldDefault {
     constructor(props) {
         super(props)
         this.addBindings();
-        this.filesArray(this.props.data.v_);
-        
+        this.props.data.v_ = this.props.data.v_ || [];
+        this.filesArray(this.props.data.v_, this.props.data.v);
+
     }
 
     /* shouldComponentUpdate(nextProps) {
@@ -40,6 +41,7 @@ export class FieldFile extends FieldDefault {
         let {field} = this.props;
 
         const close = () => {
+            this.filesArray(this.props.data.v_, this.props.data.v);
             this.setState({open: false, load: false})
         }
 
@@ -83,23 +85,25 @@ export class FieldFile extends FieldDefault {
                 return p;
             }
             let adds = [], f;
-            this.state.val.some((fl, i) => {
-                if (!f && flsIn.length)
-                    f = flsIn.splice(0, 1)[0];
-                if (f) {
-                    if (!f.path) {
-                        if (f.name === fl.file) {
-                            val.push(fl);
+            if (this.state.val && this.state.val.length) {
+                this.state.val.some((fl, i) => {
+                    if (!f && flsIn.length)
+                        f = flsIn.splice(0, 1)[0];
+                    if (f) {
+                        if (!f.path) {
+                            if (f.source_name === fl.file) {
+                                val.push(fl);
+                                f = null;
+                            }
+                        } else {
+                            adds.push(addNewFile(f));
                             f = null;
+                            return true;
                         }
-                    } else {
-                        adds.push(addNewFile(f));
-                        f=null;
-                        return true;
                     }
-                }
-            });
-            if(f){
+                });
+            }
+            if (f) {
                 adds.push(addNewFile(f));
             }
 
@@ -118,17 +122,28 @@ export class FieldFile extends FieldDefault {
 
         let previews;
         if (this.props.data.v_ && this.props.data.v_.length) {
+
+
             previews = <Grid
-                spacing={3}
+                spacing={1}
                 container={true}
                 className="ttm-previews-grid"
             >
+
                 {this.props.data.v_.map((url, i) => {
+
+                    let columns = this.props.format.width < 200 ? 2 : Math.floor(this.props.format.width / 120)
+                    if (columns > this.props.data.v_.length) {
+                        columns = this.props.data.v_.length;
+                    }
+                    let xs = Math.ceil(12 / columns);
+
                     let preview;
                     if (isImage(url)) {
                         preview =
-                            <div className="ttm-preview" style={{backgroundImage: "url(" + url + ")"}}></div>
-
+                            <div className="ttm-preview" style={{
+                                backgroundImage: "url(" + url + ")",
+                            }}></div>
                     } else {
                         preview = <div className="ttm-preview-file"><AttachFileIcon/></div>
                     }
@@ -141,7 +156,7 @@ export class FieldFile extends FieldDefault {
 
                     return (
                         <Grid
-                            xs={4}
+                            xs={xs}
                             item={true}
                             key={i}
                         >
@@ -175,6 +190,7 @@ export class FieldFile extends FieldDefault {
                     Загрузить файлы
                 </Button>
 
+
                 <DropzoneDialog
                     {...params}
                     previewText=""
@@ -186,7 +202,7 @@ export class FieldFile extends FieldDefault {
                     open={this.state.open}
                     onClose={this.closeDialog}
                     onSave={this.save}
-                    initialFiles={this.props.data.v_}
+                    initialFiles={this.state.fileObjects}
                     showPreviews={true}
                     showFileNamesInPreview={true}
                 />
@@ -194,17 +210,15 @@ export class FieldFile extends FieldDefault {
         }
     }
 
-    filesArray = async (urls) => {
+    filesArray = async (urls, vals) => {
         try {
             const fileObjs = await Promise.all(
-                urls.map(async (url) => {
-                    const file = await createFileFromUrl(url);
-                    const data = await readFile(file);
-
-                    return {
-                        file,
-                        data,
-                    };
+                urls.map(async (url, i) => {
+                    const file = await fetch(url);
+                    const data = await file.blob();
+                    data.name = vals[i]['name'];
+                    data.source_name = vals[i]['file'];
+                    return data;
                 })
             );
 

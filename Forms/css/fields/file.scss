@@ -54,6 +54,7 @@
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.12) 0 1px 6px, rgba(0, 0, 0, 0.12) 0 1px 4px;
   padding: 5px;
+  overflow: hidden;
 }
 
 .ttm-preview, .ttm-preview-file {
@@ -85,7 +86,7 @@
 
 .ttm-file-image {
   height: 100%;
-  width: 100%;
+  width:100%;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
