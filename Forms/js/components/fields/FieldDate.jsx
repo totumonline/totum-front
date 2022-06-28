@@ -178,7 +178,6 @@ export class FieldDate extends FieldString {
                 clearable={!this.props.field.required}
                 required={this.props.field.required}
                 format={dateFormat}
-                margin="normal"
                 autoOk={false}
                 value={this.state.val}
                 onAccept={this.save}
