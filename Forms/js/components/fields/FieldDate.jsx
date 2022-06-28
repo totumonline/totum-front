@@ -179,6 +179,7 @@ export class FieldDate extends FieldString {
                 required={this.props.field.required}
                 format={dateFormat}
                 autoOk={false}
+                fullWidth={true}
                 value={this.state.val}
                 onAccept={this.save}
                 KeyboardButtonProps={{

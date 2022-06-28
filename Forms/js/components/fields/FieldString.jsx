@@ -144,14 +144,26 @@ export class FieldString extends FieldDefault {
 
         let pref;
 
+        let styleIN = {
+            color: style.color,
+            align: style.align,
+            fontWeight: style.fontWeight,
+            textDecoration: style.textDecoration,
+            fontStyle: style.fontStyle,
+            helperText: helperText
+        };
 
         if (this.isText) {
-            if (format.height)
-                params.rows = Math.round(format.height / 29);
+            if (format.height){
+                params.rows = Math.round(format.height / 22);
+            }
             if (format.maxheight)
-                params.rowsMax = Math.round(format.maxheight / 29);
+                params.rowsMax = Math.round(format.maxheight / 22);
 
         }
+
+
+
 
 
         return <div>{pref}{getErroredField(<TextField error={error} variant="outlined"
@@ -163,14 +175,7 @@ export class FieldString extends FieldDefault {
                                                       InputProps={{
                                                           startAdornment: prefix,
                                                           endAdornment: postfix,
-                                                          style: {
-                                                              color: style.color,
-                                                              align: style.align,
-                                                              fontWeight: style.fontWeight,
-                                                              textDecoration: style.textDecoration,
-                                                              fontStyle: style.fontStyle,
-                                                              helperText: helperText
-                                                          }
+                                                          style: {styleIN}
                                                       }}
                                                       fullWidth={true}
                                                       helperText={helperText}
