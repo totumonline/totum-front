@@ -119,6 +119,12 @@ export class FieldFile extends FieldDefault {
     }
 
     render(style, format, blocked) {
+        return <div className="ttm-cellValueWrapper ttm-cell-button">
+            {this._render()}
+        </div>
+    }
+
+    _render(style, format, blocked) {
 
         let previews;
         if (this.props.data.v_ && this.props.data.v_.length) {
@@ -155,6 +161,7 @@ export class FieldFile extends FieldDefault {
                     </div>
 
                     return (
+
                         <Grid
                             xs={xs}
                             item={true}
