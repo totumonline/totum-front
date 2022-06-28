@@ -12,6 +12,10 @@ export const FieldCell = ({field, noTitles, data, format, model, item, gap}) => 
         titleStyle = {backgroundColor: field.panelColor}
     }*/
 
+    if (title === '*NONE*') {
+        title = '';
+    }
+
     let classes = "ttm-fieldCell";
     if (!noTitles)
         $title = <div className="ttm-fieldTitle" style={titleStyle}><span
