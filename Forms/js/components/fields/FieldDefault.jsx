@@ -66,6 +66,14 @@ export class FieldDefault extends React.Component {
         }
     }
 
+    __getDivParams(){
+        let divParams = {};
+        if (this.props.field.required && (this.state.val === '' || this.state.val === null || this.state.val === undefined || (typeof this.state.val==="object" && !this.state.val.length))) {
+            divParams.className = "ttm-required-empty-field";
+        }
+        return divParams;
+    }
+
     __save(val) {
 
         this.setState({

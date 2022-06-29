@@ -155,10 +155,9 @@ export class FieldSelect extends FieldDefault {
             }
         }
 
-        if(!this.state.loaded){
+        if (!this.state.loaded) {
             filteredOptions.push({text: 'Загрузка данных'})
-        }
-        else if (this.state.sliced) {
+        } else if (this.state.sliced) {
             filteredOptions.push({text: 'Данные не полны, воспользуйтесь поиском'})
         }
 
@@ -230,7 +229,9 @@ export class FieldSelect extends FieldDefault {
             params.clearOnBlur = true;
             params.autoComplete = true;
         }
-        return <div><Autocomplete
+
+
+        return <div {...this.__getDivParams()}><Autocomplete
             freeSolo={false}
             clearOnEscape={true}
             options={this.state.list}

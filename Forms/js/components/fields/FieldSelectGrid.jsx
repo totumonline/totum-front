@@ -119,7 +119,7 @@ export class FieldSelectGrid extends FieldSelectCheckbox {
                     color="inherit" size={15}/></div>
         }
 
-        return <div>{changing}
+        return <div {...this.__getDivParams()}>{changing}
             <Grid container spacing={4}>
                 {controls}
             </Grid>

@@ -181,6 +181,15 @@
     padding-left: 22px;
     color: #000000;
   }
+  .ttm-field-required{
+    color: red;
+  }
+  .ttm-required-empty-field {
+    fieldset {
+      border-color: red;
+    }
+  }
+
 
   /*columns*/
   .ttm-columnsTitle {

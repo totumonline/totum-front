@@ -115,7 +115,9 @@ export class FieldSelectCheckbox extends FieldSelect {
         let prefix;
 
 
-        return <div>
+
+
+        return <div {...this.__getDivParams()}>
             {prefix}
             <FormControl component="fieldset">
                 <FormGroup>

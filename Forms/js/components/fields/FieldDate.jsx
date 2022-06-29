@@ -93,16 +93,15 @@ export class FieldDate extends FieldString {
     }
 
     onKeyDown(event) {
-        switch (event.key) {
-            case 'Enter':
-                this.save(this.state.val)
-                return false;
-                break;
-            case 'Escape':
-                this._blur();
-                return false;
+            switch (event.key) {
+                case 'Enter':
+                    this.save(this.state.val)
+                    return false;
+                    break;
+                case 'Escape':
+                    this._blur();
+                    return false;
         }
-
     }
 
     setVal(d) {
@@ -110,6 +109,11 @@ export class FieldDate extends FieldString {
             this.setState({
                 val: d,
                 valString: this._getValString(d)
+            })
+        }else{
+            this.setState({
+                val: null,
+                valString: ""
             })
         }
     }
@@ -150,6 +154,15 @@ export class FieldDate extends FieldString {
         }
     }
 
+
+    __getDivParams(){
+        let divParams = {};
+        if (this.props.field.required && (this.state.valString === '')) {
+            divParams.className = "ttm-required-empty-field";
+        }
+        return divParams;
+    }
+
     getVal(style, format, blocked) {
         let params = {};
 
@@ -160,20 +173,19 @@ export class FieldDate extends FieldString {
         }
 
         let Model, dateFormat = this._getDateFormat();
-        let classes="ttm-form ttm-dateDialog ";
+        let classes = "ttm-form ttm-dateDialog ";
         if (!this.props.field.dateTime) {
             Model = KeyboardDatePicker;
         } else if (format.viewtype === 'time') {
             Model = KeyboardTimePicker;
-            classes="ttm-form ttm-timeDialog ";
+            classes = "ttm-form ttm-timeDialog ";
             params.ampm = false;
         } else {
             Model = KeyboardDateTimePicker;
             params.ampm = false;
         }
 
-
-        return <div><MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+        return <div {...this.__getDivParams()}><MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
             <Model
                 clearable={!this.props.field.required}
                 required={this.props.field.required}

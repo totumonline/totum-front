@@ -2,6 +2,7 @@ import React from 'react';
 import {FieldValue} from "./FieldValue";
 import ReactHtmlParser from "react-html-parser";
 import Typography from "@material-ui/core/Typography";
+import {Required} from "./Required";
 
 export const FieldCell = ({field, noTitles, data, format, model, item, gap}) => {
     let style = {width: field.newwidth || field.width};
@@ -19,7 +20,7 @@ export const FieldCell = ({field, noTitles, data, format, model, item, gap}) => 
     let classes = "ttm-fieldCell";
     if (!noTitles)
         $title = <div className="ttm-fieldTitle" style={titleStyle}><span
-            className="ttm-fieldTitleInner">{title}</span></div>
+            className="ttm-fieldTitleInner">{title}<Required field={field}/></span></div>
     else {
         if (noTitles === 'empty') {
             $title = <div className="ttm-fieldTitle" style={titleStyle}><span

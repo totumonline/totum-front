@@ -120,7 +120,9 @@ export class FieldFile extends FieldDefault {
 
     render(style, format, blocked) {
         return <div className="ttm-cellValueWrapper ttm-cell-button">
-            {this._render()}
+            <div {...this.__getDivParams()}>
+                {this._render()}
+            </div>
         </div>
     }
 
@@ -191,7 +193,7 @@ export class FieldFile extends FieldDefault {
             }
             params.load = this.state.load;
 
-            return <>
+            return <div className="ttm-file-field-area">
                 {previews}
                 <Button className="ttm-add-file" variant="contained" color="secondary" onClick={this.openDialog}>
                     Загрузить файлы
@@ -213,7 +215,7 @@ export class FieldFile extends FieldDefault {
                     showPreviews={true}
                     showFileNamesInPreview={true}
                 />
-            </>
+            </div>
         }
     }
 

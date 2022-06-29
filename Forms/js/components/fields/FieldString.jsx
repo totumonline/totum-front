@@ -150,11 +150,10 @@ export class FieldString extends FieldDefault {
             fontWeight: style.fontWeight,
             textDecoration: style.textDecoration,
             fontStyle: style.fontStyle,
-            helperText: helperText
         };
 
         if (this.isText) {
-            if (format.height){
+            if (format.height) {
                 params.rows = Math.round(format.height / 22);
             }
             if (format.maxheight)
@@ -163,10 +162,7 @@ export class FieldString extends FieldDefault {
         }
 
 
-
-
-
-        return <div>{pref}{getErroredField(<TextField error={error} variant="outlined"
+        return <div {...this.__getDivParams()}>{pref}{getErroredField(<TextField error={error} variant="outlined"
 
                                                       required={this.props.field.required}
                                                       size="small"
@@ -190,8 +186,8 @@ export class FieldString extends FieldDefault {
         let style = {};
         if (format.viewdata.unit_type_size) {
             style.fontSize = format.viewdata.unit_type_size
-            if(style.fontSize.toString().match(/^[\d.]+$/)){
-                style.fontSize+='px'
+            if (style.fontSize.toString().match(/^[\d.]+$/)) {
+                style.fontSize += 'px'
             }
         }
         if (format.viewdata.unit_type_weight) {
