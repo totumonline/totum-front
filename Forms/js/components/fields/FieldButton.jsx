@@ -32,7 +32,7 @@ export class FieldButton extends React.Component {
             });
             let {field} = this.props;
 
-            if (this.props.field.name === '__save' && !this.props.model.__saveClicked) {
+            if (this.props.field.name === '__save' && this.props.model.elseData!=='saveButtonClicked') {
                 this.props.model.elseData = 'saveButtonClicked';
                 this.props.model.setChangesToForm({statusData: 'saveButtonClicked'});
             }
@@ -40,6 +40,12 @@ export class FieldButton extends React.Component {
             return this.props.model.click(this.props.item, field.name).then((json) => {
 
                 this.props.model.setChangesToForm(null, json);
+
+                if (this.props.field.name === '__save' && this.props.model.elseData && !json.error) {
+                    this.props.model.elseData = null;
+                    this.props.model.setChangesToForm({statusData: null});
+                }
+
                 this.setState({
                     clicked: "done"
                 });
