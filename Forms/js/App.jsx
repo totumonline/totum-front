@@ -48,11 +48,13 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
     }
     model.load(post, get, input).then((json) => {
 
-        if (json.settings.__browser_title) {
-            window.document.title = json.settings.__browser_title;
-        }
-        if (json.settings.__background) {
-            window.document.body.style.backgroundImage = "url('" + json.settings.__background + "')";
+        if (json.settings) {
+            if (json.settings.__browser_title) {
+                window.document.title = json.settings.__browser_title;
+            }
+            if (json.settings.__background) {
+                window.document.body.style.backgroundImage = "url('" + json.settings.__background + "')";
+            }
         }
 
         if (json.error) {

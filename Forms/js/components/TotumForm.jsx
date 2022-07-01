@@ -308,16 +308,15 @@ export class TotumForm extends React.Component {
         }
         if (this.state.interfaceDatas && this.state.interfaceDatas.length) {
             this.state.interfaceDatas.some((row, i) => {
-                if (row[0] === 'text' || row[0] === 'html') {
+                if (row[0] === 'text') {
                     let buttons = [{
                         label: "ОК",
                         action: () => {
                         }
                     }]
-                    let text = (row[0] === 'text') ? row[1].text : ReactHtmlParser(row[1].text);
+                    let text = ReactHtmlParser(row[1].text);
 
                     let content = <div>{text}</div>
-
 
                     $interfaceData = <AlertModal content={content} title={row[1].title} handleClose={() => {
                         this.setState((state) => {
