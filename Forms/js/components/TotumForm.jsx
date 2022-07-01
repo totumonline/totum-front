@@ -29,7 +29,8 @@ export class TotumForm extends React.Component {
             data: props.data.data,
             controls: props.data.c,
             mainError: props.data.error,
-            interfaceDatas: []
+            interfaceDatas: [],
+            statusData: null,
         };
 
         let timeout;

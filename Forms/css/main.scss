@@ -179,17 +179,24 @@
     padding-bottom: 4px;
     padding-top: 10px;
     padding-left: 22px;
+    padding-right: 22px;
     color: #000000;
   }
-  .ttm-field-required{
+
+  .ttm-field-required {
     color: red;
   }
+
   .ttm-required-empty-field {
     fieldset {
       border-color: red;
     }
   }
 
+  > .error {
+    padding: 10px 5px;
+    margin: 5px;
+  }
 
   /*columns*/
   .ttm-columnsTitle {
@@ -396,12 +403,13 @@
     width: 90vw;
     max-width: 800px;
 
-    .MuiDialogContent-root *{
+    .MuiDialogContent-root * {
       color: #0000bf;
     }
   }
-  &.ttm-errorException{
-    .MuiDialogContent-root *{
+
+  &.ttm-errorException {
+    .MuiDialogContent-root * {
       color: #0000bf;
     }
   }

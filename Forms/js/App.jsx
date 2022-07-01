@@ -46,6 +46,14 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
         ReactDom.render(<div className="error">{error.toString()}</div>, div);
     }
     model.load(post, get, input).then((json) => {
+
+        if (json.settings.__browser_title) {
+            window.document.title = json.settings.__browser_title;
+        }
+        if (json.settings.__background) {
+            window.document.body.style.backgroundImage = "url('" + json.settings.__background + "')";
+        }
+
         if (json.error) {
             renderError(json.error)
         } else {

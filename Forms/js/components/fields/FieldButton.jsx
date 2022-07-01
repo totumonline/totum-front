@@ -31,6 +31,12 @@ export class FieldButton extends React.Component {
                 clicked: "click"
             });
             let {field} = this.props;
+
+            if (this.props.field.name === '__save' && !this.props.model.__saveClicked) {
+                this.props.model.elseData = 'saveButtonClicked';
+                this.props.model.setChangesToForm({statusData: 'saveButtonClicked'});
+            }
+
             return this.props.model.click(this.props.item, field.name).then((json) => {
 
                 this.props.model.setChangesToForm(null, json);
@@ -70,24 +76,24 @@ export class FieldButton extends React.Component {
         let text = format.text || field.buttonText || null;
         let params = {}, icon;
 
-        let style={};
+        let style = {};
 
-        if(format.background){
-            style.backgroundColor=format.background
+        if (format.background) {
+            style.backgroundColor = format.background
         }
-        if(format.color){
-            style.color=format.color
+        if (format.color) {
+            style.color = format.color
         }
 
         switch (this.state.clicked) {
             case "click":
                 params.disabled = true;
                 text = <i className="fa fa-spinner" style={{"float": "none"}}></i>
-                style.textAlign="center";
+                style.textAlign = "center";
                 break;
             case "done":
                 params.disabled = true;
-                text='Выполнено';
+                text = 'Выполнено';
                 break;
             default:
                 if (format.block) {

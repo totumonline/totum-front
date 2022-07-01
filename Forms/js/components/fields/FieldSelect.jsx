@@ -52,6 +52,9 @@ export class FieldSelect extends FieldDefault {
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         if (this.constructor === FieldSelect) {
+            if (this.props.model.elseData !== nextProps.model.elseData) {
+                return true;
+            }
             if (this.state.globalSliced && this.state.sliced && (nextProps.data.v && nextProps.data.v.toString()) !== (this.props.data.v && this.props.data.v.toString())) {
                 let states = this.getStateValsInOptions(nextProps);
                 this.setState(states);

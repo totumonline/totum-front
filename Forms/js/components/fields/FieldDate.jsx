@@ -157,7 +157,7 @@ export class FieldDate extends FieldString {
 
     __getDivParams(){
         let divParams = {};
-        if (this.props.field.required && (this.state.valString === '')) {
+        if (this.props.model.elseData === 'saveButtonClicked' && this.props.field.required && (this.state.val === null)) {
             divParams.className = "ttm-required-empty-field";
         }
         return divParams;

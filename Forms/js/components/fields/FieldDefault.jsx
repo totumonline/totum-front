@@ -10,7 +10,7 @@ export class FieldDefault extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        if (JSON.stringify(nextProps.data.v) !== JSON.stringify(this.props.data.v)) {
+        if (this.props.model.elseData !== nextProps.model.elseData || JSON.stringify(nextProps.data.v) !== JSON.stringify(this.props.data.v)) {
             let prepared = this.constructor.prepareInputVal(nextProps.data.v)
             this.setState({
                 val: prepared,
@@ -66,9 +66,9 @@ export class FieldDefault extends React.Component {
         }
     }
 
-    __getDivParams(){
+    __getDivParams() {
         let divParams = {};
-        if (this.props.field.required && (this.state.val === '' || this.state.val === null || this.state.val === undefined || (typeof this.state.val==="object" && !this.state.val.length))) {
+        if (this.props.model.elseData === 'saveButtonClicked' && this.props.field.required && (this.state.val === '' || this.state.val === null || this.state.val === undefined || (typeof this.state.val === "object" && !this.state.val.length))) {
             divParams.className = "ttm-required-empty-field";
         }
         return divParams;
