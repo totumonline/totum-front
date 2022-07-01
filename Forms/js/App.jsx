@@ -43,6 +43,7 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
     }
     const renderError = function (error) {
         console.log(error);
+        error = error.replace(/\[\[/g, '').replace(/\]\]/g, '');
         ReactDom.render(<div className="error">{error.toString()}</div>, div);
     }
     model.load(post, get, input).then((json) => {

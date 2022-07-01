@@ -299,6 +299,7 @@ export class TotumForm extends React.Component {
 
         let $errorNotification, $interfaceData;
         if (errorNotification) {
+            errorNotification = errorNotification.replace(/\[\[/g, '').replace(/\]\]/g, '');
             $errorNotification = <AlertModal content={errorNotification}
                                              className="ttm-form ttm-errorException"
                                              handleClose={() => {
