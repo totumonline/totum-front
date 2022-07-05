@@ -23,9 +23,9 @@ export class FieldDate extends FieldString {
     }
 
     static getDerivedStateFromProps(props, state) {
+        let propsVal = FieldDate.prepareInputVal(props.data.v);
 
-        if (props.data.v !== state.inVal) {
-            let propsVal = FieldDate.prepareInputVal(props.data.v);
+        if ((propsVal ? propsVal.toString() : '') !== (state.val ? state.val.toString() : '')) {
             return {
                 val: propsVal,
                 inVal: props.data.v,
@@ -93,14 +93,14 @@ export class FieldDate extends FieldString {
     }
 
     onKeyDown(event) {
-            switch (event.key) {
-                case 'Enter':
-                    this.save(this.state.val)
-                    return false;
-                    break;
-                case 'Escape':
-                    this._blur();
-                    return false;
+        switch (event.key) {
+            case 'Enter':
+                this.save(this.state.val)
+                return false;
+                break;
+            case 'Escape':
+                this._blur();
+                return false;
         }
     }
 
@@ -110,7 +110,7 @@ export class FieldDate extends FieldString {
                 val: d,
                 valString: this._getValString(d)
             })
-        }else{
+        } else {
             this.setState({
                 val: null,
                 valString: ""
@@ -155,7 +155,7 @@ export class FieldDate extends FieldString {
     }
 
 
-    __getDivParams(){
+    __getDivParams() {
         let divParams = {};
         if (this.props.model.elseData === 'saveButtonClicked' && this.props.field.required && (this.state.val === null)) {
             divParams.className = "ttm-required-empty-field";
