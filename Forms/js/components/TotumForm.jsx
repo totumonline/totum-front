@@ -359,15 +359,39 @@ export class TotumForm extends React.Component {
             })
         }
         if (this.state.links && this.state.links.length) {
-            $interfaceData =
-                <AlertModal content={"Отображение  links в формах недоступно"} title={"Ошибка"} handleClose={() => {
-                    this.setState((state) => {
-                        return {links: []};
-                    })
-                }}
-                            BackdropProps={{style: {opacity: 0.3}}}
-                            className="ttm-form ttm-linkto"
-                />
+            $interfaceData = [];
+            for (let i = 0; i < this.state.links.length; i++) {
+                let link = this.state.links[i];
+                switch (link.target) {
+                    case 'self':
+                        window.location.href = link.uri;
+                        return;
+                    case 'top':
+                        window.top.location.href = link.uri;
+                        return;
+                        break;
+                    case 'parent':
+                        window.parent.location.href = link.uri;
+                        return;
+                        break;
+                    case 'iframe':
+                        let style = {height: "80vh"};
+                        style.width = "100%";
+
+                        let iframe = <iframe src={link.uri} style={style}></iframe>;
+                        let modal = <AlertModal close={true} key={link.uri} content={iframe} title={link.title}
+                                                handleClose={() => {
+                                                    this.setState((state) => {
+                                                        return this.state.links.splice(i, 1) && {links: this.state.links};
+                                                    })
+                                                }}
+                                                BackdropProps={{style: {opacity: 0.3}}}
+                                                className="ttm-form ttm-linkto"
+                        />;
+                        $interfaceData.push(modal);
+                        break;
+                }
+            }
         }
 
 
