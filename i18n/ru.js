@@ -78,6 +78,8 @@ App.langs.ru =
                 "Edit totumCode in value of %s": "Редактировать Тотум-код в ячейке %s",
 
                 "Default printing": "Печать по-умолчанию",
+                "Forms": "Формы",
+                "Quick form": "Быстрая форма",
 
                 'RowList of page/table rows': 'RowList строк страницы/таблицы',
 

@@ -624,7 +624,45 @@
 
                 creatorPart.appendTo(topButtons);
 
-                let btnAdd = $('<button class="btn btn-danger btn-xxs" id="addField">' + App.translate('Add field') + '</span></button>').width(113)
+
+                if (this.tableRow.type === 'simple') {
+                    let btnAdd = $('<button class="btn btn-danger btn-xxs" id="quickForms"><i class="fa fa-cubes"></i></button>')
+                        .on('click', function () {
+                            let $panel = $('<div><div class="menu-item" data-type="quick">' + App.translate('Quick form') + '</div>' +
+                                '<div class="menu-item"  data-type="forms">' + App.translate('Forms') + '</div></div>')
+                            $panel.on('click', '.menu-item', function () {
+                                pcTable.model.formsLinks = pcTable.model.formsLinks || function (type) {
+                                    return this.__ajax('post', {type: type, method: 'formsLinks'});
+                                }
+
+                                let type = $(this).is('[data-type="quick"]') ? 'quick' : 'forms';
+                                $panel.remove();
+                                pcTable.model.formsLinks(type);
+                            })
+
+                            let popoverId = App.popNotify({
+                                isParams: true,
+                                $text: $panel,
+                                element: btnAdd,
+                                container: this._container,
+                                trigger: 'manual',
+                                placement: 'bottom'
+                            });
+
+                            $('#' + popoverId).position({
+                                my: "left top",
+                                at: "left-3px bottom+10px",
+                                of: btn
+                            }).off().on('mouseleave', function () {
+                                $panel.remove();
+                            }).find('.arrow').css('left', '11px').end()
+                                .find('.popover-content').css('padding', '5px');
+
+                        }).appendTo(creatorPart);
+                }
+
+
+                let btnAdd = $('<button class="btn btn-danger btn-xxs" id="addField">' + App.translate('Add field') + '</button>').width(113)
                     .on('click', function () {
                         let data = {
                             table_id: {v: pcTable.tableRow.id}, data_src: {v: pcTable_default_field_data_src}
