@@ -10,7 +10,11 @@ import {
     DateTimePicker, KeyboardDateTimePicker,
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+
 import ruLocale from "date-fns/locale/ru";
+import enLocale from "date-fns/locale/en-US";
+import zhLocale from "date-fns/locale/zh-CN";
+
 import TextField from "@material-ui/core/TextField";
 import moment from "moment";
 
@@ -20,6 +24,17 @@ export class FieldDate extends FieldString {
         super(props);
         this.state.inVal = props.data.v
         this.state.valString = props.data.v
+
+        switch (this.props.model.lang.name) {
+            case 'ru':
+                this.locale = ruLocale;
+                break;
+            case 'zh':
+                this.locale = zhLocale;
+                break;
+            default:
+                this.locale = enLocale;
+        }
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -53,7 +68,7 @@ export class FieldDate extends FieldString {
         if (props.error && (props.value === "" || props.value === undefined)) {
             let {required} = this.props.field;
             if (required) {
-                props.helperText = "Обязательное поле";
+                props.helperText = this.lng('Mandatory Field');
             } else {
                 props = {...props, error: false, helperText: ""}
             }
@@ -185,7 +200,7 @@ export class FieldDate extends FieldString {
             params.ampm = false;
         }
 
-        return <div {...this.__getDivParams()}><MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+        return <div {...this.__getDivParams()}><MuiPickersUtilsProvider utils={DateFnsUtils} locale={this.locale}>
             <Model
                 clearable={!this.props.field.required}
                 required={this.props.field.required}
@@ -205,8 +220,8 @@ export class FieldDate extends FieldString {
                 TextFieldComponent={(params) => this.renderInput(params, format, style)}
                 {...params}
 
-                clearLabel="Очистить"
-                cancelLabel="Отменить"
+                clearLabel={this.lng('Clear')}
+                cancelLabel= {this.lng('Cancel')}
             /></MuiPickersUtilsProvider></div>
     }
 

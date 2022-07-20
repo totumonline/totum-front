@@ -23,6 +23,7 @@ export class FieldSelect extends FieldDefault {
 
         this.limitTags = 5;
         this.state = {...this.state, ...this.getStateValsInOptions()};
+
     }
 
     getStateValsInOptions(props) {
@@ -158,10 +159,11 @@ export class FieldSelect extends FieldDefault {
             }
         }
 
+
         if (!this.state.loaded) {
-            filteredOptions.push({text: 'Загрузка данных'})
+            filteredOptions.push({text: this.lng('Data loading')})
         } else if (this.state.sliced) {
-            filteredOptions.push({text: 'Данные не полны, воспользуйтесь поиском'})
+            filteredOptions.push({text: this.lng('The data is incomplete, use the search')})
         }
 
         return filteredOptions;
@@ -171,7 +173,7 @@ export class FieldSelect extends FieldDefault {
         return (typeof val !== "object")
         &&
         this.state.indexed[val] ?
-            (val === this.state.inVal || (this.state.inVal && typeof this.state.inVal === 'object' && this.state.inVal.indexOf(val) !== -1) ? "Выбранное" : this.state.indexed[val][1] || '')
+            (val === this.state.inVal || (this.state.inVal && typeof this.state.inVal === 'object' && this.state.inVal.indexOf(val) !== -1) ? this.lng('Selected') : this.state.indexed[val][1] || '')
             : ""
     }
 
@@ -239,7 +241,7 @@ export class FieldSelect extends FieldDefault {
             clearOnEscape={true}
             options={this.state.list}
             value={this.state.val}
-            noOptionsText={"Ничего не найдено"}
+            noOptionsText={this.lng('Nothing found')}
             limitTags={this.limitTags}
             {...params}
             size={"small"}

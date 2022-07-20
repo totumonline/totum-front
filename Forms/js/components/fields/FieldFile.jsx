@@ -196,17 +196,17 @@ export class FieldFile extends FieldDefault {
             return <div className="ttm-file-field-area">
                 {previews}
                 <Button className="ttm-add-file" variant="contained" color="secondary" onClick={this.openDialog}>
-                    Загрузить файлы
+                    {this.lng('Upload files')}
                 </Button>
 
 
                 <DropzoneDialog
                     {...params}
                     previewText=""
-                    dropzoneText="Перетащите файлы для загрузки"
-                    dialogTitle="Загрузка файлов"
-                    cancelButtonText={"Отменить"}
-                    submitButtonText={"Подтвердить"}
+                    dropzoneText={this.lng('Drag and drop files to download')}
+                    dialogTitle={this.lng('Files uploading')}
+                    cancelButtonText={this.lng('Cancel')}
+                    submitButtonText={this.lng('Confirm')}
                     maxFileSize={50000000}
                     open={this.state.open}
                     onClose={this.closeDialog}

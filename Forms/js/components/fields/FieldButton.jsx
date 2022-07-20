@@ -32,7 +32,7 @@ export class FieldButton extends React.Component {
             });
             let {field} = this.props;
 
-            if (this.props.field.name === '__save' && this.props.model.elseData!=='saveButtonClicked') {
+            if (this.props.field.name === '__save' && this.props.model.elseData !== 'saveButtonClicked') {
                 this.props.model.elseData = 'saveButtonClicked';
                 this.props.model.setChangesToForm({statusData: 'saveButtonClicked'});
             }
@@ -66,11 +66,13 @@ export class FieldButton extends React.Component {
                 action: this.click.bind(this)
             });
             buttons.push({
-                label: "Отмена"
+                label: this.lng("Cancel")
             });
             return <AlertModal handleClose={() => {
                 this.setState({checkClick: null})
-            }} title="Подтверждение" content={this.props.field.warningEditText || 'Точно изменить?'} buttons={buttons}/>
+            }} title={this.lng('Confirmation')}
+                               content={this.props.field.warningEditText || this.lng('Surely to change?')}
+                               buttons={buttons}/>
         }
     }
 
@@ -99,7 +101,7 @@ export class FieldButton extends React.Component {
                 break;
             case "done":
                 params.disabled = true;
-                text = 'Выполнено';
+                text = this.lng('Done');
                 break;
             default:
                 if (format.block) {

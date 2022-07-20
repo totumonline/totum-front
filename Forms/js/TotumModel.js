@@ -43,7 +43,7 @@ class TotumModel {
             text = await response.text();
         } catch (e) {
             console.log('e:' + e);
-            throw Error("Ошибка коннекта с сервером");
+            throw Error("Server connect error");
         }
         let json;
 
@@ -54,7 +54,7 @@ class TotumModel {
                 this.sess_hash = json.sess_hash;
             }
         } catch (e) {
-            console.error('Ответ не в формате json: ' + text);
+            console.error('Answer not in json format: ' + text);
             return null;
         }
         if (json.error) {

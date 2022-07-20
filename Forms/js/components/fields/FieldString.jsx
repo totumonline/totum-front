@@ -76,11 +76,11 @@ export class FieldString extends FieldDefault {
         if (this.props.field.regexp) {
             var r = new RegExp(this.props.field.regexp);
             if (!r.test(val)) {
-                state.error = this.props.field.regexpErrorText || 'regexp не проходит — "' + this.props.field.regexp + '"'
+                state.error = this.props.field.regexpErrorText || ((this.lng('Regexp does not pass')) + ' — "' + this.props.field.regexp + '"')
             }
         } else if (this.props.field.required) {
             if (!val) {
-                state.error = "Значение не должно быть пустым"
+                state.error = this.lng("The value should not be empty")
             }
         }
 
@@ -164,20 +164,20 @@ export class FieldString extends FieldDefault {
 
         return <div {...this.__getDivParams()}>{pref}{getErroredField(<TextField error={error} variant="outlined"
 
-                                                      required={this.props.field.required}
-                                                      size="small"
-                                                      type={this.props.field.type}
-                                                      key={this.props.field.name}
-                                                      InputProps={{
-                                                          startAdornment: prefix,
-                                                          endAdornment: postfix,
-                                                          style: {styleIN}
-                                                      }}
-                                                      fullWidth={true}
-                                                      helperText={helperText}
-                                                      value={this.state.val}
-                                                      inputRef={this.inputRef}
-                                                      {...params}
+                                                                                 required={this.props.field.required}
+                                                                                 size="small"
+                                                                                 type={this.props.field.type}
+                                                                                 key={this.props.field.name}
+                                                                                 InputProps={{
+                                                                                     startAdornment: prefix,
+                                                                                     endAdornment: postfix,
+                                                                                     style: {styleIN}
+                                                                                 }}
+                                                                                 fullWidth={true}
+                                                                                 helperText={helperText}
+                                                                                 value={this.state.val}
+                                                                                 inputRef={this.inputRef}
+                                                                                 {...params}
         />)}</div>
     }
 

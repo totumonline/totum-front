@@ -11,6 +11,8 @@ import {Trobber} from "./Trobber";
 import Backdrop from "@material-ui/core/Backdrop";
 import ReactHtmlParser from "react-html-parser";
 
+
+
 let React = require('react');
 
 
@@ -239,9 +241,6 @@ export class TotumForm extends React.Component {
                 sectionViewtype = {view: 'plain', parallel: true}
             }
 
-            /*Уточнить*/
-
-
             blockSec = {...editingBlock, ...blockSec};
 
             sec.fields = sec.fields.map((f) => {
@@ -310,7 +309,7 @@ export class TotumForm extends React.Component {
             this.state.interfaceDatas.some((row, i) => {
                 if (row[0] === 'text') {
                     let buttons = [{
-                        label: "ОК",
+                        label: this.props.model.langObj['OK'] || 'OK',
                         action: () => {
                         }
                     }]
@@ -337,7 +336,7 @@ export class TotumForm extends React.Component {
                     return true;
                 } else {
                     $interfaceData =
-                        <AlertModal content={"Отображение типа " + row[0] + " в формах недоступно"} title={"Ошибка"}
+                        <AlertModal content={"Display type " + row[0] + " is not available in forms"} title={this.props.mode.langObj['Error'] || 'Error'}
                                     handleClose={() => {
                                         this.setState((state) => {
                                             let new_state = [...state.interfaceDatas];

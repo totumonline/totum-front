@@ -4,6 +4,9 @@ import {Trobber} from "./components/Trobber";
 
 import {withStyles} from "@material-ui/core/styles";
 
+import ruLang from './components/lang/ru.js'
+import zhLang from './components/lang/zh.js'
+
 const styles = theme => ({
     "@global": {
         // MUI typography elements use REMs, so you can scale the global
@@ -22,7 +25,7 @@ const TotumFormStyled = withStyles(styles)(TotumForm);
 
 
 window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
-    if (!form_address) console.log('Не задан путь к форме');
+    if (!form_address) console.log('Do not correct form path');
     div.classList.add("ttm-form");
 
     let params_string = "ttm-form-cache:" + JSON.stringify([form_address, post, get, input]);
@@ -62,6 +65,20 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
         } else {
             sess_hash = json.tableRow.sess_hash;
             model.setSessHash(sess_hash);
+            model.lang = json.lang;
+
+            model.langObj = {};
+
+            switch (model.lang.name) {
+                case 'ru':
+                    model.langObj = ruLang;
+                    break;
+                case 'zh':
+                    model.langObj = zhLang;
+                    break;
+            }
+
+
             if (sess_hash_in === true)
                 localStorage.setItem(params_string, sess_hash)
             ReactDom.render(<TotumFormStyled data={json} container={div} model={model}/>, div);

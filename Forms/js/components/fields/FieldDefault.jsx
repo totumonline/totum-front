@@ -7,6 +7,7 @@ export class FieldDefault extends React.Component {
         this.state = {};
         this.state.val = this.state.inVal = this.constructor.prepareInputVal(props.data.v);
         this.wrapperClasses = '';
+        this.lng = (str) => props.model.langObj[str] || str
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -107,12 +108,12 @@ export class FieldDefault extends React.Component {
                 }
             });
             buttons.push({
-                label: "Отмена",
+                label: this.lng('Cancel'),
                 action: this._blur
             });
             return <AlertModal handleClose={() => {
                 this.setState({checkEdit: null})
-            }} title="Подтверждение" content={this.props.field.warningEditText || 'Точно изменить?'} buttons={buttons}/>
+            }} title={this.lng('Confirm')} content={this.props.field.warningEditText || this.lng('Surely to change?')} buttons={buttons}/>
         }
     }
 
