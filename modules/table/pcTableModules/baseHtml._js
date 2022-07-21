@@ -450,8 +450,10 @@
                 if (pcTable.withCsvButtons) {
                     let btn = $('<button class="btn btn-default btn-sm">CSV-' + App.translate('export') + '</button>')
                         .on('click', function () {
-                            let $panel = $('<div><div class="menu-item" data-type="full">' + App.translate('Full') + '</div>' +
-                                '<div class="menu-item"  data-type="rows">' + App.translate('Only rows') + '</div></div>')
+                            let $panel = $('<div>' +
+                                '<div class="menu-item" data-type="full">' + App.translate('Full') + '</div>' +
+                                '<div class="menu-item"  data-type="rows">' + App.translate('Only rows') + '</div>' +
+                                '</div>')
                             $panel.on('click', '.menu-item', function () {
                                 let type = $(this).is('[data-type="full"]') ? 'full' : 'rows';
                                 $panel.remove();
@@ -467,14 +469,9 @@
                                 placement: 'bottom'
                             });
 
-                            $('#' + popoverId).position({
-                                my: "left top",
-                                at: "left-3px bottom+10px",
-                                of: btn
-                            }).off().on('mouseleave', function () {
-                                $panel.remove();
-                            }).find('.arrow').css('left', '11px').end()
-                                .find('.popover-content').css('padding', '5px');
+                            $('#' + popoverId).off().on('mouseleave', function () {
+                               $('#' + popoverId).remove();
+                            });
 
                         });
                     csv.append(btn);
@@ -649,14 +646,9 @@
                                 placement: 'bottom'
                             });
 
-                            $('#' + popoverId).position({
-                                my: "left top",
-                                at: "left-3px bottom+10px",
-                                of: btn
-                            }).off().on('mouseleave', function () {
-                                $panel.remove();
-                            }).find('.arrow').css('left', '11px').end()
-                                .find('.popover-content').css('padding', '5px');
+                            $('#' + popoverId).on('mouseleave', function () {
+                                $('#' + popoverId).remove();
+                            });
 
                         }).appendTo(creatorPart);
                 }
