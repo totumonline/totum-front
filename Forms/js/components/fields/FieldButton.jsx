@@ -10,6 +10,7 @@ export class FieldButton extends React.Component {
             clicked: false
         };
         this.clickCheck = this.clickCheck.bind(this);
+        this.lng = (str) => props.model.langObj[str] || str
     }
 
     clickCheck() {

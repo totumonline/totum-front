@@ -6,7 +6,7 @@ export class FieldFileImage extends React.Component {
         this.state = {};
         if (this.props.data.v_[0])
             this.checkImage();
-
+        this.lng = (str) => props.model.langObj[str] || str
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
