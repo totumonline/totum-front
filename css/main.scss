@@ -22,6 +22,16 @@ input.error {
   border-color: $btn-danger-bgcolor;
 }
 
+#auth_form {
+  width: 350px;
+  margin-top: 10vh;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+}
+
 #notify-texh {
   white-space: pre;
   font-size: 12px;
@@ -2172,7 +2182,8 @@ input {
   padding: 10px 0;
 
   font-size: 16px;
-  .field_name{
+
+  .field_name {
     border-color: transparent;
     background-color: #fafafa;
   }
