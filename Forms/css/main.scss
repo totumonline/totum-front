@@ -194,8 +194,10 @@
   }
 
   > .error {
-    padding: 10px 5px;
-    margin: 5px;
+    text-align: center;
+    &:only-child{
+      padding-top: 70px;
+    }
   }
 
   /*columns*/
