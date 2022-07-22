@@ -23,13 +23,14 @@ input.error {
 }
 
 #auth_form {
-  width: 350px;
+  width: 550px;
   margin-top: 10vh;
   border-radius: 10px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.9);
-  padding: 20px;
+  padding: 40px;
+  padding-bottom: 60px;
 }
 
 #notify-texh {
