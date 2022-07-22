@@ -1052,7 +1052,7 @@
             }
         });
 
-        return BootstrapDialog.show({
+        return window.top.BootstrapDialog.show({
             message: body,
             title: title,
             type: type || null,
