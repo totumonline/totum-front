@@ -79,7 +79,7 @@ App.langs.ru =
 
                 "Default printing": "Печать по-умолчанию",
                 "Forms": "Формы",
-                "Quick form": "Быстрая форма",
+                "Add form": "Добавить форму",
 
                 'RowList of page/table rows': 'RowList строк страницы/таблицы',
 

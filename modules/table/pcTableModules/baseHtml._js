@@ -470,7 +470,7 @@
                             });
 
                             $('#' + popoverId).off().on('mouseleave', function () {
-                               $('#' + popoverId).remove();
+                                $('#' + popoverId).remove();
                             });
 
                         });
@@ -622,10 +622,10 @@
                 creatorPart.appendTo(topButtons);
 
 
-                if (this.tableRow.type === 'simple') {
+                if (['simple', 'tmp'].indexOf(this.tableRow.type) !== -1) {
                     let btnAdd = $('<button class="btn btn-danger btn-xxs" id="quickForms"><i class="fa fa-cubes"></i></button>')
                         .on('click', function () {
-                            let $panel = $('<div><div class="menu-item" data-type="quick">' + App.translate('Quick form') + '</div>' +
+                            let $panel = $('<div><div class="menu-item" data-type="quick">' + App.translate('Add form') + '</div>' +
                                 '<div class="menu-item"  data-type="forms">' + App.translate('Forms') + '</div></div>')
                             $panel.on('click', '.menu-item', function () {
                                 pcTable.model.formsLinks = pcTable.model.formsLinks || function (type) {

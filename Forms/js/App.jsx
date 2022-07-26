@@ -4,8 +4,8 @@ import {Trobber} from "./components/Trobber";
 
 import {withStyles} from "@material-ui/core/styles";
 
-import ruLang from './components/lang/ru.js'
-import zhLang from './components/lang/zh.js'
+import {ruLang} from './components/lang/ru.js'
+import {zhLang} from './components/lang/zh.js'
 
 const styles = theme => ({
     "@global": {
@@ -51,12 +51,15 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
     }
     model.load(post, get, input).then((json) => {
 
-        if (json.settings) {
+        if (json.settings && window.MAIN_HOST_FORM) {
             if (json.settings.__browser_title) {
-                window.document.title = json.settings.__browser_title;
+                document.title = json.settings.__browser_title;
             }
             if (json.settings.__background) {
-                window.document.body.style.backgroundImage = "url('" + json.settings.__background + "')";
+                document.body.style.backgroundImage = "url('" + json.settings.__background + "')";
+            }
+            if (json.settings.__form_width) {
+                document.getElementById('form').style.maxWidth = json.settings.__form_width + 'px';
             }
         }
 
