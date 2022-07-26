@@ -68,7 +68,7 @@
   .ttm-sectionWithPannels {
 
     .ttm-floatBlock {
-      padding-right: 20px;
+      padding-right: 10px;
     }
 
     &.ttm-secNoTitles .ttm-floatInner {
@@ -91,6 +91,9 @@
 
       > br:first-child {
         display: none;
+      }
+      &:last-child{
+        margin-right: 0;
       }
     }
 
