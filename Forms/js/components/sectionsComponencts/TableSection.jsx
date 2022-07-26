@@ -30,7 +30,8 @@ export class TableSection extends React.Component {
 
         if (status !== 'view' && status !== "close" && status !== "edit") return <></>;
 
-        let _title = "", $title, Titles = {_ALL:true}, Plates = false, fillAll = false, outline = false, platemh = false,
+        let _title = "", $title, Titles = {_ALL: true}, Plates = false, fillAll = false, outline = false,
+            platemh = false,
             plateh = false;
         let sectionParams = {};
         let formatsFromSection = {};
@@ -61,7 +62,6 @@ export class TableSection extends React.Component {
                                     func = ((str) => str)
 
                                     formatsFromSection[split[0]] = addSectionParam(formatsFromSection[split[0]], split, func, false);
-
 
                                     break;
                                 case 'outline':
@@ -130,14 +130,14 @@ export class TableSection extends React.Component {
             let sectionWithPannels = false;
             fields.forEach((field) => {
                 if (!format[field.name]) return;
-                let fName=field.name;
+                let fName = field.name;
                 let _format = format[field.name];
                 if ((!_format.hide || !_format.hide.form) && !_format.viewdata.hide) {
                     if (field.tableBreakBefore || !floatBlock) {
                         floatBlock = [];
                         floatBlocks.push(floatBlock);
                     }
-                    if (_format.blocknum !== undefined) {
+                    if ((_format.blocknum || formatsFromSection.blocknum) !== undefined) {
                         sectionWithPannels = true;
                     }
                     floatBlock.push(field);
