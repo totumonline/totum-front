@@ -188,7 +188,7 @@ export class FieldSelect extends FieldDefault {
 
     getOptionDisabled(val) {
         return typeof val === "object" ||
-            (this.state.indexed[val] ? this.state.indexed[val][2] !== null : true)
+            (this.state.indexed[val] ? this.state.indexed[val][2] !== null && this.state.indexed[val][2] !== undefined : true)
 
     }
 
