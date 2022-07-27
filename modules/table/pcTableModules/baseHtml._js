@@ -586,11 +586,7 @@
                 }
 
                 const checkIsFilled = (btn, code) => {
-                    if (code !== true) {
-                        btn.css('background-color', 'transparent')
-                    } else {
-                        btn.css('background-color', '#ffedb1')
-                    }
+                    btn.toggleClass('warning-bg', code === true)
                 }
 
                 [
@@ -651,6 +647,8 @@
                             });
 
                         }).appendTo(creatorPart);
+
+                    btnAdd.toggleClass('warning-bg', !!pcTable.tableRow.__is_in_forms)
                 }
 
 
