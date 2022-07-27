@@ -696,7 +696,7 @@
                         getVal = () => {
                             return field.getEditVal(input)
                         }
-                        input = field.getEditElement(html, {v:data[1].value}, [], () => {
+                        input = field.getEditElement(html, {v: data[1].value}, [], () => {
                         }, () => {
                         }, () => {
                         }, 1, 'editField')
@@ -1059,7 +1059,9 @@
             draggable: true,
             onhidden: function () {
                 if (refresh) {
-                    if (refresh === 'strong') {
+                    if (refresh === 'close' && window.closeMe) {
+                        window.closeMe();
+                    } else if (refresh === 'strong') {
                         App.windowReloadWithHash(model);
                     } else {
                         model.refresh(null, refresh)
@@ -1080,7 +1082,7 @@
     };
 
     function showText(data, model) {
-        dialog(data['title'], data['text'], data.width, data.refresh, null, model)
+        dialog(data['title'], data['text'], data.width, (data.close ? 'close' : data.refresh), null, model)
     }
 
     function showJson(data, model) {
@@ -1099,7 +1101,7 @@
             })
         }
 
-        dialog(data['title'], div, data.width, data.refresh, null, model, btns)
+        dialog(data['title'], div, data.width, data.close ? 'close' : data.refresh, null, model, btns)
     }
 
     function showNotificationTable(data, closeMe) {
@@ -1185,7 +1187,7 @@
 
 
             setTimeout(() => {
-                tempFrameWindow.document.body.innerHTML = '<style>' + styles + '</style>'+body;
+                tempFrameWindow.document.body.innerHTML = '<style>' + styles + '</style>' + body;
                 $(tempFrameWindow.document.body).find('.nicescroll-rails').remove();
             }, 50)
 
