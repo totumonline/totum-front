@@ -97,16 +97,38 @@ fieldTypes.chart = {
         if (data.datasets) {
             datasets = data.datasets
         }
+
         let _data = options.data || {};
-        _data.datasets = datasets;
+        _data.datasets = $.extend(true, {}, datasets);
+
+        let match;
+        Object.keys(data).forEach((key) => {
+            if (data[key] && typeof data[key] === 'object' && typeof data[key].forEach === 'function' && (match = key.match(/^datasets_(.*)$/))) {
+                data[key].forEach((v, i) => {
+                    if (_data.datasets[i]) {
+                        _data.datasets[i][match[1]] = v;
+                    }
+                })
+
+            }
+        })
 
         if (data.labels)
             _data.labels = data.labels
         delete options.data;
 
-        datasets.forEach((set, i) => {
-            set.data = data.values[i]
+        _data.datasets = Object.values(_data.datasets)
+
+        data.values.forEach((vals, i) => {
+            if (_data.datasets[i]) {
+                _data.datasets[i].data = vals;
+            }
         })
+
+        if (data.values.length < _data.datasets.length) {
+            _data.datasets.splice(data.values.length, _data.datasets.length - data.values.length);
+        }
+
 
         new Chart(ctx, {
             type: type,
