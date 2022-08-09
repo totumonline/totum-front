@@ -8,7 +8,7 @@
 
     let notificationManager, _notifications, getNotificationOffset = function (withManager) {
             let offset = {x: 20, y: 70};
-            let isMobile = screen.width <= window.MOBILE_MAX_WIDTH;
+            let isMobile = App.isMobile();
             if (isMobile) {
                 offset.x = 0.09 * window.innerWidth / 2
 
@@ -756,7 +756,7 @@
                             }
                         ], class: 'linkButtons'
                     };
-                    if (screen.width <= window.MOBILE_MAX_WIDTH) {
+                    if (App.isMobile()) {
                         Dialog = App.mobilePanel(data[1].title, html, props)
                     } else {
                         if (props.width || !props.html) {
@@ -793,7 +793,7 @@
                         )
                     });
 
-                    if (screen.width <= window.MOBILE_MAX_WIDTH) {
+                    if (App.isMobile()) {
                         App.mobilePanel(data[1].title, $('<div>').html(data[1].html), props)
                     } else {
                         if (props.width || !props.html) {

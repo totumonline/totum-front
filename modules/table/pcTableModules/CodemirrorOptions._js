@@ -17,7 +17,7 @@
 
         CodeMirror.defineInitHook(function (mirror) {
             try {
-                if (!mirror.options.bigOneDialog && screen.width > window.MOBILE_MAX_WIDTH) {
+                if (!mirror.options.bigOneDialog && !App.isMobile()) {
                     let $resizer = $('<i class="fa fa-expand codemirror-expander" style="position: absolute;\n' +
                         '    right: 10px;\n' +
                         '    bottom: 10px;\n' +

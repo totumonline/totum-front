@@ -429,6 +429,7 @@ App.langs.ru =
                 'Tree search': 'Поиск по дереву',
                 'isCreatorSelector-NotCreatorView': 'Отключить админ-слой',
                 'isCreatorSelector-CommonView': 'Отключить спецвид',
+                'isCreatorSelector-MobileView': 'Переключить в десктоп',
 
                 'Dbstring is incorrect': 'Ошибочная строка',
                 'Create config and upload scheme': 'Создать конфиг и залить схему',

@@ -62,6 +62,7 @@ App.langs.en =
 
             'isCreatorSelector-NotCreatorView':'Switch off admin layer',
             'isCreatorSelector-CommonView':'Switch off special view',
+            'isCreatorSelector-MobileView': 'Switch to desktop view',
 
         }
     }

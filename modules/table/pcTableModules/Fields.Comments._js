@@ -493,7 +493,7 @@ fieldTypes.comments = {
         };
         let title = App.translate('Your last comment editing');
 
-        if (screen.width <= window.MOBILE_MAX_WIDTH) {
+        if (App.isMobile()) {
             Dialog = App.mobilePanel(title, html, props)
         } else {
             if (props.width || !props.html) {

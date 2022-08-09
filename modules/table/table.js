@@ -3,7 +3,7 @@
     let BUTTONS_TIMEOUT = 2000;
 
     const pcTABLE_ROW_HEIGHT = 35;
-    const MOBILE_MAX_WIDTH = window.MOBILE_MAX_WIDTH = 1199;
+    window.MOBILE_MAX_WIDTH = 1199;
 
     const pcTable_DATA_KEY = 'pctable';
     const pcTable_DATA_INDEX = 'pctablettemtndex';
@@ -196,13 +196,13 @@
             }, config);
         $.extend(this, config, true);
 
-        if (screen.width <= MOBILE_MAX_WIDTH) {
+        if (App.isMobile()) {
             this.isCreatorView = false;
             this.isMobile = true;
         }
 
         if (this.isCreatorView) {
-            if (this.isMobile || localStorage.getItem('notCreator')) {
+            if (localStorage.getItem('notCreator')) {
                 this.isCreatorView = false;
             }
         }
