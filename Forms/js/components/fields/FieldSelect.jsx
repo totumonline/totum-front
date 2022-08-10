@@ -10,6 +10,134 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Typography from "@material-ui/core/Typography";
 
+let letter_replaces = {"ё": "е"}
+
+function search_prepare_function(string1, string2) {
+    Object.keys(letter_replaces).forEach((_) => {
+        string1 = string1.toLowerCase().replace(_, letter_replaces[_]);
+        if (string2) {
+            string2 = string2.toLowerCase().replace(_, letter_replaces[_]);
+        }
+    })
+    return [string1, string2];
+}
+
+function commonFiltersExtenders(q) {
+    let isLikedFunc = () => {
+        return true;
+    };
+
+    if (q && q !== '') {
+        let [qs] = search_prepare_function(q);
+        let controlMatches = qs.match(/^([!\^~= ]+):\s*/);
+        let qA = qs.split(" ");
+
+        const prepareV = (v) => {
+            let text;
+            if (v === null) {
+                text = "";
+            } else {
+                text = v.toString();
+                [text] = search_prepare_function(text);
+            }
+            return text;
+        }
+
+        isLikedFunc = function (v) {
+            let text = prepareV(v);
+            return qA.every(function (q) {
+                return text.indexOf(q) !== -1
+            })
+        }
+
+        if (controlMatches) {
+            qs = qs.substring(controlMatches[0].length).trim();
+            [qs] = search_prepare_function(qs);
+            qA = qs.split(" ")
+
+            if (qs === '') {
+                isLikedFunc = () => {
+                    return true;
+                };
+            } else {
+
+                switch (controlMatches[1]) {
+                    case '!=':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return qs !== text;
+                        }
+                        break;
+                    case '=':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return qs === text;
+                        }
+                        break;
+                    case '~':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return text.indexOf(qs) !== -1
+                        }
+                        break;
+                    case '!~':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return text.indexOf(qs) === -1
+                        }
+                        break;
+                    case '!~~':
+                    case '!':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return qA.every(function (q) {
+                                return text.indexOf(q) === -1
+                            })
+                        }
+                        break;
+
+                    case '^':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            text = text.split(" ");
+                            return qA.every(function (q) {
+                                return text.some(function (w) {
+                                    return w.indexOf(q) === 0
+                                });
+                            })
+                        }
+                        break;
+                    case '!^':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            text = text.split(" ");
+                            return qA.every(function (q) {
+                                return !text.some(function (w) {
+                                    return w.indexOf(q) === 0
+                                });
+                            })
+                        }
+                        break;
+                    case '^~':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return text.indexOf(qs) === 0;
+                        }
+                        break;
+                    case '!^~':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return text.indexOf(qs) !== 0;
+                        }
+                        break;
+                }
+            }
+
+        }
+    }
+    return isLikedFunc
+};
+
 export class FieldSelect extends FieldDefault {
     constructor(props) {
         super(props);
@@ -117,6 +245,7 @@ export class FieldSelect extends FieldDefault {
     }
 
     filterAndLoad(options, data) {
+
         let {inputValue, getOptionLabel} = data;
         let {field} = this.props;
         let {filter, loaded, sliced, globalSliced, list, indexed} = this.state;
@@ -156,6 +285,25 @@ export class FieldSelect extends FieldDefault {
                         this.setState(newState)
                     })
                 }, this.state.loaded ? 30 : 0)
+            }
+            if (!globalSliced) {
+                if (inputValue == "") {
+                    if (this.state.allList) {
+                        this.setState({list: this.state.allList})
+                    }
+                } else {
+                    let newData = {};
+                    if (!this.state.allList) {
+                        newData.allList = this.state.list;
+                    }
+                    newData.list = newData.allList || this.state.allList || this.state.list;
+
+                    let func = commonFiltersExtenders(inputValue)
+                    newData.list = newData.list.filter((v) => {
+                        return func(v)
+                    })
+                    this.setState(newData)
+                }
             }
         }
 

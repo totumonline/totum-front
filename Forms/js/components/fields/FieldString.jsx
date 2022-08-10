@@ -106,12 +106,12 @@ export class FieldString extends FieldDefault {
     getVal(style, format, blocked) {
         let icon, postfix, prefix;
         if (format.icon) {
-            icon = <InputAdornment position="start"><i className={"fa fa-" + format.icon}></i></InputAdornment>;
+            icon = <InputAdornment position="start" key="icon"><i className={"fa fa-" + format.icon}></i></InputAdornment>;
         }
 
         if (this.props.field.unitType) {
             if (this.props.field.before) {
-                prefix = <InputAdornment position="start"
+                prefix = <InputAdornment key="prefix" position="start"
                                          style={this.getUnitTypeStyle(format)}>{this.props.field.unitType}</InputAdornment>
             } else {
                 postfix = <InputAdornment position="end"
