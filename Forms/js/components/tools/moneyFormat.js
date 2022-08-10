@@ -27,7 +27,7 @@ export function moneyFormat(value, field, prefix, postfix) {
                 s[1] += new Array(prec - s[1].length + 1).join('0');
             }
             return s.join(dec);
-        })(value, field.dectimals, field.dectimalSeparator, field.thousandthSeparator)
+        })(value, field.dectimalPlaces, field.dectimalSeparator, field.thousandthSeparator)
 
     }
    return [value, prefix, postfix];

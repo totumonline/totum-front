@@ -48,12 +48,12 @@ export class FieldSelectText extends FieldNumber {
             text = [];
             if(this.props.data.v_){
                 this.props.data.v_.forEach((v, index)=>{
-                    text.push(<div  className="cell-text" key={index}>{prefix} {v[0]} {postfix}</div>)
+                    text.push(<div key={index}>{prefix} {v[0]} {postfix}</div>)
                 })
             }
 
         } else {
-            text = <div className="cell-text"> {prefix} {this.props.data.v_[0]} {postfix}</div>
+            text = <div> {prefix} {this.props.data.v_[0]} {postfix}</div>
         }
 
 
