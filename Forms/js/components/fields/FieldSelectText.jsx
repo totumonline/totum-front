@@ -1,8 +1,7 @@
 import React from 'react';
 import {FieldNumber} from "./FieldNumber";
-import {moneyFormat} from "../tools/moneyFormat";
 
-export class FieldNumberText extends FieldNumber {
+export class FieldSelectText extends FieldNumber {
     getVal(style, format, blocked) {
         let postfix, prefix;
         format.viewdata = format.viewdata || {};
@@ -23,16 +22,16 @@ export class FieldNumberText extends FieldNumber {
 
         if (this.props.field.unitType) {
             let style = this.getUnitTypeStyle(format);
-            if(this.props.field.before){
+            if (this.props.field.before) {
                 prefix = <div className="cell-unitType" style={style}>{this.props.field.unitType}</div>
-            }else{
+            } else {
                 postfix = <div className="cell-unitType" style={style}>{this.props.field.unitType}</div>
             }
 
         }
 
 
-        let icon, comment, value;
+        let icon, comment;
 
         if (format.icon) {
             icon = <><i
@@ -42,14 +41,27 @@ export class FieldNumberText extends FieldNumber {
         if (postfix) {
             cl += 'cell-with-postfix';
         }
-        [value, prefix, postfix] = moneyFormat(this.props.data.v, this.props.field, prefix, postfix)
+
+        let text;
+
+        if (this.props.field.multiple) {
+            text = [];
+            if(this.props.data.v_){
+                this.props.data.v_.forEach((v, index)=>{
+                    text.push(<div  className="cell-text" key={index}>{prefix} {v[0]} {postfix}</div>)
+                })
+            }
+
+        } else {
+            text = <div className="cell-text"> {prefix} {this.props.data.v_[0]} {postfix}</div>
+        }
 
 
         return <>{comment}
             <div style={styles}>
-                {prefix}
-                <div className={cl} style={styles}>{icon} {value}</div>
-                {postfix}</div>
+                {icon}
+                <div className={cl} style={styles}>{text}</div>
+            </div>
         </>;
     }
 

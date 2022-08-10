@@ -193,7 +193,7 @@ export class FieldSelect extends FieldDefault {
     }
 
     getVal(style, format, blocked) {
-        let params = {}, prefix = this.getPrefix(format), inputParams = {}, postfix;
+        let params = {}, icon = this.getPrefix(format), inputParams = {}, prefix, postfix;
 
         if (this.props.field.multiple) {
             params.multiple = true;
@@ -203,7 +203,13 @@ export class FieldSelect extends FieldDefault {
             }
         } else {
             if (this.props.field.unitType && this.state.val) {
-                postfix = this.props.field.unitType
+                if (this.props.field.before) {
+                    if (!prefix) {
+                        prefix = this.props.field.unitType
+                    }
+                } else {
+                    postfix = this.props.field.unitType
+                }
             }
             params.blurOnSelect = true
             inputParams.placeholder = this.props.field.withEmptyVal
@@ -266,6 +272,7 @@ export class FieldSelect extends FieldDefault {
                         ),
                         startAdornment: (
                             <>
+                                {icon}
                                 {prefix}
                                 {params.InputProps.startAdornment}
                             </>

@@ -104,14 +104,19 @@ export class FieldString extends FieldDefault {
     }
 
     getVal(style, format, blocked) {
-        let prefix, postfix;
+        let icon, postfix, prefix;
         if (format.icon) {
-            prefix = <InputAdornment position="start"><i className={"fa fa-" + format.icon}></i></InputAdornment>;
+            icon = <InputAdornment position="start"><i className={"fa fa-" + format.icon}></i></InputAdornment>;
         }
 
         if (this.props.field.unitType) {
-            postfix = <InputAdornment position="end"
-                                      style={this.getUnitTypeStyle(format)}>{this.props.field.unitType}</InputAdornment>
+            if (this.props.field.before) {
+                prefix = <InputAdornment position="start"
+                                         style={this.getUnitTypeStyle(format)}>{this.props.field.unitType}</InputAdornment>
+            } else {
+                postfix = <InputAdornment position="end"
+                                          style={this.getUnitTypeStyle(format)}>{this.props.field.unitType}</InputAdornment>
+            }
         }
         let error, helperText;
 
@@ -169,7 +174,7 @@ export class FieldString extends FieldDefault {
                                                                                  type={this.props.field.type}
                                                                                  key={this.props.field.name}
                                                                                  InputProps={{
-                                                                                     startAdornment: prefix,
+                                                                                     startAdornment: [icon, prefix],
                                                                                      endAdornment: postfix,
                                                                                      style: {styleIN}
                                                                                  }}

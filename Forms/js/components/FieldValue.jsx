@@ -18,6 +18,7 @@ import {FieldFileImage} from "./fields/FieldFileImage";
 import {FieldSelectViewImage} from "./fields/FieldSelectViewImage";
 import {FieldNumberText} from "./fields/FieldNumberText";
 import {FieldStringText} from "./fields/FieldStringText";
+import {FieldSelectText} from "./fields/FieldSelectText";
 import {FieldDate} from "./fields/FieldDate";
 
 export const FieldValue = ({field, data, format, model, item}) => {
@@ -58,6 +59,9 @@ export const FieldValue = ({field, data, format, model, item}) => {
                     break;
                 case 'checkboxpicture':
                     Module = FieldSelectCheckboxPicture;
+                    break;
+                case 'text':
+                    Module = FieldSelectText;
                     break;
                 case 'grid':
                     Module = FieldSelectGrid;
