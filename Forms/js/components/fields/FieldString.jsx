@@ -159,10 +159,11 @@ export class FieldString extends FieldDefault {
 
         if (this.isText) {
             if (format.height) {
-                params.rows = Math.round(format.height / 22);
+                params.rows = Math.round((format.height - 21) / 20);
             }
-            if (format.maxheight)
-                params.rowsMax = Math.round(format.maxheight / 22);
+            if (format.maxheight){
+                params.rowsMax = Math.round((format.maxheight - 21) / 20);
+            }
 
         }
 
