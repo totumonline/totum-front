@@ -373,7 +373,9 @@ fieldTypes.select = {
                         input.append(opt);
                     }
 
+
                     input.selectpicker('refresh');
+                    input.data('selectpicker').$menuInner.css('height', '')
                     input.selectpicker('val', checkedVal);
                     return checkedVal
                 };
