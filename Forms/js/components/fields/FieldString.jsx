@@ -19,12 +19,19 @@ export class FieldString extends FieldDefault {
         this._blur = this._blur.bind(this)
         this.onKeyDown = this.onKeyDown.bind(this)
         this.onFocus = this.onFocus.bind(this)
+        this.checkFocus = this.checkFocus.bind(this)
     }
 
     onFocus() {
         this.setState({
             focus: true
         })
+    }
+
+    checkFocus() {
+        if (!this.state.focus) {
+            this.inputRef.current.focus();
+        }
     }
 
     static prepareInputVal(val) {
@@ -106,7 +113,8 @@ export class FieldString extends FieldDefault {
     getVal(style, format, blocked) {
         let icon, postfix, prefix;
         if (format.icon) {
-            icon = <InputAdornment position="start" key="icon"><i className={"fa fa-" + format.icon}></i></InputAdornment>;
+            icon =
+                <InputAdornment position="start" key="icon"><i className={"fa fa-" + format.icon}></i></InputAdornment>;
         }
 
         if (this.props.field.unitType) {
@@ -142,6 +150,7 @@ export class FieldString extends FieldDefault {
         } else {
             params.onKeyDown = this.onKeyDown;
             params.onChange = this.setVal;
+            params.onMouseDown = this.checkFocus;
             params.onFocus = this.onFocus;
             params.onBlur = this.save;
         }
@@ -161,7 +170,7 @@ export class FieldString extends FieldDefault {
             if (format.height) {
                 params.rows = Math.round((format.height - 21) / 20);
             }
-            if (format.maxheight){
+            if (format.maxheight) {
                 params.rowsMax = Math.round((format.maxheight - 21) / 20);
             }
 
