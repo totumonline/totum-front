@@ -82,7 +82,11 @@ div[data-field-type="select"] {
       padding-left: 5px;
       display: inline-block;
       font-size: 16px;
-
+      max-width: 100%;
+      >div{
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 
