@@ -1291,7 +1291,6 @@
                     }
                 }
 
-
                 /* @ */
                 if (token.string.indexOf('@') === 0) {
                     options.inStart = false;
@@ -1488,7 +1487,7 @@
                         keywords.push(...(token.state.lineCodeNames || []))
                     }
 
-                } else if (!token.state.inTotumBlock && (match = token.string.match(/(.*)\#\$?[а-яa-z0-9_]*$/i))) {
+                } else if (!token.state.inTotumBlock && (match = token.string.match(/(.*)\#(?:(old|s|h|c|l)\.)?[а-яa-z0-9_]*$/i))) {
 
 
                     keywords = [];
