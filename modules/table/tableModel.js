@@ -661,8 +661,8 @@
                     recFormats: pcTable.formatUseRows ? 1 : null
                 }, null, null, _filters).then(function (json) {
                     pcTable.applyPage(json)
-                    if(pcTable.formatUseRows){
-                        pcTable.table_modify({chdata:{params:json.params}})
+                    if (pcTable.formatUseRows) {
+                        pcTable.table_modify({chdata: {params: json.params}})
                     }
                 })
             }

@@ -72,7 +72,7 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false, reCreateRows
     let new_ = [];
     let new_check = [];
 
-    if (this.isTreeView) {
+    if (this.isTreeView  && !this.isTreeViewRestore) {
         if (this.filters && Object.keys(this.filters).length) {
 
             let expands = [];
