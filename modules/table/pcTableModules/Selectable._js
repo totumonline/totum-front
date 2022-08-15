@@ -402,7 +402,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         }
 
         if (pcTable.isCreatorView) {
-            if (['select', 'tree', 'date'].indexOf(field.type) !== -1) {
+            if (['select', 'tree', 'date'].indexOf(field.type) !== -1 || format.textasvalue) {
                 textDiv.append($('<div class="creator-select-val">' + JSON.stringify(val.v) + '</div>'));
             }
         }
