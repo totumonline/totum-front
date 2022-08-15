@@ -979,9 +979,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                     numberField = pcTable.fields[field];
                                 }
                             }
-                            return pcTable.fields[field].type === 'number' ||  pcTable.selectedCells.ids[field].every((id) => {
+                            return pcTable.fields[field].type === 'number' || pcTable.selectedCells.ids[field].every((id) => {
                                 if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
-                                   return true;
+                                    return true;
                                 }
                             });
                         })
@@ -992,11 +992,12 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                             pcTable.selectedCells.ids[field].forEach((id) => {
                                 count++;
                                 if (allNumbers) {
-                                    if(pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && pcTable.data[id][field].f.textasvalue.match(/^num/)){
-                                        let separator = pcTable.data[id][field].f.textasvalue.split('|')[1] || field.dectimalSeparator || '.'
-                                        summ += parseFloat(pcTable.data[id][field].f.text.replace(separator, '.'));
-                                    }
-                                    else if(pcTable.data[id][field].v !== null){
+                                    if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
+                                        if (pcTable.data[id][field].f.text !== null && pcTable.data[id][field].f.text !== "") {
+                                            let separator = pcTable.data[id][field].f.textasvalue.split('|')[1] || field.dectimalSeparator || '.'
+                                            summ += parseFloat(pcTable.data[id][field].f.text.replace(separator, '.'));
+                                        }
+                                    } else if (pcTable.data[id][field].v !== null) {
                                         summ += parseFloat(pcTable.data[id][field].v);
                                     }
                                 }
