@@ -262,11 +262,11 @@
             $treeblock.data('jstree', $mes);
 
             if (!this.multiple && this.withEmptyVal) {
-               let val = item[field.name].v;
+                let val = item[field.name].v;
                 $mes.on("select_node.jstree", function (evt, data) {
                     if (val === data.node.id) {
                         data.instance.deselect_node(data.instance.get_node(data.node.id));
-                    }else{
+                    } else {
                         val = data.node.id
                     }
                 })
@@ -605,10 +605,11 @@
                 let hash;
                 if (valObjElem[0] === null) {
                     hash = 'null'.hashCode();
+                    filterVals[hash] = null;
                 } else {
                     hash = valObjElem[0].toString().hashCode();
+                    filterVals[hash] = valObjElem[0].replace(/"/g, "&quot;");
                 }
-                filterVals[hash] = valObjElem[0].replace(/"/g, "&quot;");
             };
             if (this.multiple) {
                 if (valObj && valObj.v_.length) {
