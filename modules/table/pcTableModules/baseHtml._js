@@ -2926,7 +2926,10 @@
                 } else if (field.panelColor) {
                     td.css('background-color', field.panelColor);
                 }
-                if (format.color) td.css('color', format.color);
+                if (format.color) {
+                    td.css('color', format.color);
+                    td.find('a').css('color', format.color);
+                }
             }
 
             if (format.bold) td.css('font-weight', 'bold');

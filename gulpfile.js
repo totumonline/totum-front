@@ -127,7 +127,7 @@ let path = {
         dest: './http/css/img/'
     },
     http: {
-        src: ['!./http/*.*', '!./http/.*', './http/**/*.*', './http/**/.*'],
+        src: ['!./http/*.*', '!./http/.*', '!./http/**/forms.*', './http/**/*.*', './http/**/.*'],
         dest: '../../../http/'
     },
     htmlTemplate: {
