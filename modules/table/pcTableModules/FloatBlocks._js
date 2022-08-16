@@ -394,7 +394,7 @@
                     field.field.showMeWidth = parseInt(field.format.breakwidth);
                 }
 
-                if (field.format.nextline && ind > 0) floatInner.append('<br/>');
+                if (field.format.nextline && ind > 0 && !floatInner.is(':empty')) floatInner.append('<br/>');
 
                 let fieldCell = $('<div>').appendTo(floatInner);
                 fieldCell.width(field.field.showMeWidth + 1);
