@@ -1716,8 +1716,8 @@
             return $row;
         }
         ,
-        _isDisplayngIdEnabled: function () {
-            return this.isCreatorView || (!this.f.fieldhide || !this.f.fieldhide.id)
+        _isDisplayngIdEnabled: function (creatorCheck) {
+            return (this.isCreatorView && !creatorCheck) || (!this.f.fieldhide || !this.f.fieldhide.id)
         },
         _createHeadCellId: function () {
             let pcTable = this;
@@ -1725,7 +1725,10 @@
             let idEnabled = this._isDisplayngIdEnabled();
 
             if (idEnabled) {
-                $th.find('span').text('id')
+                $th.find('span').text('id');
+                if(!this._isDisplayngIdEnabled(true)){
+                    $th.find('span').addClass('id-hidden')
+                }
             }
 
             if (pcTable.tableRow.order_field === null || pcTable.tableRow.order_field === 'id') {
