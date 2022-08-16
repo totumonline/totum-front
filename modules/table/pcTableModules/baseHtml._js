@@ -265,7 +265,7 @@
             let pcTable = this;
             if (isInFaves === null) return $();
 
-            if (btn.length === 0) {
+            if (btn.length === 0 && this.tableRow.type!=='calcs') {
                 btn = $('<button class="btn btn-default btn-sm" id="favorite-start"></button>')
                     .on('click', function () {
                         pcTable.model.setTableFavorite(!btn.is('.stared')).then(function (json) {
