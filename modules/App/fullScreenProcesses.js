@@ -7,7 +7,7 @@
     App.fullScreenProcesses = {
         showCog: function () {
             iCog++;
-            if (iCog === 1){
+            if (iCog === 1) {
                 App.fullScreenProcesses.show('fa-cog', true)
             }
         },
@@ -19,6 +19,7 @@
             }
         }
     };
+    let animationTimer;
     App.fullScreenProcesses.show = function (image, withRotate) {
         withRotate = withRotate || false;
         $('body').addClass('lock');
@@ -33,12 +34,20 @@
             $image.removeClass(Img).addClass(image);
             Img = image;
         }
-        $('#big_loading').show().animate({opacity:1}, 250);
+        let Layer = $('#big_loading').show();
+        if (animationTimer) {
+            clearTimeout(animationTimer);
+        }
+        animationTimer = setTimeout(() => {
+            Layer.animate({opacity: 1}, 250);
+        }, 1000)
     };
-    let opacity;
     App.fullScreenProcesses.hide = function (uin) {
         $('body').removeClass('lock');
-        $('#big_loading').animate({opacity:0}, 250, function () {
+        if (animationTimer) {
+            clearTimeout(animationTimer)
+        }
+        let Layer = $('#big_loading').stop().animate({opacity: 0}, 250, function () {
             $('#big_loading').hide();
         });
     }
