@@ -980,7 +980,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 }
                             }
                             return pcTable.fields[field].type === 'number' || pcTable.selectedCells.ids[field].every((id) => {
-                                if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && typeof pcTable.data[id][field].f.textasvalue === 'string' && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
+                                if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && (typeof pcTable.data[id][field].f.textasvalue === 'string') && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
                                     return true;
                                 }
                             });
@@ -992,7 +992,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                             pcTable.selectedCells.ids[field].forEach((id) => {
                                 count++;
                                 if (allNumbers) {
-                                    if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && typeof pcTable.data[id][field].f.textasvalue === 'string' && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
+                                    if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && (typeof pcTable.data[id][field].f.textasvalue === 'string') && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
                                         if (pcTable.data[id][field].f.text !== null && pcTable.data[id][field].f.text !== "") {
                                             let separator = pcTable.data[id][field].f.textasvalue.split('|')[1] || field.dectimalSeparator || '.'
                                             summ += parseFloat(pcTable.data[id][field].f.text.replace(separator, '.'));
