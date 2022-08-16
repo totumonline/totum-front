@@ -198,9 +198,9 @@ body.ttm-body-mobile {
   }
 
 
-  .pcTable-paramsTable td, .pcTable-footersTable td, .pcTable-filtersTable td, .pcTable-hiddenFieldsTable td, .pcTable-table tbody td, .pcTable-table tbody td.id {
+ /* .pcTable-paramsTable td, .pcTable-footersTable td, .pcTable-filtersTable td, .pcTable-hiddenFieldsTable td, .pcTable-table tbody td, .pcTable-table tbody td.id {
     padding-top: 5px;
-  }
+  }*/
 
   .pcTable-selectpicker.bootstrap-select.btn-group.bs-container .dropdown-menu {
     margin-top: 8px;
@@ -211,6 +211,7 @@ body.ttm-body-mobile {
 
     input {
       height: 36px;
+      background-color: red;
 
       &[type="checkbox"] {
         height: 20px;
@@ -218,10 +219,10 @@ body.ttm-body-mobile {
     }
 
     .bootstrap-select {
-      margin-top: -8px;
+      margin-top: -13px;
 
       button {
-        height: 32px
+        height: 40px
       }
     }
 
