@@ -164,6 +164,11 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
                     divInput.css('padding-left', level * 19);
 
+                    if (fName === 'type' && item['id'] && item['category']['v']==='column' && ['simple', 'cycles'].indexOf(App.tableTypes[item['table_id']['v']])!==-1 &&  oldValue.type.Val !== form.find('div[data-name="type"] select').val()) {
+                        divInput.append('<div class="code-checkboxes-active-warning"><div class="code-checkboxes-warning-panel">' + App.translate('Recalculate all table rows after changing the field type') + '</div></div>');
+                    }
+
+
                     return divInput;
                 };
 

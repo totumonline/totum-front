@@ -76,7 +76,7 @@ App.langs.ru =
 
                 "Edit totumCode in %s": "Редактировать Тотум-код в %s",
                 "Edit totumCode in value of %s": "Редактировать Тотум-код в ячейке %s",
-
+                "Recalculate all table rows after changing the field type": "Пересчетайте все строки таблицы после изменения типа поля",
                 "Default printing": "Печать по-умолчанию",
                 "Forms": "Формы",
                 "Add form": "Добавить форму",
