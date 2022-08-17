@@ -247,13 +247,15 @@
 
 
                 //Вывести файлы
-                Files.forEach(function (fl) {
-                    let part = printFile(fl).appendTo(dialogBody);
-                    part.on('click', '.remove', function () {
-                        part.remove();
-                        checkBtnDisable();
+                if (Files && Files.forEach) {
+                    Files.forEach(function (fl) {
+                        let part = printFile(fl).appendTo(dialogBody);
+                        part.on('click', '.remove', function () {
+                            part.remove();
+                            checkBtnDisable();
+                        });
                     });
-                });
+                }
 
                 checkBtnDisable();
 
