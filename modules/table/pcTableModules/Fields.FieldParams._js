@@ -261,7 +261,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                             ];
 
                             window.top.BootstrapDialog.show({
-                                message: App.translate('On type change all field setting will be reset to ' + (item.id ? 'default' : 'saved') + '. If you want to save this changes save field and change it\'s type after that'),
+                                message: App.translate('On type change all field setting will be reset to ' + (item.id ? 'default' : 'saved') + '. If you want to save this changes — save field and change it\'s type after that'),
                                 type: null,
                                 title: App.translate('Warning'),
                                 buttons: buttons,
