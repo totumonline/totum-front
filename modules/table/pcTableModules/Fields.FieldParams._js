@@ -30,11 +30,6 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             form.trigger('change');
         };
 
-        let firstLoad;
-        try {
-            firstLoad = cell.data('firstLoad')['data_src']['v'];
-        } catch (e) {
-        }
 
         App.tableTypes = App.tableTypes || {};
 
@@ -164,7 +159,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
                     divInput.css('padding-left', level * 19);
 
-                    if (fName === 'type' && item['id'] && item['category']['v']==='column' && ['simple', 'cycles'].indexOf(App.tableTypes[item['table_id']['v']])!==-1 &&  oldValue.type.Val !== form.find('div[data-name="type"] select').val()) {
+                    if (fName === 'type' && item['id'] && item['category']['v'] === 'column' && ['simple', 'cycles'].indexOf(App.tableTypes[item['table_id']['v']]) !== -1 && oldValue.type.Val !== form.find('div[data-name="type"] select').val()) {
                         divInput.append('<div class="code-checkboxes-active-warning"><div class="code-checkboxes-warning-panel">' + App.translate('Recalculate all table rows after changing the field type') + '</div></div>');
                     }
 
@@ -247,7 +242,32 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     let typeInput = input.find('select');
 
                     typeInput.on('change', function () {
-                        addfields($(this).val())
+                            let buttons = [
+                                {
+                                    action: (dialog) => {
+                                        dialog.close();
+                                        addfields($(this).val())
+                                        setChanged();
+                                    },
+                                    label: App.translate('Save')
+                                },
+                                {
+                                    action: (dialog) => {
+                                        dialog.close();
+                                    },
+                                    label: App.translate('Cancel')
+                                }
+
+                            ];
+
+                            window.top.BootstrapDialog.show({
+                                message: App.translate('On type change all field setting will be reset to ' + (item.id ? 'default' : 'saved') + '. If you want to save this changes save field and change it\'s type after that'),
+                                type: null,
+                                title: App.translate('Warning'),
+                                buttons: buttons,
+                                draggable: true
+                            })
+
                     });
 
                     fieldsList.forEach(function (fName) {
@@ -351,6 +371,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
         let eventName = 'ctrlS.FieldParams';
 
+
         if (editNow) {
             window.top.BootstrapDialog.show({
                 message: dialog,
@@ -392,6 +413,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             })
         } else {
             formFill(oldValueParam.v)
+
             div.append(form)
             div.addClass('fieldparams-edit-panel')
             setTimeout(() => {
@@ -414,6 +436,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 div.find('.jsonForm').on('remove', () => {
                     insertPanel.off('jsonFormEvent')
                 })
+
             })
         }
 
