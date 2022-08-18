@@ -58,7 +58,7 @@
                 let img = '';
                 let _class = '';
                 if (['jpg', 'png'].indexOf(file.ext) !== -1) {
-                    img = $('<img src="/fls/' + file.file + '_thumb.jpg?rand=' + imgRand + '"/>');
+                    img = $('<img src="/fls/' + file.file + '_thumb.jpg?rand=' + imgRand + '"  class="file-image-preview" data-filename="' + file.file + '"/>');
                     _class = 'with-img';
                     show_img(img, file);
                 }
