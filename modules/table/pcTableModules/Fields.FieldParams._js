@@ -241,13 +241,17 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     let input = addInput('type', fieldsList, fieldsLevelFuncs);
                     let typeInput = input.find('select');
 
+                    let beforeType = typeInput.val();
+                    let isChanged = false;
                     typeInput.on('change', function () {
+                        if (beforeType !== $(this).val()) {
+
                             let buttons = [
                                 {
                                     action: (dialog) => {
+                                        isChanged = true;
                                         dialog.close();
                                         addfields($(this).val())
-                                        setChanged();
                                     },
                                     label: App.translate('Save')
                                 },
@@ -265,9 +269,15 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                                 type: null,
                                 title: App.translate('Warning'),
                                 buttons: buttons,
+                                onhidden: () => {
+                                    if (!isChanged) {
+                                        typeInput.val(beforeType)
+                                        typeInput.trigger('change')
+                                    }
+                                },
                                 draggable: true
                             })
-
+                        }
                     });
 
                     fieldsList.forEach(function (fName) {
