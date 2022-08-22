@@ -529,7 +529,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
   .fa-square-o {
     width: 10px;
   }
-  .id-hidden{
+  .id-hidden {
     color: magenta;
   }
 }
@@ -792,7 +792,7 @@ th {
       background-color: #fff;
     }
 
-    .warning-bg{
+    .warning-bg {
       background-color: #ffedb1;
     }
 
@@ -966,6 +966,11 @@ th {
     }
 
     padding-left: $idWidth - 23;
+
+    .table-in-notification & {
+      padding-left: 0;
+    }
+
     padding-bottom: 0;
     font-size: 18px;
 
@@ -1090,6 +1095,11 @@ th {
     font-family: PTRootUIWeb;
     font-weight: 500;
     padding-left: $idWidth - 18;
+
+    .table-in-notification & {
+      padding-left: 0;
+    }
+
     padding-top: 10px;
 
     i, span {
@@ -1115,6 +1125,11 @@ th {
     overflow-y: hidden;
     padding-bottom: 25px;
     padding-left: $idWidth;
+
+    .table-in-notification & {
+      padding-left: 0;
+    }
+
     margin-bottom: 20px;
 
     .ps__rail-x {
@@ -1271,6 +1286,10 @@ th {
 
 .pcTable-beforeSpace, .pcTable-paramsTable, .pcTable-filtersTable, .pcTable-hiddenFieldsTable, .pcTable-footersTable, .pcTable-tableText {
   margin-left: $idWidth;
+
+  .table-in-notification & {
+    margin-left: 0;
+  }
 }
 
 .pcTable-tableText, .table-description {
@@ -1311,6 +1330,11 @@ th {
 .pcTable-buttons {
   line-height: 31px;
   padding-left: $idWidth;
+
+  .table-in-notification & {
+    padding-left: 0;
+  }
+
   padding-top: 5px;
   padding-bottom: 5px;
   text-align: right;
@@ -1399,6 +1423,11 @@ th {
   border-collapse: collapse;
 
   margin-left: -$idWidth;
+
+  .table-in-notification & {
+    margin-left: 0;
+  }
+
   border: none;
   table-layout: fixed;
 

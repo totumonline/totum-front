@@ -265,7 +265,7 @@
             let pcTable = this;
             if (isInFaves === null) return $();
 
-            if (btn.length === 0 && this.tableRow.type!=='calcs') {
+            if (btn.length === 0 && this.tableRow.type !== 'calcs') {
                 btn = $('<button class="btn btn-default btn-sm" id="favorite-start"></button>')
                     .on('click', function () {
                         pcTable.model.setTableFavorite(!btn.is('.stared')).then(function (json) {
@@ -1687,8 +1687,12 @@
                 pcTable._container.removeClass('withNoColumns')
             }
 
-            pcTable._createHeadCellId().appendTo($row);
-            let $width = $row.find('.id').width();
+            let $width = 0;
+
+            if (!$('body').is('.table-in-notification')) {
+                pcTable._createHeadCellId().appendTo($row);
+                let $width = $row.find('.id').width();
+            }
 
 
             pcTable._table.removeClass('n-filtered');
@@ -1726,7 +1730,7 @@
 
             if (idEnabled) {
                 $th.find('span').text('id');
-                if(!this._isDisplayngIdEnabled(true)){
+                if (!this._isDisplayngIdEnabled(true)) {
                     $th.find('span').addClass('id-hidden')
                 }
             }
@@ -2672,7 +2676,9 @@
             if (item['InsDel']) {
                 $row.addClass('insDeleted');
             }
-            this._addCellId(item, $row);
+            if (!$('body').is('.table-in-notification')) {
+                this._addCellId(item, $row);
+            }
             // this._addCellNo(item, $row);
 
             let i = 0;
@@ -2709,7 +2715,8 @@
 
                 });
             }
-        },
+        }
+        ,
         refreshRow: function (tr, item, newData, onlyChanged) {
             if ((tr && tr.is('.DataRow')) || item) {
 
@@ -3210,7 +3217,8 @@
                     });
                 });
             });
-        },
+        }
+        ,
         getElementFormat: function (field, id) {
             let item;
             if (id) {
@@ -3222,4 +3230,5 @@
         }
     })
     ;
-})();
+})
+();

@@ -1,5 +1,10 @@
 .pcTable-floatBlock {
   padding-left: $idWidth;
+
+  .table-in-notification & {
+    padding-left: 0;
+  }
+
   padding-right: 20px;
   white-space: nowrap;
   position: relative;

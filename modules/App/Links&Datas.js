@@ -1122,8 +1122,9 @@
         $iframe.on('load', function () {
             let _window = $iframe.get(0).contentWindow;
             _window.closeMe = closeMe;
-            $(_window.document.body).css('background-color', 'transparent').addClass('notification-table')
-
+            _window.jQuery('body').css('background-color', 'transparent').addClass('table-in-notification');
+            _window.jQuery('#table').data('pctable')._refreshHead();
+            _window.jQuery('#table').data('pctable')._refreshContentTable(true);
         });
         return $iframe;
     }
