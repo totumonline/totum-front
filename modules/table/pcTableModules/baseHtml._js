@@ -965,9 +965,10 @@
         ,
         rowButtonsCalcWidth: function () {
             if (this.tableWidth < this._innerContainer.width()) {
-                if (this.isMobile) {
+                if (this.isMobile || $('body').is('.table-in-notification')) {
                     this.__$rowsButtons.width(this._table.width());
-                } else {
+                }
+                else {
                     this.__$rowsButtons.width(this._table.width() - 70);
                 }
             } else if (!this.isMobile) {

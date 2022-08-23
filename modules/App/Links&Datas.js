@@ -1125,6 +1125,7 @@
             _window.jQuery('body').css('background-color', 'transparent').addClass('table-in-notification');
             _window.jQuery('#table').data('pctable')._refreshHead();
             _window.jQuery('#table').data('pctable')._refreshContentTable(true);
+            _window.jQuery('#table').data('pctable').rowButtonsCalcWidth();
         });
         return $iframe;
     }
