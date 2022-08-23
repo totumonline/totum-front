@@ -241,44 +241,46 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                     let input = addInput('type', fieldsList, fieldsLevelFuncs);
                     let typeInput = input.find('select');
 
-                    let beforeType = typeInput.val();
+                 let beforeType = typeInput.val();
                     let isChanged = false;
-                    typeInput.on('change', function () {
-                        if (beforeType !== $(this).val()) {
+                     typeInput.on('change', function () {
+                    /*  if (beforeType !== $(this).val()) {
 
-                            let buttons = [
-                                {
-                                    action: (dialog) => {
-                                        isChanged = true;
-                                        dialog.close();
-                                        addfields($(this).val())
-                                    },
-                                    label: App.translate('Save')
-                                },
-                                {
-                                    action: (dialog) => {
-                                        dialog.close();
-                                    },
-                                    label: App.translate('Cancel')
-                                }
+                          let buttons = [
+                              {
+                                  action: (dialog) => {
+                                      isChanged = true;
+                                      dialog.close();
+                                      addfields($(this).val())
+                                  },
+                                  label: App.translate('Change')
+                              },
+                              {
+                                  action: (dialog) => {
+                                      dialog.close();
+                                  },
+                                  label: App.translate('Cancel')
+                              }
 
-                            ];
+                          ];
 
-                            window.top.BootstrapDialog.show({
-                                message: App.translate('On type change all field setting will be reset to ' + (item.id ? 'default' : 'saved') + '. If you want to save this changes — save field and change it\'s type after that'),
-                                type: null,
-                                title: App.translate('Warning'),
-                                buttons: buttons,
-                                onhidden: () => {
-                                    if (!isChanged) {
-                                        typeInput.val(beforeType)
-                                        typeInput.trigger('change')
-                                    }
-                                },
-                                draggable: true
-                            })
-                        }
-                    });
+                          window.top.BootstrapDialog.show({
+                              message: App.translate('On type change all field setting will be reset to ' + (item.id ? 'default' : 'saved') + '. If you want to save this changes — save field and change it\'s type after that'),
+                              type: null,
+                              title: App.translate('Warning'),
+                              buttons: buttons,
+                              onhidden: () => {
+                                  if (!isChanged) {
+                                      typeInput.val(beforeType)
+                                      typeInput.trigger('change')
+                                  }
+                              },
+                              draggable: true
+                          })
+                      }*/
+
+                        addfields($(this).val())
+                  });
 
                     fieldsList.forEach(function (fName) {
                         let t = addInput(fName, fieldsList, fieldsLevelFuncs);
