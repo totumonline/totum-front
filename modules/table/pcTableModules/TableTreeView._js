@@ -278,7 +278,7 @@
             }).appendTo($divPopoverArrowDown)
 
 
-            $('<div class="menu-item"><i class="fa fa-plus"></i> ' + App.translate('Add a branch') + '</div>')
+            $('<div class="menu-item"><i class="fa fa-th-large"></i> ' + App.translate('Add a branch') + '</div>')
                 .on('click', () => {
 
                     let parentField = this.fields.tree.treeViewParentField || "tree";
@@ -292,7 +292,7 @@
         }
 
         if (this.isInsertable() && this.fields.tree.treeViewType !== 'self' && this.fields.tree.insertable) {
-            $('<div class="menu-item"><i class="fa fa-th-large"></i> ' + App.translate('Add a row') + '</div>')
+            $('<div class="menu-item"><i class="fa fa-plus"></i> ' + App.translate('Add a row') + '</div>')
                 .on('click', () => {
                     if (this.tableRow.type === 'cycles') {
                         this.model.add(null, {tree: row.v}).then(json => {
