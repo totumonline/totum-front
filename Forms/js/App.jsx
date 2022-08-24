@@ -41,6 +41,12 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
 
     if (sess_hash) {
         model = new TotumModel(form_address, sess_hash);
+        if (sess_hash_in === true) {
+            model.resetSessHash = () => {
+                localStorage.removeItem(params_string);
+            }
+        }
+
     } else {
         model = new TotumModel(form_address);
     }

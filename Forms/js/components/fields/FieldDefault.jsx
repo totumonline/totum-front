@@ -11,8 +11,8 @@ export class FieldDefault extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        if (this.props.model.elseData !== nextProps.model.elseData || JSON.stringify(nextProps.data.v) !== JSON.stringify(this.props.data.v)) {
-            let prepared = this.constructor.prepareInputVal(nextProps.data.v)
+        let prepared = this.constructor.prepareInputVal(nextProps.data.v)
+        if (this.props.model.elseData !== nextProps.model.elseData || JSON.stringify(nextProps.data.v) !== JSON.stringify(this.props.data.v) || (!this.state.focus && JSON.stringify(prepared) !== JSON.stringify(nextState.val))) {
             this.setState({
                 val: prepared,
                 inVal: prepared,
@@ -113,7 +113,8 @@ export class FieldDefault extends React.Component {
             });
             return <AlertModal handleClose={() => {
                 this.setState({checkEdit: null})
-            }} title={this.lng('Confirm')} content={this.props.field.warningEditText || this.lng('Surely to change?')} buttons={buttons}/>
+            }} title={this.lng('Confirm')} content={this.props.field.warningEditText || this.lng('Surely to change?')}
+                               buttons={buttons}/>
         }
     }
 

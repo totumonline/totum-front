@@ -58,6 +58,14 @@ class TotumModel {
             return null;
         }
         if (json.error) {
+            if (json.error === 'Reload') {
+                if (this.resetSessHash) {
+                    this.resetSessHash();
+                }
+                window.location.reload(true);
+                return {};
+            }
+
             if (this.setChangesToForm)
                 this.setChangesToForm({
                     errorNotification: json.error
