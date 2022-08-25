@@ -1410,6 +1410,9 @@ th {
   &:after {
     clear: both;
   }
+  .table-in-notification & {
+    display: none;
+  }
 }
 
 /*.pcTable-container {
