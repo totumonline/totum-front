@@ -612,7 +612,7 @@ fieldTypes.select = {
 
                                 if (oldVal.length > val.length) {
                                     if (val.length === 0) {
-                                        val.push('*NONE*');
+                                        val.push('*ALL*');
                                     }
                                 } else {
                                     let newElement;
