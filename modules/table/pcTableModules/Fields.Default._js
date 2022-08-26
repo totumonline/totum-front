@@ -45,9 +45,10 @@ var defaultField = {
                                     btn.css('background-color', b.background)
                                 }
                                 btn.on('click', function () {
-                                    field.pcTable.selectedCells.empty();
-                                    field.pcTable.selectedCells.selectPanelDestroy();
-
+                                    if (field.pcTable.selectedCells) {
+                                        field.pcTable.selectedCells.empty();
+                                        field.pcTable.selectedCells.selectPanelDestroy();
+                                    }
                                     field.pcTable.model.panelButtonsClick(panelFormats.hash, b.ind).then(function (json) {
                                         if (b.refresh) {
                                             field.pcTable.model.refresh(null, b.refresh)

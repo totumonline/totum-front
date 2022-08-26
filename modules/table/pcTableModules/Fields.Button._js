@@ -4,8 +4,10 @@ fieldTypes.button = {
     getPanelText: function (fieldValue, td, item) {
         let $btn = this.getCellText(fieldValue, td, item);
         $btn.on('click', () => {
-            this.pcTable.selectedCells.empty();
-            this.pcTable.selectedCells.selectPanelDestroy();
+            if (this.pcTable.selectedCells) {
+                this.pcTable.selectedCells.empty();
+                this.pcTable.selectedCells.selectPanelDestroy();
+            }
             this.pcTable._buttonClick(td, this, item);
             return false;
         })
@@ -66,8 +68,7 @@ fieldTypes.button = {
                     width = this.width > $('#table').width() - 30 ? $('#table').width() - 30 : this.width;
                     td.width(width);
                     btn.width(width);
-                }
-                else if(!td.is('.no-width')) {
+                } else if (!td.is('.no-width')) {
                     this.pcTable.rowButtonsCalcWidth();
                     width = this.width > this.pcTable.__$rowsButtons.width() - 10 ? this.pcTable.__$rowsButtons.width() - 10 : this.width;
                     td.width(width);
@@ -99,7 +100,7 @@ fieldTypes.button = {
 
             let btn = $('<button class="btn btn-default btn-xxs button-field" tabindex="-1" disabled>').text(this.buttonText || '');
 
-            if(td && td.is('.button-wrapper')){
+            if (td && td.is('.button-wrapper')) {
                 btn.removeClass('btn-xxs button-field')
                 btn.addClass('btn-sm')
             }
