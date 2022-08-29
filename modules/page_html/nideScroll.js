@@ -1,5 +1,5 @@
 $(function () {
-    if (screen.width > window.MOBILE_MAX_WIDTH) {
+    if (!App.isMobile()) {
         let $div = $('#main-page');
         if ($div.length) {
             let $PageContent = $('.page_content');

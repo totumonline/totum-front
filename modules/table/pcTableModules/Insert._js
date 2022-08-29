@@ -258,6 +258,17 @@ $.extend(App.pcTableMain.prototype, {
             this.insertRow = $row = $('<tr class="InsertRow" style="height: 35px;"><td class="id"></td></tr>')
                 .on('click focus', 'input,button,select', function (event) {
                     let inputElement = $(this);
+
+                    if(event.type==='focus'){
+                        if (pcTable._InsertFocusFalse !== true) {
+                            pcTable._InsertFocusFalse = Date.now();
+                        }
+                    }else if(event.type==='click'){
+                        if(!inputElement.is('.source-add') && !inputElement.closest('td').is('.active')){
+                            pcTable._InsertFocusFalse = true
+                        }
+                    }
+
                     let active = pcTable._insertRow.find('.active');
                     if (!active.length || (!inputElement.is('[type="checkbox"]') && active !== $(this).closest('td'))) {
                         active.removeClass('active');
@@ -384,14 +395,7 @@ $.extend(App.pcTableMain.prototype, {
                     }
                 })
             }
-            $_td.on('focus', 'input,button,select', () => {
-                if (this._InsertFocusFalse !== true) {
-                    this._InsertFocusFalse = Date.now();
-                }
-            })
-            $_td.on('click', 'input,select', () => {
-                this._InsertFocusFalse = true
-            })
+
         });
 
         td.data('index', index);
@@ -668,6 +672,7 @@ $.extend(App.pcTableMain.prototype, {
     },
     _insertFocusIt: function (outTimed) {
         let pcTable = this;
+
         if (this._InsertFocusFalse && (this._InsertFocusFalse === true || (Date.now() - this._InsertFocusFalse) < 200)) {
             this._InsertFocusFalse = false;
             return false;

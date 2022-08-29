@@ -8,6 +8,32 @@ import * as React from 'react';
 import {Fragment} from 'react';
 import {DropzoneArea} from "material-ui-dropzone";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import AttachFileIcon from "@material-ui/icons/AttachFile";
+import Typography from '@material-ui/core/Typography';
+
+function isImage(file) {
+    if (file.type.split('/')[0] === 'image') {
+        return true;
+    }
+}
+
+var getPreviewIcon = function (fileObject, classes) {
+    if (isImage(fileObject.file)) {
+        return React.createElement("div", {
+            className: classes.image,
+            role: "presentation",
+            style: {
+                backgroundImage: "url(" + fileObject.data + ")",
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+            }
+        });
+    }
+
+    return React.createElement(AttachFileIcon, {
+        className: classes.image
+    });
+};
 
 
 // Split props related to DropzoneDialog from DropzoneArea ones
@@ -50,7 +76,6 @@ class DropzoneDialog extends React.PureComponent {
     state = {
         files: [],
     };
-
     handleClose = (event) => {
         const {onClose} = this.props;
         // Notify onClose
@@ -98,12 +123,16 @@ class DropzoneDialog extends React.PureComponent {
 
         let content;
 
+
         if (this.props.load) {
-            content = <div style={{textAlign:"center", padding: "20px"}}><LinearProgress color="secondary"/></div>
+            content = <div style={{textAlign: "center", padding: "20px"}}><LinearProgress color="secondary"/></div>
         } else {
+
+
             content = <><DialogContent>
                 <DropzoneArea
                     {...dropzoneAreaProps}
+                    getPreviewIcon={getPreviewIcon}
                     onChange={this.handleChange}
                 />
             </DialogContent>

@@ -43,17 +43,29 @@ class TotumModel {
             text = await response.text();
         } catch (e) {
             console.log('e:' + e);
-            throw Error("Ошибка коннекта с сервером");
+            throw Error("Server connect error");
         }
         let json;
 
         try {
             json = JSON.parse(text);
+
+            if (json.sess_hash) {
+                this.sess_hash = json.sess_hash;
+            }
         } catch (e) {
-            console.error('Ответ не в формате json: ' + text);
+            console.error('Answer not in json format: ' + text);
             return null;
         }
         if (json.error) {
+            if (json.error === 'Reload') {
+                if (this.resetSessHash) {
+                    this.resetSessHash();
+                }
+                window.location.reload(true);
+                return {};
+            }
+
             if (this.setChangesToForm)
                 this.setChangesToForm({
                     errorNotification: json.error

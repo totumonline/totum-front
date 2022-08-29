@@ -14,6 +14,7 @@
 
 .com_author {
   font-weight: bold;
+  font-size: 11px;
 }
 
 .com_edit {
@@ -22,9 +23,15 @@
     margin-left: 15px;
   }
 }
+.fieldparams-edit-panel {
+  .com_author, .com_dt{
+    font-size: 12px;
+  }
+}
 
 .com_dt {
-  float: right
+  float: right;
+  font-size: 11px;
 }
 
 .comments-line {

@@ -171,7 +171,7 @@
             let pcTable = this;
 
             if (field.title) {
-                let title = $('<th>').text(this.fields[field.field].title);
+                let title = $('<th class="panelsView-card-item">').text(this.fields[field.field].title);
 
 
                 if (Field.help) {
@@ -489,6 +489,8 @@
                     let card = this._getRowCard(id);
                     $div.append(card);
                 })
+
+                this.rowButtonsCalcWidth();
             }
 
         } else {

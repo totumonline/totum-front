@@ -81,7 +81,7 @@
                 let popovertop = popover.$tip.offset().top;
                 let containerTop = container ? container.scrollTop() - container.offset().top : 0;
                 if (popovertop - top > 10) {
-                    popover.$tip.css('top', top + 2 + containerTop + (container.is('.InsertPanel') ? $('.modal-dialog').offset().top : 0));
+                    popover.$tip.css('top', top + 2 + containerTop + (container.is('.InsertPanel') ? 20 : 0));
                 }
             }
         });

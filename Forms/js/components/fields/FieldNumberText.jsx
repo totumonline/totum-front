@@ -1,27 +1,11 @@
 import React from 'react';
 import {FieldNumber} from "./FieldNumber";
+import {moneyFormat} from "../tools/moneyFormat";
 
 export class FieldNumberText extends FieldNumber {
     getVal(style, format, blocked) {
-        let postfix;
+        let postfix, prefix;
         format.viewdata = format.viewdata || {};
-
-        if (this.props.field.unitType) {
-            let style = this.getUnitTypeStyle(format);
-            postfix = <div className="cell-unitType" style={style}>{this.props.field.unitType}</div>
-        }
-
-
-        let pref, comment;
-
-        if (format.icon) {
-            pref = <><i
-                className={"fa fa-" + format.icon}></i> </>
-        }
-        let cl = "cell-text ";
-        if (postfix) {
-            cl += 'cell-with-postfix';
-        }
 
         let styles = {};
         if (format.viewdata.color) {
@@ -36,9 +20,35 @@ export class FieldNumberText extends FieldNumber {
         if (format.align) {
             styles.textAlign = format.align
         }
+
+        if (this.props.field.unitType) {
+            let style = this.getUnitTypeStyle(format);
+            if(this.props.field.before){
+                prefix = <div className="cell-unitType" style={style}>{this.props.field.unitType}</div>
+            }else{
+                postfix = <div className="cell-unitType" style={style}>{this.props.field.unitType}</div>
+            }
+
+        }
+
+
+        let icon, comment, value;
+
+        if (format.icon) {
+            icon = <><i
+                className={"fa fa-" + format.icon}></i> </>
+        }
+        let cl = "cell-text ";
+        if (postfix) {
+            cl += 'cell-with-postfix';
+        }
+        [value, prefix, postfix] = moneyFormat(this.props.data.v, this.props.field, prefix, postfix)
+
+
         return <>{comment}
             <div style={styles}>
-                <div className={cl} style={styles}>{pref} {this.props.data.v}</div>
+                {prefix}
+                <div className={cl} style={styles}>{icon} {value}</div>
                 {postfix}</div>
         </>;
     }

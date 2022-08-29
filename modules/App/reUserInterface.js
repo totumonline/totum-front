@@ -14,14 +14,14 @@
         } else if (App.isTopWindow() && isCreatorView) {
 
             if ($('#isCreator').length === 0) {
-                let isMobile = screen.width <= window.MOBILE_MAX_WIDTH;
+                let isMobile = App.isMobile(true);
                 let creatorButton = $('<span id="isCreator" class="btn btn-sm"><i class="fa-user-circle fa"></i></span>');
 
-                if (!isMobile && !localStorage.getItem('notCreator')) {
-                    creatorButton.addClass('btn-danger');
-                } else {
+                if (localStorage.getItem('notCreator')) {
                     creatorButton.addClass('btn-warning');
                     $('.plus-top-branch').hide();
+                } else {
+                    creatorButton.addClass('btn-danger');
                 }
 
                 let isCommonView = false;
@@ -36,19 +36,24 @@
                     } else {
                         localStorage.removeItem('notCreator')
                     }
-
                 }
 
                 creatorButton.on('click', () => {
                     let mainTable = $('#table').data('pctable');
-                    if (mainTable && (isCommonView || mainTable.isTreeView || mainTable.viewType)) {
+                    let specView = mainTable && (isCommonView || mainTable.isTreeView || mainTable.viewType);
+                    if (specView || isMobile) {
                         let showed;
                         if (!creatorButton.data('bs.popover')) {
 
                             let $selects = $('<div id="isCreatorSelector"></div>');
 
                             $selects.append('<div><input type="checkbox" data-type="NotCreatorView"> ' + App.translate('isCreatorSelector-NotCreatorView') + '</div>');
-                            $selects.append('<div><input type="checkbox" data-type="CommonView"> ' + App.translate('isCreatorSelector-CommonView') + '</div>');
+                            if (specView) {
+                                $selects.append('<div><input type="checkbox" data-type="CommonView"> ' + App.translate('isCreatorSelector-CommonView') + '</div>');
+                            }
+                            if (isMobile) {
+                                $selects.append('<div><input type="checkbox" data-type="MobileView"> ' + App.translate('isCreatorSelector-MobileView') + '</div>');
+                            }
                             $selects.append('<div><button>' + App.translate('Apply') + '</button></div>');
 
                             if ($.cookie('ttm__commonTableView') === 'true') {
@@ -57,10 +62,29 @@
                             if (localStorage.getItem('notCreator')) {
                                 $selects.find('[data-type="NotCreatorView"]').prop('checked', true);
                             }
+                            if (localStorage.getItem('notMobileView')) {
+                                $selects.find('[data-type="MobileView"]').prop('checked', true);
+                            }
+
+                            if (isMobile) {
+                                const checkAdminActive = () => {
+                                    if (!$selects.find('[data-type="MobileView"]').is(':checked')) {
+                                        $selects.find('[data-type="NotCreatorView"]').parent().addClass('disabled')
+                                        $selects.find('[data-type="NotCreatorView"]').prop('disabled', true)
+                                    } else {
+                                        $selects.find('[data-type="NotCreatorView"]').parent().removeClass('disabled')
+                                        $selects.find('[data-type="NotCreatorView"]').prop('disabled', false)
+                                    }
+                                }
+                                $selects.on('change', 'input[type="checkbox"]', checkAdminActive)
+                                checkAdminActive();
+                            }
+
 
                             $selects.on('click', 'button', function () {
                                 let NotCreatorView = $selects.find('[data-type="NotCreatorView"]').is(':checked');
                                 let CommonView = $selects.find('[data-type="CommonView"]').is(':checked');
+                                let MobileView = $selects.find('[data-type="MobileView"]').is(':checked');
                                 changeNotCreator(!NotCreatorView);
                                 let path = window.location.pathname
                                 if (!CommonView) {
@@ -68,6 +92,13 @@
                                 } else {
                                     $.cookie('ttm__commonTableView', 'true', {path: path})
                                 }
+
+                                if (!MobileView) {
+                                    localStorage.removeItem('notMobileView')
+                                } else {
+                                    localStorage.setItem('notMobileView', true)
+                                }
+
                                 window.location.reload(true)
                             })
                             $selects.on('click', (event) => {
@@ -85,14 +116,17 @@
                             })
                         }
                         if (!showed) {
+
                             creatorButton.popover('show');
                             setTimeout(() => {
-                                mainTable.closeCallbacks.push(() => {
-                                    setTimeout(() => {
-                                        creatorButton.popover('hide');
-                                        showed = false;
-                                    }, 50)
-                                })
+                                if (mainTable) {
+                                    mainTable.closeCallbacks.push(() => {
+                                        setTimeout(() => {
+                                            creatorButton.popover('hide');
+                                            showed = false;
+                                        }, 50)
+                                    })
+                                }
                             }, 100);
                         }
 

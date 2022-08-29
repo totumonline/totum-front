@@ -8,7 +8,7 @@
 
     let notificationManager, _notifications, getNotificationOffset = function (withManager) {
             let offset = {x: 20, y: 70};
-            let isMobile = screen.width <= window.MOBILE_MAX_WIDTH;
+            let isMobile = App.isMobile();
             if (isMobile) {
                 offset.x = 0.09 * window.innerWidth / 2
 
@@ -696,7 +696,7 @@
                         getVal = () => {
                             return field.getEditVal(input)
                         }
-                        input = field.getEditElement(html, {v:data[1].value}, [], () => {
+                        input = field.getEditElement(html, {v: data[1].value}, [], () => {
                         }, () => {
                         }, () => {
                         }, 1, 'editField')
@@ -756,7 +756,7 @@
                             }
                         ], class: 'linkButtons'
                     };
-                    if (screen.width <= window.MOBILE_MAX_WIDTH) {
+                    if (App.isMobile()) {
                         Dialog = App.mobilePanel(data[1].title, html, props)
                     } else {
                         if (props.width || !props.html) {
@@ -793,7 +793,7 @@
                         )
                     });
 
-                    if (screen.width <= window.MOBILE_MAX_WIDTH) {
+                    if (App.isMobile()) {
                         App.mobilePanel(data[1].title, $('<div>').html(data[1].html), props)
                     } else {
                         if (props.width || !props.html) {
@@ -1052,14 +1052,16 @@
             }
         });
 
-        return BootstrapDialog.show({
+        return window.top.BootstrapDialog.show({
             message: body,
             title: title,
             type: type || null,
             draggable: true,
             onhidden: function () {
                 if (refresh) {
-                    if (refresh === 'strong') {
+                    if (refresh === 'close' && window.closeMe) {
+                        window.closeMe();
+                    } else if (refresh === 'strong') {
                         App.windowReloadWithHash(model);
                     } else {
                         model.refresh(null, refresh)
@@ -1080,7 +1082,7 @@
     };
 
     function showText(data, model) {
-        dialog(data['title'], data['text'], data.width, data.refresh, null, model)
+        dialog(data['title'], data['text'], data.width, (data.close ? 'close' : data.refresh), null, model)
     }
 
     function showJson(data, model) {
@@ -1099,7 +1101,7 @@
             })
         }
 
-        dialog(data['title'], div, data.width, data.refresh, null, model, btns)
+        dialog(data['title'], div, data.width, data.close ? 'close' : data.refresh, null, model, btns)
     }
 
     function showNotificationTable(data, closeMe) {
@@ -1120,8 +1122,10 @@
         $iframe.on('load', function () {
             let _window = $iframe.get(0).contentWindow;
             _window.closeMe = closeMe;
-            $(_window.document.body).css('background-color', 'transparent').addClass('notification-table')
-
+            _window.jQuery('body').css('background-color', 'transparent').addClass('table-in-notification');
+            _window.jQuery('#table').data('pctable')._refreshHead();
+            _window.jQuery('#table').data('pctable')._refreshContentTable(true);
+            _window.jQuery('#table').data('pctable').rowButtonsCalcWidth();
         });
         return $iframe;
     }
@@ -1185,7 +1189,7 @@
 
 
             setTimeout(() => {
-                tempFrameWindow.document.body.innerHTML = '<style>' + styles + '</style>'+body;
+                tempFrameWindow.document.body.innerHTML = '<style>' + styles + '</style>' + body;
                 $(tempFrameWindow.document.body).find('.nicescroll-rails').remove();
             }, 50)
 

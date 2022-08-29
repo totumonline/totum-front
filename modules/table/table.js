@@ -3,7 +3,7 @@
     let BUTTONS_TIMEOUT = 2000;
 
     const pcTABLE_ROW_HEIGHT = 35;
-    const MOBILE_MAX_WIDTH = window.MOBILE_MAX_WIDTH = 1199;
+    window.MOBILE_MAX_WIDTH = 1199;
 
     const pcTable_DATA_KEY = 'pctable';
     const pcTable_DATA_INDEX = 'pctablettemtndex';
@@ -196,13 +196,13 @@
             }, config);
         $.extend(this, config, true);
 
-        if (screen.width <= MOBILE_MAX_WIDTH) {
+        if (App.isMobile()) {
             this.isCreatorView = false;
             this.isMobile = true;
         }
 
         if (this.isCreatorView) {
-            if (this.isMobile || localStorage.getItem('notCreator')) {
+            if (localStorage.getItem('notCreator')) {
                 this.isCreatorView = false;
             }
         }
@@ -295,7 +295,7 @@
 
                 this.width = $('body').width() - TreeWidth;
                 this._container.width(this.width);
-                if (!this.isMobile) {
+                if (!this.isMobile && !$('body').is('.table-in-notification')) {
                     this._innerContainer.width(this.width - 80);
                     this.addInnerContainerScroll();
                 } else {
@@ -469,42 +469,40 @@
                 pcTable._innerContainer.on('scroll', closeCallbacksFunc);
 
                 /*top th panel*/
-                if (this.viewType !== 'panels') {
-                    if (this.isCreatorView) {
+                if (this.isCreatorView) {
 
-                        this._container.on('click contextmenu', 'th', function (event) {
+                    this._container.on('click contextmenu', 'th:not(.panelsView-card-item)', function (event) {
 
-                            if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
-                            else {
-                                let th = $(this);
-                                if (!th.attr('aria-describedby')) {
-                                    setTimeout(() => {
-                                        pcTable.creatorIconsPopover(th)
-                                    })
-                                }
+                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
+                        else {
+                            let th = $(this);
+                            if (!th.attr('aria-describedby')) {
+                                setTimeout(() => {
+                                    pcTable.creatorIconsPopover(th)
+                                })
                             }
-                        })
-                        /*this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
-                            let self = $(this);
-                            let icons = self.closest('th').find('.creator-icons');
-                            if (!icons.is('[aria-describedby]')) {
-                                pcTable.creatorIconsPopover(icons);
+                        }
+                    })
+                    /*this._container.on('contextmenu', 'th .field_name.copy_me', function (event) {
+                        let self = $(this);
+                        let icons = self.closest('th').find('.creator-icons');
+                        if (!icons.is('[aria-describedby]')) {
+                            pcTable.creatorIconsPopover(icons);
+                        }
+                        return false;
+                    })*/
+                } else {
+                    this._container.on('click contextmenu', 'th:not(.panelsView-card-item)', function (event) {
+                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
+                        else {
+                            let th = $(this);
+                            if (!th.attr('aria-describedby')) {
+                                setTimeout(() => {
+                                    pcTable.workerIconsPopover(th)
+                                })
                             }
-                            return false;
-                        })*/
-                    } else {
-                        this._container.on('click contextmenu', 'th', function (event) {
-                            if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
-                            else {
-                                let th = $(this);
-                                if (!th.attr('aria-describedby')) {
-                                    setTimeout(() => {
-                                        pcTable.workerIconsPopover(th)
-                                    })
-                                }
-                            }
-                        })
-                    }
+                        }
+                    })
                 }
                 pcTable._container.on('contextmenu', function (event) {
                     let self = $(event.target);
@@ -572,6 +570,8 @@
                         let match;
                         if (match = window.location.pathname.match(/^\/Table\/(\d+)\/$/)) {
                             sessionStorage.setItem('cycles_table_anchor', match[1]);
+                        }else{
+                            sessionStorage.removeItem('cycles_table_anchor')
                         }
                     } else {
                         sessionStorage.removeItem('cycles_filter');
@@ -1006,9 +1006,23 @@
                     this.loadVisibleFields(this.f && this.f.fieldhide ? this.f.fieldhide : undefined);
 
 
-                    if (this.viewType === 'panels' && !this.isMobile)
-                        this._renderTablePanelView();
-                    else if (!this.isTreeView && (this.tableRow.rotated_view && !$.cookie('ttm__commonTableView'))) {
+                    if (this.viewType === 'panels') {
+                        if (!this.isMobile) {
+                            this._renderTablePanelView();
+                        } else {
+                            let path, cName = 'panelSwitcher';
+                            if ($.cookie(cName) !== '0') {
+                                if (this.tableRow.type === 'calcs') {
+                                    cName += this.tableRow.id;
+                                    path = window.location.pathname.replace(/\d+\/\d+\/?$/, '')
+                                } else {
+                                    path = window.location.pathname
+                                }
+                                $.cookie(cName, '0', {path: path});
+                                App.windowReloadWithHash(this.model);
+                            }
+                        }
+                    } else if (!this.isTreeView && (this.tableRow.rotated_view && !$.cookie('ttm__commonTableView'))) {
                         this._renderRotatedView();
                     }
 

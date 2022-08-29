@@ -39,31 +39,31 @@
                 } else {
 
                     switch (controlMatches[1]) {
-                        case '!==':
+                        case '!=':
                             isLikedFunc = (v) => {
                                 let text = prepareV(v);
                                 return qs !== text;
                             }
                             break;
-                        case '==':
+                        case '=':
                             isLikedFunc = (v) => {
                                 let text = prepareV(v);
                                 return qs === text;
                             }
                             break;
-                        case '=':
+                        case '~':
                             isLikedFunc = (v) => {
                                 let text = prepareV(v);
                                 return text.indexOf(qs) !== -1
                             }
                             break;
-                        case '!=':
+                        case '!~':
                             isLikedFunc = (v) => {
                                 let text = prepareV(v);
                                 return text.indexOf(qs) === -1
                             }
                             break;
-                        case '!~':
+                        case '!~~':
                         case '!':
                             isLikedFunc = (v) => {
                                 let text = prepareV(v);
@@ -95,13 +95,13 @@
                                 })
                             }
                             break;
-                        case '^=':
+                        case '^~':
                             isLikedFunc = (v) => {
                                 let text = prepareV(v);
                                 return text.indexOf(qs) === 0;
                             }
                             break;
-                        case '!^=':
+                        case '!^~':
                             isLikedFunc = (v) => {
                                 let text = prepareV(v);
                                 return text.indexOf(qs) !== 0;

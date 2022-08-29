@@ -7,11 +7,12 @@ export class FieldDefault extends React.Component {
         this.state = {};
         this.state.val = this.state.inVal = this.constructor.prepareInputVal(props.data.v);
         this.wrapperClasses = '';
+        this.lng = (str) => props.model.langObj[str] || str
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        if (JSON.stringify(nextProps.data.v) !== JSON.stringify(this.props.data.v)) {
-            let prepared = this.constructor.prepareInputVal(nextProps.data.v)
+        let prepared = this.constructor.prepareInputVal(nextProps.data.v)
+        if (this.props.model.elseData !== nextProps.model.elseData || JSON.stringify(nextProps.data.v) !== JSON.stringify(this.props.data.v) || (!this.state.focus && JSON.stringify(prepared) !== JSON.stringify(nextState.val))) {
             this.setState({
                 val: prepared,
                 inVal: prepared,
@@ -66,6 +67,14 @@ export class FieldDefault extends React.Component {
         }
     }
 
+    __getDivParams() {
+        let divParams = {};
+        if (this.props.model.elseData === 'saveButtonClicked' && this.props.field.required && (this.state.val === '' || this.state.val === null || this.state.val === undefined || (typeof this.state.val === "object" && !this.state.val.length))) {
+            divParams.className = "ttm-required-empty-field";
+        }
+        return divParams;
+    }
+
     __save(val) {
 
         this.setState({
@@ -99,12 +108,13 @@ export class FieldDefault extends React.Component {
                 }
             });
             buttons.push({
-                label: "Отмена",
+                label: this.lng('Cancel'),
                 action: this._blur
             });
             return <AlertModal handleClose={() => {
                 this.setState({checkEdit: null})
-            }} title="Подтверждение" content={this.props.field.warningEditText || 'Точно изменить?'} buttons={buttons}/>
+            }} title={this.lng('Confirm')} content={this.props.field.warningEditText || this.lng('Surely to change?')}
+                               buttons={buttons}/>
         }
     }
 

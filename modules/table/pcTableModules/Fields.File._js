@@ -58,7 +58,7 @@
                 let img = '';
                 let _class = '';
                 if (['jpg', 'png'].indexOf(file.ext) !== -1) {
-                    img = $('<img src="/fls/' + file.file + '_thumb.jpg?rand=' + imgRand + '"/>');
+                    img = $('<img src="/fls/' + file.file + '_thumb.jpg?rand=' + imgRand + '"  class="file-image-preview" data-filename="' + file.file + '"/>');
                     _class = 'with-img';
                     show_img(img, file);
                 }
@@ -247,13 +247,15 @@
 
 
                 //Вывести файлы
-                Files.forEach(function (fl) {
-                    let part = printFile(fl).appendTo(dialogBody);
-                    part.on('click', '.remove', function () {
-                        part.remove();
-                        checkBtnDisable();
+                if (Files && Files.forEach) {
+                    Files.forEach(function (fl) {
+                        let part = printFile(fl).appendTo(dialogBody);
+                        part.on('click', '.remove', function () {
+                            part.remove();
+                            checkBtnDisable();
+                        });
                     });
-                });
+                }
 
                 checkBtnDisable();
 

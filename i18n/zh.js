@@ -428,6 +428,7 @@ App.langs.zh =
                 'Tree search': '树-搜索',
                 'isCreatorSelector-NotCreatorView': '禁用管理层',
                 'isCreatorSelector-CommonView': '禁用特殊视图',
+                'isCreatorSelector-MobileView': 'Switch to desktop view',
 
                 'Dbstring is incorrect': 'Dbstring是不正确的',
                 'Create config and upload scheme': '创建配置和上传方案',

@@ -19,12 +19,19 @@ export class FieldString extends FieldDefault {
         this._blur = this._blur.bind(this)
         this.onKeyDown = this.onKeyDown.bind(this)
         this.onFocus = this.onFocus.bind(this)
+        this.checkFocus = this.checkFocus.bind(this)
     }
 
     onFocus() {
         this.setState({
             focus: true
         })
+    }
+
+    checkFocus() {
+        if (!this.state.focus) {
+            this.inputRef.current.focus();
+        }
     }
 
     static prepareInputVal(val) {
@@ -76,11 +83,11 @@ export class FieldString extends FieldDefault {
         if (this.props.field.regexp) {
             var r = new RegExp(this.props.field.regexp);
             if (!r.test(val)) {
-                state.error = this.props.field.regexpErrorText || 'regexp не проходит — "' + this.props.field.regexp + '"'
+                state.error = this.props.field.regexpErrorText || ((this.lng('Regexp does not pass')) + ' — "' + this.props.field.regexp + '"')
             }
         } else if (this.props.field.required) {
             if (!val) {
-                state.error = "Значение не должно быть пустым"
+                state.error = this.lng("The value should not be empty")
             }
         }
 
@@ -104,14 +111,20 @@ export class FieldString extends FieldDefault {
     }
 
     getVal(style, format, blocked) {
-        let prefix, postfix;
+        let icon, postfix, prefix;
         if (format.icon) {
-            prefix = <InputAdornment position="start"><i className={"fa fa-" + format.icon}></i></InputAdornment>;
+            icon =
+                <InputAdornment position="start" key="icon"><i className={"fa fa-" + format.icon}></i></InputAdornment>;
         }
 
         if (this.props.field.unitType) {
-            postfix = <InputAdornment position="end"
-                                      style={this.getUnitTypeStyle(format)}>{this.props.field.unitType}</InputAdornment>
+            if (this.props.field.before) {
+                prefix = <InputAdornment key="prefix" position="start"
+                                         style={this.getUnitTypeStyle(format)}>{this.props.field.unitType}</InputAdornment>
+            } else {
+                postfix = <InputAdornment position="end"
+                                          style={this.getUnitTypeStyle(format)}>{this.props.field.unitType}</InputAdornment>
+            }
         }
         let error, helperText;
 
@@ -137,6 +150,7 @@ export class FieldString extends FieldDefault {
         } else {
             params.onKeyDown = this.onKeyDown;
             params.onChange = this.setVal;
+            params.onMouseDown = this.checkFocus;
             params.onFocus = this.onFocus;
             params.onBlur = this.save;
         }
@@ -144,39 +158,41 @@ export class FieldString extends FieldDefault {
 
         let pref;
 
+        let styleIN = {
+            color: style.color,
+            align: style.align,
+            fontWeight: style.fontWeight,
+            textDecoration: style.textDecoration,
+            fontStyle: style.fontStyle,
+        };
 
         if (this.isText) {
-            if (format.height)
-                params.rows = Math.round(format.height / 29);
-            if (format.maxheight)
-                params.rowsMax = Math.round(format.maxheight / 29);
+            if (format.height) {
+                params.rows = Math.round((format.height - 21) / 20);
+            }
+            if (format.maxheight) {
+                params.rowsMax = Math.round((format.maxheight - 21) / 20);
+            }
 
         }
 
 
-        return <div>{pref}{getErroredField(<TextField error={error} variant="outlined"
+        return <div {...this.__getDivParams()}>{pref}{getErroredField(<TextField error={error} variant="outlined"
 
-                                                      required={this.props.field.required}
-                                                      size="small"
-                                                      type={this.props.field.type}
-                                                      key={this.props.field.name}
-                                                      InputProps={{
-                                                          startAdornment: prefix,
-                                                          endAdornment: postfix,
-                                                          style: {
-                                                              color: style.color,
-                                                              align: style.align,
-                                                              fontWeight: style.fontWeight,
-                                                              textDecoration: style.textDecoration,
-                                                              fontStyle: style.fontStyle,
-                                                              helperText: helperText
-                                                          }
-                                                      }}
-                                                      fullWidth={true}
-                                                      helperText={helperText}
-                                                      value={this.state.val}
-                                                      inputRef={this.inputRef}
-                                                      {...params}
+                                                                                 required={this.props.field.required}
+                                                                                 size="small"
+                                                                                 type={this.props.field.type}
+                                                                                 key={this.props.field.name}
+                                                                                 InputProps={{
+                                                                                     startAdornment: [icon, prefix],
+                                                                                     endAdornment: postfix,
+                                                                                     style: {styleIN}
+                                                                                 }}
+                                                                                 fullWidth={true}
+                                                                                 helperText={helperText}
+                                                                                 value={this.state.val}
+                                                                                 inputRef={this.inputRef}
+                                                                                 {...params}
         />)}</div>
     }
 
@@ -185,8 +201,8 @@ export class FieldString extends FieldDefault {
         let style = {};
         if (format.viewdata.unit_type_size) {
             style.fontSize = format.viewdata.unit_type_size
-            if(style.fontSize.toString().match(/^[\d.]+$/)){
-                style.fontSize+='px'
+            if (style.fontSize.toString().match(/^[\d.]+$/)) {
+                style.fontSize += 'px'
             }
         }
         if (format.viewdata.unit_type_weight) {

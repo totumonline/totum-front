@@ -30,9 +30,11 @@ export class TableSection extends React.Component {
 
         if (status !== 'view' && status !== "close" && status !== "edit") return <></>;
 
-        let _title = "", $title, Titles = {_ALL:true}, Plates = false, fillAll = false, outline = false, platemh = false,
+        let _title = "", $title, Titles = {_ALL: true}, Plates = false, fillAll = false, outline = false,
+            platemh = false,
             plateh = false;
         let sectionParams = {};
+        let formatsFromSection = {};
 
         if (title) {
 
@@ -48,6 +50,20 @@ export class TableSection extends React.Component {
                         } else {
 
                             switch (split[0]) {
+                                case 'maxheight':
+                                case 'height':
+                                case 'maxwidth':
+                                case 'nextline':
+                                case 'blocknum':
+                                case 'glue':
+                                case 'fill':
+                                case 'breakwidth':
+                                    let func;
+                                    func = ((str) => str)
+
+                                    formatsFromSection[split[0]] = addSectionParam(formatsFromSection[split[0]], split, func, false);
+
+                                    break;
                                 case 'outline':
                                     outline = addSectionParam(outline, split, ((str) => str === true ? "#e4e4e4" : str), true)
                                     break;
@@ -114,14 +130,14 @@ export class TableSection extends React.Component {
             let sectionWithPannels = false;
             fields.forEach((field) => {
                 if (!format[field.name]) return;
-                let fName=field.name;
+                let fName = field.name;
                 let _format = format[field.name];
                 if ((!_format.hide || !_format.hide.form) && !_format.viewdata.hide) {
                     if (field.tableBreakBefore || !floatBlock) {
                         floatBlock = [];
                         floatBlocks.push(floatBlock);
                     }
-                    if (_format.blocknum !== undefined) {
+                    if ((_format.blocknum || formatsFromSection.blocknum) !== undefined) {
                         sectionWithPannels = true;
                     }
                     floatBlock.push(field);
@@ -154,6 +170,7 @@ export class TableSection extends React.Component {
                                               platemh={platemh}
                                               plateh={plateh}
                                               gap={sectionParams.gap}
+                                              formatsFromSection={formatsFromSection}
                                               model={model}/>)
             });
 
@@ -176,9 +193,9 @@ const addSectionParam = (param, splitted, ValReplace, isArrayValue) => {
         if (isArrayValue) {
             let split = param.split(/\s*\/\s*/);
             if (split.length > 1) {
-                return {big: replaceVal(split[0]), small: replaceVal(split[1])}
+                return {_big: replaceVal(split[0]), _small: replaceVal(split[1])}
             } else {
-                return {big: replaceVal(param), small: replaceVal(param)}
+                return {_big: replaceVal(param), _small: replaceVal(param)}
             }
         }
         return replaceVal(param)
@@ -198,12 +215,19 @@ const addSectionParam = (param, splitted, ValReplace, isArrayValue) => {
         return param;
     }
 
-    if (splitted.length === 2) {
-        param = splitVal(splitted[1])
-    } else if (/^([a-z_0-9]+\s*,?\s*)+$/.test(splitted[1])) {
+
+    if (splitted.length === 3 && /^([a-z_0-9]+\s*,?\s*)+$/.test(splitted[1])) {
+        if (typeof param !== 'object') {
+            param = {_ALL: param}
+        }
+
         splitted[1].split(/\s*,\s*/).forEach((num) => {
             param[num] = splitVal(splitted[2])
         })
+    } else if (typeof param === 'object' && Object.keys(param).length) {
+
+        param['_ALL'] = splitVal(splitted[1])
+
     } else {
         param = splitVal(splitted[1])
     }

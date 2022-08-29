@@ -402,7 +402,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         }
 
         if (pcTable.isCreatorView) {
-            if (['select', 'tree', 'date'].indexOf(field.type) !== -1) {
+            if (['select', 'tree', 'date'].indexOf(field.type) !== -1 || format.textasvalue) {
                 textDiv.append($('<div class="creator-select-val">' + JSON.stringify(val.v) + '</div>'));
             }
         }
@@ -979,7 +979,11 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                     numberField = pcTable.fields[field];
                                 }
                             }
-                            return pcTable.fields[field].type === 'number';
+                            return pcTable.fields[field].type === 'number' || pcTable.selectedCells.ids[field].every((id) => {
+                                if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && (typeof pcTable.data[id][field].f.textasvalue === 'string') && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
+                                    return true;
+                                }
+                            });
                         })
 
                         let count = 0;
@@ -987,8 +991,15 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         selFields.forEach((field) => {
                             pcTable.selectedCells.ids[field].forEach((id) => {
                                 count++;
-                                if (allNumbers && pcTable.data[id][field].v !== null) {
-                                    summ += parseFloat(pcTable.data[id][field].v);
+                                if (allNumbers) {
+                                    if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && (typeof pcTable.data[id][field].f.textasvalue === 'string') && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
+                                        if (pcTable.data[id][field].f.text !== null && pcTable.data[id][field].f.text !== "") {
+                                            let separator = pcTable.data[id][field].f.textasvalue.split('|')[1] || field.dectimalSeparator || '.'
+                                            summ += parseFloat(pcTable.data[id][field].f.text.replace(separator, '.'));
+                                        }
+                                    } else if (pcTable.data[id][field].v !== null) {
+                                        summ += parseFloat(pcTable.data[id][field].v);
+                                    }
                                 }
                             })
                         })

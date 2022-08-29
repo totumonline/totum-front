@@ -261,9 +261,9 @@
                     setsDiv.append(link.wrap('<span>').parent());
                     if (pcTable.isCreatorView) {
                         if (i > 0) {
-                            link.parent().append($('<button class="btn btn-xxs field_name"><i class="fa fa-arrow-left"></i></button>').data('index', i));
+                            link.parent().append($('<button class="btn sm-btn field_name"><i class="fa fa-arrow-left"></i></button>').data('index', i));
                         }
-                        link.parent().append($('<button class="btn btn-xxs field_name"><i class="fa fa-remove"></i></button>').data('index', i));
+                        link.parent().append($('<button class="btn sm-btn field_name"><i class="fa fa-remove"></i></button>').data('index', i));
                     }
                 });
                 setsDiv.off();
@@ -312,9 +312,9 @@
                     let link = $('<a href="#">').text(name).data('name', name);
                     setsDiv.append(link.wrap('<span>').parent());
                     let span = link.parent();
-                    span.append($('<button class="btn btn-xxs" data-action="remove"><i class="fa fa-remove"></i></button>').data('name', name));
+                    span.append($('<button class="btn sm-btn" data-action="remove"><i class="fa fa-remove"></i></button>').data('name', name));
                     if (pcTable.isCreatorView) {
-                        span.append($('<button class="btn btn-xxs field_name" data-action="addDefaultSet" title="' + App.translate('Save as default set') + '"><i class="fa fa-save"></i></button>').data('name', name));
+                        span.append($('<button class="btn sm-btn field_name" data-action="addDefaultSet" title="' + App.translate('Save as default set') + '"><i class="fa fa-save"></i></button>').data('name', name));
                     }
                 });
                 setsDiv.on('click', '.btn', function () {
@@ -418,7 +418,7 @@
                         dialogRef.close();
 
                         let $divSetName = $('<div></div>');
-                        $divSetName.append('<div style="padding-top: 10px;"><label>' + App.translate('Set title') + '/label><input type="text" id="fieldsSetName" class="form-control"/></div>');
+                        $divSetName.append('<div style="padding-top: 10px;"><label>' + App.translate('Set title') + '</label><input type="text" id="fieldsSetName" class="form-control"/></div>');
                         window.top.BootstrapDialog.show({
                             message: $divSetName,
                             title: App.translate('Save the fields set'),
@@ -472,7 +472,6 @@
 
             let categories = {
                 'param': App.translate('Header'),
-                'filter': App.translate('Prefilter'),
                 'column': App.translate('Columns'),
                 'footer': App.translate('Footer')
             };

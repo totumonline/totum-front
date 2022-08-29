@@ -4,7 +4,7 @@
 
 body {
   padding: 5px;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
   font-size: 13px;
   line-height: 1.48;
   //overflow: hidden;
@@ -20,6 +20,18 @@ th {
 
 input.error {
   border-color: $btn-danger-bgcolor;
+}
+
+#auth_form {
+  width: 550px;
+  max-width: 90vw;
+  margin-top: 10vh;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 40px;
+  padding-bottom: 60px;
 }
 
 #notify-texh {
@@ -198,6 +210,7 @@ footer {
   overflow: auto;
   padding-top: 40vh;
   color: rgba(0, 0, 0, 0.1);
+  opacity: 0;
 }
 
 .modal-backdrop {
@@ -391,7 +404,7 @@ footer {
 }
 
 #pk .popover, #pk .popover-title {
-  font-family: 'Roboto';
+  font-family: 'IBM Plex Sans', sans-serif;
   font-size: 12px;
   line-height: 1.5;
 }
@@ -516,6 +529,9 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
   .fa-square-o {
     width: 10px;
   }
+  .id-hidden {
+    color: magenta;
+  }
 }
 
 .deleted_value {
@@ -535,6 +551,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
   &.with-code {
     background-color: $tdWithCodeColor;
   }
+
   //&.blocked {
   //  opacity: 0.7;
   //}
@@ -775,6 +792,10 @@ th {
       background-color: #fff;
     }
 
+    .warning-bg {
+      background-color: #ffedb1;
+    }
+
     .btn {
       border-color: transparent;
 
@@ -945,6 +966,11 @@ th {
     }
 
     padding-left: $idWidth - 23;
+
+    .table-in-notification & {
+      padding-left: 0;
+    }
+
     padding-bottom: 0;
     font-size: 18px;
 
@@ -1069,6 +1095,11 @@ th {
     font-family: PTRootUIWeb;
     font-weight: 500;
     padding-left: $idWidth - 18;
+
+    .table-in-notification & {
+      padding-left: 0;
+    }
+
     padding-top: 10px;
 
     i, span {
@@ -1094,6 +1125,11 @@ th {
     overflow-y: hidden;
     padding-bottom: 25px;
     padding-left: $idWidth;
+
+    .table-in-notification & {
+      padding-left: 0;
+    }
+
     margin-bottom: 20px;
 
     .ps__rail-x {
@@ -1250,6 +1286,10 @@ th {
 
 .pcTable-beforeSpace, .pcTable-paramsTable, .pcTable-filtersTable, .pcTable-hiddenFieldsTable, .pcTable-footersTable, .pcTable-tableText {
   margin-left: $idWidth;
+
+  .table-in-notification & {
+    margin-left: 0;
+  }
 }
 
 .pcTable-tableText, .table-description {
@@ -1290,6 +1330,11 @@ th {
 .pcTable-buttons {
   line-height: 31px;
   padding-left: $idWidth;
+
+  .table-in-notification & {
+    padding-left: 0;
+  }
+
   padding-top: 5px;
   padding-bottom: 5px;
   text-align: right;
@@ -1365,6 +1410,9 @@ th {
   &:after {
     clear: both;
   }
+  .table-in-notification & {
+    display: none;
+  }
 }
 
 /*.pcTable-container {
@@ -1378,6 +1426,11 @@ th {
   border-collapse: collapse;
 
   margin-left: -$idWidth;
+
+  .table-in-notification & {
+    margin-left: 0;
+  }
+
   border: none;
   table-layout: fixed;
 
@@ -1561,6 +1614,7 @@ th {
 
       &.id {
         border: none;
+
       }
     }
 
@@ -2006,7 +2060,7 @@ ul.CodeMirror-hints {
   .alert {
     background-image: none;
     text-shadow: none;
-    box-shadow: 2px 4px 11px 2px rgba(0, 0, 0, 0.08), 1px 2px 1px 1px rgba(0, 0, 0, 0.04);
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.09);
     border-radius: 6px;
     border: none;
     color: #000;
@@ -2014,7 +2068,7 @@ ul.CodeMirror-hints {
   }
 
   .alert-warning {
-    background-color: #faf9f8;
+    background-color: #fcf8f8;
   }
 
   .edit-row-panel {
@@ -2170,6 +2224,13 @@ input {
 
 .fieldsHiddenSets {
   padding: 10px 0;
+
+  font-size: 16px;
+
+  .field_name {
+    border-color: transparent;
+    background-color: #fafafa;
+  }
 
   i.fa-remove {
     vertical-align: +1px;

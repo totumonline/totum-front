@@ -6,6 +6,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ReactHtmlParser from 'react-html-parser';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import { Box } from "@material-ui/core";
 
 export class AlertModal extends React.Component {
     constructor(props) {
@@ -31,11 +34,21 @@ export class AlertModal extends React.Component {
     }
 
     render() {
+
         let {handleClose, handleOpen, title, content, buttons, isHtml} = this.props;
-        let $title, $body, $buttons;
+        let $title, $body, $buttons, closeIcon;
 
         if (title !== undefined) {
-            $title = <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+            if (this.props.close) {
+                closeIcon = <Box><IconButton aria-label="close" onClick={handleClose}>
+                    <CloseIcon/>
+                </IconButton></Box>;
+            }
+            $title =
+                <DialogTitle id="alert-dialog-title"> <Box display="flex" alignItems="center">
+                    <Box flexGrow={1}>{title}</Box>
+                    {closeIcon}</Box>
+                </DialogTitle>
         }
         if (content !== undefined) {
             $body = <DialogContent>

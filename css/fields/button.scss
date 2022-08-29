@@ -89,7 +89,7 @@ td.cell-button, span.cell-button {
   }
 }
 
-@media(max-device-width: 1199px) {
+body.ttm-body-mobile {
   .DataRow, .pcTable-footers {
     td.cell-button button.button-field {
       height: 28px;
@@ -103,7 +103,7 @@ td.cell-button, span.cell-button {
   }
 }
 
-@media(min-device-width: 1200px) {
+body.ttm-body-desktop {
   td.cell-button {
     .cell-value {
       overflow: visible !important;

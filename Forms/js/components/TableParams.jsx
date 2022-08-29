@@ -24,7 +24,7 @@ export const TableParams = ({data, sections, format, width, model}) => {
                     case 'expantion':
                         Model = SectionsExpantion;
                         break;
-                    default: Error('Тип секции '+viewtype+' не найден');
+                    default: Error('Section type '+viewtype+' did not found');
                 }
                 $sections.push(<Model key={"tabs" + i} sections={summSections} data={data} format={format} width={width}
                                       model={model}/>)

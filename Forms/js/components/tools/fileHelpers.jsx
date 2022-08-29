@@ -34,5 +34,5 @@ export function getPreviewIcon(fileObject) {
     return <AttachFileIcon />;
 }
 export function isImage(url) {
-    return /(png|jpg|jpeg|bmp|gif)$/i.test(url)
+    return /(png|jpg|jpeg|bmp|gif)$/i.test(url) || /^data:image/.test(url)
 }

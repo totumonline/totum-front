@@ -73,7 +73,10 @@
             let $tdId = $('<td class="id"><span class="nm"></span></td>');
 
             if(this._isDisplayngIdEnabled()){
-                $tdId.find('span').text(item['id'])
+                $tdId.find('span').text(item['id']);
+                if(!this._isDisplayngIdEnabled(true)){
+                    $tdId.find('span').addClass('id-hidden')
+                }
             }
             $tdId.appendTo($row);
             this.row_actions_icons_add($tdId);

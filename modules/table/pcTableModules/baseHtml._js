@@ -265,7 +265,7 @@
             let pcTable = this;
             if (isInFaves === null) return $();
 
-            if (btn.length === 0) {
+            if (btn.length === 0 && this.tableRow.type !== 'calcs') {
                 btn = $('<button class="btn btn-default btn-sm" id="favorite-start"></button>')
                     .on('click', function () {
                         pcTable.model.setTableFavorite(!btn.is('.stared')).then(function (json) {
@@ -450,8 +450,10 @@
                 if (pcTable.withCsvButtons) {
                     let btn = $('<button class="btn btn-default btn-sm">CSV-' + App.translate('export') + '</button>')
                         .on('click', function () {
-                            let $panel = $('<div><div class="menu-item" data-type="full">' + App.translate('Full') + '</div>' +
-                                '<div class="menu-item"  data-type="rows">' + App.translate('Only rows') + '</div></div>')
+                            let $panel = $('<div>' +
+                                '<div class="menu-item" data-type="full">' + App.translate('Full') + '</div>' +
+                                '<div class="menu-item"  data-type="rows">' + App.translate('Only rows') + '</div>' +
+                                '</div>')
                             $panel.on('click', '.menu-item', function () {
                                 let type = $(this).is('[data-type="full"]') ? 'full' : 'rows';
                                 $panel.remove();
@@ -467,14 +469,9 @@
                                 placement: 'bottom'
                             });
 
-                            $('#' + popoverId).position({
-                                my: "left top",
-                                at: "left-3px bottom+10px",
-                                of: btn
-                            }).off().on('mouseleave', function () {
-                                $panel.remove();
-                            }).find('.arrow').css('left', '11px').end()
-                                .find('.popover-content').css('padding', '5px');
+                            $('#' + popoverId).off().on('mouseleave', function () {
+                                $('#' + popoverId).remove();
+                            });
 
                         });
                     csv.append(btn);
@@ -589,11 +586,7 @@
                 }
 
                 const checkIsFilled = (btn, code) => {
-                    if (code !== true) {
-                        btn.css('background-color', 'transparent')
-                    } else {
-                        btn.css('background-color', '#ffedb1')
-                    }
+                    btn.toggleClass('warning-bg', code === true)
                 }
 
                 [
@@ -624,7 +617,42 @@
 
                 creatorPart.appendTo(topButtons);
 
-                let btnAdd = $('<button class="btn btn-danger btn-xxs" id="addField">' + App.translate('Add field') + '</span></button>').width(113)
+
+                if (['simple', 'tmp'].indexOf(this.tableRow.type) !== -1) {
+                    let btnAdd = $('<button class="btn btn-danger btn-xxs" id="quickForms"><i class="fa fa-cubes"></i></button>')
+                        .on('click', function () {
+                            let $panel = $('<div><div class="menu-item" data-type="quick">' + App.translate('Add form') + '</div>' +
+                                '<div class="menu-item"  data-type="forms">' + App.translate('Forms') + '</div></div>')
+                            $panel.on('click', '.menu-item', function () {
+                                pcTable.model.formsLinks = pcTable.model.formsLinks || function (type) {
+                                    return this.__ajax('post', {type: type, method: 'formsLinks'});
+                                }
+
+                                let type = $(this).is('[data-type="quick"]') ? 'quick' : 'forms';
+                                $panel.remove();
+                                pcTable.model.formsLinks(type);
+                            })
+
+                            let popoverId = App.popNotify({
+                                isParams: true,
+                                $text: $panel,
+                                element: btnAdd,
+                                container: this._container,
+                                trigger: 'manual',
+                                placement: 'bottom'
+                            });
+
+                            $('#' + popoverId).on('mouseleave', function () {
+                                $('#' + popoverId).remove();
+                            });
+
+                        }).appendTo(creatorPart);
+
+                    btnAdd.toggleClass('warning-bg', !!pcTable.tableRow.__is_in_forms)
+                }
+
+
+                let btnAdd = $('<button class="btn btn-danger btn-xxs" id="addField">' + App.translate('Add field') + '</button>').width(113)
                     .on('click', function () {
                         let data = {
                             table_id: {v: pcTable.tableRow.id}, data_src: {v: pcTable_default_field_data_src}
@@ -937,9 +965,10 @@
         ,
         rowButtonsCalcWidth: function () {
             if (this.tableWidth < this._innerContainer.width()) {
-                if (this.isMobile) {
+                if (this.isMobile || $('body').is('.table-in-notification')) {
                     this.__$rowsButtons.width(this._table.width());
-                } else {
+                }
+                else {
                     this.__$rowsButtons.width(this._table.width() - 70);
                 }
             } else if (!this.isMobile) {
@@ -1659,8 +1688,12 @@
                 pcTable._container.removeClass('withNoColumns')
             }
 
-            pcTable._createHeadCellId().appendTo($row);
-            let $width = $row.find('.id').width();
+            let $width = 0;
+
+            if (!$('body').is('.table-in-notification')) {
+                pcTable._createHeadCellId().appendTo($row);
+                let $width = $row.find('.id').width();
+            }
 
 
             pcTable._table.removeClass('n-filtered');
@@ -1688,8 +1721,8 @@
             return $row;
         }
         ,
-        _isDisplayngIdEnabled: function () {
-            return this.isCreatorView || (!this.f.fieldhide || !this.f.fieldhide.id)
+        _isDisplayngIdEnabled: function (creatorCheck) {
+            return (this.isCreatorView && !creatorCheck) || (!this.f.fieldhide || !this.f.fieldhide.id)
         },
         _createHeadCellId: function () {
             let pcTable = this;
@@ -1697,7 +1730,10 @@
             let idEnabled = this._isDisplayngIdEnabled();
 
             if (idEnabled) {
-                $th.find('span').text('id')
+                $th.find('span').text('id');
+                if (!this._isDisplayngIdEnabled(true)) {
+                    $th.find('span').addClass('id-hidden')
+                }
             }
 
             if (pcTable.tableRow.order_field === null || pcTable.tableRow.order_field === 'id') {
@@ -2641,28 +2677,26 @@
             if (item['InsDel']) {
                 $row.addClass('insDeleted');
             }
-            this._addCellId(item, $row);
+            if (!$('body').is('.table-in-notification')) {
+                this._addCellId(item, $row);
+            }
             // this._addCellNo(item, $row);
 
             let i = 0;
-            let len = this.fieldCategories.visibleColumns.length;
-            if (this.fieldCategories.visibleColumns[i] && this.fieldCategories.visibleColumns[i].name === 'n') {
+            for (let i = 0; i < this.fieldCategories.visibleColumns.length; ++i) {
                 let field = this.fieldCategories.visibleColumns[i];
-                let td = $('<td>');
-                $row.append(td.append('<span class="cell-value">').append(field.getCellText(null, td, item)));
-                if (item.__inserted) {
-                    td.addClass('just-inserted')
-                }
-                ++i;
-            }
-
-            for (i; i < len; ++i) {
-                let field = this.fieldCategories.visibleColumns[i];
-                let td;
-
-                $row.append(td = pcTable._createCell(item, field));
-                if (chData.indexOf(field.name) > -1) {
-                    pcTable._colorizeElement(td, pcTable_COLORS.saved);
+                if (field && field.name === 'n') {
+                    let td = $('<td>');
+                    $row.append(td.append('<span class="cell-value">').append(field.getCellText(null, td, item)));
+                    if (item.__inserted) {
+                        td.addClass('just-inserted')
+                    }
+                } else {
+                    let td;
+                    $row.append(td = pcTable._createCell(item, field));
+                    if (chData.indexOf(field.name) > -1) {
+                        pcTable._colorizeElement(td, pcTable_COLORS.saved);
+                    }
                 }
             }
 
@@ -2682,7 +2716,8 @@
 
                 });
             }
-        },
+        }
+        ,
         refreshRow: function (tr, item, newData, onlyChanged) {
             if ((tr && tr.is('.DataRow')) || item) {
 
@@ -2834,7 +2869,8 @@
                     }
                 }
 
-                if (format.text && field.type != "button" && !(pcTable.isTreeView && field.name === 'tree' && item.__tree && (field.treeViewType === 'self' || (item.tree_category && item.tree_category.v)))) {
+                let StringAsUrl = field.type === 'string' && field.url;
+                if (format.text && (!StringAsUrl || val.v === null) && field.type != "button" && !(pcTable.isTreeView && field.name === 'tree' && item.__tree && (field.treeViewType === 'self' || (item.tree_category && item.tree_category.v)))) {
                     span.text(format.text);
                 } else if (!(val.e && field.errorText)) {
                     var cellInner = isHeighter ? field.getHighCelltext(val.v, td, item) : field.getCellText(val.v, td, item);
@@ -2848,6 +2884,10 @@
                             span.html(cellInner)
                         }
                     } else span.text(cellInner);
+
+                    if (StringAsUrl && format.text) {
+                        span.find('a').text(format.text)
+                    }
                 }
 
                 if (field.CodeActionOnClickAsUrl) {
@@ -2894,7 +2934,10 @@
                 } else if (field.panelColor) {
                     td.css('background-color', field.panelColor);
                 }
-                if (format.color) td.css('color', format.color);
+                if (format.color) {
+                    td.css('color', format.color);
+                    td.find('a').css('color', format.color);
+                }
             }
 
             if (format.bold) td.css('font-weight', 'bold');
@@ -3175,7 +3218,8 @@
                     });
                 });
             });
-        },
+        }
+        ,
         getElementFormat: function (field, id) {
             let item;
             if (id) {
@@ -3187,4 +3231,5 @@
         }
     })
     ;
-})();
+})
+();

@@ -10,7 +10,11 @@ import {
     DateTimePicker, KeyboardDateTimePicker,
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+
 import ruLocale from "date-fns/locale/ru";
+import enLocale from "date-fns/locale/en-US";
+import zhLocale from "date-fns/locale/zh-CN";
+
 import TextField from "@material-ui/core/TextField";
 import moment from "moment";
 
@@ -20,12 +24,23 @@ export class FieldDate extends FieldString {
         super(props);
         this.state.inVal = props.data.v
         this.state.valString = props.data.v
+
+        switch (this.props.model.lang.name) {
+            case 'ru':
+                this.locale = ruLocale;
+                break;
+            case 'zh':
+                this.locale = zhLocale;
+                break;
+            default:
+                this.locale = enLocale;
+        }
     }
 
     static getDerivedStateFromProps(props, state) {
+        let propsVal = FieldDate.prepareInputVal(props.data.v);
 
-        if (props.data.v !== state.inVal) {
-            let propsVal = FieldDate.prepareInputVal(props.data.v);
+        if ((propsVal ? propsVal.toString() : '') !== (state.val ? state.val.toString() : '')) {
             return {
                 val: propsVal,
                 inVal: props.data.v,
@@ -53,7 +68,7 @@ export class FieldDate extends FieldString {
         if (props.error && (props.value === "" || props.value === undefined)) {
             let {required} = this.props.field;
             if (required) {
-                props.helperText = "Обязательное поле";
+                props.helperText = this.lng('Mandatory Field');
             } else {
                 props = {...props, error: false, helperText: ""}
             }
@@ -102,7 +117,6 @@ export class FieldDate extends FieldString {
                 this._blur();
                 return false;
         }
-
     }
 
     setVal(d) {
@@ -110,6 +124,11 @@ export class FieldDate extends FieldString {
             this.setState({
                 val: d,
                 valString: this._getValString(d)
+            })
+        } else {
+            this.setState({
+                val: null,
+                valString: ""
             })
         }
     }
@@ -150,6 +169,15 @@ export class FieldDate extends FieldString {
         }
     }
 
+
+    __getDivParams() {
+        let divParams = {};
+        if (this.props.model.elseData === 'saveButtonClicked' && this.props.field.required && (this.state.val === null)) {
+            divParams.className = "ttm-required-empty-field";
+        }
+        return divParams;
+    }
+
     getVal(style, format, blocked) {
         let params = {};
 
@@ -160,26 +188,25 @@ export class FieldDate extends FieldString {
         }
 
         let Model, dateFormat = this._getDateFormat();
-        let classes="ttm-form ttm-dateDialog ";
+        let classes = "ttm-form ttm-dateDialog ";
         if (!this.props.field.dateTime) {
             Model = KeyboardDatePicker;
         } else if (format.viewtype === 'time') {
             Model = KeyboardTimePicker;
-            classes="ttm-form ttm-timeDialog ";
+            classes = "ttm-form ttm-timeDialog ";
             params.ampm = false;
         } else {
             Model = KeyboardDateTimePicker;
             params.ampm = false;
         }
 
-
-        return <div><MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+        return <div {...this.__getDivParams()}><MuiPickersUtilsProvider utils={DateFnsUtils} locale={this.locale}>
             <Model
                 clearable={!this.props.field.required}
                 required={this.props.field.required}
                 format={dateFormat}
-                margin="normal"
                 autoOk={false}
+                fullWidth={true}
                 value={this.state.val}
                 onAccept={this.save}
                 KeyboardButtonProps={{
@@ -193,8 +220,8 @@ export class FieldDate extends FieldString {
                 TextFieldComponent={(params) => this.renderInput(params, format, style)}
                 {...params}
 
-                clearLabel="Очистить"
-                cancelLabel="Отменить"
+                clearLabel={this.lng('Clear')}
+                cancelLabel= {this.lng('Cancel')}
             /></MuiPickersUtilsProvider></div>
     }
 

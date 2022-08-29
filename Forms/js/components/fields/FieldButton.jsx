@@ -10,6 +10,7 @@ export class FieldButton extends React.Component {
             clicked: false
         };
         this.clickCheck = this.clickCheck.bind(this);
+        this.lng = (str) => props.model.langObj[str] || str
     }
 
     clickCheck() {
@@ -31,9 +32,21 @@ export class FieldButton extends React.Component {
                 clicked: "click"
             });
             let {field} = this.props;
+
+            if (this.props.field.name === '__save' && this.props.model.elseData !== 'saveButtonClicked') {
+                this.props.model.elseData = 'saveButtonClicked';
+                this.props.model.setChangesToForm({statusData: 'saveButtonClicked'});
+            }
+
             return this.props.model.click(this.props.item, field.name).then((json) => {
 
                 this.props.model.setChangesToForm(null, json);
+
+                if (this.props.field.name === '__save' && this.props.model.elseData && !json.error) {
+                    this.props.model.elseData = null;
+                    this.props.model.setChangesToForm({statusData: null});
+                }
+
                 this.setState({
                     clicked: "done"
                 });
@@ -54,11 +67,13 @@ export class FieldButton extends React.Component {
                 action: this.click.bind(this)
             });
             buttons.push({
-                label: "Отмена"
+                label: this.lng("Cancel")
             });
             return <AlertModal handleClose={() => {
                 this.setState({checkClick: null})
-            }} title="Подтверждение" content={this.props.field.warningEditText || 'Точно изменить?'} buttons={buttons}/>
+            }} title={this.lng('Confirmation')}
+                               content={this.props.field.warningEditText || this.lng('Surely to change?')}
+                               buttons={buttons}/>
         }
     }
 
@@ -70,24 +85,24 @@ export class FieldButton extends React.Component {
         let text = format.text || field.buttonText || null;
         let params = {}, icon;
 
-        let style={};
+        let style = {};
 
-        if(format.background){
-            style.backgroundColor=format.background
+        if (format.background) {
+            style.backgroundColor = format.background
         }
-        if(format.color){
-            style.color=format.color
+        if (format.color) {
+            style.color = format.color
         }
 
         switch (this.state.clicked) {
             case "click":
                 params.disabled = true;
                 text = <i className="fa fa-spinner" style={{"float": "none"}}></i>
-                style.textAlign="center";
+                style.textAlign = "center";
                 break;
             case "done":
                 params.disabled = true;
-                text='Выполнено';
+                text = this.lng('Done');
                 break;
             default:
                 if (format.block) {

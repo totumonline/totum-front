@@ -11,6 +11,8 @@ import {Trobber} from "./Trobber";
 import Backdrop from "@material-ui/core/Backdrop";
 import ReactHtmlParser from "react-html-parser";
 
+
+
 let React = require('react');
 
 
@@ -29,7 +31,8 @@ export class TotumForm extends React.Component {
             data: props.data.data,
             controls: props.data.c,
             mainError: props.data.error,
-            interfaceDatas: []
+            interfaceDatas: [],
+            statusData: null,
         };
 
         let timeout;
@@ -238,9 +241,6 @@ export class TotumForm extends React.Component {
                 sectionViewtype = {view: 'plain', parallel: true}
             }
 
-            /*Уточнить*/
-
-
             blockSec = {...editingBlock, ...blockSec};
 
             sec.fields = sec.fields.map((f) => {
@@ -298,6 +298,7 @@ export class TotumForm extends React.Component {
 
         let $errorNotification, $interfaceData;
         if (errorNotification) {
+            errorNotification = errorNotification.replace(/\[\[/g, '').replace(/\]\]/g, '');
             $errorNotification = <AlertModal content={errorNotification}
                                              className="ttm-form ttm-errorException"
                                              handleClose={() => {
@@ -306,16 +307,15 @@ export class TotumForm extends React.Component {
         }
         if (this.state.interfaceDatas && this.state.interfaceDatas.length) {
             this.state.interfaceDatas.some((row, i) => {
-                if (row[0] === 'text' || row[0] === 'html') {
+                if (row[0] === 'text') {
                     let buttons = [{
-                        label: "ОК",
+                        label: this.props.model.langObj['OK'] || 'OK',
                         action: () => {
                         }
                     }]
-                    let text = (row[0] === 'text') ? row[1].text : ReactHtmlParser(row[1].text);
+                    let text = ReactHtmlParser(row[1].text);
 
                     let content = <div>{text}</div>
-
 
                     $interfaceData = <AlertModal content={content} title={row[1].title} handleClose={() => {
                         this.setState((state) => {
@@ -336,7 +336,7 @@ export class TotumForm extends React.Component {
                     return true;
                 } else {
                     $interfaceData =
-                        <AlertModal content={"Отображение типа " + row[0] + " в формах недоступно"} title={"Ошибка"}
+                        <AlertModal content={"Display type " + row[0] + " is not available in forms"} title={this.props.mode.langObj['Error'] || 'Error'}
                                     handleClose={() => {
                                         this.setState((state) => {
                                             let new_state = [...state.interfaceDatas];
@@ -358,15 +358,39 @@ export class TotumForm extends React.Component {
             })
         }
         if (this.state.links && this.state.links.length) {
-            $interfaceData =
-                <AlertModal content={"Отображение  links в формах недоступно"} title={"Ошибка"} handleClose={() => {
-                    this.setState((state) => {
-                        return {links: []};
-                    })
-                }}
-                            BackdropProps={{style: {opacity: 0.3}}}
-                            className="ttm-form ttm-linkto"
-                />
+            $interfaceData = [];
+            for (let i = 0; i < this.state.links.length; i++) {
+                let link = this.state.links[i];
+                switch (link.target) {
+                    case 'self':
+                        window.location.href = link.uri;
+                        return;
+                    case 'top':
+                        window.top.location.href = link.uri;
+                        return;
+                        break;
+                    case 'parent':
+                        window.parent.location.href = link.uri;
+                        return;
+                        break;
+                    case 'iframe':
+                        let style = {height: "80vh"};
+                        style.width = "100%";
+
+                        let iframe = <iframe src={link.uri} style={style}></iframe>;
+                        let modal = <AlertModal close={true} key={link.uri} content={iframe} title={link.title}
+                                                handleClose={() => {
+                                                    this.setState((state) => {
+                                                        return this.state.links.splice(i, 1) && {links: this.state.links};
+                                                    })
+                                                }}
+                                                BackdropProps={{style: {opacity: 0.3}}}
+                                                className="ttm-form ttm-linkto"
+                        />;
+                        $interfaceData.push(modal);
+                        break;
+                }
+            }
         }
 
 

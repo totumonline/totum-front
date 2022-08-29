@@ -17,7 +17,7 @@
 
         CodeMirror.defineInitHook(function (mirror) {
             try {
-                if (!mirror.options.bigOneDialog && screen.width > window.MOBILE_MAX_WIDTH) {
+                if (!mirror.options.bigOneDialog && !App.isMobile()) {
                     let $resizer = $('<i class="fa fa-expand codemirror-expander" style="position: absolute;\n' +
                         '    right: 10px;\n' +
                         '    bottom: 10px;\n' +
@@ -118,7 +118,7 @@
 
             })
 
-            let btn = $('<a>').attr('href', App.translate('PATH-TO-DOCUMENTATION')+'functions#fn-' + TOTUMjsFuncs[nameL][5])
+            let btn = $('<a>').attr('href', App.translate('PATH-TO-DOCUMENTATION') + 'functions#fn-' + TOTUMjsFuncs[nameL][5])
                 .attr('target', '_blank')
                 .html('<button class="btn btn-default btn-sm">' + App.translate('Documentaion') + '</button>');
 
@@ -791,7 +791,28 @@
                         state.func = func;
 
                         stream.next();
-                        return 'function';
+                        let closed = (() => {
+                            let closed = ' notclosed';
+                            let otherLine = stream.string.substring(stream.pos);
+                            let q, smb;
+                            let qs = ['"', "'", '`'];
+                            for (let i = 0; i < otherLine.length; i++) {
+                                smb = otherLine[i];
+                                if (smb == ')') {
+                                    if (!q) {
+                                        closed = '';
+                                        break;
+                                    }
+                                } else if (q === smb) {
+                                    q = null;
+                                } else if (!q && qs.indexOf(smb) !== -1) {
+                                    q = smb;
+                                }
+                            }
+                            return closed;
+                        })()
+
+                        return 'function' + closed;
                     }
 
                     if (state.inFunction) {
@@ -1219,7 +1240,7 @@
                     if (tblMatch = str.match(/table:\s*((\$#ntn)|'([a-z_0-9]*)')/)) {
                         let tableName = tblMatch[2] ? editor.table : tblMatch[3];
 
-                        if(AllTables[tableName] && AllTables[tableName].f) {
+                        if (AllTables[tableName] && AllTables[tableName].f) {
                             keywords = [];
                             Object.keys(AllTables[tableName].f).forEach(function (fName) {
                                 keywords.push({
@@ -1260,7 +1281,7 @@
                     token.start = token.start + matches[1].length + 1;
 
 
-                    if (matches = token.string.match(/([a-z$#.а-я0-9@"'\[\]]+)$/i)) {
+                    if (matches = token.string.match(/([a-z$#.а-я0-9@_"'\[\]]+)$/i)) {
                         token.start += token.string.length - matches[1].length;
                         token.string = matches[1];
                     } else {
@@ -1269,7 +1290,6 @@
                         token.end = cur.ch;
                     }
                 }
-
 
                 /* @ */
                 if (token.string.indexOf('@') === 0) {
@@ -1419,7 +1439,7 @@
                         },
                     ];
 
-                    if(!editor.codeType || editor.codeType==='format'){
+                    if (!editor.codeType || editor.codeType === 'format') {
                         keywords.push({
                             text: "$#rows",
                             title: App.translate('RowList of page rows/table'),
@@ -1451,7 +1471,10 @@
                     }
 
 
-                } else if (match = token.string.match(/(.*)(#?\$)([a-z_0-9]*)/i)) {
+                } else if (token.string.slice(0, 2) === '$@'){
+                    //process vars - no keywords
+                }
+                else if (match = token.string.match(/(.*)(#?\$)([a-z_0-9]*)/i)) {
 
                     keywords = [];
                     token.string = match[3];
@@ -1464,7 +1487,7 @@
                         keywords.push(...(token.state.lineCodeNames || []))
                     }
 
-                } else if (!token.state.inTotumBlock && (match = token.string.match(/(.*)\#\$?[а-яa-z0-9_]*$/i))) {
+                } else if (!token.state.inTotumBlock && (match = token.string.match(/(.*)\#(?:(old|s|h|c|l)\.)?[а-яa-z0-9_]*$/i))) {
 
 
                     keywords = [];

@@ -172,6 +172,7 @@
 
   .panel-buttons {
     margin-right: -6px;
+
   }
 
   .panelView {
@@ -205,6 +206,9 @@
 
       &:first-child {
         margin-top: 0;
+      }
+      i.fa{
+        padding-right: 5px;
       }
     }
   }

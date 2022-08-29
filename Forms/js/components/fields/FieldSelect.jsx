@@ -10,6 +10,134 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Typography from "@material-ui/core/Typography";
 
+let letter_replaces = {"ё": "е"}
+
+function search_prepare_function(string1, string2) {
+    Object.keys(letter_replaces).forEach((_) => {
+        string1 = string1.toLowerCase().replace(_, letter_replaces[_]);
+        if (string2) {
+            string2 = string2.toLowerCase().replace(_, letter_replaces[_]);
+        }
+    })
+    return [string1, string2];
+}
+
+function commonFiltersExtenders(q) {
+    let isLikedFunc = () => {
+        return true;
+    };
+
+    if (q && q !== '') {
+        let [qs] = search_prepare_function(q);
+        let controlMatches = qs.match(/^([!\^~= ]+):\s*/);
+        let qA = qs.split(" ");
+
+        const prepareV = (v) => {
+            let text;
+            if (v === null) {
+                text = "";
+            } else {
+                text = v.toString();
+                [text] = search_prepare_function(text);
+            }
+            return text;
+        }
+
+        isLikedFunc = function (v) {
+            let text = prepareV(v);
+            return qA.every(function (q) {
+                return text.indexOf(q) !== -1
+            })
+        }
+
+        if (controlMatches) {
+            qs = qs.substring(controlMatches[0].length).trim();
+            [qs] = search_prepare_function(qs);
+            qA = qs.split(" ")
+
+            if (qs === '') {
+                isLikedFunc = () => {
+                    return true;
+                };
+            } else {
+
+                switch (controlMatches[1]) {
+                    case '!=':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return qs !== text;
+                        }
+                        break;
+                    case '=':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return qs === text;
+                        }
+                        break;
+                    case '~':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return text.indexOf(qs) !== -1
+                        }
+                        break;
+                    case '!~':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return text.indexOf(qs) === -1
+                        }
+                        break;
+                    case '!~~':
+                    case '!':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return qA.every(function (q) {
+                                return text.indexOf(q) === -1
+                            })
+                        }
+                        break;
+
+                    case '^':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            text = text.split(" ");
+                            return qA.every(function (q) {
+                                return text.some(function (w) {
+                                    return w.indexOf(q) === 0
+                                });
+                            })
+                        }
+                        break;
+                    case '!^':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            text = text.split(" ");
+                            return qA.every(function (q) {
+                                return !text.some(function (w) {
+                                    return w.indexOf(q) === 0
+                                });
+                            })
+                        }
+                        break;
+                    case '^~':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return text.indexOf(qs) === 0;
+                        }
+                        break;
+                    case '!^~':
+                        isLikedFunc = (v) => {
+                            let text = prepareV(v);
+                            return text.indexOf(qs) !== 0;
+                        }
+                        break;
+                }
+            }
+
+        }
+    }
+    return isLikedFunc
+};
+
 export class FieldSelect extends FieldDefault {
     constructor(props) {
         super(props);
@@ -23,6 +151,7 @@ export class FieldSelect extends FieldDefault {
 
         this.limitTags = 5;
         this.state = {...this.state, ...this.getStateValsInOptions()};
+
     }
 
     getStateValsInOptions(props) {
@@ -52,6 +181,9 @@ export class FieldSelect extends FieldDefault {
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         if (this.constructor === FieldSelect) {
+            if (this.props.model.elseData !== nextProps.model.elseData) {
+                return true;
+            }
             if (this.state.globalSliced && this.state.sliced && (nextProps.data.v && nextProps.data.v.toString()) !== (this.props.data.v && this.props.data.v.toString())) {
                 let states = this.getStateValsInOptions(nextProps);
                 this.setState(states);
@@ -113,6 +245,7 @@ export class FieldSelect extends FieldDefault {
     }
 
     filterAndLoad(options, data) {
+
         let {inputValue, getOptionLabel} = data;
         let {field} = this.props;
         let {filter, loaded, sliced, globalSliced, list, indexed} = this.state;
@@ -153,13 +286,32 @@ export class FieldSelect extends FieldDefault {
                     })
                 }, this.state.loaded ? 30 : 0)
             }
+            if (!globalSliced) {
+                if (inputValue == "") {
+                    if (this.state.allList) {
+                        this.setState({list: this.state.allList})
+                    }
+                } else {
+                    let newData = {};
+                    if (!this.state.allList) {
+                        newData.allList = this.state.list;
+                    }
+                    newData.list = newData.allList || this.state.allList || this.state.list;
+
+                    let func = commonFiltersExtenders(inputValue)
+                    newData.list = newData.list.filter((v) => {
+                        return func(v)
+                    })
+                    this.setState(newData)
+                }
+            }
         }
 
-        if(!this.state.loaded){
-            filteredOptions.push({text: 'Загрузка данных'})
-        }
-        else if (this.state.sliced) {
-            filteredOptions.push({text: 'Данные не полны, воспользуйтесь поиском'})
+
+        if (!this.state.loaded) {
+            filteredOptions.push({text: this.lng('Data loading')})
+        } else if (this.state.sliced) {
+            filteredOptions.push({text: this.lng('The data is incomplete, use the search')})
         }
 
         return filteredOptions;
@@ -169,7 +321,7 @@ export class FieldSelect extends FieldDefault {
         return (typeof val !== "object")
         &&
         this.state.indexed[val] ?
-            (val === this.state.inVal || (this.state.inVal && typeof this.state.inVal === 'object' && this.state.inVal.indexOf(val) !== -1) ? "Выбранное" : this.state.indexed[val][1] || '')
+            (val === this.state.inVal || (this.state.inVal && typeof this.state.inVal === 'object' && this.state.inVal.indexOf(val) !== -1) ? this.lng('Selected') : this.state.indexed[val][1] || '')
             : ""
     }
 
@@ -184,12 +336,12 @@ export class FieldSelect extends FieldDefault {
 
     getOptionDisabled(val) {
         return typeof val === "object" ||
-            (this.state.indexed[val] ? this.state.indexed[val][2] !== null : true)
+            (this.state.indexed[val] ? this.state.indexed[val][2] !== null && this.state.indexed[val][2] !== undefined : true)
 
     }
 
     getVal(style, format, blocked) {
-        let params = {}, prefix = this.getPrefix(format), inputParams = {}, postfix;
+        let params = {}, icon = this.getPrefix(format), inputParams = {}, prefix, postfix;
 
         if (this.props.field.multiple) {
             params.multiple = true;
@@ -199,7 +351,13 @@ export class FieldSelect extends FieldDefault {
             }
         } else {
             if (this.props.field.unitType && this.state.val) {
-                postfix = this.props.field.unitType
+                if (this.props.field.before) {
+                    if (!prefix) {
+                        prefix = this.props.field.unitType
+                    }
+                } else {
+                    postfix = this.props.field.unitType
+                }
             }
             params.blurOnSelect = true
             inputParams.placeholder = this.props.field.withEmptyVal
@@ -230,12 +388,14 @@ export class FieldSelect extends FieldDefault {
             params.clearOnBlur = true;
             params.autoComplete = true;
         }
-        return <div><Autocomplete
+
+
+        return <div {...this.__getDivParams()}><Autocomplete
             freeSolo={false}
             clearOnEscape={true}
             options={this.state.list}
             value={this.state.val}
-            noOptionsText={"Ничего не найдено"}
+            noOptionsText={this.lng('Nothing found')}
             limitTags={this.limitTags}
             {...params}
             size={"small"}
@@ -260,6 +420,7 @@ export class FieldSelect extends FieldDefault {
                         ),
                         startAdornment: (
                             <>
+                                {icon}
                                 {prefix}
                                 {params.InputProps.startAdornment}
                             </>

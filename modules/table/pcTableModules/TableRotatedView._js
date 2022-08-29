@@ -34,6 +34,9 @@
                     } else if (this._isDisplayngIdEnabled()) {
                         span.text(item['id']);
                         $tdId.addClass('small-rotated-id');
+                        if(!this._isDisplayngIdEnabled(true)){
+                            span.addClass('id-hidden')
+                        }
                     }
 
                     $tdId.appendTo($row);

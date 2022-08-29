@@ -43,7 +43,7 @@
             }
             window.TREE_DATA = data;
 
-            let isMobile = screen.width <= window.MOBILE_MAX_WIDTH;
+            let isMobile = App.isMobile();
             const miniSize = 660;
             if (isMobile) {
                 isCreatorView = false
@@ -110,8 +110,8 @@
                             break;
                         case 'cycle_name':
 
-                            if(sessionStorage.getItem('cycles_table_anchor')){
-                                data[k]['parent']='tree'+sessionStorage.getItem('cycles_table_anchor');
+                            if (sessionStorage.getItem('cycles_table_anchor')) {
+                                data[k]['parent'] = 'tree' + sessionStorage.getItem('cycles_table_anchor');
                             }
 
                             data.push({
@@ -295,7 +295,7 @@
                     "types": {
                         "folder": {},
                         "plus": {"icon": "fa fa-plus"},
-                        "cycle_name": {"icon": "fa fa-dot-circle-o", "select_node":false},
+                        "cycle_name": {"icon": "fa fa-dot-circle-o", "select_node": false},
                         "text": {"icon": "jstree-file"},
                         "table": {"icon": "jstree-file"},
                         "table_simple": App.tableTypes.simple,
@@ -392,7 +392,7 @@
                         App.clickToCyclesTabButton(d.node.id)
                         break;
                     case 'cycle_name':
-                       return false;
+                        return false;
                         break;
                     case 'folder':
                     case 'project':

@@ -76,10 +76,16 @@ App.langs.ru =
 
                 "Edit totumCode in %s": "Редактировать Тотум-код в %s",
                 "Edit totumCode in value of %s": "Редактировать Тотум-код в ячейке %s",
-
+                "Recalculate all table rows after changing the field type": "Пересчетайте все строки таблицы после изменения типа поля",
                 "Default printing": "Печать по-умолчанию",
+                "Forms": "Формы",
+                "Add form": "Добавить форму",
+                    "On type change all field setting will be reset to default. If you want to save this changes — save field and change it's type after that":"При изменении типа все настройки поля будут сброшены на значения по умолчанию. Если вы хотите сохранить эти изменения, сохраните поле и измените его тип после этого.",
+                    "On type change all field setting will be reset to saved. If you want to save this changes — save field and change it's type after that":"При изменении типа все настройки поля будут сброшены к сохраненным. Если вы хотите сохранить эти изменения, сохраните поле и измените его тип после этого.",
 
                 'RowList of page/table rows': 'RowList строк страницы/таблицы',
+
+                'Attention':'Внимание',
 
                 /*Kanban*/
                 'Show columns extra info': 'Показать дополнительную информацию колонок',
@@ -427,6 +433,7 @@ App.langs.ru =
                 'Tree search': 'Поиск по дереву',
                 'isCreatorSelector-NotCreatorView': 'Отключить админ-слой',
                 'isCreatorSelector-CommonView': 'Отключить спецвид',
+                'isCreatorSelector-MobileView': 'Переключить в десктоп',
 
                 'Dbstring is incorrect': 'Ошибочная строка',
                 'Create config and upload scheme': 'Создать конфиг и залить схему',

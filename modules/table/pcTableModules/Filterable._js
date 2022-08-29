@@ -72,7 +72,7 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false, reCreateRows
     let new_ = [];
     let new_check = [];
 
-    if (this.isTreeView) {
+    if (this.isTreeView  && !this.isTreeViewRestore) {
         if (this.filters && Object.keys(this.filters).length) {
 
             let expands = [];
@@ -96,7 +96,11 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false, reCreateRows
 
                     let ip = i - 1;
                     while (typeof this.dataSorted[ip] !== 'object') {
-                        ip--;
+                        if (this.dataSorted[ip - 1]) {
+                            ip--;
+                        } else {
+                            break;
+                        }
                     }
                     let p;
                     if (typeof element === 'object') {
@@ -110,9 +114,13 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false, reCreateRows
                         }
                     }
 
-                    while (p && ip) {
+                    while (p && ip>=0) {
                         while (typeof this.dataSorted[ip] !== 'object') {
-                            ip--;
+                            if (this.dataSorted[ip - 1]) {
+                                ip--;
+                            } else {
+                                break;
+                            }
                         }
                         if (this.dataSorted[ip] === this.getElementInTree(p)) {
                             if (new_.indexOf(this.dataSorted[ip]) === -1) {
@@ -546,6 +554,11 @@ App.pcTableMain.prototype.__addFilterable = function () {
 
                 setTimeout(function () {
                     h_select.selectpicker('render').selectpicker("val", pcTable.filters[fieldName + "/h"] || "");
+
+                    h_select.data('selectpicker').$button.on('click', () => {
+                        select.data('selectpicker').$newElement.removeClass('open')
+                    })
+
 
                     try {
                         h_select.data('selectpicker').$menu.offset({

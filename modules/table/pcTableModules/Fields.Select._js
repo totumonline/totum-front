@@ -373,7 +373,9 @@ fieldTypes.select = {
                         input.append(opt);
                     }
 
+
                     input.selectpicker('refresh');
+                    input.data('selectpicker').$menuInner.css('height', '')
                     input.selectpicker('val', checkedVal);
                     return checkedVal
                 };
@@ -610,7 +612,7 @@ fieldTypes.select = {
 
                                 if (oldVal.length > val.length) {
                                     if (val.length === 0) {
-                                        val.push('*NONE*');
+                                        val.push('*ALL*');
                                     }
                                 } else {
                                     let newElement;
