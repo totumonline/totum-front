@@ -155,7 +155,7 @@ gulp.task('DEVELOP', function () {
 });
 
 gulp.task('dev:fonts', function () {
-    return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', 'bower_components/JetBrainsMono/fonts/webfonts/*.*'])
+    return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', './fonts/*/*.*', 'bower_components/JetBrainsMono/fonts/webfonts/*.*'])
         .pipe(gulp.dest('./http/fonts/'));
 });
 
@@ -172,7 +172,7 @@ gulp.task('QUICK-PROD-DEV', function () {
 /*product*/
 {
     gulp.task('product:fonts', function () {
-        return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', 'bower_components/JetBrainsMono/fonts/webfonts/*.*'])
+        return gulp.src(['bower_components/bootstrap/fonts/*.*', 'bower_components/font-awesome/fonts/*.*', './fonts/*.*', './fonts/*/*.*', 'bower_components/JetBrainsMono/fonts/webfonts/*.*'])
             .pipe(gulp.dest('../../../http/fonts/'));
     });
 
