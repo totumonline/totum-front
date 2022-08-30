@@ -48,7 +48,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         }
 
         let self = this;
-
+        this.reCreateInputsForce = false;
 
         const Check = () => {
             return new Promise(function (resolve, reject) {
@@ -69,15 +69,21 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     fieldParamsChanged = false;
                 };
 
+                const ups = (data) => {
+                    EditPanelFunc.reCreateInputsForce = true;
+                    EditPanelFunc.editRow.call(EditPanelFunc, {f: EditPanelFunc.f, row: EditPanelFunc.editItem});
+                    reject(data)
+                }
+
                 switch (checkMethod) {
                     case 'checkEditRow':
-                        EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), (isFirstLoad ? 'all' : 'true')).then(success).fail(reject);
+                        EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), (isFirstLoad ? 'all' : 'true')).then(success).fail(ups);
                         break;
                     case 'checkInsertRow':
-                        EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), hash, clearField, (isFirstLoad ? 'all' : 'true')).then(success).fail(reject);
+                        EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), hash, clearField, (isFirstLoad ? 'all' : 'true')).then(success).fail(ups);
                         break;
                     case 'viewRow':
-                        EditPanelFunc.pcTable.model[checkMethod]({id: data.id}, hash).then(success).fail(reject);
+                        EditPanelFunc.pcTable.model[checkMethod]({id: data.id}, hash).then(success).fail(ups);
                         break;
                 }
 
@@ -221,7 +227,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (cell.length) {
                 if (cell.data('input') && !format.block) {
-                    if (field._reloadCellInPanel || !Oldval || field.isDataModified(EditPanelFunc.editItem[field.name].v, Oldval.v) || field.codeSelectIndividual || (EditPanelFunc.panelType == 'insert' && field.code && !field.codeOnlyInAdd) || ['fieldParams'].indexOf(field.type) > -1 || field.name in loadedContextDataFields) {
+                    if (this.reCreateInputsForce || field._reloadCellInPanel || !Oldval || field.isDataModified(EditPanelFunc.editItem[field.name].v, Oldval.v) || field.codeSelectIndividual || (EditPanelFunc.panelType == 'insert' && field.code && !field.codeOnlyInAdd) || ['fieldParams'].indexOf(field.type) > -1 || field.name in loadedContextDataFields) {
                         delete field._reloadCellInPanel;
                         EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format);
                     }
@@ -482,7 +488,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
                         if (!itemName) {
                             itemName = 'id ' + (EditPanelFunc.editItem['id'] || json.row.id);
-                        } else if(EditPanelFunc.pcTable._isDisplayngIdEnabled()) {
+                        } else if (EditPanelFunc.pcTable._isDisplayngIdEnabled()) {
                             itemName = 'id ' + (EditPanelFunc.editItem['id'] || json.row.id) + ' ' + itemName;
                         }
 
@@ -875,7 +881,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                                     }
 
                                     field._reloadCellInPanel = true;
-                                    EditPanelFunc.checkRow({[field.name]:EditPanelFunc.editItem[field.name]});
+                                    EditPanelFunc.checkRow({[field.name]: EditPanelFunc.editItem[field.name]});
 
                                     if (!isAdd && EditPanelFunc.pcTable.isMain) {
                                         EditPanelFunc.pcTable.model.refresh(function (json) {
