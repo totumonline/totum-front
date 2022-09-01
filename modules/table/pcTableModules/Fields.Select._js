@@ -303,6 +303,8 @@ fieldTypes.select = {
                             let v = LISTs.innerIndexed[key], opt;
                             if (!v) {
                                 opt = createOption(key, key, true, null);
+                            } else if (v[3]) {
+                                opt = createOption(key, v[0], true, null);
                             } else {
                                 opt = createOption(key, v[0], false, v[1]);
                             }
@@ -344,8 +346,8 @@ fieldTypes.select = {
 
                         for (let i in LISTs.innerList) {
                             let iList = LISTs.innerList[i];
-                            if (vals[iList] === 1) continue;
                             let v = LISTs.innerIndexed[iList];
+                            if (vals[iList] === 1 || v[3]) continue;
 
                             if (!LISTs.isSliced) {
                                 if (!isLikedFunc(v[0])) continue;
@@ -375,7 +377,7 @@ fieldTypes.select = {
 
 
                     input.selectpicker('refresh');
-                    input.data('selectpicker').$menuInner.css('height', '')
+
                     input.selectpicker('val', checkedVal);
                     return checkedVal
                 };
@@ -567,11 +569,7 @@ fieldTypes.select = {
                             selectPicker.$bsContainer.addClass('select-with-preview');
                         }
 
-                        if (selectPicker.$menuInner.height() < 100 && selectPicker.$menuInner.find('li').length > 6) {
-                            selectPicker.$menuInner.height(300)
-                        }
                         let position = selectPicker.$menu.get(0).getBoundingClientRect();
-
 
                         if (position.right > window.innerWidth - 20) {
                             let diff = position.right - window.innerWidth + 20;
@@ -585,14 +583,6 @@ fieldTypes.select = {
                             })
                         } else {
                             selectPicker.$menuInner.width('auto')
-                        }
-
-
-                        if (!selectPicker.cropped) {
-                            selectPicker.cropped = true;
-                            if (input.data('container').is('.pcTable-container')) {
-                                selectPicker.$menuInner.height(selectPicker.$menuInner.height() - 4)
-                            }
                         }
                     });
                     input.on('changed.bs.select', function () {
