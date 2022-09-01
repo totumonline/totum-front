@@ -282,6 +282,7 @@ fieldTypes.select = {
                             if (LISTs.isPreview) {
                                 $span.addClass('select-with-preview');
                                 $span.attr('data-id', item.id);
+                                App.selectFieldPreview = field;
                                 $span.attr('data-field', field.name);
                                 $span.attr('data-val', val);
                             }

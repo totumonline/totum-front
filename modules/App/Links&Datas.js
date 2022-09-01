@@ -687,6 +687,14 @@
                                 search: selectData
                             })
                         }
+                        model.loadPreviewHtml = function (span, item, val) {
+                            return this.__ajax('post', {
+                                method: 'linkInputClick',
+                                hash: data[1].hash,
+                                val: val,
+                                preview: true
+                            })
+                        }
                         field.getEditSelect = (itemTmp, name, q, _, __, RequestObject) => {
                             return model.inputClick(data[1].hash, null, {
                                 q: (q || ''),

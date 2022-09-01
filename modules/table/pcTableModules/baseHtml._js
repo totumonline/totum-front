@@ -249,8 +249,8 @@
                 let timeObject = setTimeout(function () {
                     if (element.is(':hover')) {
                         let span = element.find('span.select-with-preview');
-                        if (pcTable.fields[span.data('field')]) {
-                            pcTable.fields[span.data('field')].previewPanel.call(pcTable.fields[span.data('field')], span, element);
+                        if (App.selectFieldPreview && span.data('field') === App.selectFieldPreview.name) {
+                            App.selectFieldPreview.previewPanel(span, element);
                         }
                     }
                 }, 300);
@@ -967,8 +967,7 @@
             if (this.tableWidth < this._innerContainer.width()) {
                 if (this.isMobile || $('body').is('.table-in-notification')) {
                     this.__$rowsButtons.width(this._table.width());
-                }
-                else {
+                } else {
                     this.__$rowsButtons.width(this._table.width() - 70);
                 }
             } else if (!this.isMobile) {
