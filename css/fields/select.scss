@@ -147,6 +147,11 @@
 
     .select-val {
       @include selectVal();
+      line-height: 20px;
+      .btn{
+        margin-top: 2px;
+        margin-bottom: 2px;
+      }
     }
   }
 
@@ -187,7 +192,7 @@
 
 #selectPanelBig, #selectPanel, .edit-row-panel .format-panel {
   i.fa-eye{
-    vertical-align: super;
+    vertical-align: initial;
   }
 
 
