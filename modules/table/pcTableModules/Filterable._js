@@ -320,7 +320,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
         this._header.on('click', '.pcTable-filters > span button.btn-filter:not(#checkS)', function (event) {
 
             let btn = $(this);
-            if (btn.attr('aria-describedby')) return true;
+            if (btn.attr('aria-describedby') && $('#'+btn.attr('aria-describedby')).is(':visible')) return true;
 
             let th = btn.closest('th');
             let fieldName = th.is('.id') ? 'id' : th.data('field');

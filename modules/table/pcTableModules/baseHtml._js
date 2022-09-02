@@ -2567,15 +2567,9 @@
                         })
                     }
 
+                    btnDropDown.on('click', function () {
+                        btnDropDown = $(this);
 
-                    btnDropDown.popover({
-                        html: true,
-                        content: $divPopoverArrowDown,
-                        trigger: 'manual',
-                        container: pcTable._container,
-                        placement: 'auto bottom'
-                    });
-                    btnDropDown.on('click', () => {
                         if (field.category === 'column' && pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
                             if ($divPopoverArrowDown.find('.column-dropdown').length === 0)
                                 $divPopoverArrowDown.append('<div class="column-dropdown">' + App.translate('By current page') + ' </div>');
@@ -2583,14 +2577,21 @@
                             $divPopoverArrowDown.find('.column-dropdown').remove();
                         }
 
-                        if (!btnDropDown.data('bs.popover').tip().hasClass('in')) {
+                        if (!btnDropDown.data('bs.popover') || !btnDropDown.data('bs.popover').tip().hasClass('in')) {
+                            btnDropDown.popover({
+                                html: true,
+                                content: $divPopoverArrowDown,
+                                trigger: 'manual',
+                                container: pcTable._container,
+                                placement: 'auto bottom'
+                            });
                             btnDropDown.popover('show');
                             setTimeout(function () {
                                 /* pcTable._container.one('click', function () {
                                      btn.popover('hide');
                                  });*/
                                 pcTable.closeCallbacks.push(() => {
-                                    btnDropDown.popover('hide');
+                                    btnDropDown.popover('destroy');
                                 })
                             }, 20);
                         }
