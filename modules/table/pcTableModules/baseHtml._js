@@ -345,7 +345,7 @@
                                 apply();
                             } else {
 
-                                $div = $('<div>');
+                                $div = $('<div class="creator-log-checkboxes">');
                                 $div.append('<div><input type="checkbox" name="c"/> ' + App.translate('Code') + '</div>');
                                 $div.append('<div><input type="checkbox" name="a"/> ' + App.translate('Action code') + '</div>');
                                 $div.append('<div><input type="checkbox" name="s"/> ' + App.translate('Selects') + '</div>');
