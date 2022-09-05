@@ -727,6 +727,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 span.append($('<div class="format-comment">').text(format.comment).prepend('<i class="cell-icon fa fa-info"></i>'))
             }
 
+
             cell.html(span).data('input', null);
         } else {
 
@@ -925,7 +926,13 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             }
 
             if (format.text) {
-                cell.append($('<div class="format-text">').text(format.text))
+                let text = $('<div class="format-text">').text(format.text);
+                cell.append(text)
+                if (format.icon) {
+                    text.prepend('<i class="fa fa-' + format.icon + '"></i>');
+                }
+            } else if (format.icon) {
+                cell.append($('<div class="format-text">').html('<i class="fa fa-' + format.icon + '"></i>'));
             }
             if (format.comment) {
                 cell.append($('<div class="format-comment">').text(format.comment).prepend('<i class="fa fa-info"></i>'))
