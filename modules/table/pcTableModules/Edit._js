@@ -539,7 +539,7 @@ $.extend(App.pcTableMain.prototype, {
                         onAction = true;
                         let selectedTd = pcTable._container.find('td.selected');
                         pcTable._setTdSaving(selectedTd);
-                        pcTable.selectedCells.getEditedData(null, true).then((editedData)=>{
+                        pcTable.selectedCells.getEditedData(null, true).then((editedData) => {
                             pcTable._saveEdited.call(pcTable, selectedTd.closest('tr'), editedData, false);
                         });
 
@@ -661,9 +661,11 @@ $.extend(App.pcTableMain.prototype, {
                     return false;
                 };
 
-                $btn = $('<button class="btn btn-sm btn-primary"><i class="fa fa-edit" title="' + App.translate('Change in source table') + '"></i></button>');
-                $btn.on('click', sourceBtnClick);
-                editCellsBlock.append($btn);
+                if (itemLocal[field.name].v && (!field.multiple || itemLocal[field.name].v.length)) {
+                    $btn = $('<button class="btn btn-sm btn-primary"><i class="fa fa-edit" title="' + App.translate('Change in source table') + '"></i></button>');
+                    $btn.on('click', sourceBtnClick);
+                    editCellsBlock.append($btn);
+                }
                 if (field.changeSelectTable === 2) {
                     $btn = $('<button class="btn btn-sm btn-primary" data-add-button="true"><i class="fa fa-plus" title="' + App.translate('Add to source table') + '"></i></button>');
                     editCellsBlock.append($btn);
