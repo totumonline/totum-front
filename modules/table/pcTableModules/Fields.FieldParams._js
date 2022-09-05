@@ -58,240 +58,254 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             let jsonFields = field.jsonFields;
             let left, right;
             field.getValue(oldValueParam, item, !editNow).then(function (json) {
-                let oldValue = json.value;
+                    let oldValue = json.value;
 
-                if (typeof oldValue === 'string') oldValue = JSON.parse(oldValue);
-                let oldValueTmp = $.extend({}, oldValue);
-
-
-                let addInput = function (fName, fieldsList, fieldsLevelFuncs) {
-
-                    let fieldSettings = jsonFields.fieldSettings[fName];
-                    if (!fieldSettings) return false;
-
-                    if (fieldSettings['categories']) {
-                        if (fieldSettings['categories'].indexOf(item['category']['v']) === -1) return false;
-                    }
-                    if (fieldSettings['names']) {
-                        if (fieldSettings['names'].indexOf(item['name']['v']) === -1) return false;
-                    }
-                    if (fieldSettings['tables']) {
-                        if (fieldSettings['tables'].indexOf(App.tableTypes[item['table_id']['v']]) === -1) return false;
-                    }
+                    if (typeof oldValue === 'string') oldValue = JSON.parse(oldValue);
+                    let oldValueTmp = $.extend({}, oldValue);
 
 
-                    let thisValue = {};
-                    if (oldValueTmp[fName] === undefined || oldValueTmp[fName].isOn === undefined) {
-                        thisValue.isOn = oldValueTmp[fName] !== undefined;
-                        thisValue.Val = oldValueTmp[fName];
-                        if (thisValue.Val === undefined) {
-                            thisValue.Val = fieldSettings.default;
+                    let addInput = function (fName, fieldsList, fieldsLevelFuncs) {
+
+                        let fieldSettings = jsonFields.fieldSettings[fName];
+                        if (!fieldSettings) return false;
+
+                        if (fieldSettings['categories']) {
+                            if (fieldSettings['categories'].indexOf(item['category']['v']) === -1) return false;
                         }
-                        if (!fieldSettings.parent && fieldSettings.type === 'checkbox' && thisValue.Val === true) {
-                            thisValue.isOn = true;
+                        if (fieldSettings['names']) {
+                            if (fieldSettings['names'].indexOf(item['name']['v']) === -1) return false;
                         }
-                        oldValueTmp[fName] = thisValue;
-                    } else {
-                        thisValue = oldValueTmp[fName];
-                    }
+                        if (fieldSettings['tables']) {
+                            if (fieldSettings['tables'].indexOf(App.tableTypes[item['table_id']['v']]) === -1) return false;
+                        }
 
 
-                    switch (fName) {
-                        case 'codeSelect':
-                            let treeSelectDefault = '=: selectRowListForTree(table: \'\'; field: \'\'; order: \'\' asc; where:  \'\' = ; parent: \'\'; disabled:)';
-                            if (form.find('div[data-name="type"] select').val() === "tree") {
-                                if (thisValue.Val === fieldSettings.default)
-                                    thisValue.Val = treeSelectDefault;
-                            } else {
-                                if (thisValue.Val === treeSelectDefault)
-                                    thisValue.Val = fieldSettings.default;
+                        let thisValue = {};
+                        if (oldValueTmp[fName] === undefined || oldValueTmp[fName].isOn === undefined) {
+                            thisValue.isOn = oldValueTmp[fName] !== undefined;
+                            thisValue.Val = oldValueTmp[fName];
+                            if (thisValue.Val === undefined) {
+                                thisValue.Val = fieldSettings.default;
                             }
-                            break;
-                    }
-
-
-                    let isHidden = false;
-
-                    let parentSettings = jsonFields.fieldSettings[fieldSettings.parent];
-                    let parentValue = oldValueTmp[fieldSettings.parent];
-
-
-                    if (fieldSettings.parent && fieldsList.indexOf(fieldSettings.parent) !== -1) {
-                        if (!parentValue || parentValue.isOnCheck !== true) {
-                            isHidden = true;
-                        }
-                    }
-                    thisValue.changed = function () {
-                        "use strict";
-                        if (this.isOnCheck === true) {
-                            form.find('[data-parent="' + fName.toLowerCase() + '"]').show();
+                            if (!fieldSettings.parent && fieldSettings.type === 'checkbox' && thisValue.Val === true) {
+                                thisValue.isOn = true;
+                            }
+                            oldValueTmp[fName] = thisValue;
                         } else {
-                            form.find('[data-parent="' + fName.toLowerCase() + '"]').hide().find('input[type="checkbox"]').prop('checked', false).trigger('change');
+                            thisValue = oldValueTmp[fName];
                         }
+
+
+                        switch (fName) {
+                            case 'codeSelect':
+                                let treeSelectDefault = '=: selectRowListForTree(table: \'\'; field: \'\'; order: \'\' asc; where:  \'\' = ; parent: \'\'; disabled:)';
+                                if (form.find('div[data-name="type"] select').val() === "tree") {
+                                    if (thisValue.Val === fieldSettings.default)
+                                        thisValue.Val = treeSelectDefault;
+                                } else {
+                                    if (thisValue.Val === treeSelectDefault)
+                                        thisValue.Val = fieldSettings.default;
+                                }
+                                break;
+                        }
+
+
+                        let isHidden = false;
+
+                        let parentSettings = jsonFields.fieldSettings[fieldSettings.parent];
+                        let parentValue = oldValueTmp[fieldSettings.parent];
+
+
+                        if (fieldSettings.parent && fieldsList.indexOf(fieldSettings.parent) !== -1) {
+                            if (!parentValue || parentValue.isOnCheck !== true) {
+                                isHidden = true;
+                            }
+                        }
+                        thisValue.changed = function () {
+                            "use strict";
+                            if (this.isOnCheck === true) {
+                                form.find('[data-parent="' + fName.toLowerCase() + '"]').show();
+                            } else {
+                                form.find('[data-parent="' + fName.toLowerCase() + '"]').hide().find('input[type="checkbox"]').prop('checked', false).trigger('change');
+                            }
+                        };
+
+
+                        let divInput = field.__addInput.call(field, fName, fieldSettings, thisValue, item, clback, form);
+
+                        if ((fieldSettings.align || 'center') !== 'center') {
+                            if (!left) {
+                                let middle = $('<div class="fParams-grid">');
+                                left = $('<div>').appendTo(middle);
+                                right = $('<div>').appendTo(middle);
+                                form.append(middle)
+                            }
+                            if (fieldSettings.align === 'left') {
+                                left.append(divInput);
+                            } else {
+                                right.append(divInput);
+                            }
+                        } else {
+                            form.append(divInput);
+                            left = right = null;
+                        }
+
+                        if (fieldSettings.parent) {
+                            divInput.attr('data-parent', fieldSettings.parent.toLowerCase());
+                            if (isHidden) {
+                                divInput.hide();
+                            }
+                        }
+
+                        let level = fieldsLevelFuncs[fName]();
+
+                        divInput.css('padding-left', level * 19);
+
+
+                        if (item['id'] && item['category']['v'] === 'column' && ['simple', 'cycles'].indexOf(App.tableTypes[item['table_id']['v']]) !== -1) {
+                            if (fName === 'type' && oldValue.type.Val !== form.find('div[data-name="type"] select').val()) {
+                                divInput.append('<div class="code-checkboxes-active-warning"><div class="code-checkboxes-warning-panel">' + App.translate('Recalculate all table rows after changing the field type') + '</div></div>');
+                            } else if (fName === 'multiple') {
+                                divInput.find('input[type="checkbox"]').on("change", () => {
+                                    if (oldValue.multiple.Val !== form.find('div[data-name="multiple"] input').is(':checked')) {
+                                        divInput.append('<div class="code-checkboxes-active-warning"><div class="code-checkboxes-warning-panel">' + App.translate('Recalculate all table rows after changing the field type') + '</div></div>');
+                                    } else {
+                                        divInput.find('.code-checkboxes-active-warning').remove()
+                                    }
+
+                                })
+                            }
+                        }
+
+                        return divInput;
                     };
-                    let divInput = field.__addInput.call(field, fName, fieldSettings, thisValue, item, clback, form);
 
-                    if ((fieldSettings.align || 'center') !== 'center') {
-                        if (!left) {
-                            let middle = $('<div class="fParams-grid">');
-                            left = $('<div>').appendTo(middle);
-                            right = $('<div>').appendTo(middle);
-                            form.append(middle)
-                        }
-                        if (fieldSettings.align === 'left') {
-                            left.append(divInput);
-                        } else {
-                            right.append(divInput);
-                        }
-                    } else {
-                        form.append(divInput);
-                        left = right = null;
+
+                    let fieldType = 'string';
+                    if (oldValueTmp.type) {
+                        fieldType = oldValueTmp.type.Val || oldValueTmp.type;
                     }
 
-                    if (fieldSettings.parent) {
-                        divInput.attr('data-parent', fieldSettings.parent.toLowerCase());
-                        if (isHidden) {
-                            divInput.hide();
-                        }
-                    }
-
-                    let level = fieldsLevelFuncs[fName]();
-
-                    divInput.css('padding-left', level * 19);
-
-                    if (fName === 'type' && item['id'] && item['category']['v'] === 'column' && ['simple', 'cycles'].indexOf(App.tableTypes[item['table_id']['v']]) !== -1 && oldValue.type.Val !== form.find('div[data-name="type"] select').val()) {
-                        divInput.append('<div class="code-checkboxes-active-warning"><div class="code-checkboxes-warning-panel">' + App.translate('Recalculate all table rows after changing the field type') + '</div></div>');
-                    }
-
-
-                    return divInput;
-                };
-
-
-                let fieldType = 'string';
-                if (oldValueTmp.type) {
-                    fieldType = oldValueTmp.type.Val || oldValueTmp.type;
-                }
-
-                let editorsRefresh = function () {
-                    dialog.find('.codeEditor, .HTMLEditor').each(function () {
-                        if ($(this).data('editor') && $(this).data('editor').refresh) {
-                            $(this).data('editor').refresh();
-                        }
-                    });
-                };
-
-                async function addfields(fieldType) {
-                    let fieldsList;
-                    form.empty();
-                    if (item.table_id.v === '2' && (item.name.v === 'data_src' || item.name.v === 'data')) {
-                        if (item.name.v === 'data') {
-                            fieldsList = ['width', 'showInWeb'];
-                        } else {
-                            fieldsList = ['width', 'jsonFields', 'showInWeb', 'editable', 'insertable', 'required', 'logging', 'default', 'copyOnDuplicate'];
-                        }
-                        fieldType = 'fieldParams';
-                    } else if (item.table_name && item.table_name.v === 'tables_vidgets' && (item.name.v === 'data_src' || item.name.v === 'data')) {
-                        if (item.name.v === 'data') {
-                            fieldsList = ['width', 'showInWeb'];
-                        } else {
-                            fieldsList = ['width', 'jsonFields', 'showInWeb', 'editable', 'insertable', 'required', 'logging', 'default', 'copyOnDuplicate'];
-                        }
-                        fieldType = 'fieldParams';
-                    } else {
-                        fieldsList = jsonFields.fieldListParams[fieldType];
-                    }
-                    if (fieldType === 'chart') {
-                        if (!field.pcTable.chartTypes) {
-                            field.pcTable.chartTypes = (await field.pcTable.model.getChartTypes())['chartTypes'];
-                        }
-                        jsonFields.fieldSettings['chartType'].values = {};
-                        field.pcTable.chartTypes.map((type) => {
-                            jsonFields.fieldSettings['chartType'].values[type.type] = type.title;
-                        })
-
-                    }
-
-
-                    let fieldsLevelFuncs = {
-                        type: function () {
-                            return 0;
-                        }
+                    let editorsRefresh = function () {
+                        dialog.find('.codeEditor, .HTMLEditor').each(function () {
+                            if ($(this).data('editor') && $(this).data('editor').refresh) {
+                                $(this).data('editor').refresh();
+                            }
+                        });
                     };
-                    fieldsList.forEach(function (fieldName) {
-                        let fSettings = jsonFields.fieldSettings[fieldName];
-                        if (!fSettings.parent || fieldsList.indexOf(fSettings.parent) === -1) {
-                            fieldsLevelFuncs[fieldName] = function () {
+
+                    async function addfields(fieldType) {
+                        let fieldsList;
+                        form.empty();
+                        if (item.table_id.v === '2' && (item.name.v === 'data_src' || item.name.v === 'data')) {
+                            if (item.name.v === 'data') {
+                                fieldsList = ['width', 'showInWeb'];
+                            } else {
+                                fieldsList = ['width', 'jsonFields', 'showInWeb', 'editable', 'insertable', 'required', 'logging', 'default', 'copyOnDuplicate'];
+                            }
+                            fieldType = 'fieldParams';
+                        } else if (item.table_name && item.table_name.v === 'tables_vidgets' && (item.name.v === 'data_src' || item.name.v === 'data')) {
+                            if (item.name.v === 'data') {
+                                fieldsList = ['width', 'showInWeb'];
+                            } else {
+                                fieldsList = ['width', 'jsonFields', 'showInWeb', 'editable', 'insertable', 'required', 'logging', 'default', 'copyOnDuplicate'];
+                            }
+                            fieldType = 'fieldParams';
+                        } else {
+                            fieldsList = jsonFields.fieldListParams[fieldType];
+                        }
+                        if (fieldType === 'chart') {
+                            if (!field.pcTable.chartTypes) {
+                                field.pcTable.chartTypes = (await field.pcTable.model.getChartTypes())['chartTypes'];
+                            }
+                            jsonFields.fieldSettings['chartType'].values = {};
+                            field.pcTable.chartTypes.map((type) => {
+                                jsonFields.fieldSettings['chartType'].values[type.type] = type.title;
+                            })
+
+                        }
+
+
+                        let fieldsLevelFuncs = {
+                            type: function () {
                                 return 0;
-                            };
-                        } else {
-                            fieldsLevelFuncs[fieldName] = function () {
-                                return fieldsLevelFuncs[fSettings.parent]() + 1;
-                            };
-                        }
+                            }
+                        };
+                        fieldsList.forEach(function (fieldName) {
+                            let fSettings = jsonFields.fieldSettings[fieldName];
+                            if (!fSettings.parent || fieldsList.indexOf(fSettings.parent) === -1) {
+                                fieldsLevelFuncs[fieldName] = function () {
+                                    return 0;
+                                };
+                            } else {
+                                fieldsLevelFuncs[fieldName] = function () {
+                                    return fieldsLevelFuncs[fSettings.parent]() + 1;
+                                };
+                            }
 
-                    });
+                        });
 
-                    oldValueTmp['type'] = {
-                        isOn: true,
-                        Val: fieldType
-                    };
+                        oldValueTmp['type'] = {
+                            isOn: true,
+                            Val: fieldType
+                        };
 
 
-                    let input = addInput('type', fieldsList, fieldsLevelFuncs);
-                    let typeInput = input.find('select');
+                        let input = addInput('type', fieldsList, fieldsLevelFuncs);
+                        let typeInput = input.find('select');
 
-                 let beforeType = typeInput.val();
-                    let isChanged = false;
-                     typeInput.on('change', function () {
-                    /*  if (beforeType !== $(this).val()) {
+                        let beforeType = typeInput.val();
+                        let isChanged = false;
+                        typeInput.on('change', function () {
+                            /*  if (beforeType !== $(this).val()) {
 
-                          let buttons = [
-                              {
-                                  action: (dialog) => {
-                                      isChanged = true;
-                                      dialog.close();
-                                      addfields($(this).val())
-                                  },
-                                  label: App.translate('Change')
-                              },
-                              {
-                                  action: (dialog) => {
-                                      dialog.close();
-                                  },
-                                  label: App.translate('Cancel')
-                              }
+                                  let buttons = [
+                                      {
+                                          action: (dialog) => {
+                                              isChanged = true;
+                                              dialog.close();
+                                              addfields($(this).val())
+                                          },
+                                          label: App.translate('Change')
+                                      },
+                                      {
+                                          action: (dialog) => {
+                                              dialog.close();
+                                          },
+                                          label: App.translate('Cancel')
+                                      }
 
-                          ];
+                                  ];
 
-                          window.top.BootstrapDialog.show({
-                              message: App.translate('On type change all field setting will be reset to ' + (item.id ? 'default' : 'saved') + '. If you want to save this changes — save field and change it\'s type after that'),
-                              type: null,
-                              title: App.translate('Warning'),
-                              buttons: buttons,
-                              onhidden: () => {
-                                  if (!isChanged) {
-                                      typeInput.val(beforeType)
-                                      typeInput.trigger('change')
-                                  }
-                              },
-                              draggable: true
-                          })
-                      }*/
+                                  window.top.BootstrapDialog.show({
+                                      message: App.translate('On type change all field setting will be reset to ' + (item.id ? 'default' : 'saved') + '. If you want to save this changes — save field and change it\'s type after that'),
+                                      type: null,
+                                      title: App.translate('Warning'),
+                                      buttons: buttons,
+                                      onhidden: () => {
+                                          if (!isChanged) {
+                                              typeInput.val(beforeType)
+                                              typeInput.trigger('change')
+                                          }
+                                      },
+                                      draggable: true
+                                  })
+                              }*/
 
-                        addfields($(this).val())
-                  });
+                            addfields($(this).val())
+                        });
 
-                    fieldsList.forEach(function (fName) {
-                        let t = addInput(fName, fieldsList, fieldsLevelFuncs);
-                    });
+                        fieldsList.forEach(function (fName) {
+                            let t = addInput(fName, fieldsList, fieldsLevelFuncs);
+                        });
 
-                    editorsRefresh();
+                        editorsRefresh();
 
+                    }
+
+                    addfields(fieldType);
                 }
-
-                addfields(fieldType);
-            })
+            )
         };
 
 
@@ -362,7 +376,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             }
         };
 
-        if (!editNow) {
+        if (
+            !editNow
+        ) {
             div.data('checkVal', save);
         }
 
@@ -765,7 +781,8 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
         input.data('type', type);
         return input;
-    },
+    }
+    ,
     getValue: function (value, item, isModulPanel) {
         "use strict";
         if (isModulPanel) {
@@ -778,7 +795,8 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             data['rowId'] = item.id;
         }
         return this.pcTable.model.getValue(data, this.table_id);
-    },
+    }
+    ,
     getPanelText: function (fieldvalue) {
         let data = {};
         return JSON.stringify(fieldvalue, null, 2);
@@ -788,7 +806,8 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             if (v.isOn) data[k] = v.Val;
         });
         return JSON.stringify(data, null, 2);*/
-    },
+    }
+    ,
     getCellText: function (fieldValue) {
         return App.translate('Field settings');
     }
