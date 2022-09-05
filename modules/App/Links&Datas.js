@@ -291,6 +291,9 @@
                                 if (linkObject.elseData.footer === false) {
                                     withoutCategories.push('footer')
                                 }
+                                if (linkObject.elseData.topbuttons === false) {
+                                    withoutCategories.push('tb')
+                                }
                                 uri += '#' + encodeURIComponent(JSON.stringify({wc: withoutCategories}));
                             }
                             let $iframe = $('<iframe src="' + uri + '" style="width: 100%; height: 70vh; border: none"></iframe>');

@@ -570,7 +570,7 @@
                         let match;
                         if (match = window.location.pathname.match(/^\/Table\/(\d+)\/$/)) {
                             sessionStorage.setItem('cycles_table_anchor', match[1]);
-                        }else{
+                        } else {
                             sessionStorage.removeItem('cycles_table_anchor')
                         }
                     } else {
@@ -608,6 +608,10 @@
                         withoutCategories = withoutCategories.wc;
                     }
                 } catch (e) {
+                }
+                this.withTopButtons = true;
+                if (withoutCategories.indexOf("tb")!==-1) {
+                    this.withTopButtons = false;
                 }
 
                 let reorderedFields = false;

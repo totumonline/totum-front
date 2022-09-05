@@ -758,7 +758,9 @@
             } else {
                 this._beforeSpace_title = $('<div class="pcTable-title"><span class="bttns"/></div>').prependTo(this._beforeSpace);
             }
-            this._beforeSpace_title.append(csv);
+            if(this.withTopButtons){
+                this._beforeSpace_title.append(csv);
+            }
 
             if (this.tableRow.description) {
                 let btnAdd = $('<a class="btn btn-default btn-sm"><i class="fa fa-info"></i></a>');
