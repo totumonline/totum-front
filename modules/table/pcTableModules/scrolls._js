@@ -70,7 +70,7 @@
                     if (!self.table) {
                         self.table = $('<table class="scroll-head-row">').appendTo(pcTable._innerContainer);
                         self.table.width(pcTable.tableWidth);
-                        self.table.append($('table.pcTable-table thead').clone(true)).attr('class', $('table.pcTable-table').attr('class'));
+                        self.table.append($('table.pcTable-table thead').clone(true)).attr('class', $('table.pcTable-table').attr('class')).addClass('scroll-table-head');
 
                         //self.table.find('th:not(.id) div, th:not(.id) .btn').remove();
                         //self.table.find('th.id .pcTable-filters button[data-action="checkbox"]').remove();

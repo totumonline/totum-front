@@ -704,8 +704,13 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     height: 63px;
 
     span.id-name {
-      height: 15px;
+      height: 14px;
+      padding-top: 2px;
       display: block;
+    }
+    .check-status-bar{
+      font-size: 9px;
+      line-height: 14px;
     }
   }
 }

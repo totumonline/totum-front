@@ -127,6 +127,7 @@ var defaultField = {
         $input.on('blur', function (event) {
             blurClbk($input, event);
         });
+        $input.select();
         return $input;
     },
     checkEditRegExp: function (val) {
