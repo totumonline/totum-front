@@ -1460,6 +1460,8 @@
                 let sectionTitle = '';
                 let sectionDiv, isNoTitles;
                 $.each(pcTable.notTableFooterFields, function (k, field) {
+                    if (!pcTable.isCreatorView && pcTable.isReplacedButton(field.name))
+                        return;
                     let panelColor;
                     if (field.panelColor !== undefined) {
                         panelColor = field.panelColor;
@@ -1519,6 +1521,8 @@
                 let maxInColumn = 0;
 
                 $.each(pcTable.fieldCategories['footer'], function (k, field) {
+                    if (!pcTable.isCreatorView && pcTable.isReplacedButton(field.name))
+                        return;
                     if (field.showMeWidth && !(pcTable.data_params[field.name].f && pcTable.data_params[field.name].f.hide && pcTable.data_params[field.name].f.hide.mobile)) {
                         if (!field.column) field.column = '';
 
