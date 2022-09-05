@@ -897,9 +897,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 };
 
                 let selectBtns = $('<span class="select-btns">').appendTo(btns);
-                let btn = $('<button class="btn btn-default-primary btn-sm"><i class="fa fa-edit"></i></button>');
-                selectBtns.append(btn);
-                btn.on('click', sourseBtnClick);
+                if (EditPanelFunc.editItem[field.name].v && (!field.multiple || EditPanelFunc.editItem[field.name].v.length)) {
+                    let btn = $('<button class="btn btn-default-primary btn-sm"><i class="fa fa-edit"></i></button>');
+                    selectBtns.append(btn);
+                    btn.on('click', sourseBtnClick);
+                }
 
                 if (field.changeSelectTable === 2) {
                     let btn = $('<button class="btn btn-default-primary btn-sm source-add"><i class="fa fa-plus"></i></button>');
