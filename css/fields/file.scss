@@ -119,8 +119,11 @@
 
 #pk {
   .pcTable-floatBlock .pcTable-floatInner > div td span.cell-value[data-type="file"] {
-    margin-top: 0;
-    img{
+    &:not(.format-text) {
+      margin-top: 0;
+    }
+
+    img {
       margin-top: 0;
     }
   }
