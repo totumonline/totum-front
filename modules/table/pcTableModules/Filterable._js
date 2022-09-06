@@ -72,7 +72,7 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false, reCreateRows
     let new_ = [];
     let new_check = [];
 
-    if (this.isTreeView  && !this.isTreeViewRestore) {
+    if (this.isTreeView && !this.isTreeViewRestore) {
         if (this.filters && Object.keys(this.filters).length) {
 
             let expands = [];
@@ -114,7 +114,7 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false, reCreateRows
                         }
                     }
 
-                    while (p && ip>=0) {
+                    while (p && ip >= 0) {
                         while (typeof this.dataSorted[ip] !== 'object') {
                             if (this.dataSorted[ip - 1]) {
                                 ip--;
@@ -320,7 +320,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
         this._header.on('click', '.pcTable-filters > span button.btn-filter:not(#checkS)', function (event) {
 
             let btn = $(this);
-            if (btn.attr('aria-describedby')) return true;
+            if (btn.attr('aria-describedby') && $('#' + btn.attr('aria-describedby')).is(':visible')) return true;
 
             let th = btn.closest('th');
             let fieldName = th.is('.id') ? 'id' : th.data('field');
@@ -655,6 +655,9 @@ App.pcTableMain.prototype.__addFilterable = function () {
                     });
 
                     select.data('selectpicker').$searchbox.focus();
+                    pcTable.closeCallbacks.push(() => {
+                        popoverDestroy()
+                    })
                 }
             }, 50);
             pcTable._container.trigger('filterPressed');

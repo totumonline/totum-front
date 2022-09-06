@@ -309,7 +309,9 @@ body.ttm-body-mobile {
     }
 
     > [data-name="count_visible_rows"] {
-      display: inline;
+      display: block;
+      margin-top: -9px;
+      margin-bottom: 9px;
     }
   }
 

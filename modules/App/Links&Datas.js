@@ -291,6 +291,9 @@
                                 if (linkObject.elseData.footer === false) {
                                     withoutCategories.push('footer')
                                 }
+                                if (linkObject.elseData.topbuttons === false) {
+                                    withoutCategories.push('tb')
+                                }
                                 uri += '#' + encodeURIComponent(JSON.stringify({wc: withoutCategories}));
                             }
                             let $iframe = $('<iframe src="' + uri + '" style="width: 100%; height: 70vh; border: none"></iframe>');
@@ -685,6 +688,14 @@
                                 hash: hash,
                                 val: val,
                                 search: selectData
+                            })
+                        }
+                        model.loadPreviewHtml = function (span, item, val) {
+                            return this.__ajax('post', {
+                                method: 'linkInputClick',
+                                hash: data[1].hash,
+                                val: val,
+                                preview: true
                             })
                         }
                         field.getEditSelect = (itemTmp, name, q, _, __, RequestObject) => {

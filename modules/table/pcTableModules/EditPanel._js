@@ -48,7 +48,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
         }
 
         let self = this;
-
+        this.reCreateInputsForce = false;
 
         const Check = () => {
             return new Promise(function (resolve, reject) {
@@ -69,15 +69,21 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     fieldParamsChanged = false;
                 };
 
+                const ups = (data) => {
+                    EditPanelFunc.reCreateInputsForce = true;
+                    EditPanelFunc.editRow.call(EditPanelFunc, {f: EditPanelFunc.f, row: EditPanelFunc.editItem});
+                    reject(data)
+                }
+
                 switch (checkMethod) {
                     case 'checkEditRow':
-                        EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), (isFirstLoad ? 'all' : 'true')).then(success).fail(reject);
+                        EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), (isFirstLoad ? 'all' : 'true')).then(success).fail(ups);
                         break;
                     case 'checkInsertRow':
-                        EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), hash, clearField, (isFirstLoad ? 'all' : 'true')).then(success).fail(reject);
+                        EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), hash, clearField, (isFirstLoad ? 'all' : 'true')).then(success).fail(ups);
                         break;
                     case 'viewRow':
-                        EditPanelFunc.pcTable.model[checkMethod]({id: data.id}, hash).then(success).fail(reject);
+                        EditPanelFunc.pcTable.model[checkMethod]({id: data.id}, hash).then(success).fail(ups);
                         break;
                 }
 
@@ -221,7 +227,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (cell.length) {
                 if (cell.data('input') && !format.block) {
-                    if (field._reloadCellInPanel || !Oldval || field.isDataModified(EditPanelFunc.editItem[field.name].v, Oldval.v) || field.codeSelectIndividual || (EditPanelFunc.panelType == 'insert' && field.code && !field.codeOnlyInAdd) || ['fieldParams'].indexOf(field.type) > -1 || field.name in loadedContextDataFields) {
+                    if (this.reCreateInputsForce || field._reloadCellInPanel || !Oldval || field.isDataModified(EditPanelFunc.editItem[field.name].v, Oldval.v) || field.codeSelectIndividual || (EditPanelFunc.panelType == 'insert' && field.code && !field.codeOnlyInAdd) || ['fieldParams'].indexOf(field.type) > -1 || field.name in loadedContextDataFields) {
                         delete field._reloadCellInPanel;
                         EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format);
                     }
@@ -482,7 +488,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
                         if (!itemName) {
                             itemName = 'id ' + (EditPanelFunc.editItem['id'] || json.row.id);
-                        } else if(EditPanelFunc.pcTable._isDisplayngIdEnabled()) {
+                        } else if (EditPanelFunc.pcTable._isDisplayngIdEnabled()) {
                             itemName = 'id ' + (EditPanelFunc.editItem['id'] || json.row.id) + ' ' + itemName;
                         }
 
@@ -721,6 +727,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 span.append($('<div class="format-comment">').text(format.comment).prepend('<i class="cell-icon fa fa-info"></i>'))
             }
 
+
             cell.html(span).data('input', null);
         } else {
 
@@ -875,7 +882,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                                     }
 
                                     field._reloadCellInPanel = true;
-                                    EditPanelFunc.checkRow({[field.name]:EditPanelFunc.editItem[field.name]});
+                                    EditPanelFunc.checkRow({[field.name]: EditPanelFunc.editItem[field.name]});
 
                                     if (!isAdd && EditPanelFunc.pcTable.isMain) {
                                         EditPanelFunc.pcTable.model.refresh(function (json) {
@@ -891,9 +898,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 };
 
                 let selectBtns = $('<span class="select-btns">').appendTo(btns);
-                let btn = $('<button class="btn btn-default-primary btn-sm"><i class="fa fa-edit"></i></button>');
-                selectBtns.append(btn);
-                btn.on('click', sourseBtnClick);
+                if (EditPanelFunc.editItem[field.name].v && (!field.multiple || EditPanelFunc.editItem[field.name].v.length)) {
+                    let btn = $('<button class="btn btn-default-primary btn-sm"><i class="fa fa-edit"></i></button>');
+                    selectBtns.append(btn);
+                    btn.on('click', sourseBtnClick);
+                }
 
                 if (field.changeSelectTable === 2) {
                     let btn = $('<button class="btn btn-default-primary btn-sm source-add"><i class="fa fa-plus"></i></button>');
@@ -917,7 +926,13 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             }
 
             if (format.text) {
-                cell.append($('<div class="format-text">').text(format.text))
+                let text = $('<div class="format-text">').text(format.text);
+                cell.append(text)
+                if (format.icon) {
+                    text.prepend('<i class="fa fa-' + format.icon + '"></i>');
+                }
+            } else if (format.icon) {
+                cell.append($('<div class="format-text">').html('<i class="fa fa-' + format.icon + '"></i>'));
             }
             if (format.comment) {
                 cell.append($('<div class="format-comment">').text(format.comment).prepend('<i class="fa fa-info"></i>'))

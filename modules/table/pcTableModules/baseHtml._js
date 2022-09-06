@@ -249,8 +249,8 @@
                 let timeObject = setTimeout(function () {
                     if (element.is(':hover')) {
                         let span = element.find('span.select-with-preview');
-                        if (pcTable.fields[span.data('field')]) {
-                            pcTable.fields[span.data('field')].previewPanel.call(pcTable.fields[span.data('field')], span, element);
+                        if (App.selectFieldPreview && span.data('field') === App.selectFieldPreview.name) {
+                            App.selectFieldPreview.previewPanel(span, element);
                         }
                     }
                 }, 300);
@@ -345,7 +345,7 @@
                                 apply();
                             } else {
 
-                                $div = $('<div>');
+                                $div = $('<div class="creator-log-checkboxes">');
                                 $div.append('<div><input type="checkbox" name="c"/> ' + App.translate('Code') + '</div>');
                                 $div.append('<div><input type="checkbox" name="a"/> ' + App.translate('Action code') + '</div>');
                                 $div.append('<div><input type="checkbox" name="s"/> ' + App.translate('Selects') + '</div>');
@@ -758,7 +758,9 @@
             } else {
                 this._beforeSpace_title = $('<div class="pcTable-title"><span class="bttns"/></div>').prependTo(this._beforeSpace);
             }
-            this._beforeSpace_title.append(csv);
+            if(this.withTopButtons){
+                this._beforeSpace_title.append(csv);
+            }
 
             if (this.tableRow.description) {
                 let btnAdd = $('<a class="btn btn-default btn-sm"><i class="fa fa-info"></i></a>');
@@ -967,8 +969,7 @@
             if (this.tableWidth < this._innerContainer.width()) {
                 if (this.isMobile || $('body').is('.table-in-notification')) {
                     this.__$rowsButtons.width(this._table.width());
-                }
-                else {
+                } else {
                     this.__$rowsButtons.width(this._table.width() - 70);
                 }
             } else if (!this.isMobile) {
@@ -1461,6 +1462,8 @@
                 let sectionTitle = '';
                 let sectionDiv, isNoTitles;
                 $.each(pcTable.notTableFooterFields, function (k, field) {
+                    if (!pcTable.isCreatorView && pcTable.isReplacedButton(field.name))
+                        return;
                     let panelColor;
                     if (field.panelColor !== undefined) {
                         panelColor = field.panelColor;
@@ -1520,6 +1523,8 @@
                 let maxInColumn = 0;
 
                 $.each(pcTable.fieldCategories['footer'], function (k, field) {
+                    if (!pcTable.isCreatorView && pcTable.isReplacedButton(field.name))
+                        return;
                     if (field.showMeWidth && !(pcTable.data_params[field.name].f && pcTable.data_params[field.name].f.hide && pcTable.data_params[field.name].f.hide.mobile)) {
                         if (!field.column) field.column = '';
 
@@ -2568,15 +2573,9 @@
                         })
                     }
 
+                    btnDropDown.on('click', function () {
+                        btnDropDown = $(this);
 
-                    btnDropDown.popover({
-                        html: true,
-                        content: $divPopoverArrowDown,
-                        trigger: 'manual',
-                        container: pcTable._container,
-                        placement: 'auto bottom'
-                    });
-                    btnDropDown.on('click', () => {
                         if (field.category === 'column' && pcTable.PageData && pcTable.PageData.onPage && pcTable.PageData.allCount > pcTable.PageData.onPage) {
                             if ($divPopoverArrowDown.find('.column-dropdown').length === 0)
                                 $divPopoverArrowDown.append('<div class="column-dropdown">' + App.translate('By current page') + ' </div>');
@@ -2584,14 +2583,21 @@
                             $divPopoverArrowDown.find('.column-dropdown').remove();
                         }
 
-                        if (!btnDropDown.data('bs.popover').tip().hasClass('in')) {
+                        if (!btnDropDown.data('bs.popover') || !btnDropDown.data('bs.popover').tip().hasClass('in')) {
+                            btnDropDown.popover({
+                                html: true,
+                                content: $divPopoverArrowDown,
+                                trigger: 'manual',
+                                container: pcTable._container,
+                                placement: 'auto bottom'
+                            });
                             btnDropDown.popover('show');
                             setTimeout(function () {
                                 /* pcTable._container.one('click', function () {
                                      btn.popover('hide');
                                  });*/
                                 pcTable.closeCallbacks.push(() => {
-                                    btnDropDown.popover('hide');
+                                    btnDropDown.popover('destroy');
                                 })
                             }, 20);
                         }
@@ -2871,7 +2877,7 @@
 
                 let StringAsUrl = field.type === 'string' && field.url;
                 if (format.text && (!StringAsUrl || val.v === null) && field.type != "button" && !(pcTable.isTreeView && field.name === 'tree' && item.__tree && (field.treeViewType === 'self' || (item.tree_category && item.tree_category.v)))) {
-                    span.text(format.text);
+                    span.text(format.text).addClass('format-text');
                 } else if (!(val.e && field.errorText)) {
                     var cellInner = isHeighter ? field.getHighCelltext(val.v, td, item) : field.getCellText(val.v, td, item);
                     if (typeof cellInner === 'object') {

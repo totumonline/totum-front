@@ -13,7 +13,7 @@
         },
         getCellText: function (fieldValue) {
             if (!fieldValue || fieldValue === null || fieldValue.length == 0) return '';
-            let div = $('<span style=""></span>');
+            let div = $('<span></span>');
             const file_images = function (file) {
                 let img;
                 if (['png', 'jpg'].indexOf(file.ext) !== -1) {

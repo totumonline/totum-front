@@ -10,3 +10,7 @@
 ::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.1);
 } /* this will style the thumb, ignoring the track */
+
+.scroll-table-head{
+  box-shadow: -1px 1px 0px 1px rgba(0, 0, 0, 0.09);
+}

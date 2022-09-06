@@ -44,6 +44,8 @@ App.pcTableMain.prototype.__formatFunctions = {
     },
     buttons: function () {
         this._rerendParamsblock();
+        this._rerendBottomFoolers();
+        this._rerenderColumnsFooter();
         this._rowsButtons();
     },
     blockorder: function () {

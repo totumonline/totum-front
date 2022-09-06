@@ -277,10 +277,9 @@
             $mes.on("init.jstree", function (e, data) {
                 data.instance.settings.checkbox.cascade = '';
 
+                let c = $mes.jstree(true).redraw_node;
 
                 if (field.changeSelectTable || field.multiple) {
-
-                    let c = $mes.jstree(true).redraw_node;
                     let _jsTree = $mes.jstree(true);
                     const select_node = (id, type) => {
                         let data = _jsTree.get_node(id);
@@ -396,6 +395,16 @@
 
                         return _node;
                     };
+                } else {
+                    $mes.jstree(true).redraw_node = function (node, deep, is_callback, force_render) {
+                        let $icon1;
+                        let _node = c.apply(this, arguments);
+                        let data = this.get_node(node);
+                        if (data.state && data.state.deleted) {
+                            $(_node).addClass('deleted-node')
+                        }
+                        return _node;
+                    }
                 }
             }).jstree({
                 "search": {
