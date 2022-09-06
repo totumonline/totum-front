@@ -127,7 +127,10 @@ var defaultField = {
         $input.on('blur', function (event) {
             blurClbk($input, event);
         });
-        $input.select();
+        if ($input.closest('.InsertRow').length === 0) {
+            $input.select();
+        }
+
         return $input;
     },
     checkEditRegExp: function (val) {
