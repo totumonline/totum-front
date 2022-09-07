@@ -352,7 +352,12 @@ App.pcTableMain.prototype.__addFilterable = function () {
                     if (fieldName === 'id' && !btn.closest('.pcTable-table').is(".pcTable-table:first")) {
                         pcTable._header.find('th.id .btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
                     }
-                    btn.parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
+                    if(btn.closest('.scroll-table-head')){
+                        pcTable._innerContainer.scrollTop(0);
+                        pcTable._refreshHead();
+                    }else{
+                        btn.parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
+                    }
                     pcTable.__applyFilters.call(pcTable);
                 }
 

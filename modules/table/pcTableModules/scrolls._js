@@ -73,7 +73,7 @@
                         self.table.append($('table.pcTable-table thead').clone(true)).attr('class', $('table.pcTable-table').attr('class')).addClass('scroll-table-head');
 
                         //self.table.find('th:not(.id) div, th:not(.id) .btn').remove();
-                        //self.table.find('th.id .pcTable-filters button[data-action="checkbox"]').remove();
+                        self.table.find('th.id button').remove();
                         //self.table.find('th').removeClass('with-filter');
                         let $topButton = $('<div class="btn btn-default btn-xxs "><i class="fa fa-arrow-up"></i></div>')
                             .on('click', function () {
