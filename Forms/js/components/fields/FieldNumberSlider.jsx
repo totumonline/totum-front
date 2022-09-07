@@ -17,22 +17,39 @@ export class FieldNumberSlider extends FieldNumber {
         if (propsVal !== state.inVal) {
             return {
                 val: propsVal,
-                inVal: propsVal
+                inVal: propsVal,
+                focus: false
             }
         }
         return null;
     }
 
-    setVal(event, val) {
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        let prepared = this.constructor.prepareInputVal(nextProps.data.v)
+        if (this.props.model.elseData !== nextProps.model.elseData || JSON.stringify(nextProps.data.v) !== JSON.stringify(this.props.data.v) || (!this.state.focus && !nextState.focus && JSON.stringify(prepared) !== JSON.stringify(nextState.val))) {
+            this.setState({
+                val: prepared,
+                inVal: prepared,
+            });
+            return false;
+        }
 
+        return true;
+    }
+
+    checkFocus(event) {
+
+    }
+
+    setVal(event, val) {
         if (this.props.field.withEmptyVal === undefined && val === null) {
             return;
         }
-        this.setState({val: val});
+        this.setState({val: val, focus: true});
         if (this.saveTimeout) clearTimeout(this.saveTimeout);
         this.saveTimeout = setTimeout(() => {
             this._save(this.state.val, this.state.val !== this.state.inVal);
-        }, 1000)
+        }, 500)
     }
 
     getVal(style, format, blocked) {
@@ -46,16 +63,27 @@ export class FieldNumberSlider extends FieldNumber {
 
         format.viewdata = format.viewdata || {};
 
-        let marks = format.viewdata.marks || [
-            {
-                value: format.viewdata.min,
-                label: format.viewdata.min + unitType,
-            },
-            {
-                value: format.viewdata.max,
-                label: format.viewdata.max + unitType,
+        let marks = format.viewdata.marks;
+
+        if (!marks) {
+            marks = [];
+            if (format.viewdata.min) {
+                marks.push(
+                    {
+                        value: format.viewdata.min,
+                        label: format.viewdata.min + unitType,
+                    });
             }
-        ];
+            if (format.viewdata.max) {
+                marks.push(
+                    {
+                        value: format.viewdata.max,
+                        label: format.viewdata.max + unitType,
+                    });
+            }
+        }
+
+
         let params = {}, styles = {};
         if (format.viewdata.orientation === 'vertical') {
             params.orientation = format.viewdata.orientation;
@@ -85,6 +113,12 @@ export class FieldNumberSlider extends FieldNumber {
         if ('step' in format.viewdata)
             step = format.viewdata.step;
 
+        if ('max' in format.viewdata) {
+            params.max = format.viewdata.max;
+        }
+        if ('min' in format.viewdata) {
+            params.min = format.viewdata.min;
+        }
 
         return (
             <div>
@@ -94,9 +128,7 @@ export class FieldNumberSlider extends FieldNumber {
                     color='secondary'
                     {...params}
                     value={this.state.val}
-                    min={format.viewdata.min}
                     step={step}
-                    max={format.viewdata.max}
                     ValueLabelComponent={ValueLabel}
 
 

@@ -49,6 +49,8 @@ export class FieldDefault extends React.Component {
                 } else {
                     return this.__save(val);
                 }
+            } else {
+                this.setState({focus: false})
             }
         } else {
             return this.__save(val);
