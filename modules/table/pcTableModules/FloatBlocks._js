@@ -301,7 +301,7 @@
             let FlowBlocks = [FlowLines];
 
             let floatInner;
-            let sectionMarked = false;
+            let sectionMarked = floatStarted = false;
 
 
             sec.fields.forEach((field, ind) => {
@@ -380,6 +380,7 @@
                         sec: sec,
                         fields: [],
                     })
+                    floatStarted = true;
                 }
 
                 let inner = FloatInners[FloatInners.length - 1];
@@ -393,8 +394,8 @@
                 if (field.format.breakwidth) {
                     field.field.showMeWidth = parseInt(field.format.breakwidth);
                 }
-
-                if (field.format.nextline && ind > 0 && !floatInner.is(':empty')) floatInner.append('<br/>');
+                if (field.format.nextline && !floatStarted) floatInner.append('<br/>');
+                floatStarted = false;
 
                 let fieldCell = $('<div>').appendTo(floatInner);
                 fieldCell.width(field.field.showMeWidth + 1);
