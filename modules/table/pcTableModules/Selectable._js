@@ -507,7 +507,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         }
 
         if (pcTable.isMobile) {
-            App.mobilePanel(columnName, $panel, {buttons: mobileButtons})
+            selectObject.mobilePanelDialog=App.mobilePanel(columnName, $panel, {buttons: mobileButtons});
         } else {
 
             let placement = 'right';
@@ -539,6 +539,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
         pcTable.closeCallbackAdd(() => {
             selectObject.selectPanelDestroy();
+
         }, 'selectPanelDestroy', 20)
 
 
@@ -687,6 +688,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 if (panelObj.selectPanel) {
                     if (panelObj.selectPanel.attr('aria-describedby')) {
                         panelObj.selectPanel.popover('destroy');
+                    }else if (this.mobilePanelDialog){
+                        panelObj.mobilePanelDialog.close()
+                        panelObj.mobilePanelDialog = null;
                     }
                     panelObj.selectPanel = null;
                 }
