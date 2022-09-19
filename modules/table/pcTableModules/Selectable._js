@@ -507,7 +507,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         }
 
         if (pcTable.isMobile) {
-            selectObject.mobilePanelDialog=App.mobilePanel(columnName, $panel, {buttons: mobileButtons});
+            selectObject.mobilePanelDialog = App.mobilePanel(columnName, $panel, {buttons: mobileButtons});
         } else {
 
             let placement = 'right';
@@ -688,7 +688,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 if (panelObj.selectPanel) {
                     if (panelObj.selectPanel.attr('aria-describedby')) {
                         panelObj.selectPanel.popover('destroy');
-                    }else if (this.mobilePanelDialog){
+                    } else if (this.mobilePanelDialog) {
                         panelObj.mobilePanelDialog.close()
                         panelObj.mobilePanelDialog = null;
                     }
@@ -1064,7 +1064,11 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     draggable: true
                 })
             } else if (event.target.className === 'file-pdf-preview') {
-                window.open(event.target.getAttribute('data-filename'))
+                let imgRand = Math.random();
+                window.open(event.target.getAttribute('data-filename').match(/\?/) ?
+                    event.target.getAttribute('data-filename') + '&rand=' + imgRand
+                    : event.target.getAttribute('data-filename') + '?rand=' + imgRand
+                );
                 return false;
             } else {
                 let element = $(this);
