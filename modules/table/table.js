@@ -441,7 +441,7 @@
 
                 let closeCallbacksActive = false;
                 const closeCallbacksFunc = function (event) {
-                    if (!closeCallbacksActive) {
+                    if (!$(this).closest('#filterHand') && !closeCallbacksActive) {
                         closeCallbacksActive = true;
                         let cnt = pcTable.closeCallbacks.length;
                         pcTable.closeCallbacks.forEach(function (func) {
@@ -610,7 +610,7 @@
                 } catch (e) {
                 }
                 this.withTopButtons = true;
-                if (withoutCategories.indexOf("tb")!==-1) {
+                if (withoutCategories.indexOf("tb") !== -1) {
                     this.withTopButtons = false;
                 }
 
