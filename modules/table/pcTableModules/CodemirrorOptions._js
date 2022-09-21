@@ -120,7 +120,13 @@
 
             let btn = $('<a>').attr('href', App.translate('PATH-TO-DOCUMENTATION') + 'functions#fn-' + TOTUMjsFuncs[nameL][5])
                 .attr('target', '_blank')
-                .html('<button class="btn btn-default btn-sm">' + App.translate('Documentaion') + '</button>');
+                .html('<button class="btn btn-default btn-sm">' + App.translate('Documentaion') + '</button>')
+                .on('click', () => {
+                    setTimeout(() => {
+                        span.popover('destroy')
+                    }, 10);
+                    return true;
+                });
 
             div.append(btn.wrap('<div class="button">').parent())
 
@@ -129,12 +135,14 @@
                 $text: div,
                 element: span,
                 trigger: 'manual',
-
                 container: $("body")
             });
             setTimeout(() => {
                 $('#table').data('pctable').closeCallbacks.push(function () {
                     if (span && span.length) span.popover('destroy');
+                    else if (div && div.length) {
+                        div.remove();
+                    }
                 })
             }, 200);
             $('body').click();
@@ -586,7 +594,7 @@
                                 classes += " fixed";
                                 state.lineName = state.lineName.substring(1);
                             }
-                            state.lineName = state.lineName.replace(/=\s*[a-z0-9_]*\s*$/, '=');
+                            state.lineName = state.lineName.replace(/=\s*[a-zA-Z0-9_]*\s*$/, '=');
 
                             if (/^\s*=\s*$|^\s*[a-z]{1,2}\d+=$/i.test(state.lineName)) {
                                 classes += ' exec'
@@ -1152,6 +1160,15 @@
 
                         keywords.push({text: tilda + text + ': ', displayText: text});
                     });
+                    $(editor.getWrapperElement()).find('.cm-exec:not(.cm-totum-block)').each(function () {
+                        let matches;
+                        if (matches = $(this).text().match(/^\s*=\s*([a-zA-Z0-9]+)\s*:/)) {
+                            let text = matches[1];
+                            keywords.push({text: tilda + text + ': ', displayText: text});
+                        }
+
+
+                    });
                 }
 
             } else if (token.type === 'error' && token.state.func && token.state.func[2].length && [";", "/"].indexOf(line[token.start]) !== -1) {
@@ -1471,10 +1488,9 @@
                     }
 
 
-                } else if (token.string.slice(0, 2) === '$@'){
+                } else if (token.string.slice(0, 2) === '$@') {
                     //process vars - no keywords
-                }
-                else if (match = token.string.match(/(.*)(#?\$)([a-z_0-9]*)/i)) {
+                } else if (match = token.string.match(/(.*)(#?\$)([a-z_0-9]*)/i)) {
 
                     keywords = [];
                     token.string = match[3];
