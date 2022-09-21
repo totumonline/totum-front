@@ -1163,8 +1163,17 @@
                     $(editor.getWrapperElement()).find('.cm-exec:not(.cm-totum-block)').each(function () {
                         let matches;
                         if (matches = $(this).text().match(/^\s*=\s*([a-zA-Z0-9]+)\s*:/)) {
+                            let exists = false;
                             let text = matches[1];
-                            keywords.push({text: tilda + text + ': ', displayText: text});
+                            $(editor.getWrapperElement()).find('.cm-start:not(.cm-totum-block)').each(function () {
+                                let cmVar = $(this);
+                                if (cmVar.text().trim().replace('~', '').replace(':', '').replace('```', '') === text) {
+                                    exists = true;
+                                }
+                            })
+                            if (!exists) {
+                                keywords.push({text: tilda + text + ': ', displayText: text});
+                            }
                         }
 
 
