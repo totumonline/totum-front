@@ -441,7 +441,7 @@
 
                 let closeCallbacksActive = false;
                 const closeCallbacksFunc = function (event) {
-                    if (!$(this).closest('#filterHand') && !closeCallbacksActive) {
+                    if (!$(event.target).closest('#filterHand').length && !closeCallbacksActive) {
                         closeCallbacksActive = true;
                         let cnt = pcTable.closeCallbacks.length;
                         pcTable.closeCallbacks.forEach(function (func) {
