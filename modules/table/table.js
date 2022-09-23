@@ -204,6 +204,8 @@
         if (this.isCreatorView) {
             if (localStorage.getItem('notCreator')) {
                 this.isCreatorView = false;
+            }else if(window.location.hash==='#no-creator-view'){
+                this.isCreatorView = false;
             }
         }
 
