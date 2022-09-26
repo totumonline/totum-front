@@ -36,7 +36,7 @@
                     var k = Math.pow(10, prec);
                     return Math.round(n * k) / k;
                 },
-                s = (prec ? toFixedFix(n, prec) : Math.round(n)).toString().split('.');
+                s = (prec ? toFixedFix(n, prec) : Math.round(n)).toLocaleString('fullwide', { useGrouping: false }).split('.');
             if (s[0].length > 3) {
                 s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
             }
