@@ -647,7 +647,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
                     });
 
                     pcTable._container.on('click.filter filterPressed.filter', function (e) {
-                        if ($(e.target).closest("#filterHand").length === 0 && (e.type === "filterPressed" || e.altKey !== undefined) && $('#' + btn.attr('aria-describedby')).is(':visible')) { //Это чтобы не отлавливать всякие технические события
+                        if (e && $(e.target).closest("#filterHand").length === 0 && (e.type === "filterPressed" || e.altKey !== undefined) && $('#' + btn.attr('aria-describedby')).is(':visible')) { //Это чтобы не отлавливать всякие технические события
                             pcTable._container.off('.filter');
                             actionIt('setSelectedFilters');
                         }
