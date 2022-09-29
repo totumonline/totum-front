@@ -82,10 +82,6 @@
 
                         self.table.find('th.id .pcTable-filters:first').append($topButton);
 
-                        if (self.table.find('th.n').length) {
-                            let saveButton = pcTable._innerContainer.find('th.n').find('i.fa-save').parent().clone(true);
-                            self.table.find('th.n').append($('<div class="pcTable-filters">').append(saveButton));
-                        }
                         if (!pcTable.isMobile && !self.topButton) {
                             self.topButton = $('<button class="scroll-top-button"><i class="fa fa-arrow-up"></i></button>').appendTo(pcTable._innerContainer).on('click', function () {
                                 pcTable._container.scrollTop(pcTable._container.find('.pcTable-rowsWrapper').offset().top - pcTable.scrollWrapper.offset().top);

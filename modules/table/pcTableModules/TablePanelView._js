@@ -574,6 +574,10 @@
 
 
         let selectedDiv;
+
+        this._content.on('contextmenu', '.panelsView-card', function (event) {
+            return false;
+        })
         this._content.on('contextmenu', '.panelsView-card td', function (event) {
             if (selectedDiv) {
                 selectedDiv.removeClass('selected')
@@ -595,6 +599,8 @@
             } else {
                 selectedDiv = null;
             }
+            $('body').trigger('_click');
+            return false;
         });
         this._content.on('click', '.panelsView-card td', function (event) {
             if (selectedDiv) {
