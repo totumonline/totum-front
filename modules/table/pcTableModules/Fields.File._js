@@ -2,8 +2,13 @@
     const show_img = function (img, file) {
         img.attr('data-fileviewpreview', JSON.stringify({'name': file.name, file: file.file}))
     }
+
+
     fieldTypes.file = {
         icon: 'fa-file-image-o',
+        getFilePath: function (filename, thumb, rand) {
+            return '/fls/' + filename + (thumb ? '_thumb.jpg' : '') + (rand ? '?rand=' + Math.random() : '');
+        },
         getSize: function (size) {
             if (size > 100 * 1024) {
                 return ' ' + (Math.round(size / (1024 * 1024) * 10) / 10).toLocaleString() + 'Mb'
@@ -14,21 +19,55 @@
         getCellText: function (fieldValue) {
             if (!fieldValue || fieldValue === null || fieldValue.length == 0) return '';
             let div = $('<span></span>');
-            const file_images = function (file) {
+
+            const file_images = (file) => {
                 let img;
                 if (['png', 'jpg'].indexOf(file.ext) !== -1) {
-                    img = $('<img src="/fls/' + file.file + '_thumb.jpg" style="z-index: 200; max-height: 24px; margin-right: 4px;" class="file-image-preview" data-filename="' + file.file + '"/>');
+                    img = $('<img src="' + this.getFilePath(file.file, true) + '" style="z-index: 200;" class="file-image-preview" data-filename="' + this.getFilePath(file.file) + '"/>');
                     show_img(img, file);
-                } else if (file.ext === 'pdf') {
-                    img = '<img src="/imgs/file_ico_pdf.png" style="max-height: 24px;  margin-right: 4px;" class="file-pdf-preview" data-filename="/fls/' + file.file + '"/>';
-                } else {
-                    img = '<img src="/imgs/file_ico.png" style="max-height: 24px;  margin-right: 4px;"/>';
                 }
-                let a = $('<a href="/fls/' + file.file + '"  class="file-sell-text" download="' + $('<div>').text(file.name).html() + '" style="padding-right: 5px"></a>');
+                else if(file.ext === 'pdf'){
+                    img = '<i class="fa fa-file-pdf-o" class="file-pdf-preview" data-filename="' + this.getFilePath(file.file) + '"/>';
+                }
+                else{
+                    switch (file.ext) {
+                        case 'xls':
+                        case 'xlsx':
+                            img = '<i class="fa fa-file-excel-o"/>';
+                            break;
+                        case 'doc':
+                        case 'docx':
+                            img = '<i class="fa fa-file-word-o"/>';
+                            break;
+                        case 'zip':
+                        case 'gz':
+                        case 'tar':
+                            img = '<i class="fa fa-file-zip-o"/>';
+                            break;
+                        case 'mov':
+                        case 'avi':
+                            img = '<i class="fa fa-file-video-o"/>';
+                            break;
+                        case 'md':
+                            img = '<i class="fa fa-file-code-o"/>';
+                            break;
+                        case 'mp3':
+                            img = '<i class="fa fa-file-audio-o"/>';
+                            break;
+                        default:
+                            img = '<i class="fa fa-file-text-o"/>';
+                    }
+                }
+
+
+                let a = $('<a href="' + this.getFilePath(file.file) + '"  class="file-sell-text" download="' + $('<div>').text(file.name).html() + '" style="padding-right: 5px"></a>');
                 div.append(img)
                 a.append(file.name);
                 div.append(a);
-
+                div.find('img, i').css({
+                    'max-height':24,
+                    'margin-right':4
+                })
             };
             if (fieldValue.length && fieldValue.forEach
             ) {
@@ -41,9 +80,9 @@
             if (!fieldValue || fieldValue === null || fieldValue.length == 0) return '';
             let field = this;
             let toCopy = '';
-            fieldValue.forEach(function (file) {
+            fieldValue.forEach( (file) => {
                 if (toCopy !== '') toCopy += "\n";
-                toCopy += file.name + ' ' + window.location.protocol + '//' + window.location.host + '/fls/' + file.file + ' ' + field.getSize(file.size);
+                toCopy += file.name + ' ' + window.location.protocol + '//' + window.location.host + this.getFilePath(file.file) + ' ' + field.getSize(file.size);
             });
             return toCopy;
         }
@@ -53,17 +92,17 @@
             let div = $('<div class="file-mini-panel">');
             let field = this;
             let toCopy = '';
-            let imgRand = Math.random();
-            fieldValue.forEach(function (file) {
+
+            fieldValue.forEach( (file) =>{
                 let img = '';
                 let _class = '';
                 if (['jpg', 'png'].indexOf(file.ext) !== -1) {
-                    img = $('<img src="/fls/' + file.file + '_thumb.jpg?rand=' + imgRand + '"  class="file-image-preview" data-filename="' + file.file + '"/>');
+                    img = $('<img src="' + this.getFilePath(file.file, true, true) + '"/>');
                     _class = 'with-img';
                     show_img(img, file);
                 }
                 $('<div>').addClass(_class).appendTo(div).append(img).append(
-                    $('<div class="file-label">').html($('<a href="/fls/' + file.file + '" download="' + $('<div>').text(file.name).html() + '">').text(file.name)).append(field.getSize(file.size))
+                    $('<div class="file-label">').html($('<a href="' + this.getFilePath(file.file) + '" download="' + $('<div>').text(file.name).html() + '">').text(file.name)).append(field.getSize(file.size))
                 );
 
                 if (toCopy !== '') toCopy += "\n";
@@ -86,7 +125,7 @@
             let Files = oldValue.v || [];
             let isEntered = false;
 
-            const printFile = function (file) {
+            const printFile =  (file) => {
                 let addDiv = $('<div class="filePart"><div><span class="name"></span><span class="size"></span><button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i></button></div></div>');
 
                 let fl = {
@@ -105,10 +144,10 @@
                 if (!file.file) {
                     addDiv.append('<div class="progressbar">&nbsp;</div>');
                 } else {
-                    let a = $('<a>').attr('href', '/fls/' + file.file).attr('download', file.name);
+                    let a = $('<a>').attr('href', this.getFilePath(file.file)).attr('download', file.name);
                     addDiv.find('.name').wrap(a);
                     if (['jpg', 'png'].indexOf(file.ext) !== -1) {
-                        $('<img>').attr('src', '/fls/' + file.file + '_thumb.jpg?rand=' + Math.random()).insertBefore(addDiv.find('.name'));
+                        $('<img>').attr('src', this.getFilePath(file.file, true, true)).insertBefore(addDiv.find('.name'));
                         addDiv.addClass('with-img')
                     }
 
