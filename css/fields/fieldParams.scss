@@ -26,3 +26,9 @@
     background-color: tomato;
   }
 }
+
+.form-group:not(.disabled) {
+  .code-checkboxes-warning-panel.only-when-active {
+    background-color: tomato;
+  }
+}

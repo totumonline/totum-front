@@ -179,10 +179,10 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
                         if (fName === 'secureFile') {
                             if (!oldValue.secureFile || !oldValue.secureFile.Val) {
-                                divInput.append('<div class="code-checkboxes-active-warning"><div class="code-checkboxes-warning-panel">'
+                                divInput.append('<div class="code-checkboxes-warning-panel only-when-active">'
                                     + App.translate('This option works only in PRO.') + (item['id'] ? ' ' +
                                         App.translate('If you enable it and you have files in this field, they stay on the server, but you cannot access them from totum.') + ' ' : '')
-                                    + App.translate('This option can be enabled only. You will not be able to turn it off.') + '</div></div>');
+                                    + App.translate('This option can be enabled only. You will not be able to turn it off.') + '</div>');
                             } else {
                                   divInput.find('input').on('click', ()=>{return false}).addClass('disabled')
                             }
