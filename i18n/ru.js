@@ -80,12 +80,12 @@ App.langs.ru =
                 "Default printing": "Печать по-умолчанию",
                 "Forms": "Формы",
                 "Add form": "Добавить форму",
-                    "On type change all field setting will be reset to default. If you want to save this changes — save field and change it's type after that":"При изменении типа все настройки поля будут сброшены на значения по умолчанию. Если вы хотите сохранить эти изменения, сохраните поле и измените его тип после этого.",
-                    "On type change all field setting will be reset to saved. If you want to save this changes — save field and change it's type after that":"При изменении типа все настройки поля будут сброшены к сохраненным. Если вы хотите сохранить эти изменения, сохраните поле и измените его тип после этого.",
+                "On type change all field setting will be reset to default. If you want to save this changes — save field and change it's type after that": "При изменении типа все настройки поля будут сброшены на значения по умолчанию. Если вы хотите сохранить эти изменения, сохраните поле и измените его тип после этого.",
+                "On type change all field setting will be reset to saved. If you want to save this changes — save field and change it's type after that": "При изменении типа все настройки поля будут сброшены к сохраненным. Если вы хотите сохранить эти изменения, сохраните поле и измените его тип после этого.",
 
                 'RowList of page/table rows': 'RowList строк страницы/таблицы',
 
-                'Attention':'Внимание',
+                'Attention': 'Внимание',
 
                 /*Kanban*/
                 'Show columns extra info': 'Показать дополнительную информацию колонок',
@@ -437,6 +437,11 @@ App.langs.ru =
 
                 'Dbstring is incorrect': 'Ошибочная строка',
                 'Create config and upload scheme': 'Создать конфиг и залить схему',
+
+
+                'This option works only in PRO.': 'Эта опция работает только в PRO.',
+                'If you enable it and you have files in this field, they stay on the server, but you cannot access them from totum.': 'Если вы включите ее и у вас есть файлы в этом поле, они останутся на сервере, но вы не сможете получить их из totum.',
+                    'This option can be enabled only. You will not be able to turn it off.':'Эта опция может быть только включена. У вас не будет возможности отключить ее.'
             }
     }
 ;
