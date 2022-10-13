@@ -12,9 +12,9 @@ App.pcTableMain.prototype.__formatFunctions = {
             colors.forEach((v, i) => {
                 if (v.match(/\#?[0-9A-F]+/i)) {
                     if (i == 1) {
-                        text += ' tr.DataRow:nth-of-type(odd) td {background-color: ' + v + ';}'
+                        text += ' tr.DataRow:nth-of-type(odd) td {background-color: ' + App.theme.getColor(v) + ';}'
                     } else {
-                        text += ' tr.DataRow:nth-of-type(even) td {background-color: ' + v + ';}'
+                        text += ' tr.DataRow:nth-of-type(even) td {background-color: ' + App.theme.getColor(v) + ';}'
                     }
                 }
             })

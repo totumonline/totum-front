@@ -35,10 +35,10 @@
 
 
                 if (format.color) {
-                    css['font-color'] = format.color;
+                    css['font-color'] = App.theme.getColor(format.color);
                 }
                 if (format.background) {
-                    css['background-color'] = format.background;
+                    css['background-color'] = App.theme.getColor(format.background);
                 }
                 if (format.text) {
                     td.text(format.text)
@@ -115,10 +115,10 @@
                 data.__td_style = function () {
                     let style = {td: {}, Button: {}};
                     if (format.background) {
-                        style.Button.backgroundColor = format.background
+                        style.Button.backgroundColor = App.theme.getColor(format.background)
                     }
                     if (format.color) {
-                        style.Button.color = format.color
+                        style.Button.color = App.theme.getColor(format.color)
                     }
                     style.td.backgroundColor = 'transparent';
                     return style;
@@ -148,7 +148,7 @@
                 css['text-align'] = format.align;
             }
             if (format.color) {
-                css['color'] = format.color;
+                css['color'] = App.theme.getColor(format.color);
             }
             if (format.tab) {
                 css['padding-left'] = format.tab;
@@ -159,7 +159,7 @@
                         setTimeout(addProgress, 1);
                     } else {
                         let progress = Math.round(td.outerWidth() * parseInt(format.progress) / 100);
-                        td.css('box-shadow', 'inset ' + progress.toString() + 'px 0px 0 0 ' + format.progresscolor);
+                        td.css('box-shadow', 'inset ' + progress.toString() + 'px 0px 0 0 ' + App.theme.getColor(format.progresscolor));
                     }
                 };
                 addProgress();
@@ -421,7 +421,7 @@
                     v.$div.append(title)
                     if (this.tableRow.panels_view.kanban_colors) {
                         if (this.tableRow.panels_view.kanban_colors[v[0]])
-                            title.css({'background-color': this.tableRow.panels_view.kanban_colors[v[0]]})
+                            title.css({'background-color': App.theme.getColor(this.tableRow.panels_view.kanban_colors[v[0]])})
                     }
                     if (this.tableRow.panels_view.kanban_html_type && kanban_html) {
                         let html = $('<div class="kanban-html">');

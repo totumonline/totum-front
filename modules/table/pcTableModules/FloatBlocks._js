@@ -338,9 +338,9 @@
                     }
                     if (sec.outline) {
                         if (blockNum in sec.outline)
-                            floatInner.data('border-color', sec.outline[blockNum])
+                            floatInner.data('border-color', App.theme.getColor(sec.outline[blockNum]))
                         else {
-                            floatInner.data('border-color', sec.outline)
+                            floatInner.data('border-color', App.theme.getColor(sec.outline))
                         }
                     }
                     if (sec.plate) {
@@ -807,10 +807,10 @@
                                                 field.fieldCell.addClass('no-border')
                                                 style.Button = {};
                                                 if (format.background) {
-                                                    style.Button.backgroundColor = format.background
+                                                    style.Button.backgroundColor = App.theme.getColor(format.background)
                                                 }
                                                 if (format.color) {
-                                                    style.Button.color = format.color
+                                                    style.Button.color = App.theme.getColor(format.color)
                                                 }
                                                 field.td.find('button').css(style.Button);
                                                 style.backgroundColor = "transparent"
@@ -822,7 +822,7 @@
                                                 field.fieldCell.removeClass('no-border')
                                                 style.Button = {};
                                                 style.Button.backgroundColor = ''
-                                                style.Button.color = format.color
+                                                style.Button.color = App.theme.getColor(format.color)
                                                 field.td.find('button').css(style.Button);
                                             }
                                         }
@@ -862,10 +862,10 @@
                             }
                         }
                         if (div.data('border-color')) {
-                            style.borderColor = isSmallerSize ? div.data('border-color')["_small"] : div.data('border-color')['_big'];
+                            style.borderColor = App.theme.getColor(isSmallerSize ? div.data('border-color')["_small"] : div.data('border-color')['_big']);
                         }
                         if (div.data('plate')) {
-                            style.backgroundColor = isSmallerSize ? div.data('plate')["_small"] : div.data('plate')['_big'];
+                            style.backgroundColor = App.theme.getColor(isSmallerSize ? div.data('plate')["_small"] : div.data('plate')['_big']);
                         }
                         div.css(style);
 

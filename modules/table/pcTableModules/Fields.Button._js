@@ -56,10 +56,10 @@ fieldTypes.button = {
             } else if (td && td.is('.button-wrapper')) {
                 let css = {};
                 if (format.background) {
-                    css.backgroundColor = format.background;
+                    css.backgroundColor = App.theme.getColor(format.background);
                 }
                 if (format.color) {
-                    css.color = format.color;
+                    css.color = App.theme.getColor(format.color);
                 }
                 btn.css(css)
 
@@ -85,10 +85,10 @@ fieldTypes.button = {
             } else if (field.pcTable.isMobile && field.category !== 'column') {
                 let css = {};
                 if (format.background) {
-                    css.backgroundColor = format.background;
+                    css.backgroundColor = App.theme.getColor(format.background);
                 }
                 if (format.color) {
-                    css.color = format.color;
+                    css.color = App.theme.getColor(format.color);
                 }
                 btn.css(css)
             }

@@ -238,7 +238,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 let divWrapper = $('<div class="cell-wrapper" style="position: relative"><div class="progressBorder"></div></div>');
 
                 if (field.panelColor) {
-                    divWrapper.css('background-color', field.panelColor)
+                    divWrapper.css('background-color', App.theme.getColor(field.panelColor))
                 } else if (field.webRoles && field.webRoles.length === 1 && field.webRoles[0].toString() === "1") {
                     divWrapper.addClass('admin-see');
                 }
@@ -328,15 +328,15 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                     bBtn = $('<span class="backgroundButton btn btn-sm btn-default">').appendTo($buttons).html('<span/>')
                 }
 
-                bBtn.css('background-color', format.background || "transparent")
-                bBtn.find('span').css('background-color', format.color || format.background)
+                bBtn.css('background-color', App.theme.getColor(format.background || "transparent"))
+                bBtn.find('span').css('background-color',  App.theme.getColor(format.color || format.background));
 
             } else if (bBtn.length) {
                 bBtn.remove();
             }
 
             cell.parent().find('.progressBorder').css({
-                borderTopColor: format.progresscolor || "transparent",
+                borderTopColor: App.theme.getColor(format.progresscolor || "transparent"),
                 width: (format.progress || 100) >= 100 ? 100 : format.progress + "%",
             })
 

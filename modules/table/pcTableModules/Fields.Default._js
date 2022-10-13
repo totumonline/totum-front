@@ -39,10 +39,10 @@ var defaultField = {
                                 }
                                 $buttons.push(btn)
                                 if (b.color) {
-                                    btn.css('color', b.color)
+                                    btn.css('color', App.theme.getColor(b.color))
                                 }
                                 if (b.background) {
-                                    btn.css('background-color', b.background)
+                                    btn.css('background-color', App.theme.getColor(b.background))
                                 }
                                 btn.on('click', function () {
                                     if (field.pcTable.selectedCells) {

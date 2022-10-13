@@ -1389,7 +1389,7 @@
                             if (!field.showMeWidth || (pcTable.data_params[field.name].f && pcTable.data_params[field.name].f.hide && pcTable.data_params[field.name].f.hide.mobile)) return;
 
 
-                            $table = $("<table class='pcTable-paramsTable'>" + (isNoTitles ? "" : "<thead><tr></tr></thead>") + "<tbody><tr style='background-color: " + panelColor + "'></tr></tbody></table>");
+                            $table = $("<table class='pcTable-paramsTable'>" + (isNoTitles ? "" : "<thead><tr></tr></thead>") + "<tbody><tr style='background-color: " + App.theme.getColor(panelColor) + "'></tr></tbody></table>");
                             if (pcTable.isMobile && field.type === 'button') {
                                 $table = $("<table class='pcTable-paramsTable'><tbody><tr></tr></tbody></table>");
                             }
@@ -1488,7 +1488,7 @@
                     if (pcTable.isMobile || width === 0 || (ContainerWidth < (width + field.showMeWidth)) || field.tableBreakBefore) {
                         if ($table && !pcTable.isMobile) $table.width(width);
 
-                        $table = $("<table class='pcTable-footersTable'><thead><tr></tr></thead><tbody><tr style='background-color: " + panelColor + "'></tr></tbody></table>");
+                        $table = $("<table class='pcTable-footersTable'><thead><tr></tr></thead><tbody><tr style='background-color: " + App.theme.getColor(panelColor) + "'></tr></tbody></table>");
                         if (field.type === 'button' || isNoTitles) {
                             $table = $("<table class='pcTable-paramsTable'><tbody><tr></tr></tbody></table>");
                         }
@@ -1927,9 +1927,9 @@
             }
 
             if (field.panelColor) {
-                $th.css('background-color', field.panelColor);
+                $th.css('background-color', App.theme.getColor(field.panelColor));
             } else if (panelColor !== undefined && panelColor !== '') {
-                $th.css('background-color', panelColor);
+                $th.css('background-color', App.theme.getColor(panelColor));
                 field.panelColor = panelColor;
             }
 
@@ -2936,13 +2936,14 @@
 
             if (!(field.type === "button" && field.pcTable.isMobile && field.category !== 'column')) {
                 if (format.background) {
-                    td.css('background-color', format.background);
+                    td.css('background-color', App.theme.getColor(format.background));
                 } else if (field.panelColor) {
-                    td.css('background-color', field.panelColor);
+                    td.css('background-color', App.theme.getColor(field.panelColor));
                 }
                 if (format.color) {
-                    td.css('color', format.color);
-                    td.find('a').css('color', format.color);
+                    let color = App.theme.getColor(format.color);
+                    td.css('color', color);
+                    td.find('a').css('color', color);
                 }
             }
 
@@ -2978,7 +2979,7 @@
                 if (pcTable.isMobile) {
                     td.data('addProgress', function () {
                         let span = td.find('.cell-value');
-                        span.css('box-shadow', 'inset ' + (Math.round(span.width() * parseInt(format.progress) / 100)).toString() + 'px 0px 0 0 ' + format.progresscolor);
+                        span.css('box-shadow', 'inset ' + (Math.round(span.width() * parseInt(format.progress) / 100)).toString() + 'px 0px 0 0 ' + App.theme.getColor(format.progresscolor));
                     });
                 }
                 addProgress();
