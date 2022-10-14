@@ -630,6 +630,7 @@
                         addDiff -= grow;
                         grow = 0;
                     }
+
                 };
 
 
@@ -680,7 +681,7 @@
             let isSmallerSize = false;
             FlowBlocks.forEach(function (FlowLines, fInd) {
                 let diffItt = 0;
-                while ((++diffItt < 400) && !checkDiffs(FlowLines)) {
+                while ((++diffItt < 10000) && !checkDiffs(FlowLines)) {
                     FlowLines.forEach(function (FloatInners, i) {
                         let diff = getDiff(FloatInners);
                         if (diff < 0) {
