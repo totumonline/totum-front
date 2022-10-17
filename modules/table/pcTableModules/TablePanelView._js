@@ -35,7 +35,7 @@
 
 
                 if (format.color) {
-                    css['font-color'] = App.theme.getColor(format.color);
+                    css['font-color'] = App.theme.getColor(format.color, true);
                 }
                 if (format.background) {
                     css['background-color'] = App.theme.getColor(format.background);
@@ -118,7 +118,7 @@
                         style.Button.backgroundColor = App.theme.getColor(format.background)
                     }
                     if (format.color) {
-                        style.Button.color = App.theme.getColor(format.color)
+                        style.Button.color = App.theme.getColor(format.color, true)
                     }
                     style.td.backgroundColor = 'transparent';
                     return style;
@@ -148,7 +148,7 @@
                 css['text-align'] = format.align;
             }
             if (format.color) {
-                css['color'] = App.theme.getColor(format.color);
+                css['color'] = App.theme.getColor(format.color, true);
             }
             if (format.tab) {
                 css['padding-left'] = format.tab;

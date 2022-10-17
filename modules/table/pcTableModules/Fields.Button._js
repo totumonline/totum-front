@@ -59,7 +59,7 @@ fieldTypes.button = {
                     css.backgroundColor = App.theme.getColor(format.background);
                 }
                 if (format.color) {
-                    css.color = App.theme.getColor(format.color);
+                    css.color = App.theme.getColor(format.color, true);
                 }
                 btn.css(css)
 
@@ -88,7 +88,7 @@ fieldTypes.button = {
                     css.backgroundColor = App.theme.getColor(format.background);
                 }
                 if (format.color) {
-                    css.color = App.theme.getColor(format.color);
+                    css.color = App.theme.getColor(format.color, true);
                 }
                 btn.css(css)
             }

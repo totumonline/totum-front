@@ -811,7 +811,7 @@
                                                     style.Button.backgroundColor = App.theme.getColor(format.background)
                                                 }
                                                 if (format.color) {
-                                                    style.Button.color = App.theme.getColor(format.color)
+                                                    style.Button.color = App.theme.getColor(format.color, true)
                                                 }
                                                 field.td.find('button').css(style.Button);
                                                 style.backgroundColor = "transparent"
@@ -823,7 +823,7 @@
                                                 field.fieldCell.removeClass('no-border')
                                                 style.Button = {};
                                                 style.Button.backgroundColor = ''
-                                                style.Button.color = App.theme.getColor(format.color)
+                                                style.Button.color = App.theme.getColor(format.color, true)
                                                 field.td.find('button').css(style.Button);
                                             }
                                         }

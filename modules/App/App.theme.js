@@ -1,6 +1,6 @@
 (function () {
     App.theme = {
-        getColor: function (color) {
+        getColor: function (color, isColor) {
             return color;
         }
     };
