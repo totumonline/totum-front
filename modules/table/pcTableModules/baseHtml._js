@@ -2941,7 +2941,7 @@
                     td.css('background-color', App.theme.getColor(field.panelColor));
                 }
                 if (format.color) {
-                    let color = App.theme.getColor(format.color);
+                    let color = App.theme.getColor(format.color, true);
                     td.css('color', color);
                     td.find('a').css('color', color);
                 }
