@@ -7,7 +7,7 @@ td.id {
 }
 
 .id {
-  .btn {
+  .btn:not(.btn-warning) {
     border-color: transparent;
     background-color: #faf9f8;
 
