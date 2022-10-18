@@ -599,7 +599,7 @@
                 });
 
                 const fillLines = function (line) {
-                    return;
+
                     let parent = line.fields[0].fieldCell.parent();
 
                     let top = line.fields[0].fieldCell.position().top;
