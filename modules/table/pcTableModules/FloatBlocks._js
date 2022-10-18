@@ -546,6 +546,11 @@
                 return rightParent - lastLeft;
             };
 
+            const getBlockDiff = function (inner, floatBlock) {
+                let rightParent = floatBlock.offset().left + floatBlock.outerWidth() - parseInt(floatBlock.css('paddingRight'));
+                return rightParent - (inner.offset().left + inner.outerWidth());
+            };
+
 
             const growFieldsfnc = function (FloatInners, isSmallerSize) {
                 if (!FloatInners.length) return;
@@ -679,9 +684,13 @@
 
 
             let isSmallerSize = false;
+            console.log('start');
+
             FlowBlocks.forEach(function (FlowLines, fInd) {
                 let diffItt = 0;
-                while ((++diffItt < 10000) && !checkDiffs(FlowLines)) {
+                let done = false;
+                while (!done && (++diffItt < 4000) && !checkDiffs(FlowLines)) {
+                    console.log(diffItt);
                     FlowLines.forEach(function (FloatInners, i) {
                         let diff = getDiff(FloatInners);
                         if (diff < 0) {
@@ -694,16 +703,32 @@
                                     let leftField;
                                     let leftFieldI;
                                     let leftPosition;
-                                    for (let i = inner.fields.length - 1; i >= 1; i--) {
+                                    for (let i = 0; i < inner.fields.length; i++) {
                                         let field = inner.fields[i];
                                         field.i = i
-                                        if (!leftPosition || field.fieldCell.position().left > leftPosition) {
+                                        if (i > 0 && !leftPosition &&  !field.format.nextline && !field.fieldCell.prev().is('br') && getBlockDiff(field.fieldCell, field.fieldCell.closest('.pcTable-floatBlock')) < 0) {
                                             leftPosition = field.fieldCell.position().left;
                                             leftField = field;
                                             leftFieldI = i;
                                         }
                                     }
+
                                     if (leftField && !leftField.format.nextline && !leftField.fieldCell.prev().is('br')) {
+
+                                        while (true) {
+                                            if (leftField.i == 0) {
+                                                break;
+                                            }
+                                            let leftLeft = inner.fields[leftField.i - 1];
+                                            if (!leftLeft.format.nextline && !leftLeft.fieldCell.prev().is('br')) {
+                                                let diff = getBlockDiff(leftLeft.fieldCell, leftLeft.fieldCell.closest('.pcTable-floatBlock'));
+                                                if (diff < 0) {
+                                                    leftField = leftLeft;
+                                                    continue;
+                                                }
+                                            }
+                                            break;
+                                        }
                                         if (leftField.format.glue) {
                                             while (true) {
                                                 if (!leftField.i) {
@@ -749,6 +774,10 @@
                                     });
 
                                 });
+                            } else {
+                                done = true;
+                                console.log('done');
+                                
                             }
                         }
                     });
