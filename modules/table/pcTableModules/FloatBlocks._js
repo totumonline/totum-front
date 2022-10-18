@@ -599,6 +599,7 @@
                 });
 
                 const fillLines = function (line) {
+                    return;
                     let parent = line.fields[0].fieldCell.parent();
 
                     let top = line.fields[0].fieldCell.position().top;
@@ -688,34 +689,72 @@
 
             FlowBlocks.forEach(function (FlowLines, fInd) {
                 let diffItt = 0;
-                let done = false;
-                while (!done && (++diffItt < 4000) && !checkDiffs(FlowLines)) {
-                    console.log(diffItt);
+                let done = [];
+                let glueExceptions = {};
+                while (done.length != FlowLines.length && (++diffItt < 500) && !checkDiffs(FlowLines)) {
+                    console.log(diffItt, done);
                     FlowLines.forEach(function (FloatInners, i) {
+                        if (done.indexOf(i) !== -1) {
+                            return;
+                        }
+
+                        let FlowLineI = i;
                         let diff = getDiff(FloatInners);
                         if (diff < 0) {
                             isSmallerSize = true;
-                            /!*Cносим поля в блоках*!/;
+
+                            const moveBlockToNewLine = function () {
+                                /*Сносим блоки*/
+                                let LastFirstLineInner = FlowLines[0].length - 1;
+
+                                if (LastFirstLineInner > 0) {
+                                    let fInner = FlowLines[0][LastFirstLineInner];
+                                    let inner = fInner.div;
+                                    inner.before('<br/>');
+                                    FlowLines.push([fInner]);
+                                    FlowLines[0].splice(LastFirstLineInner, 1);
+                                    FlowLines.forEach(function (inners) {
+                                        inners.forEach(function (inner) {
+                                            inner.div.find('br.wrapped').remove();
+                                            inner.fields.forEach((field) => addFieldGap(field, sectionGap))
+                                        });
+
+                                    });
+                                    return true;
+                                }
+                                return false;
+                            }
+
+                            /*Cносим поля в блоках*/
                             for (let iF = FloatInners.length - 1; iF >= 0; iF--) {
-                                /!*Cносим поля в блокe*!/;
+                                /*Cносим поля в блокe*/
                                 let inner = FloatInners[iF];
                                 if (inner.isWrappable && inner.w) {
                                     let leftField;
                                     let leftFieldI;
                                     let leftPosition;
+
+                                    let glueMode = false;
+
+
                                     for (let i = 0; i < inner.fields.length; i++) {
                                         let field = inner.fields[i];
                                         field.i = i
-                                        if (i > 0 && !leftPosition &&  !field.format.nextline && !field.fieldCell.prev().is('br') && getBlockDiff(field.fieldCell, field.fieldCell.closest('.pcTable-floatBlock')) < 0) {
-                                            leftPosition = field.fieldCell.position().left;
-                                            leftField = field;
-                                            leftFieldI = i;
+
+                                        if (i > 0 && !leftPosition && !field.format.nextline && !field.fieldCell.prev().is('br') && getBlockDiff(field.fieldCell, field.fieldCell.closest('.pcTable-floatBlock')) < 0) {
+                                            if ((glueExceptions[FlowLineI] && glueExceptions[FlowLineI].indexOf(i) !== -1)) {
+                                                glueMode = true;
+                                            } else {
+                                                leftPosition = field.fieldCell.position().left;
+                                                leftField = field;
+                                                leftFieldI = i;
+                                            }
                                         }
                                     }
 
                                     if (leftField && !leftField.format.nextline && !leftField.fieldCell.prev().is('br')) {
 
-                                        while (true) {
+                                        while (!glueMode) {
                                             if (leftField.i == 0) {
                                                 break;
                                             }
@@ -730,6 +769,7 @@
                                             break;
                                         }
                                         if (leftField.format.glue) {
+                                            let leftFieldInI = leftField.i;
                                             while (true) {
                                                 if (!leftField.i) {
                                                     leftField = null;
@@ -738,6 +778,13 @@
                                                 leftField = inner.fields[leftField.i - 1];
                                                 leftFieldI = leftField.i
                                                 if (leftField.format.nextline || leftField.fieldCell.is(':first-child') || leftField.fieldCell.prev().is('br')) {
+                                                    if (moveBlockToNewLine()) {
+                                                        return;
+                                                    } else {
+                                                        glueExceptions[FlowLineI] = glueExceptions[FlowLineI] || [];
+                                                        glueExceptions[FlowLineI].push(leftFieldInI);
+                                                        return;
+                                                    }
                                                     leftField = null;
                                                     break;
                                                 } else if (!leftField.format.glue) {
@@ -758,27 +805,13 @@
                             }
 
 
-                            /!*Сносим блоки*!/
-                            let LastFirstLineInner = FlowLines[0].length - 1;
-
-                            if (LastFirstLineInner > 0) {
-                                let fInner = FlowLines[0][LastFirstLineInner];
-                                let inner = fInner.div;
-                                inner.before('<br/>');
-                                FlowLines.push([fInner]);
-                                FlowLines[0].splice(LastFirstLineInner, 1);
-                                FlowLines.forEach(function (inners) {
-                                    inners.forEach(function (inner) {
-                                        inner.div.find('br.wrapped').remove();
-                                        inner.fields.forEach((field) => addFieldGap(field, sectionGap))
-                                    });
-
-                                });
-                            } else {
-                                done = true;
-                                console.log('done');
-                                
+                            if (!moveBlockToNewLine()) {
+                                done.push(i);
+                                console.log('done ' + i);
                             }
+                        } else {
+                            done.push(i);
+                            console.log('done by diff' + i);
                         }
                     });
                 }
