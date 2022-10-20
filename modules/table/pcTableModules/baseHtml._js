@@ -220,8 +220,7 @@
                             }
 
                         } else {
-                            cellText = field.getCellText(item[field.name].c, null, item, pcTable);
-                            if (typeof cellText === 'object') cellText = cellText.text();
+                            cellText = item[field.name].c;
                         }
                     }
                     notify.append($('<div>' + App.translate('Calculated value') + ': </div>').append($('<code>').text(cellText.length <= 50 ? cellText : cellText.toString().substr(0, 47) + '...')));

@@ -685,14 +685,14 @@
 
 
             let isSmallerSize = false;
-            console.log('start');
+            //console.log('start');
 
             FlowBlocks.forEach(function (FlowLines, fInd) {
                 let diffItt = 0;
                 let done = [];
                 let glueExceptions = {};
                 while (done.length != FlowLines.length && (++diffItt < 500) && !checkDiffs(FlowLines)) {
-                    console.log(diffItt, done);
+                    //console.log(diffItt, done);
                     FlowLines.forEach(function (FloatInners, i) {
                         if (done.indexOf(i) !== -1) {
                             return;
@@ -807,11 +807,11 @@
 
                             if (!moveBlockToNewLine()) {
                                 done.push(i);
-                                console.log('done ' + i);
+                                //console.log('done ' + i);
                             }
                         } else {
                             done.push(i);
-                            console.log('done by diff' + i);
+                            //console.log('done by diff' + i);
                         }
                     });
                 }

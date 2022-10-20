@@ -141,6 +141,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                             c = $('<span class="value">').text(c);
                         }
                     }
+                } else {
+                    c = val.c;
                 }
                 textDiv.append($('<div class="calc-value"><i class="fa fa-hand-paper-o"></i> ' + App.translate('Calculated value') + ': </div>').append(c));
             } else
