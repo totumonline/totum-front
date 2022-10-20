@@ -144,7 +144,7 @@
                                     break;
 
                                 case 'outline':
-                                    outline = addSectionParam(outline, split, ((str) => str === true ? "#e4e4e4" : str), true)
+                                    outline = addSectionParam(outline, split, ((str) => str === true ? true : str), true)
                                     break;
                                 case 'blocktitle':
                                     blocktitle = addSectionParam(blocktitle, split, ((str) => str === false ? "" : str), false)
@@ -333,16 +333,16 @@
                     floatInner = $('<div class="pcTable-floatInner">').appendTo(floatBlock);
                     if (blockNum) {
                         if (pcTable.isCreatorView) {
-                            floatInner.append('<div data-type="blocknum" style="position:absolute;z-index: 100; color: #ff8585; background-color: #fff; padding: 3px; font-size: 10px; right: 4px; top: 4px;">' + blockNum + '</div>')
+                            floatInner.append('<div data-type="blocknum" class="ttm-floatBlock-num">' + blockNum + '</div>')
                         }
                     }
-                    if (sec.outline) {
-                        if (blockNum in sec.outline)
-                            floatInner.data('border-color', App.theme.getColor(sec.outline[blockNum]))
-                        else {
-                            floatInner.data('border-color', App.theme.getColor(sec.outline))
-                        }
+
+                    let outline = blockNum in sec.outline ? sec.outline[blockNum] : sec.outline;
+
+                    if (outline) {
+                        floatInner.data('border-color', outline);
                     }
+
                     if (sec.plate) {
                         if (blockNum in sec.plate)
                             floatInner.data('plate', sec.plate[blockNum])
@@ -350,6 +350,7 @@
                             floatInner.data('plate', sec.plate)
                         }
                     }
+
                     if (blockNum && sec.blocktitle[blockNum]) {
                         let blocktitle = $('<div class="blocktitle"></div>').append($('<span>').text(sec.blocktitle[blockNum]))
                         floatInner.prepend(blocktitle)
@@ -925,7 +926,14 @@
                             }
                         }
                         if (div.data('border-color')) {
-                            style.borderColor = App.theme.getColor(isSmallerSize ? div.data('border-color')["_small"] : div.data('border-color')['_big']);
+                            let outline = isSmallerSize ? div.data('border-color')["_small"] : div.data('border-color')['_big'];
+                            if (outline) {
+                                if (outline === true) {
+                                    div.addClass('outlined')
+                                } else {
+                                    style.borderColor = App.theme.getColor(outline);
+                                }
+                            }
                         }
                         if (div.data('plate')) {
                             style.backgroundColor = App.theme.getColor(isSmallerSize ? div.data('plate')["_small"] : div.data('plate')['_big']);
