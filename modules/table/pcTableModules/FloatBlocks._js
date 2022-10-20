@@ -337,14 +337,14 @@
                         }
                     }
 
-                    let outline = blockNum in sec.outline ? sec.outline[blockNum] : sec.outline;
+                    let outline = typeof sec.outline === 'object' && blockNum in sec.outline ? sec.outline[blockNum] : sec.outline;
 
                     if (outline) {
                         floatInner.data('border-color', outline);
                     }
 
                     if (sec.plate) {
-                        if (blockNum in sec.plate)
+                        if (typeof sec.plate === 'object' && blockNum in sec.plate)
                             floatInner.data('plate', sec.plate[blockNum])
                         else {
                             floatInner.data('plate', sec.plate)
