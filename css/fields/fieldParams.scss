@@ -15,20 +15,23 @@
 }
 
 .code-checkboxes-warning-panel {
-  background-color: #fff;
+  background-color: transparent;
   display: block;
-  color: #fff;
+  color: transparent;
   text-align: center;
+  padding: 5px;
 }
 
 .code-checkboxes-active-warning {
   .code-checkboxes-warning-panel {
     background-color: tomato;
+    color: #fff;
   }
 }
 
 .form-group:not(.disabled) {
   .code-checkboxes-warning-panel.only-when-active {
     background-color: tomato;
+    color: #fff;
   }
 }

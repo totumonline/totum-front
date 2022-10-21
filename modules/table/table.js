@@ -772,6 +772,10 @@
                         "codeSelect": App.translate('SelectShort'),
                         "format": App.translate('FormatShort')
                     };
+                    if(field.category === 'filter'){
+                        delete codes['codeAction'];
+                    }
+
                     let codesKeys = Object.keys(codes);
                     for (let i = 0; i < codesKeys.length; i++) {
                         let name = codesKeys[i];
