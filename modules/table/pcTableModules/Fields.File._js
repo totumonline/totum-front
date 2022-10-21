@@ -25,11 +25,9 @@
                 if (['png', 'jpg'].indexOf(file.ext) !== -1) {
                     img = $('<img src="' + this.getFilePath(file.file, true) + '" style="z-index: 200;" class="file-image-preview" data-filename="' + this.getFilePath(file.file) + '"/>');
                     show_img(img, file);
-                }
-                else if(file.ext === 'pdf'){
+                } else if (file.ext === 'pdf') {
                     img = '<i class="fa fa-file-pdf-o" class="file-pdf-preview" data-filename="' + this.getFilePath(file.file) + '"/>';
-                }
-                else{
+                } else {
                     switch (file.ext) {
                         case 'xls':
                         case 'xlsx':
@@ -65,8 +63,8 @@
                 a.append(file.name);
                 div.append(a);
                 div.find('img, i').css({
-                    'max-height':24,
-                    'margin-right':4
+                    'max-height': 24,
+                    'margin-right': 4
                 })
             };
             if (fieldValue.length && fieldValue.forEach
@@ -80,7 +78,7 @@
             if (!fieldValue || fieldValue === null || fieldValue.length == 0) return '';
             let field = this;
             let toCopy = '';
-            fieldValue.forEach( (file) => {
+            fieldValue.forEach((file) => {
                 if (toCopy !== '') toCopy += "\n";
                 toCopy += file.name + ' ' + window.location.protocol + '//' + window.location.host + this.getFilePath(file.file) + ' ' + field.getSize(file.size);
             });
@@ -93,7 +91,7 @@
             let field = this;
             let toCopy = '';
 
-            fieldValue.forEach( (file) =>{
+            fieldValue.forEach((file) => {
                 let img = '';
                 let _class = '';
                 if (['jpg', 'png'].indexOf(file.ext) !== -1) {
@@ -125,7 +123,7 @@
             let Files = oldValue.v || [];
             let isEntered = false;
 
-            const printFile =  (file) => {
+            const printFile = (file) => {
                 let addDiv = $('<div class="filePart"><div><span class="name"></span><span class="size"></span><button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i></button></div></div>');
 
                 let fl = {
@@ -239,7 +237,7 @@
                             });
 
                             xhr.upload.onprogress = function (event) {
-                                process.css('box-shadow', 'inset ' + Math.round(parseInt(process.width()) * event.loaded / event.total).toString() + 'px 0px 0 0 #85FF82');
+                                process.css('box-shadow', 'inset ' + Math.round(parseInt(process.width()) * event.loaded / event.total).toString() + 'px 0px 0 0 ' + App.theme.getColor('#85FF82'));
                                 if (event.loaded === event.total) {
                                     process.text(App.translate('Checking the file with the server'));
                                 }
@@ -263,9 +261,8 @@
                                 }
                                 addDiv.data('file', null);
                                 process.text(App.translate('Error')).css({
-                                    'box-shadow': 'none',
-                                    'background-color': '#ffe486'
-                                })
+                                    'box-shadow': 'none'
+                                }).addClass('load-fail')
 
                             };
 

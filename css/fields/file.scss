@@ -98,6 +98,10 @@
   &.with-img .name {
     max-width: 401px;
   }
+
+  .progressbar.load-fail{
+    background-color: #ffe486;
+  }
 }
 
 .file-mini-panel div {
