@@ -3000,9 +3000,7 @@
         _colorizeElement: function (td, color, repeated) {
             let i = 10;
 
-            color = App.theme.getColor(color)
-
-            let colorize = function () {
+           let colorize = function () {
                 if (i === 0) {
                     td.css('box-shadow', '');
                 } else {
