@@ -17,7 +17,7 @@ fieldTypes.comments = {
         if (fieldValue.notViewed) {
             div.addClass('notViewed');
             if (field.decorationColor) {
-                div.css('border-bottom-color', field.decorationColor);
+                div.css('border-bottom-color', App.theme.getColor(field.decorationColor, true));
             }
         }
 
@@ -201,7 +201,7 @@ fieldTypes.comments = {
                 valPreview.text(val);
 
                 if (val !== '') {
-                    valPreview.css('color', 'red');
+                    valPreview.css('color', App.theme.getColor('red', true));
                 } else {
                     valPreview.html(field.getValPreview(oldValueParam));
                     valPreview.css('color', '');
@@ -328,7 +328,7 @@ fieldTypes.comments = {
 
                 div.text(App.translate('Editing in the form')).addClass('edit-in-form');
                 setTimeout(() => {
-                    div.closest('td').css('background-color', '#ffddb4')
+                    div.closest('td').addClass('editing-in-modal')
                 })
             }
         } else {

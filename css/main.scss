@@ -607,6 +607,13 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
 
     .text-center {
       padding-top: 4px;
+      .fa-spinner{
+        color: #000;
+      }
+    }
+
+    &.editing-in-modal{
+      background-color: #ffddb4;
     }
   }
   &.with-code {

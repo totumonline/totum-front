@@ -818,10 +818,10 @@
                                 props.buttons.forEach((btn) => {
                                     let _btn = dialog.getButton(btn.id);
                                     if (btn.background) {
-                                        _btn.css('background-color', btn.background);
+                                        _btn.css('background-color', App.theme.getColor(btn.background));
                                     }
                                     if (btn.color) {
-                                        _btn.css('color', btn.color);
+                                        _btn.css('color', App.theme.getColor(btn.color, true));
                                     }
                                 });
 

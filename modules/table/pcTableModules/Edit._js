@@ -109,7 +109,7 @@ $.extend(App.pcTableMain.prototype, {
                 editedData.checked_ids = pcTable.row_actions_get_checkedIds();
                 $td.height($td.height());
                 $td.find('.cell-value, .ttm--panel-data').hide();
-                let $spinner = $('<div class="text-center"><i class="fa fa-spinner" style="color: #000"></i></div>');
+                let $spinner = $('<div class="text-center"><i class="fa fa-spinner"></i></div>');
                 $td.append($spinner);
                 pcTable._saving = true;
                 pcTable.model.click(editedData)

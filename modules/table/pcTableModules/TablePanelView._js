@@ -97,7 +97,7 @@
                     td.on('dblclick', function () {
                         let background = td.css('backgroundColor');
                         let html = td.html();
-                        td.html('Редактирование в поле').css('background-color', '#ffddb4')
+                        td.html('Редактирование в поле').addClass('editing-in-modal')
                         pcTable.editSingleFieldInPanel(Field, data.id).then((json) => {
                             if (json) {
                                 pcTable.table_modify(json);

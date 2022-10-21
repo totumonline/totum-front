@@ -2972,7 +2972,7 @@
                         setTimeout(addProgress, 50);
                     } else {
                         let progress = Math.round(span.width() * parseInt(format.progress) / 100);
-                        span.css('box-shadow', 'inset ' + progress.toString() + 'px 0px 0 0 ' + format.progresscolor);
+                        span.css('box-shadow', 'inset ' + progress.toString() + 'px 0px 0 0 ' + App.theme.getColor(format.progresscolor));
                     }
                 };
                 if (pcTable.isMobile) {
@@ -2999,6 +2999,8 @@
         ,
         _colorizeElement: function (td, color, repeated) {
             let i = 10;
+
+            color = App.theme.getColor(color)
 
             let colorize = function () {
                 if (i === 0) {
@@ -3049,8 +3051,8 @@
 
             var pcTable = this;
             var i = 0;
-            var color = color || '#ff0000';
-            var toColor = toColor || '#ffffff';
+            var color = color || App.theme.getColor('#ff0000');
+            var toColor = toColor || App.theme.getColor('#ffffff');
             var color2;
 
             if (toColor.substr(0, 1) != '#') {

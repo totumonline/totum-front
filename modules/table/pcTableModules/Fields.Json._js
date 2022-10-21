@@ -320,7 +320,7 @@ fieldTypes.json = {
             });
             div.text(App.translate('Editing in the form')).addClass('edit-in-form');
             setTimeout(() => {
-                div.closest('td').css('background-color', '#ffddb4')
+                div.closest('td').addClass('editing-in-modal')
             })
         }
         else {

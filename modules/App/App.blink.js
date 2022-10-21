@@ -3,6 +3,8 @@
         let i = $times || 8;
         $param = $param || 'background-color';
 
+        $backgroundcolor = App.theme.getColor($backgroundcolor, $param === 'color');
+
         if (i % 2) {
             i++;
         }
