@@ -26,7 +26,7 @@
                     img = $('<img src="' + this.getFilePath(file.file, true) + '" style="z-index: 200;" class="file-image-preview" data-filename="' + this.getFilePath(file.file) + '"/>');
                     show_img(img, file);
                 } else if (file.ext === 'pdf') {
-                    img = '<i class="fa fa-file-pdf-o" class="file-pdf-preview" data-filename="' + this.getFilePath(file.file) + '"/>';
+                    img = '<i class="fa fa-file-pdf-o file-pdf-preview" data-filename="' + this.getFilePath(file.file) + '"/>';
                 } else {
                     switch (file.ext) {
                         case 'xls':
