@@ -819,11 +819,18 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     return false;
                 }
 
-                if (event.originalEvent && event.originalEvent.path && event.originalEvent.path[0] && $(event.originalEvent.path[0]).is('.asUrl')) {
-                    pcTable.actionOnClick(td);
-                    return false;
+                let target;
+                if (event.originalEvent){
+                    if( event.originalEvent.path){
+                        target = event.originalEvent.path[0]
+                    }else{
+                        target = event.originalEvent.target;
+                    }
+                    if(target && $(target).is('.asUrl')){
+                        pcTable.actionOnClick(td);
+                        return false;
+                    }
                 }
-
 
                 (() => {
 
