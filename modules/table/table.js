@@ -508,7 +508,7 @@
                 }
                 pcTable._container.on('contextmenu', function (event) {
                     let self = $(event.target);
-                    closeCallbacksFunc();
+                    closeCallbacksFunc(event);
                     if (!(self.closest('.popover').length || self.closest('.edit-row-panel').length)) {
                         return false;
                     }
