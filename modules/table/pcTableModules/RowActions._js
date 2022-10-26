@@ -72,9 +72,9 @@
         _addCellId: function (item, $row) {
             let $tdId = $('<td class="id"><span class="nm"></span></td>');
 
-            if(this._isDisplayngIdEnabled()){
+            if (this._isDisplayngIdEnabled()) {
                 $tdId.find('span').text(item['id']);
-                if(!this._isDisplayngIdEnabled(true)){
+                if (!this._isDisplayngIdEnabled(true)) {
                     $tdId.find('span').addClass('id-hidden')
                 }
             }
@@ -676,14 +676,21 @@
                 text.append($('<div class="menu-item row_duplicate"><i class="fa fa-clone"></i> ' + App.translate('Duplicate') + '</div>').attr('data-tr', trId));
             }
 
-            if (['calcs', 'globcalcs'].indexOf(pcTable.tableRow.type) !== -1) {
+            if (['calcs', 'globcalcs', 'tmp'].indexOf(pcTable.tableRow.type) !== -1) {
                 text.append($('<div class="menu-item"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate') + '</div>').css('color', 'gray'));
             } else {
                 text.append($('<div class="menu-item row_refresh"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate') + '</div>').attr('data-tr', trId));
             }
 
-            if (pcTable.isCreatorView && pcTable.tableRow.type === 'cycles') {
-                text.append($('<div class="menu-item cycle_refresh color-danger"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate cycle') + '</div>').attr('data-tr', trId));
+            if (pcTable.isCreatorView) {
+                if (['calcs', 'globcalcs', 'tmp'].indexOf(pcTable.tableRow.type) == -1) {
+                    text.append($('<div class="menu-item pro-function recalculate_with_fields color-danger"><span class="available-in-pro">'+App.translate('Available in PRO')+'</span><i class="fa fa-refresh"></i> ' + App.translate('Recalculate +') + '</div>').attr('data-tr', trId));
+                }
+                if (pcTable.tableRow.type === 'cycles') {
+                    text.append($('<div class="menu-item cycle_refresh color-danger"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate cycle') + '</div>').attr('data-tr', trId));
+                    text.append($('<div class="menu-item pro-function recalculate_cycle_with_fields color-danger"><span class="available-in-pro">'+App.translate('Available in PRO')+'</span><i class="fa fa-refresh"></i> ' + App.translate('Recalculate cycle +') + '</div>').attr('data-tr', trId));
+                }
+
             }
 
 

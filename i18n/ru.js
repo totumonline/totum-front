@@ -438,6 +438,10 @@ App.langs.ru =
                 'Dbstring is incorrect': 'Ошибочная строка',
                 'Create config and upload scheme': 'Создать конфиг и залить схему',
 
+                'Recalculate +': 'Пересчитать +',
+                'Recalculate cycle +': 'Пересчитать цикл +',
+                'Available in PRO': 'Доступно в PRO',
+
                 'Dark mode': 'Темный режим',
                 'This option works only in PRO.': 'Эта опция работает только в PRO.',
                 'If you enable it and you have files in this field, they stay on the server, but you cannot access them from totum.': 'Если вы включите ее и у вас есть файлы в этом поле, они останутся на сервере, но вы не сможете получить их из totum.',

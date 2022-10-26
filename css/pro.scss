@@ -1,0 +1,16 @@
+.available-in-pro {
+  position: absolute;
+  display: none;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 3px;
+  color: #333;
+  right: 3px;
+  margin-top: -15px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+
+}
+
+.pro-function:hover .available-in-pro {
+  display: block;
+}
