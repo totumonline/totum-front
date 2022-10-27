@@ -441,6 +441,7 @@ App.langs.ru =
                 'Recalculate +': 'Пересчитать +',
                 'Recalculate cycle +': 'Пересчитать цикл +',
                 'Available in PRO': 'Доступно в PRO',
+                'In the fields marked with a checkmark, their Code on Addition will be executed when recalculating': 'В полях, отмеченных галочкой, при пересчете будет выполнен их код при добавлении',
 
                 'Dark mode': 'Темный режим',
                 'This option works only in PRO.': 'Эта опция работает только в PRO.',
