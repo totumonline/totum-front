@@ -852,7 +852,7 @@ $.extend(App.pcTableMain.prototype, {
                     td.append(input);
 
                     dialogShow();
-                    input.focus();
+                    setTimeout(()=>input.focus(), 21);
                     break;
             }
         })

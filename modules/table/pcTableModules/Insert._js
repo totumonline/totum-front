@@ -7,7 +7,7 @@ $.extend(App.pcTableMain.prototype, {
     _addButtons: null,
     _insertError: {},
     _currentInsertCellIndex: 0,
-    _InsertFocusFalse: false,
+    _insertFocusTimeout: null,
     isInsertable: function () {
         return this.control.adding && !this.f.blockadd && !this.isRestoreView;
     },
@@ -256,16 +256,19 @@ $.extend(App.pcTableMain.prototype, {
 
         if (!$row) {
             this.insertRow = $row = $('<tr class="InsertRow" style="height: 35px;"><td class="id"></td></tr>')
-                .on('click focus', 'input,button,select', function (event) {
+                .on('click focus keydown', 'input,button,select', function (event) {
                     let inputElement = $(this);
 
-                    if(event.type==='focus'){
-                        if (pcTable._InsertFocusFalse !== true) {
-                            pcTable._InsertFocusFalse = Date.now();
+
+                    if (event.type === 'keydown') {
+                        if (event.key === 'Tab') {
+                            event.preventDefault();
+                            return false;
                         }
-                    }else if(event.type==='click'){
-                        if(!inputElement.is('.source-add') && !inputElement.closest('td').is('.active')){
-                            pcTable._InsertFocusFalse = true
+                        return true;
+                    } else if (event.type === 'focus' || event.type === 'click') {
+                        if (pcTable._insertFocusTimeout) {
+                            clearTimeout(pcTable._insertFocusTimeout);
                         }
                     }
 
@@ -273,6 +276,7 @@ $.extend(App.pcTableMain.prototype, {
                     if (!active.length || (!inputElement.is('[type="checkbox"]') && active !== $(this).closest('td'))) {
                         active.removeClass('active');
                         pcTable._currentInsertCellIndex = $(this).closest('td').data('index');
+
                         $(this).closest('td').addClass('active');
                     }
                 })
@@ -341,7 +345,7 @@ $.extend(App.pcTableMain.prototype, {
                         } else if (item[field.name].v === null && Oldval.v == '') {
                             isEqual = true;
                         } else {
-                            isEqual = Object.equals(item[field.name].v, Oldval.v) && !field.codeSelectIndividual && (['select', 'tree'].indexOf(field.type)===-1 || field.list);
+                            isEqual = Object.equals(item[field.name].v, Oldval.v) && !field.codeSelectIndividual && (['select', 'tree'].indexOf(field.type) === -1 || field.list);
                         }
 
                         if ((Oldval === undefined || !isEqual || field.name == 'data_src' || field.type == 'comments' || (field.code && !field.codeOnlyInAdd))) {
@@ -559,8 +563,6 @@ $.extend(App.pcTableMain.prototype, {
 
                 let editValResult = getEditVal($input);
                 if (field.isDataModified(editValResult, pcTable._insertItem[field.name].v)) {
-                    pcTable._currentInsertCellIndex = index + 1;
-                    ;
                     pcTable.insertRow.editedFields[field.name] = true;
 
                     pcTable._insertItem[field.name].v = editValResult;
@@ -673,12 +675,8 @@ $.extend(App.pcTableMain.prototype, {
     _insertFocusIt: function (outTimed) {
         let pcTable = this;
 
-        if (this._InsertFocusFalse && (this._InsertFocusFalse === true || (Date.now() - this._InsertFocusFalse) < 200)) {
-            this._InsertFocusFalse = false;
-            return false;
-        }
         if (!outTimed) {
-            setTimeout(function () {
+            this._insertFocusTimeout = setTimeout(function () {
                 pcTable._insertFocusIt.call(pcTable, 1);
             }, 10);
             return false;
@@ -704,11 +702,14 @@ $.extend(App.pcTableMain.prototype, {
                     pcTable._currentInsertCellIndex++;
                     return;
                 } else {
+                    let focusIt;
+
                     if (isPanel) {
-                        field.focusElement($row.find('.cell:eq(' + index + ')').data('input'));
+                        field.focusElement($row.find('.cell:eq(' + (focusIt = index) + ')').data('input'));
                     } else {
-                        field.focusElement(pcTable._getTdByColumnIndex($row, index + 1).data('input'));
+                        field.focusElement(pcTable._getTdByColumnIndex($row, (focusIt = index + 1)).data('input'));
                     }
+
                 }
                 isLastCell = false;
                 return false;

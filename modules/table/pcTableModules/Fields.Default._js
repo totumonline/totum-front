@@ -128,7 +128,9 @@ var defaultField = {
             blurClbk($input, event);
         });
         if ($input.closest('.InsertRow').length === 0) {
-            $input.select();
+            $input.on('focus', () => {
+                $input.select()
+            });
         }
 
         return $input;
