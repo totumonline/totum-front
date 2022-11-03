@@ -176,6 +176,7 @@
                                     }
 
                                     pcTableObj.PageData.allCount = json.allCount
+                                    pcTableObj.PageData.allCountChanged = true
 
                                 }
                                 if (changed) {

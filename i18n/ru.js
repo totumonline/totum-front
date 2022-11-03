@@ -335,6 +335,7 @@ App.langs.ru =
                 'Sort Z-A': 'Сортировать Я-А',
                 'Select': 'Выделить',
                 'Table is empty': 'Таблица пуста',
+                'Page is empty': 'Страница пуста',
                 'Text field editing': 'Правка текстового поля',
                 'Documentaion': 'Документация',
 

@@ -757,7 +757,7 @@
             } else {
                 this._beforeSpace_title = $('<div class="pcTable-title"><span class="bttns"/></div>').prependTo(this._beforeSpace);
             }
-            if(this.withTopButtons){
+            if (this.withTopButtons) {
                 this._beforeSpace_title.append(csv);
             }
 
@@ -811,12 +811,13 @@
                 ids = {
                     firstId: data.rows[0].id,
                     lastId: data.rows[data.rows.length - 1].id,
-
+                    ids: data.rows.map((r) => r.id)
                 }
             } else {
                 ids = {
                     firstId: 0,
-                    lastId: 0
+                    lastId: 0,
+                    ids: []
                 }
             }
 
@@ -860,6 +861,19 @@
             let before, after, first, last;
             if (offset > 0)
                 before = $('<button class="btn btn-default btn-sm"><i class="fa fa-hand-o-left"></i></button>').on('click', () => {
+                    if (this.PageData.firstId && !this.data[this.PageData.firstId]) {
+                        if (this.PageData.offset >= this.PageData.allCount) {
+                            this.model.loadPage(this, null, this.PageData.onPage, -1);
+                        } else if (Object.keys(this.data).length !== 0) {
+                            this.PageData.ids.some((id) => {
+                                if (this.data[id]) {
+                                    this.PageData.firstId = id;
+                                    return true;
+                                }
+                            })
+                        }
+                        return;
+                    }
                     this.model.loadPage(this, null, this.PageData.onPage, this.PageData.firstId);
                     return false;
                 })
@@ -867,7 +881,16 @@
 
             if ((offset + onPage) < allCount) {
                 after = $('<button class="btn btn-default btn-sm"><i class="fa fa-hand-o-right"></i></button>').on('click', () => {
-                    let keys = Object.keys(this.data);
+                    if (!this.data[this.PageData.lastId] && Object.keys(this.data).length !== 0) {
+                        let id;
+                        for(let i = this.PageData.ids.length - 1; i>=0; i--){
+                            id = this.PageData.ids[i]
+                            if (this.data[id]) {
+                                this.PageData.lastId = id;
+                                break;
+                            }
+                        }
+                    }
                     this.model.loadPage(this, this.PageData.lastId, this.PageData.onPage);
                     return false;
                 })
@@ -923,6 +946,14 @@
 
             $block.append(onpaging)
             onpaging.append(App.translate('%s from %s', ['', allCount]))
+
+            if (this.PageData.allCountChanged) {
+                setTimeout(() => {
+                    this._colorizeElement(onpaging, pcTable_COLORS.saved);
+                })
+
+                delete this.PageData.allCountChanged;
+            }
 
             if (allPages > 1) {
                 $block.addClass('ttm-pagination-warning');
@@ -2645,7 +2676,11 @@
 
             if (text === undefined) {
                 if (this.PageData && this.PageData.allCount) {
-                    this.model.loadPage(this, null, this.PageData.onPage, null, this.PageData.offset);
+                    if (this.PageData.offset >= this.PageData.allCount) {
+                        text = App.translate('Page is empty') + ' ';
+                    } else {
+                        this.model.loadPage(this, null, this.PageData.onPage, null, this.PageData.offset);
+                    }
                 } else {
                     text = App.translate('Table is empty') + ' ';
                 }
@@ -3000,7 +3035,7 @@
         _colorizeElement: function (td, color, repeated) {
             let i = 10;
 
-           let colorize = function () {
+            let colorize = function () {
                 if (i === 0) {
                     td.css('box-shadow', '');
                 } else {
