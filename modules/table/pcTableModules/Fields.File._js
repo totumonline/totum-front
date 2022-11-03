@@ -124,6 +124,8 @@
             let isEntered = false;
 
             const printFile = (file) => {
+
+
                 let addDiv = $('<div class="filePart"><div><span class="name"></span><span class="size"></span><button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i></button></div></div>');
 
                 let fl = {
@@ -207,6 +209,31 @@
 
                         for (let i = 0, numFiles = files.length; i < numFiles; i++) {
                             let file = files[i];
+                            if (field.accept) {
+                                let ext;
+                                if (ext = file.name.match(/(\.[a-zA-Z0-9]+)$/)) {
+                                    ext = ext[1].strtolower;
+                                }
+                                let accept = field.accept.split('|');
+                                if (!accept.some((type) => {
+                                    if (ext && ext === type.strtolower) {
+                                        return true;
+                                    }
+                                    if (type === file.type) {
+                                        return true;
+                                    }
+                                    let typeSplit = type.split('/');
+                                    if (typeSplit[1] === '*' && typeSplit[0] === file.type.split('/')[0]) {
+                                        return true;
+                                    }
+
+                                })) {
+                                    saveDisable(false);
+                                    App.notify(App.translate('The field accept only following types: %s', [field.accept]));
+                                    return;
+                                }
+                            }
+
                             let addDiv = printFile(file).addClass('addFile').appendTo(dialogBody);
                             checkBtnDisable();
 
