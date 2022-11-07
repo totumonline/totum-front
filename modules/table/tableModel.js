@@ -562,6 +562,10 @@
             },
             refresh: function (func, refreshType, withoutIds, getList) {
 
+                if (refreshType === 'reload') {
+                    App.windowReloadWithHash(this);
+                }
+
                 func = func || function (json) {
                     pcTable.table_modify(json);
                     pcTable.reloaded();
