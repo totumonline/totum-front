@@ -212,11 +212,11 @@
                             if (field.accept) {
                                 let ext;
                                 if (ext = file.name.match(/(\.[a-zA-Z0-9]+)$/)) {
-                                    ext = ext[1].strtolower;
+                                    ext = ext[1].toLowerCase();
                                 }
                                 let accept = field.accept.split('|');
                                 if (!accept.some((type) => {
-                                    if (ext && ext === type.strtolower) {
+                                    if (ext && ext === type.toLowerCase()) {
                                         return true;
                                     }
                                     if (type === file.type) {
