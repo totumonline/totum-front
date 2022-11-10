@@ -883,7 +883,7 @@
                 after = $('<button class="btn btn-default btn-sm"><i class="fa fa-hand-o-right"></i></button>').on('click', () => {
                     if (!this.data[this.PageData.lastId] && Object.keys(this.data).length !== 0) {
                         let id;
-                        for(let i = this.PageData.ids.length - 1; i>=0; i--){
+                        for (let i = this.PageData.ids.length - 1; i >= 0; i--) {
                             id = this.PageData.ids[i]
                             if (this.data[id]) {
                                 this.PageData.lastId = id;
@@ -947,18 +947,30 @@
             $block.append(onpaging)
             onpaging.append(App.translate('%s from %s', ['', allCount]))
 
-            if (this.PageData.allCountChanged) {
-                setTimeout(() => {
-                    this._colorizeElement(onpaging, pcTable_COLORS.saved);
-                })
-
-                delete this.PageData.allCountChanged;
-            }
 
             if (allPages > 1) {
                 $block.addClass('ttm-pagination-warning');
                 onpaging.append(' <i class="fa fa-square"></i>');
             }
+
+            if (this.PageData.allCountChanged && allPages > 1) {
+                let el = onpaging.find('.fa-square');
+                let cnt = 3;
+                const colorize = ()=>{
+                    el.css('color', App.theme.getColor(pcTable_COLORS.saved));
+                    setTimeout(()=>{
+                        el.css('color', '');
+                        if(--cnt>0){
+                            setTimeout(colorize, 200);
+                        }
+                    }, 200)
+                }
+
+                setTimeout(colorize)
+
+                delete this.PageData.allCountChanged;
+            }
+
             this.saveFilterAndPage();
             return $block;
         },
@@ -3048,7 +3060,7 @@
             colorize();
 
             return;
-
+/*
 
             var toColor = td.css('background-color');
             if (toColor === '') {
@@ -3077,7 +3089,7 @@
                 td.data('backgroundcolor', true);
             }
 
-            this._TmpColorize(td, color, toColor);
+            this._TmpColorize(td, color, toColor);*/
         }
         ,
         _TmpColorize: function ($element, color, toColor) {
