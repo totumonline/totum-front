@@ -407,6 +407,11 @@ body.ttm-body-mobile {
 
     &.with_changed button.button-go {
       background-color: #ffeeb4;
+      &.realy-go{
+        background-color: tomato;
+        color: #fff;
+        text-shadow: none;
+      }
     }
   }
 

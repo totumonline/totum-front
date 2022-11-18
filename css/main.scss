@@ -1246,6 +1246,11 @@ th {
     td.buttons-go {
       background-color: $btn-warning-bgcolor;
     }
+    .realy-go{
+      background-color: tomato;
+      color: #fff;
+      text-shadow: none;
+    }
   }
 
   &.with_danger {

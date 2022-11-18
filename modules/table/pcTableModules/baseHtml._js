@@ -1284,12 +1284,12 @@
                         };
 
                         if (pcTable.isMobile) {
-                            $table.after($('<table class="pcTable-filtersTable" id="go-buttons"><tr><td><button class="btn btn-default btn-xs button-go">GO</button> ' +
+                            $table.after($('<table class="pcTable-filtersTable" id="go-buttons"><tr><td><button class="btn btn-default btn-xs button-go realy-go">GO</button> ' +
                                 '<button class="btn btn-default btn-xs eraser button-go "><i class="fa fa-eraser"></i></button>' +
                                 '</td></tr></td></table>').on('click', '.button-go', btnGO))
                         } else {
                             $thead.append('<th style="width: 69px;"></th>');
-                            let $ButtonsGo = $('<td class="buttons-go">').html('<button class="btn btn-default btn-xs button-go">GO</button> <button class="btn btn-default btn-xs eraser button-go"><i class="fa fa-eraser"></i></button>').appendTo($tbody);
+                            let $ButtonsGo = $('<td class="buttons-go">').html('<button class="btn btn-default btn-xs button-go realy-go">GO</button> <button class="btn btn-default btn-xs eraser button-go"><i class="fa fa-eraser"></i></button>').appendTo($tbody);
                             $table.width(width + 69);
                             $ButtonsGo.on('click', '.button-go', btnGO);
                         }
