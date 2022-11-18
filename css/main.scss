@@ -607,12 +607,13 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
 
     .text-center {
       padding-top: 4px;
-      .fa-spinner{
+
+      .fa-spinner {
         color: #000;
       }
     }
 
-    &.editing-in-modal{
+    &.editing-in-modal {
       background-color: #ffddb4;
     }
   }
@@ -715,7 +716,8 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
       padding-top: 2px;
       display: block;
     }
-    .check-status-bar{
+
+    .check-status-bar {
       font-size: 9px;
       line-height: 14px;
     }
@@ -753,7 +755,8 @@ th {
     opacity: 0.4
   }
 }
-.add_calcs_table .edit-folder-icon{
+
+.add_calcs_table .edit-folder-icon {
   top: 0px;
 }
 
@@ -1246,7 +1249,8 @@ th {
     td.buttons-go {
       background-color: $btn-warning-bgcolor;
     }
-    .realy-go{
+
+    .realy-go {
       background-color: tomato;
       color: #fff;
       text-shadow: none;
@@ -1430,6 +1434,7 @@ th {
   &:after {
     clear: both;
   }
+
   .table-in-notification & {
     display: none;
   }
@@ -1861,6 +1866,10 @@ th.id .pcTable-filters.for-selected .btn {
 
   .btn-save.errored {
     opacity: 0.4;
+  }
+
+  .cell-button {
+    clear: both;
   }
 
 }

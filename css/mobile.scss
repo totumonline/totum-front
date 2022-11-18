@@ -46,6 +46,11 @@
     #selectPanel, #selectPanel .field-value {
       font-size: 15px;
     }
+
+    #selectPanel.cell-button .copytext-wrapper button, #selectPanelBig.cell-button .copytext-wrapper button {
+        font-size: 16px;
+      height: 45px;
+    }
   }
 
   &.mobile-menu {
@@ -191,6 +196,9 @@ body.ttm-body-mobile {
     line-height: 35px;
     min-height: 35px;
 
+    &[data-type="button"] {
+      line-height: 32px;
+    }
   }
 
   &#pk .modal-content {
@@ -198,9 +206,9 @@ body.ttm-body-mobile {
   }
 
 
- /* .pcTable-paramsTable td, .pcTable-footersTable td, .pcTable-filtersTable td, .pcTable-hiddenFieldsTable td, .pcTable-table tbody td, .pcTable-table tbody td.id {
-    padding-top: 5px;
-  }*/
+  /* .pcTable-paramsTable td, .pcTable-footersTable td, .pcTable-filtersTable td, .pcTable-hiddenFieldsTable td, .pcTable-table tbody td, .pcTable-table tbody td.id {
+     padding-top: 5px;
+   }*/
 
   .pcTable-selectpicker.bootstrap-select.btn-group.bs-container .dropdown-menu {
     margin-top: 8px;
@@ -247,7 +255,15 @@ body.ttm-body-mobile {
       height: 40px
     }
 
-
+    thead th{
+      padding-top: 5px;
+      &.id{
+        padding-top: 11px;
+      }
+      .check-status-bar{
+        padding-top: 10px;
+      }
+    }
     .cell-title {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -361,7 +377,7 @@ body.ttm-body-mobile {
       }
 
       th {
-        padding-bottom: 0;
+        padding-bottom: 4px;
       }
     }
   }
@@ -407,7 +423,8 @@ body.ttm-body-mobile {
 
     &.with_changed button.button-go {
       background-color: #ffeeb4;
-      &.realy-go{
+
+      &.realy-go {
         background-color: tomato;
         color: #fff;
         text-shadow: none;
@@ -427,8 +444,15 @@ body.ttm-body-mobile {
       }
     }
 
-    .pcTable-table tbody td .cell-icon {
-      padding-top: 9px;
+    .pcTable-table tbody td {
+      .cell-icon {
+        padding-top: 9px;
+      }
+      .button-field {
+        .cell-icon {
+          padding-top: 4px;
+        }
+      }
     }
 
     td .cell-icon {
@@ -555,6 +579,9 @@ body.ttm-body-mobile {
 
       .button-wrapper.cell-button {
         margin: 0;
+        button.button-field{
+            background-color: #fafafa;
+        }
       }
     }
   }

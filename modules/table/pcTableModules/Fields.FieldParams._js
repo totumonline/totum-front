@@ -174,6 +174,15 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                                     }
 
                                 })
+                            }else if (fName === 'dateTime') {
+                                divInput.find('input[type="checkbox"]').on("change", () => {
+                                    if (oldValue.dateTime.Val !== form.find('div[data-name="dateTime"] input').is(':checked')) {
+                                        divInput.append('<div class="code-checkboxes-active-warning"><div class="code-checkboxes-warning-panel">' + App.translate('Recalculate all table rows after changing the field type') + '</div></div>');
+                                    } else {
+                                        divInput.find('.code-checkboxes-active-warning').remove()
+                                    }
+
+                                })
                             }
                         }
 
