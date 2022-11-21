@@ -48,7 +48,7 @@
     }
 
     #selectPanel.cell-button .copytext-wrapper button, #selectPanelBig.cell-button .copytext-wrapper button {
-        font-size: 16px;
+      font-size: 16px;
       height: 45px;
     }
   }
@@ -75,9 +75,9 @@
     }
 
     .totum-brand {
-      background-size: 22px;
-      padding-left: 35px;
-      margin-left: 15px;
+      background-image: none;
+      padding-left: 0px;
+      margin-left: 17px;
       padding-bottom: 0;
       max-width: 217px;
       line-height: 20px;
@@ -86,7 +86,12 @@
       text-overflow: ellipsis;
       white-space: pre;
       color: #333;
-      font-size: 40px;
+      font-family: 'IBM Plex Sans';
+      font-weight: normal;
+
+      span {
+        font-size: 34px !important;
+      }
     }
 
   }
@@ -168,7 +173,11 @@ body.ttm-body-mobile {
   }
 
   #leftTree {
-    font-size: 15px;
+    font-size: 16px;
+
+    .jstree-anchor {
+      height: 30px !important;
+    }
   }
 
   &#pk .alert {
@@ -185,6 +194,11 @@ body.ttm-body-mobile {
           padding-right: 5px;
         }
       }
+    }
+
+    .button-field i.cell-icon {
+      padding-top: 4px;
+      padding-left: 5px;
     }
   }
 
@@ -255,15 +269,18 @@ body.ttm-body-mobile {
       height: 40px
     }
 
-    thead th{
+    thead th {
       padding-top: 5px;
-      &.id{
+
+      &.id {
         padding-top: 11px;
       }
-      .check-status-bar{
+
+      .check-status-bar {
         padding-top: 10px;
       }
     }
+
     .cell-title {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -448,6 +465,7 @@ body.ttm-body-mobile {
       .cell-icon {
         padding-top: 9px;
       }
+
       .button-field {
         .cell-icon {
           padding-top: 4px;
@@ -579,8 +597,9 @@ body.ttm-body-mobile {
 
       .button-wrapper.cell-button {
         margin: 0;
-        button.button-field{
-            background-color: #fafafa;
+
+        button.button-field {
+          background-color: #fafafa;
         }
       }
     }
@@ -623,6 +642,15 @@ body.ttm-body-mobile {
 
     .pcTable-scrollWrapper {
       padding-bottom: 0px;
+    }
+  }
+
+  #tables_tabls {
+    padding-left: 0;
+    padding-right: 0;
+
+    .nav-tabs {
+      padding-left: 5px
     }
   }
 }
