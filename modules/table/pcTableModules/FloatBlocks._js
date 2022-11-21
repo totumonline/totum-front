@@ -58,14 +58,14 @@
         return param;
     };
 
-    const getSectionOrFormatParam = function (param, fieldName, section, format) {
-
+    const getSectionOrFormatParam = function (param, fieldName, section, format, blockNum) {
 
         if (param in format) return format[param];
         else if ((param in section) && section[param]) {
 
             if (typeof section[param] === 'object') {
                 if (fieldName in section[param]) return section[param][fieldName]
+                else if (blockNum in section[param]) return section[param][blockNum]
                 else return section[param]['_ALL']
             }
             return section[param];
@@ -318,14 +318,19 @@
 
                 field.format = {...(pcTable.data_params[field.field.name].f || {})};
 
+                let blockNum = 0;
+                if('blocknum' in sec.formatsFromSection){
+                    blockNum = getSectionOrFormatParam('blocknum', field.field.name, sec.formatsFromSection, field.format, -1) || 0
+                }
+
                 Object.keys(sec.formatsFromSection).forEach((k) => {
-                    let val = getSectionOrFormatParam(k, field.field.name, sec.formatsFromSection, field.format);
+                    let val = getSectionOrFormatParam(k, field.field.name, sec.formatsFromSection, field.format, blockNum);
                     if (val !== null) {
                         field.format[k] = val
                     }
                 })
 
-                let blockNum = field.format.blocknum || 0;
+
                 if (typeof field.format.blocknum !== "undefined" && !sectionMarked) {
                     sDv.addClass('sectionWithPannels');
                 }
@@ -383,6 +388,7 @@
                     })
                     floatStarted = true;
                 }
+
 
                 let inner = FloatInners[FloatInners.length - 1];
                 if (inner.fields.length > 0 && !field.format.nextline)
