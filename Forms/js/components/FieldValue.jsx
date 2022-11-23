@@ -20,6 +20,7 @@ import {FieldNumberText} from "./fields/FieldNumberText";
 import {FieldStringText} from "./fields/FieldStringText";
 import {FieldSelectText} from "./fields/FieldSelectText";
 import {FieldDate} from "./fields/FieldDate";
+import {FieldListRowJs} from "./fields/FieldListRowJs";
 
 export const FieldValue = ({field, data, format, model, item}) => {
     let Module = FieldDefault;
@@ -108,6 +109,13 @@ export const FieldValue = ({field, data, format, model, item}) => {
 
                 default:
                     Module=FieldDate;
+            }
+            break;
+        case 'listRow':
+            switch (format.viewtype) {
+                case 'js':
+                    Module = FieldListRowJs;
+                    break;
             }
             break;
     }

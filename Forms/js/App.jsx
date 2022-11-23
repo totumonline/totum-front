@@ -5,7 +5,6 @@ import {Trobber} from "./components/Trobber";
 import {withStyles} from "@material-ui/core/styles";
 
 import {ruLang} from './components/lang/ru.js'
-import {zhLang} from './components/lang/zh.js'
 
 const styles = theme => ({
     "@global": {
@@ -50,11 +49,21 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
     } else {
         model = new TotumModel(form_address);
     }
+
+    let resolve, reject;
+    let prms = new Promise((r1, r2) => {
+        resolve = r1;
+        reject = r2;
+    })
+
     const renderError = function (error) {
         console.log(error);
         error = error.replace(/\[\[/g, '').replace(/\]\]/g, '');
         ReactDom.render(<div className="error">{error.toString()}</div>, div);
+        reject();
     }
+
+
     model.load(post, get, input).then((json) => {
 
         if (json.settings && window.MAIN_HOST_FORM) {
@@ -82,9 +91,6 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
                 case 'ru':
                     model.langObj = ruLang;
                     break;
-                case 'zh':
-                    model.langObj = zhLang;
-                    break;
             }
 
 
@@ -92,11 +98,14 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
                 localStorage.setItem(params_string, sess_hash)
             ReactDom.render(<TotumFormStyled data={json} container={div} model={model}/>, div);
         }
+        resolve(true);
+
     }).catch(renderError);
     ReactDom.render(
         <Trobber/>
         , div);
-    console.log(div, post, get, form_address);
+    //console.log(div, post, get, form_address);
+    return prms;
 };
 
 
