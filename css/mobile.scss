@@ -178,6 +178,12 @@ body.ttm-body-mobile {
     .jstree-anchor {
       height: 30px !important;
     }
+
+    .jstree-node {
+      > a {
+        padding-top: 3px;
+      }
+    }
   }
 
   &#pk .alert {
