@@ -666,14 +666,7 @@ body.ttm-body-mobile {
     text-align: center;
     height: 100vh;
 
-    .top {
-      background-image: url(/fls/6_main_img.png);
-      padding-left: 65px;
-      font-size: 30px;
-      background-repeat: no-repeat;
-      text-align: left;
-      background-position-x: 10px;
-    }
+    background: url('/imgs/mailttm.png') no-repeat center center fixed;
 
     button {
       position: absolute;
