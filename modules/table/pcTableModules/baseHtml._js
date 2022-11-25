@@ -956,11 +956,11 @@
             if (this.PageData.allCountChanged && allPages > 1) {
                 let el = onpaging.find('.fa-square');
                 let cnt = 3;
-                const colorize = ()=>{
+                const colorize = () => {
                     el.css('color', App.theme.getColor(pcTable_COLORS.saved));
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         el.css('color', '');
-                        if(--cnt>0){
+                        if (--cnt > 0) {
                             setTimeout(colorize, 200);
                         }
                     }, 200)
@@ -1010,7 +1010,7 @@
         rowButtonsCalcWidth: function () {
             if (this.tableWidth < this._innerContainer.width()) {
                 if (this.isMobile || $('body').is('.table-in-notification')) {
-                    this.__$rowsButtons.width(this._table.width());
+                    this.__$rowsButtons.width(parseInt(this._table.width()) - 10);
                 } else {
                     this.__$rowsButtons.width(this._table.width() - 70);
                 }
@@ -1101,7 +1101,7 @@
 
                 if (!this.isTreeView || this.fields.tree.treeViewLoad) {
 
-                    let btnAdd = $('<button class="btn btn-sm" style="margin-left: 5px;">' + App.translate('Reset') + ' <span class="fa fa-filter"></span></button>').width(82)
+                    let btnAdd = $('<button class="btn btn-sm reset" style="margin-left: 5px;">' + App.translate('Reset') + ' <span class="fa fa-filter"></span></button>').width(82)
                         .on('click', function () {
                             setTimeout(function () {
                                 pcTable.filtersEmpty.call(pcTable)
@@ -3060,36 +3060,36 @@
             colorize();
 
             return;
-/*
+            /*
 
-            var toColor = td.css('background-color');
-            if (toColor === '') {
-                var repeated = repeated || 0;
-                if (repeated < 5) {
-                    var pcTable = this;
-                    setTimeout(function () {
-                        pcTable._colorizeElement(td, color, repeated + 1)
-                    }, 50);
-                }
-                return;
-            }
-            if (toColor.substr(0, 1) != '#') {
-                toColor = App.rgb2hex(toColor);
-            }
-            var parent = td;
-            while (toColor == '#000000') {
-                parent = parent.parent();
-                toColor = parent.css('background-color');
-                if (toColor.substr(0, 1) != '#') {
-                    toColor = App.rgb2hex(toColor);
-                }
-            }
+                        var toColor = td.css('background-color');
+                        if (toColor === '') {
+                            var repeated = repeated || 0;
+                            if (repeated < 5) {
+                                var pcTable = this;
+                                setTimeout(function () {
+                                    pcTable._colorizeElement(td, color, repeated + 1)
+                                }, 50);
+                            }
+                            return;
+                        }
+                        if (toColor.substr(0, 1) != '#') {
+                            toColor = App.rgb2hex(toColor);
+                        }
+                        var parent = td;
+                        while (toColor == '#000000') {
+                            parent = parent.parent();
+                            toColor = parent.css('background-color');
+                            if (toColor.substr(0, 1) != '#') {
+                                toColor = App.rgb2hex(toColor);
+                            }
+                        }
 
-            if (/(background\-color:[^;"]+;?)/.test(td.attr('style'))) {
-                td.data('backgroundcolor', true);
-            }
+                        if (/(background\-color:[^;"]+;?)/.test(td.attr('style'))) {
+                            td.data('backgroundcolor', true);
+                        }
 
-            this._TmpColorize(td, color, toColor);*/
+                        this._TmpColorize(td, color, toColor);*/
         }
         ,
         _TmpColorize: function ($element, color, toColor) {
