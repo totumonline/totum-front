@@ -221,6 +221,7 @@ App.langs.ru =
                 'The field accepts only one file': 'Поле принимает только один файл',
 
                 'Checking the file with the server': 'Проверка файла сервером',
+                'The file is too large': 'Файл слишком большой',
 
                 'Empty': 'Пустое',
                 'Files form <b>%s</b>': 'Форма файлов <b>%s</b>',
