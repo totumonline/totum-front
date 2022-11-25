@@ -288,7 +288,7 @@
                                 }
                                 addDiv.data('file', null);
                                 let error = '';
-                                if (this.status === '413' && this.statusText === 'Request Entity Too Large') {
+                                if (this.status === 413 && this.statusText === 'Request Entity Too Large') {
                                     error = ': ' + App.translate('The file is too large');
                                 } else if (this.statusText) {
                                     error = ': ' + this.statusText;
