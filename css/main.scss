@@ -1358,7 +1358,8 @@ th {
   .table-in-notification & {
     padding-left: 0;
   }
-  button.reset{
+
+  button.reset:not(.btn-warning) {
     background-color: #f1f1f1;
   }
 
