@@ -319,7 +319,7 @@
                 field.format = {...(pcTable.data_params[field.field.name].f || {})};
 
                 let blockNum = 0;
-                if('blocknum' in sec.formatsFromSection){
+                if ('blocknum' in sec.formatsFromSection) {
                     blockNum = getSectionOrFormatParam('blocknum', field.field.name, sec.formatsFromSection, field.format, -1) || 0
                 }
 
@@ -334,7 +334,7 @@
                 if (typeof field.format.blocknum !== "undefined" && !sectionMarked) {
                     sDv.addClass('sectionWithPannels');
                 }
-                if (FloatInners.length === 0 || FloatInners[FloatInners.length - 1].num != blockNum || (field.field.tableBreakBefore && ind !== 0)) {
+                if (FloatInners.length === 0 || FloatInners[FloatInners.length - 1].blockNum != blockNum || (field.field.tableBreakBefore && ind !== 0)) {
                     floatInner = $('<div class="pcTable-floatInner">').appendTo(floatBlock);
                     if (blockNum) {
                         if (pcTable.isCreatorView) {
@@ -381,7 +381,7 @@
 
                     FloatInners.push({
                         div: floatInner,
-                        num: blockNum,
+                        blockNum: blockNum,
                         isWrappable: false,
                         sec: sec,
                         fields: [],
@@ -835,7 +835,7 @@
 
                     growFieldsfnc(FloatInners, isSmallerSize);
 
-                    FloatInners.forEach(({div, fields, sec, blocknum}) => {
+                    FloatInners.forEach(({div, fields, sec, blockNum}) => {
                         let tdNoTitles = [];
                         let isAllNoTitles = true;
                         fields.forEach((field) => {
@@ -859,8 +859,8 @@
                                 let _border;
                                 if (field.field.name in sec.border) {
                                     _border = sec.border[field.field.name];
-                                } else if (blocknum in sec.border) {
-                                    _border = sec.border[blocknum];
+                                } else if (blockNum in sec.border) {
+                                    _border = sec.border[blockNum];
                                 } else {
                                     _border = sec.border;
                                 }
@@ -885,13 +885,17 @@
                                                 field.td.find('button').css(style.Button);
                                                 style.backgroundColor = "transparent"
                                             }
-                                        } else if (_b === true) {
+                                        } else if (_b === true || _b === undefined) {
                                             style.borderColor = ""
-                                            style.backgroundColor = ""
+                                            if (format.background || field.panelColor) {
+                                                style.backgroundColor = App.theme.getColor(format.background || field.panelColor);
+                                            } else {
+                                                style.backgroundColor = '';
+                                            }
                                             if (field.field.type === 'button') {
                                                 field.fieldCell.removeClass('no-border')
                                                 style.Button = {};
-                                                style.Button.backgroundColor = ''
+                                                style.Button.backgroundColor = '';
                                                 style.Button.color = App.theme.getColor(format.color, true)
                                                 field.td.find('button').css(style.Button);
                                             }
