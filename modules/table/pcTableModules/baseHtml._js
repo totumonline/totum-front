@@ -2517,14 +2517,30 @@
                                     let BigVal;
 
                                     try {
+
+                                        let itemField;
                                         if (typeof id !== 'object') {
-                                            BigVal = Big(pcTable.data[id][field.name].v);
+                                            itemField = pcTable.data[id][field.name];
                                         } else {
                                             if (!id.row) {
                                                 return;
                                             }
-                                            BigVal = Big(id.row[field.name].v);
+                                            itemField = id.row[field.name];
                                         }
+                                        let format = itemField.f;
+                                        if (format && format.textasvalue && 'text' in format
+                                            && typeof format.textasvalue === 'string'
+                                            && format.textasvalue.substr(0, 3) === "num") {
+                                            let d1 = (format.textasvalue.split('|')[1] || field.dectimalSeparator);
+                                            let reg = new RegExp('[^0-9\\' + d1 + ']', 'g')
+                                            let val = format.text.toString().replace(reg, '');
+                                            val = val.toString().replace(d1, '.');
+
+                                            BigVal = Big(val);
+                                        } else {
+                                            BigVal = Big(itemField.v);
+                                        }
+
                                         summ = Big(summ).plus(BigVal);
                                         ++count;
                                         if (max === null) max = BigVal;
