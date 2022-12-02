@@ -318,10 +318,11 @@
 
                 field.format = {...(pcTable.data_params[field.field.name].f || {})};
 
-                let blockNum = 0;
-                if ('blocknum' in sec.formatsFromSection) {
+                let blockNum = field.format.blocknum || 0;
+                if (!blockNum && 'blocknum' in sec.formatsFromSection) {
                     blockNum = getSectionOrFormatParam('blocknum', field.field.name, sec.formatsFromSection, field.format, -1) || 0
                 }
+
 
                 Object.keys(sec.formatsFromSection).forEach((k) => {
                     let val = getSectionOrFormatParam(k, field.field.name, sec.formatsFromSection, field.format, blockNum);
@@ -331,7 +332,7 @@
                 })
 
 
-                if (typeof field.format.blocknum !== "undefined" && !sectionMarked) {
+                if (blockNum && !sectionMarked) {
                     sDv.addClass('sectionWithPannels');
                 }
                 if (FloatInners.length === 0 || FloatInners[FloatInners.length - 1].blockNum != blockNum || (field.field.tableBreakBefore && ind !== 0)) {
