@@ -446,6 +446,7 @@ App.langs.ru =
                 'In the fields marked with a checkmark, their Code on Addition will be executed when recalculating': 'В полях, отмеченных галочкой, при пересчете будет выполнен их код при добавлении',
                 'The field accept only following types: %s': 'Это поле принимает только следующие типы: %s',
 
+                    'mobileToDesctopWarning':'Этот тип отображения предназначен только для ПК с маленьким экраном. Не включайте его, если у вас мобильное устройство, например, телефон или *PAD',
 
                 'Dark mode': 'Темный режим',
                 'This option works only in PRO.': 'Эта опция работает только в PRO.',

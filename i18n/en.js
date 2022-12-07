@@ -64,6 +64,8 @@ App.langs.en =
             'isCreatorSelector-CommonView':'Switch off special view',
             'isCreatorSelector-MobileView': 'Switch to desktop view',
 
+            'mobileToDesctopWarning':'This display type is only for PCs with a small screen. Do not turn it on if you have a mobile device such as a phone or *PAD',
+
         }
     }
 ;

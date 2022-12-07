@@ -95,8 +95,21 @@
 
                                 if (!MobileView) {
                                     localStorage.removeItem('notMobileView')
-                                } else {
-                                    localStorage.setItem('notMobileView', true)
+                                } else if (!localStorage.getItem('notMobileView')) {
+                                    App.confirmation(App.translate('mobileToDesctopWarning'), {
+                                        'OK': function (dialog) {
+                                            localStorage.setItem('notMobileView', true)
+                                            window.location.reload(true)
+                                            dialog.close();
+                                        },
+                                        [App.translate("Cancel")]: function (dialog) {
+                                            $selects.find('[data-type="MobileView"]').prop('checked', false);
+                                            dialog.close();
+                                        }
+                                    }, App.translate('Change warning'));
+
+
+                                    return;
                                 }
 
                                 window.location.reload(true)
