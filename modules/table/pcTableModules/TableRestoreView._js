@@ -1,17 +1,16 @@
 (function () {
     App.pcTableMain.prototype.switchRestoreView = function () {
         if (this.isRestoreView) {
-            if (this.isTreeViewRestore) {
-                App.windowReloadWithHash(this.model);
-                return;
-            }
+            App.windowReloadWithHash(this.model);
+            return;
         } else if (this.isTreeView) {
             this.isTreeViewRestore = true;
-            this.dataSorted=[];
-            this.dataSortedVisible=[];
-            this.data={};
+            this.dataSorted = [];
+            this.dataSortedVisible = [];
+            this.data = {};
             this.isTreeView = false;
-            this.treeApply = ()=>{}
+            this.treeApply = () => {
+            }
         }
 
         this.isRestoreView = !this.isRestoreView;
