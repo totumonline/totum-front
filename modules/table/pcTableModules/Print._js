@@ -8,12 +8,12 @@ App.pcTableMain.prototype._printSelect = function () {
 
     let pcTable = this;
 
-    this.f.printbuttons.forEach((name)=>{
+    this.f.printbuttons.forEach((name) => {
         let field = this.fields[name];
-        if(field && field.type==='button'){
+        if (field && field.type === 'button') {
             let td = $('<div class="button-wrapper no-width">').data('field', name).appendTo($printSettings);
-            let $btn=field.getCellText(null, td, this.data_params).appendTo(td)
-            $btn.wrap('<span class="cell-value">').on('click',function(){
+            let $btn = field.getCellText(null, td, this.data_params).appendTo(td)
+            $btn.wrap('<span class="cell-value">').on('click', function () {
                 pcTable._buttonClick(td, field);
                 dialog.close();
             })
@@ -21,8 +21,8 @@ App.pcTableMain.prototype._printSelect = function () {
     })
 
     let td = $('<div class="button-wrapper no-width">').appendTo($printSettings);
-    let $btn=$('<span class="cell-value"><button class="btn btn-default btn-xxs button-field">'+App.translate('Default printing')+'</button></span>').appendTo(td)
-    $btn.wrap('<span class="cell-value">').on('click',function(){
+    let $btn = $('<span class="cell-value"><button class="btn btn-default btn-xxs button-field">' + App.translate('Default printing') + '</button></span>').appendTo(td)
+    $btn.wrap('<span class="cell-value">').on('click', function () {
         pcTable._print();
         dialog.close();
     })
@@ -93,6 +93,52 @@ App.pcTableMain.prototype._print = function () {
         }
     ];
 
+    if (this.tableRow.__withPDF) {
+        buttons.splice(0, 0, {
+            label: App.translate('Print PDF'),
+            action: function (dialogRef) {
+                let settings = [];
+                $printSettings.find('input:checked').each(function () {
+                    settings.push($(this).attr('name'));
+                });
+                dialogRef.close();
+
+                $printSettings = $('<div>' +
+                    '<div>Page: <select id="PdfPageType"><option>A4</option><option>A5</option></select></div>' +
+                    '<div>Orientation: <select id="PdfPageOrientaion"><option>Portrate</option><option>Landscape</option></select></div>' +
+                    '</div>');
+
+                buttons = [
+                    {
+                        label: App.translate('Print'),
+                        action: function (dialogRef) {
+                            pcTable._printTable.call(pcTable, settings, {
+                                page: $('#PdfPageType').val(),
+                                orientation: $('#PdfPageOrientaion').val().substring(0, 1)
+                            });
+
+                            dialogRef.close();
+                        }
+                    },
+                    {
+                        label: App.translate('Cancel'),
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                        }
+                    }
+                ];
+                window.top.BootstrapDialog.show({
+                    message: $printSettings,
+                    type: null,
+                    title: App.translate('Print'),
+                    buttons: buttons,
+                    draggable: true
+                })
+
+            }
+        })
+    }
+
     window.top.BootstrapDialog.show({
         message: $printSettings,
         type: null,
@@ -101,11 +147,12 @@ App.pcTableMain.prototype._print = function () {
         draggable: true
     })
 };
-App.pcTableMain.prototype._printTable = function (settings) {
+App.pcTableMain.prototype._printTable = function (settings, pdfSettings) {
 
     let pcTable = this;
     let settingsObject = {
-        fields: {}
+        fields: {},
+        pdf: pdfSettings
     };
     if (settings.indexOf('with-id') !== -1)
         settingsObject.fields.id = 50;
@@ -135,9 +182,9 @@ App.pcTableMain.prototype._printTable = function (settings) {
         let ids = [];
         pcTable.dataSortedVisible.forEach((r) => {
             if (typeof r === 'object') {
-                if(pcTable.fields.tree.treeViewType==='other'){
+                if (pcTable.fields.tree.treeViewType === 'other') {
                     //ids.push({tree: r.v})
-                }else{
+                } else {
                     ids.push(r.row.id)
                 }
             } else {
@@ -149,7 +196,7 @@ App.pcTableMain.prototype._printTable = function (settings) {
     }
     settingsObject.sosiskaMaxWidth = 1100;
 
-    if(pcTable.viewType === 'rotated'){
+    if (pcTable.viewType === 'rotated') {
         settingsObject.rotated = pcTable.tableRow.rotated_view;
     }
 
