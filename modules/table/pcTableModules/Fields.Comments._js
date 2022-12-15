@@ -402,6 +402,7 @@ fieldTypes.comments = {
                 let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Add comment'));
                 if (tabindex) btn.attr('tabindex', tabindex);
                 div.append(btn);
+                this.checkWaiting(btn)
             }
 
         }

@@ -497,10 +497,14 @@
                 });
                 return this.__ajax('post', {data: sendData, method: 'saveEditRow'});
             },
-            getEditSelect: function (item, fieldName, q, parentid, withLoading, RequestObject) {
+            getEditSelect: function (item, fieldName, q, parentid, withLoading, RequestObject, hash) {
                 var sendData = {};
                 return this.__ajax('post', {
-                    data: {item: item, field: fieldName},
+                    data: {
+                        item: item,
+                        field: fieldName,
+                        hash: hash
+                    },
                     q: q,
                     parentId: parentid,
                     method: 'getEditSelect'

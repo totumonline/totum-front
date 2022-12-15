@@ -10,7 +10,7 @@ fieldTypes.checkbox = {
     },
     getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
         var $input = $('<input type="checkbox" name="cell_edit"/>');
-
+        this.checkWaiting($input);
         if (tabindex) $input.attr('tabindex', tabindex);
         let action = false;
         $input.on('keydown', function (event) {

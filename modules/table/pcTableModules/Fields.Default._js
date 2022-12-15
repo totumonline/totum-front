@@ -98,6 +98,7 @@ var defaultField = {
         var $input = $oldInput;
         if (!$oldInput || !$oldInput.is('input')) {
             $input = $('<input type="text" class="form-control" name="cell_edit" autocomplete="off" autocorrect="off" />');
+            this.checkWaiting($input);
         }
 
         if (typeof tabindex !== 'undefined') $input.attr('tabindex', tabindex);
@@ -127,11 +128,14 @@ var defaultField = {
         $input.on('blur', function (event) {
             blurClbk($input, event);
         });
-        if ($input.closest('.InsertRow').length === 0) {
-            $input.on('focus', () => {
-                $input.select()
-            });
-        }
+        setTimeout(() => {
+            if ($input.closest('.InsertRow').length === 0) {
+                $input.on('focus', () => {
+                    $input.select()
+                });
+            }
+        }, 10)
+
 
         return $input;
     },
@@ -258,6 +262,64 @@ var defaultField = {
     },
     getHighCelltext: function (v, td, item) {
         return (this.getPanelText ? this.getPanelText(v, td, item) : this.getCellText(v, td, item));
+    },
+    checkWaiting: function (element) {
+        if (this.waiting) {
+            let field = this;
+            field.target = element;
+            let events = element.is('button') ? 'click keydown' : 'focus';
+            if ( field.type === 'date') {
+                events = 'click keydown focus'
+            } else if (field.type === 'select' || field.type === 'checkbox') {
+                events = 'mousedown keydown focus'
+            }
+            let passIt = false;
+            element.on(events, function (evt, elseData) {
+                if (!passIt) {
+                    let coggs = false;
+                    const checkWaiting = () => {
+                        if (field.waiting[0]) {
+                            if (element.is('input')) {
+                                element.prop('readonly', true);
+                            }
+
+                            if (field.type === 'checkbox') {
+                                if (['mousedown', 'click', 'keydown'].indexOf(evt.type) !== -1) {
+                                    passIt = false;
+                                    return false;
+                                }
+                            }
+                            if (!coggs) {
+                                coggs = true;
+                                App.fullScreenProcesses.show();
+                            }
+                            setTimeout(checkWaiting, 100)
+                        } else {
+                            if (element.is('input')) {
+                                element.prop('readonly', false);
+                            }
+
+                            if (coggs) {
+                                App.fullScreenProcesses.hide();
+                            }
+                            if (evt.originalEvent) {
+                                if (!evt.originalEvent.done) {
+                                    evt.originalEvent.done = true;
+                                    field.target.get(0).dispatchEvent(evt.originalEvent);
+                                }
+                            } else {
+                                if (!(elseData && elseData.done)) {
+                                    field.target.trigger(evt.type, {"done": true});
+                                }
+                            }
+                        }
+                    }
+                    setTimeout(checkWaiting, 20);
+                }
+                passIt = !passIt;
+                return passIt;
+            })
+        }
     }
 
 

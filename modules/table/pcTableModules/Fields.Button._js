@@ -181,7 +181,7 @@ fieldTypes.button = {
                     break;
             }
         })
-
+        this.checkWaiting($input);
         return $input;
     },
     btnOK: function ($td, item) {

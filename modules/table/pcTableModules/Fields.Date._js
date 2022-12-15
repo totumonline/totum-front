@@ -9,6 +9,7 @@ fieldTypes.date = {
     },
     getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
         var $input = $('<input type="text" name="cell_edit" class="form-control" autocomplete="off" autocorrect="off" />');
+        this.checkWaiting($input);
 
         if (tabindex) $input.attr('tabindex', tabindex);
 

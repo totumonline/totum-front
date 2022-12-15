@@ -273,6 +273,7 @@ $.extend(App.pcTableMain.prototype, {
         $td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>');
     },
     _createEditCell: function (td, editNow, item) {
+    
         let pcTable = this;
 
         let field = this._getFieldBytd(td);

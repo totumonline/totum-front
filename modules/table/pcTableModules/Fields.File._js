@@ -450,7 +450,7 @@
 
                 let btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Edit field'));
                 if (tabindex) btn.attr('tabindex', tabindex);
-
+                this.checkWaiting(btn)
                 div.append(btn);
             }
             return div.data('val', Files);

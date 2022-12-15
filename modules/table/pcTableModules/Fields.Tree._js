@@ -20,6 +20,7 @@
             return checked_ids;
         },
         getEditElement: function ($oldInput, oldValueParam, item, enterClbk, escClbk, blurClbk, tabindex, editNow) {
+
             let field = this;
             let div = $oldInput || $('<div>');
             let dialog = div.data('dialog') || $('<div>').css('min-height', 200);
@@ -207,9 +208,9 @@
                 if (div.find('button').length === 0) {
                     btn = $('<button class="btn btn-default btn-sm text-edit-button">').text(App.translate('Editing in the form'));
                     if (tabindex) btn.attr('tabindex', tabindex);
-
                     div.append(btn);
 
+                    this.checkWaiting(btn);
 
                 }
 
@@ -503,18 +504,30 @@
             let d = $.Deferred();
 
             let itemTmp = {};
-            Object.keys(item).forEach(function (k) {
-                //Фильтруем jquery-объекты из item
-                if (!/^\$/.test(k)) {
-                    if (k === 'id' || !(item[k] !== null && typeof item[k] === 'object' && Object.keys(item[k]).indexOf('v') !== -1)) {
-                        itemTmp[k] = item[k];
-                    } else {
-                        itemTmp[k] = item[k]['v'];
-                    }
-                }
-            });
 
-            this.pcTable.model.getEditSelect(itemTmp, this.name, q, parentId, true).then(function (json) {
+            if (!this.hash && (field.category === 'column' || field.category === 'filter')) {
+                Object.keys(item).forEach((k) => {
+                    if (field.category === 'filter') {
+                        if (!this.pcTable.fields[k] || this.pcTable.fields[k].category !== 'filter') {
+                            return;
+                        }
+                    }
+                    //Фильтруем jquery-объекты из item
+                    if (!/^\$/.test(k)) {
+                        if (k === 'id') {
+                            itemTmp[k] = item[k];
+                        } else {
+                            if (item[k] !== null && typeof item[k] === 'object' && Object.keys(item[k]).indexOf('v') !== -1) {
+                                itemTmp[k] = item[k]['v'];
+                            } else {
+                                itemTmp[k] = item[k];
+                            }
+                        }
+                    }
+                });
+            }
+
+            this.pcTable.model.getEditSelect(itemTmp, this.name, q, parentId, true, null, this.hash).then(function (json) {
                 let lists = [json.list, json.indexed];
                 if (!field.codeSelectIndividual)
                     field.list = lists;

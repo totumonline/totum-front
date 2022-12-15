@@ -394,8 +394,8 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
             if (tabindex) {
                 btn.attr('tabindex', tabindex);
             }
-
             div.append(btn);
+            this.checkWaiting(btn);
 
         }
         return div.data('val', oldValueParam);//.attr('data-category', category).attr('data-category', category);

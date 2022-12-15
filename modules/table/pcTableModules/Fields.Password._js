@@ -1,7 +1,7 @@
 fieldTypes.password = {
     icon: 'fa-lock',
-    getEditVal: function(input){
-        var val=input.val().trim();
+    getEditVal: function (input) {
+        var val = input.val().trim();
         var error = false;
         if (val === undefined || val === '' || val === null) {
             notify = App.translate('The field %s must be entered', this.title);
@@ -15,8 +15,8 @@ fieldTypes.password = {
         return '**PASSWORD**';
     },
     getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
-        var $input = $('<input type="password" name="cell_edit" class="form-control"  autocomplete="new-password" autocorrect="off" placeholder="'+App.translate(oldValue && oldValue.v?'Change the password':'New password')+'"/>');
-
+        var $input = $('<input type="password" name="cell_edit" class="form-control"  autocomplete="new-password" autocorrect="off" placeholder="' + App.translate(oldValue && oldValue.v ? 'Change the password' : 'New password') + '"/>');
+        this.checkWaiting($input);
         $input.on('save-me', function (event) {
             enterClbk($(this), event);
         });
@@ -25,17 +25,16 @@ fieldTypes.password = {
         if (tabindex) $input.attr('tabindex', tabindex);
 
         var field = this;
-        oldValue=oldValue.v;
+        oldValue = oldValue.v;
         $input.on('keydown', function (event) {
             switch (event.keyCode) {
                 case 13:
                 case 9:
-                    try{
+                    try {
                         $input.data('enterClicked', true);
                         enterClbk($(this), event);
                         return false;
-                    }
-                    catch (err){
+                    } catch (err) {
                         $input.data('enterClicked', false);
                         App.popNotify(err, $input, 'default');
                         field.focusElement($input);
@@ -48,7 +47,7 @@ fieldTypes.password = {
             }
         })
 
-        var blur = function(event) {
+        var blur = function (event) {
             blurClbk($input, event);
             return;
         }

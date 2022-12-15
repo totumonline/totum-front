@@ -181,20 +181,30 @@ fieldTypes.select = {
             let def = $.Deferred();
             let itemTmp = {};
             Object.keys(item).forEach(function (k) {
-                //Фильтруем jquery-объекты из item
-                if (!/^\$/.test(k)) {
-                    if (k === 'id') {
-                        itemTmp[k] = item[k];
-                    } else if (k === field.name) {
-                        itemTmp[k] = val
-                    } else {
-                        if (item[k] !== null && typeof item[k] === 'object' && Object.keys(item[k]).indexOf('v') !== -1) {
-                            itemTmp[k] = item[k]['v'];
-                        } else {
-                            itemTmp[k] = item[k];
+                if (field.category === 'column' || field.category === 'filter') {
+                    Object.keys(item).forEach((k) => {
+                        if (field.category === 'filter') {
+                            if (!this.pcTable.fields[k] || this.pcTable.fields[k].category !== 'filter') {
+                                return;
+                            }
                         }
-                    }
+                        //Фильтруем jquery-объекты из item
+                        if (!/^\$/.test(k)) {
+                            if (k === 'id') {
+                                itemTmp[k] = item[k];
+                            } else if (k === field.name) {
+                                itemTmp[k] = val
+                            } else {
+                                if (item[k] !== null && typeof item[k] === 'object' && Object.keys(item[k]).indexOf('v') !== -1) {
+                                    itemTmp[k] = item[k]['v'];
+                                } else {
+                                    itemTmp[k] = item[k];
+                                }
+                            }
+                        }
+                    });
                 }
+
             });
             if (divParent.isAttached()) {
                 divParent.append('<i class="fa fa-cog fa-spin fa-3x loading" style="position: absolute; z-index: 1' + '    right: 1px;' + '    top: 1px;' + '    font-size: 8px;"/>');
@@ -378,7 +388,7 @@ fieldTypes.select = {
 
 
                     input.selectpicker('refresh');
-
+                    field.checkWaiting(input.data('selectpicker').$button)
                     input.selectpicker('val', checkedVal);
                     return checkedVal
                 };

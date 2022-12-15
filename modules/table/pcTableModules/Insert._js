@@ -1,8 +1,10 @@
 $.extend(App.pcTableMain.prototype, {
     _insertItem: null,
     _insertRow: null,
+    _insertRowFields: null,
     _insertRowActive: false,
     _insertButtons: null,
+    _insertRowWait: [0],
     _insertRowHash: null,
     _addButtons: null,
     _insertError: {},
@@ -120,6 +122,7 @@ $.extend(App.pcTableMain.prototype, {
                 pcTable.model.add(pcTable._insertRowHash).then(function (json) {
                     pcTable.table_modify.call(pcTable, json);
                     pcTable._insertRowHash = null;
+                    pcTable._insertRowFields = null;
                     pcTable._insertRowActive = true;
                     pcTable._currentInsertCellIndex = 0;
                     switch (isNotClean) {
@@ -258,8 +261,6 @@ $.extend(App.pcTableMain.prototype, {
             this.insertRow = $row = $('<tr class="InsertRow" style="height: 35px;"><td class="id"></td></tr>')
                 .on('click focus keydown', 'input,button,select', function (event) {
                     let inputElement = $(this);
-
-
                     if (event.type === 'keydown') {
                         if (event.key === 'Tab') {
                             event.preventDefault();
@@ -300,9 +301,22 @@ $.extend(App.pcTableMain.prototype, {
             visibleColumnsIndexes.push(field.name);
         });
 
+        pcTable._insertRowWait[0] = true;
+
         pcTable.model.checkInsertRow(data, pcTable._insertRowHash, this.insertRow.clearField, (!pcTable._insertRowHash ? 'all' : 'true')).then(function (json) {
             pcTable.insertRow.clearField = null;
             pcTable._insertRowHash = pcTable._insertRowHash || json.hash;
+            pcTable._insertRowFields = pcTable._insertRowFields || ((hash) => {
+                let _insertRowFields = [];
+                pcTable.fieldCategories.visibleColumns.forEach((field) => {
+                    field = $.extend({}, field);
+                    _insertRowFields.push(field)
+                    field.hash = hash;
+                    field.waiting = pcTable._insertRowWait;
+                })
+                return _insertRowFields;
+            })(json.hash)
+
             item = json.row;
             let errors = false;
             let tabi = 2;
@@ -313,14 +327,11 @@ $.extend(App.pcTableMain.prototype, {
                 })
             }
 
-            $.each(pcTable.fieldCategories.column, function (ind, field) {
-
-
+            $.each(pcTable._insertRowFields, function (ind, field) {
                 if (!field.showMeWidth) {
                     pcTable._insertItem[field.name] = item[field.name];
                     return;
                 }
-
 
                 let index = visibleColumnsIndexes.indexOf(field.name);
 
@@ -375,6 +386,7 @@ $.extend(App.pcTableMain.prototype, {
                 $(btn).attr('tabindex', tabi++)
             })
             pcTable._insertFocusIt.call(pcTable);
+            pcTable._insertRowWait[0] = false;
         });
 
 
@@ -571,7 +583,7 @@ $.extend(App.pcTableMain.prototype, {
                     }
                     parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
                 }
-            }, 150)
+            }, 10)
         };
         var escClbck = function ($input, event) {
             let td = $input.closest('td');
@@ -589,6 +601,7 @@ $.extend(App.pcTableMain.prototype, {
         };
 
         let input = field.getEditElement(td.data('input'), pcTable._insertItem[field.name], pcTable._insertItem, saveClbck, escClbck, blurClbck);
+
 
         if (f && f.placeholder && field.addPlaceholder) {
             field.addPlaceholder(input, f.placeholder)
@@ -696,7 +709,7 @@ $.extend(App.pcTableMain.prototype, {
 
         if (!$row || !$row.length) return false;
 
-        $.each(pcTable.fieldCategories.visibleColumns, function (index, field) {
+        $.each(pcTable._insertRowFields, function (index, field) {
             if (pcTable._currentInsertCellIndex == index) {
                 if (!field.insertable || (pcTable._insertItem && pcTable._insertItem[field.name] && pcTable._insertItem[field.name].f && pcTable._insertItem[field.name].f.block === true)) {
                     pcTable._currentInsertCellIndex++;
