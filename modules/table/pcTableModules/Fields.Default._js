@@ -275,6 +275,7 @@ var defaultField = {
                 events = 'mousedown keydown focus'
             }
             element.on(events, function (evt, elseData) {
+            
                 let coggs = false;
                 const checkWaiting = () => {
                     if (field.waiting[0]) {

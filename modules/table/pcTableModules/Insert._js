@@ -241,6 +241,7 @@ $.extend(App.pcTableMain.prototype, {
                 this._insertRow.remove();
                 this._insertRow = null;
                 this._insertRowHash = null;
+                this._insertRowFields = null;
                 this._insertRowActive = false;
             }
 

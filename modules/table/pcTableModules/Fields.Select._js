@@ -389,8 +389,8 @@ fieldTypes.select = {
                     }
 
 
+                    field.checkWaiting(input)
                     input.selectpicker('refresh');
-                    field.checkWaiting(input.data('selectpicker').$button)
                     input.selectpicker('val', checkedVal);
                     return checkedVal
                 };
@@ -966,5 +966,53 @@ fieldTypes.select = {
         pcTable.model.selectSourceTableAction(field.name, ee);
 
         return $d;
+    },
+    checkWaiting: function (input) {
+        if (this.waiting) {
+            let element;
+            if (!input.data('selectpicker')) {
+                input.selectpicker();
+            }
+            if(input.data('selectpicker').waiter){
+                return;
+            }
+            let field = this;
+            let passIt = false;
+            input.data('selectpicker').waiter = true;
+            input.data('selectpicker').$button.on('click', function (evt, elseData) {
+                let coggs = false;
+                if(!evt._id){
+                    evt._id = Math.random();
+                }
+                const checkWaiting = () => {
+                    if (field.waiting[0]) {
+                        if (!coggs) {
+                            coggs = true;
+                            App.fullScreenProcesses.show();
+                        }
+                        setTimeout(checkWaiting, 200)
+                    } else {
+                        if (coggs) {
+                            App.fullScreenProcesses.hide();
+                        }
+                        if (evt.originalEvent) {
+                            evt.originalEvent.done = true;
+                            input.data('selectpicker').$button.get(0).dispatchEvent(evt.originalEvent);
+                        }
+                    }
+                }
+
+                if ((evt.originalEvent && evt.originalEvent.done)) {
+                    return true
+                } else {
+                    setTimeout(checkWaiting, 20);
+                }
+                evt.stopImmediatePropagation();
+                return false;
+            })
+
+            let clicks = $._data( input.data('selectpicker').$button.get(0), "events" ).click;
+            clicks.unshift(clicks.pop());
+        }
     }
 };
