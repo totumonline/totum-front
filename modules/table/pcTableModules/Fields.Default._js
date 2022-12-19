@@ -264,60 +264,60 @@ var defaultField = {
         return (this.getPanelText ? this.getPanelText(v, td, item) : this.getCellText(v, td, item));
     },
     checkWaiting: function (element) {
+
         if (this.waiting) {
             let field = this;
             field.target = element;
             let events = element.is('button') ? 'click keydown' : 'focus';
-            if ( field.type === 'date') {
+            if (field.type === 'date') {
                 events = 'click keydown focus'
             } else if (field.type === 'select' || field.type === 'checkbox') {
                 events = 'mousedown keydown focus'
             }
-            let passIt = false;
             element.on(events, function (evt, elseData) {
-                if (!passIt) {
-                    let coggs = false;
-                    const checkWaiting = () => {
-                        if (field.waiting[0]) {
-                            if (element.is('input')) {
-                                element.prop('readonly', true);
-                            }
+                let coggs = false;
+                const checkWaiting = () => {
+                    if (field.waiting[0]) {
 
-                            if (field.type === 'checkbox') {
-                                if (['mousedown', 'click', 'keydown'].indexOf(evt.type) !== -1) {
-                                    passIt = false;
-                                    return false;
-                                }
-                            }
-                            if (!coggs) {
-                                coggs = true;
-                                App.fullScreenProcesses.show();
-                            }
-                            setTimeout(checkWaiting, 100)
-                        } else {
-                            if (element.is('input')) {
-                                element.prop('readonly', false);
-                            }
+                        if (element.is('input')) {
+                            element.prop('readonly', true);
+                        }
 
-                            if (coggs) {
-                                App.fullScreenProcesses.hide();
-                            }
-                            if (evt.originalEvent) {
-                                if (!evt.originalEvent.done) {
-                                    evt.originalEvent.done = true;
-                                    field.target.get(0).dispatchEvent(evt.originalEvent);
-                                }
-                            } else {
-                                if (!(elseData && elseData.done)) {
-                                    field.target.trigger(evt.type, {"done": true});
-                                }
+                        if (field.type === 'checkbox') {
+                            if (['mousedown', 'click', 'keydown'].indexOf(evt.type) !== -1) {
+                                return;
                             }
                         }
+                        if (!coggs) {
+                            coggs = true;
+                            App.fullScreenProcesses.show();
+                        }
+                        setTimeout(checkWaiting, 200)
+                    } else {
+                        if (element.is('input')) {
+                            element.prop('readonly', false);
+                        }
+
+
+                        if (coggs) {
+                            App.fullScreenProcesses.hide();
+                        }
+                        if (evt.originalEvent) {
+                            evt.originalEvent.done = true;
+                            field.target.get(0).dispatchEvent(evt.originalEvent);
+                        } else {
+                            field.target.trigger(evt.type, {"done": true});
+                        }
                     }
+                }
+
+                if ((evt.originalEvent && evt.originalEvent.done) ||
+                    (elseData && elseData.done)) {
+                    return true
+                } else {
                     setTimeout(checkWaiting, 20);
                 }
-                passIt = !passIt;
-                return passIt;
+                return false;
             })
         }
     }

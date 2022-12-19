@@ -164,6 +164,7 @@ fieldTypes.button = {
                 this.pcTable.model.click({
                     item: this.pcTable._insertRowHash,
                     fieldName: this.name
+
                 }).then(() => {
                     $input.html(html);
                     clicked = false;

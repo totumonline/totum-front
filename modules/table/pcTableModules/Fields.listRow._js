@@ -335,6 +335,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
             let showned = false;
             div.on('click keydown', function (event) {
                 if (showned) return false;
+
                 if (event.key === 'Tab') {
                     blurClbk(dialog, event, null, true);
                     return

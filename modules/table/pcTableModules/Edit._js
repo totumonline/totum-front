@@ -99,6 +99,7 @@ $.extend(App.pcTableMain.prototype, {
                     item = item || pcTable._getItemBytd($td);
                     id = item.id;
                     editedData.item = id;
+                    editedData.hash = field.hash;
                     editedData.fieldName = field.name;
                 } else {
                     item = item || pcTable.data_params;

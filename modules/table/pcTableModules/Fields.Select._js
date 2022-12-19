@@ -192,13 +192,15 @@ fieldTypes.select = {
                         if (!/^\$/.test(k)) {
                             if (k === 'id') {
                                 itemTmp[k] = item[k];
-                            } else if (k === field.name) {
-                                itemTmp[k] = val
-                            } else {
-                                if (item[k] !== null && typeof item[k] === 'object' && Object.keys(item[k]).indexOf('v') !== -1) {
-                                    itemTmp[k] = item[k]['v'];
+                            } else if (!field.hash) {
+                                if (k === field.name) {
+                                    itemTmp[k] = val
                                 } else {
-                                    itemTmp[k] = item[k];
+                                    if (item[k] !== null && typeof item[k] === 'object' && Object.keys(item[k]).indexOf('v') !== -1) {
+                                        itemTmp[k] = item[k]['v'];
+                                    } else {
+                                        itemTmp[k] = item[k];
+                                    }
                                 }
                             }
                         }
@@ -222,7 +224,7 @@ fieldTypes.select = {
                     res.resolve({...field.loadedSelect});
                     delete field.loadedSelect;
                 } else {
-                    res = field.pcTable.model.getEditSelect(itemTmp, field.name, q, null, null, RequestObject);
+                    res = field.pcTable.model.getEditSelect(itemTmp, field.name, q, null, null, RequestObject, field.hash);
                 }
             }
             res.then(function (json) {

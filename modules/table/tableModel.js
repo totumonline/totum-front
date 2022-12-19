@@ -384,8 +384,8 @@
                     method: 'duplicate'
                 });
             },
-            dblClick: function (rowId, fieldName) {
-                return this.__ajax('post', {field: fieldName, id: rowId, method: 'dblClick'});
+            dblClick: function (rowId, fieldName, hash) {
+                return this.__ajax('post', {field: fieldName, id: rowId, method: 'dblClick', hash: hash});
             },
             getFieldLog: function (fieldName, rowId, rowName) {
                 return this.__ajax('post', {field: fieldName, id: rowId, method: 'getFieldLog', rowName: rowName});
@@ -439,14 +439,19 @@
                     method: 'checkInsertRow'
                 });
             },
-            checkEditRow: function (data, loadSelects) {
+            checkEditRow: function (data, loadSelects, hash) {
                 var sendData = {};
                 $.each(data, function (k, v) {
                     if (v != undefined) {
                         sendData[k] = v;
                     }
                 });
-                return this.__ajax('post', {data: sendData, method: 'checkEditRow', loadSelects: loadSelects});
+                return this.__ajax('post', {
+                    data: sendData,
+                    method: 'checkEditRow',
+                    loadSelects: loadSelects,
+                    hash: hash
+                });
             },
             viewRow: function (id) {
                 return this.__ajax('post', {id: id, method: 'viewRow'});
@@ -490,11 +495,11 @@
             },
             saveEditRow: function (data) {
                 var sendData = {};
-                $.each(data, function (k, v) {
-                    if (v !== undefined) {
-                        sendData[k] = v;
-                    }
-                });
+                    $.each(data, function (k, v) {
+                        if (v !== undefined) {
+                            sendData[k] = v;
+                        }
+                    });
                 return this.__ajax('post', {data: sendData, method: 'saveEditRow'});
             },
             getEditSelect: function (item, fieldName, q, parentid, withLoading, RequestObject, hash) {
