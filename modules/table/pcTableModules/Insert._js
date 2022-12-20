@@ -211,10 +211,12 @@ $.extend(App.pcTableMain.prototype, {
         if (this.isTreeView && this.tableRow.type === 'cycles') {
         } else if (this.viewType === 'panels' || this.isRotatedView || this.isTreeView) {
             if (!this.isTreeView || !this.fields.tree.treeHideAddButton) {
-                getAddButton(App.translate('Add'), AddWithPanel, "add").width(80)
+                if(!this.f.hideadd){
+                    getAddButton(App.translate('Add'), AddWithPanel, "add").width(80)
+                }
             }
         } else {
-            if (this.tableRow.id !== 2) {
+            if (this.tableRow.id !== 2 && !this.f.hideadd) {
                 getAddButton(App.translate('Add'), AddWithRow, "add").width(80)
             }
 

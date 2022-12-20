@@ -2695,7 +2695,7 @@
             let $addBtn = $();
             if (!text && this.PageData && this.PageData.loading) {
                 text = App.translate('Wait, the table is loading');
-            } else if (this.isInsertable()) {
+            } else if (this.isInsertable() && !this.f.hideadd) {
                 $addBtn = $('<button class="btn btn-warning btn-xxs">' + App.translate('Add row') + '</button>').width(120)
                     .on('click', () => {
                         this.__$rowsButtons.find('[data-action="add"]:first').click();

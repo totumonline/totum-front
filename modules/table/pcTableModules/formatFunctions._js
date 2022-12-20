@@ -35,6 +35,9 @@ App.pcTableMain.prototype.__formatFunctions = {
     blockadd: function () {
         this._closeInsertRow();
         this._rowsButtons();
+    }, hideadd: function () {
+        this._closeInsertRow();
+        this._rowsButtons();
     },
     tablecomment: function () {
         this._rowsButtons();
