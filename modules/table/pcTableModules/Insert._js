@@ -211,7 +211,7 @@ $.extend(App.pcTableMain.prototype, {
         if (this.isTreeView && this.tableRow.type === 'cycles') {
         } else if (this.viewType === 'panels' || this.isRotatedView || this.isTreeView) {
             if (!this.isTreeView || !this.fields.tree.treeHideAddButton) {
-                if(!this.f.hideadd){
+                if (!this.f.hideadd) {
                     getAddButton(App.translate('Add'), AddWithPanel, "add").width(80)
                 }
             }
@@ -326,7 +326,11 @@ $.extend(App.pcTableMain.prototype, {
 
             if (json.selects) {
                 Object.keys(json.selects).forEach((k) => {
-                    pcTable.fields[k].loadedSelect = json.selects[k]
+                    pcTable._insertRowFields.forEach((field) => {
+                        if (field.name === k) {
+                            field.loadedSelect = json.selects[k]
+                        }
+                    })
                 })
             }
 

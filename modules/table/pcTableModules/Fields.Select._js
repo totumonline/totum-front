@@ -973,17 +973,18 @@ fieldTypes.select = {
             if (!input.data('selectpicker')) {
                 input.selectpicker();
             }
-            if(input.data('selectpicker').waiter){
+            if (input.data('selectpicker').waiter) {
                 return;
             }
             let field = this;
             let passIt = false;
             input.data('selectpicker').waiter = true;
-            input.data('selectpicker').$button.on('click', function (evt, elseData) {
+            const eventFunc = function (evt, elseData) {
                 let coggs = false;
-                if(!evt._id){
+                if (!evt._id) {
                     evt._id = Math.random();
                 }
+
                 const checkWaiting = () => {
                     if (field.waiting[0]) {
                         if (!coggs) {
@@ -998,21 +999,25 @@ fieldTypes.select = {
                         if (evt.originalEvent) {
                             evt.originalEvent.done = true;
                             input.data('selectpicker').$button.get(0).dispatchEvent(evt.originalEvent);
+                        } else {
+                            input.data('selectpicker').$button.trigger(evt.type, {done: true})
                         }
                     }
                 }
 
-                if ((evt.originalEvent && evt.originalEvent.done)) {
+                if ((evt.originalEvent && evt.originalEvent.done) || elseData && elseData.done) {
                     return true
                 } else {
                     setTimeout(checkWaiting, 20);
                 }
                 evt.stopImmediatePropagation();
                 return false;
+            };
+            ['click', 'keyup', 'focus'].forEach((eventName) => {
+                input.data('selectpicker').$button.on(eventName, eventFunc)
+                let clicks = $._data(input.data('selectpicker').$button.get(0), "events")[eventName];
+                clicks.unshift(clicks.pop());
             })
-
-            let clicks = $._data( input.data('selectpicker').$button.get(0), "events" ).click;
-            clicks.unshift(clicks.pop());
         }
     }
 };

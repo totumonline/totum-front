@@ -76,7 +76,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
                     if (json.selects) {
                         Object.keys(json.selects).forEach((k) => {
-                            EditPanelFunc.pcTable.fields[k].loadedSelect = json.selects[k]
+                            EditPanelFunc.fields.forEach((field) => {
+                                if (field.name === k) {
+                                    field.loadedSelect = json.selects[k]
+                                }
+                            })
                         })
                     }
 
