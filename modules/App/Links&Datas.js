@@ -1155,6 +1155,20 @@
         if (window.location.pathname !== '/' && !/^\/Table\//.test(window.location.pathname))
             src = data.table_id + '?sess_hash=' + data.sess_hash + '&iframe=1';
 
+        if (data.elseData) {
+            let withoutCategories = [];
+            if (data.elseData.header === false) {
+                withoutCategories.push('param')
+            }
+            if (data.elseData.footer === false) {
+                withoutCategories.push('footer')
+            }
+            if (data.elseData.topbuttons === false) {
+                withoutCategories.push('tb')
+            }
+            src += '#' + encodeURIComponent(JSON.stringify({wc: withoutCategories}));
+        }
+
         let $iframe = $('<iframe style="width: 100%; height: ' + (height || "80vh") + '; border: none;" src="' + src + '">');
         $('body').append($iframe);
         let btns = [];
