@@ -51,6 +51,14 @@ App.pcTableMain.prototype.__formatFunctions = {
         this._rerenderColumnsFooter();
         this._rowsButtons();
     },
+    topbuttons: function () {
+        let btns = this._beforeSpace_title.find('.common-table-title');
+        if(this.f.topbuttons === false){
+            btns.hide()
+        }else{
+            btns.show()
+        }
+    },
     blockorder: function () {
         this._refreshHead();
     },

@@ -204,7 +204,7 @@
         if (this.isCreatorView) {
             if (localStorage.getItem('notCreator')) {
                 this.isCreatorView = false;
-            }else if(window.location.hash==='#no-creator-view'){
+            } else if (window.location.hash === '#no-creator-view') {
                 this.isCreatorView = false;
             }
         }
@@ -768,7 +768,7 @@
                         "codeSelect": App.translate('SelectShort'),
                         "format": App.translate('FormatShort')
                     };
-                    if(field.category === 'filter'){
+                    if (field.category === 'filter') {
                         delete codes['codeAction'];
                     }
 

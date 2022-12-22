@@ -298,6 +298,51 @@
                             }
                             let $iframe = $('<iframe src="' + uri + '" style="width: 100%; height: 70vh; border: none"></iframe>');
 
+                            let btns;
+                            if (linkObject.elseData && linkObject.elseData.bottombuttons === false) {
+                                btns = []
+                            } else {
+                                btns = [
+                                    {
+                                        'label': App.translate("Refresh"),
+                                        cssClass: 'btn-m btn-default',
+                                        'action': function () {
+                                            $iframe.get(0).contentWindow.location.reload();
+                                        }
+                                    },
+                                    {
+                                        'label': App.translate('Open'),
+                                        cssClass: 'btn-m btn-default',
+                                        'action': function (dialog) {
+                                            try {
+                                                if ($iframe.get(0).contentWindow.sessionStorage.linkObject)
+                                                    linkObject = JSON.parse($iframe.get(0).contentWindow.sessionStorage.linkObject);
+                                            } catch (e) {
+
+                                            }
+                                            openLinkLocation('self');
+                                            //dialog.close();
+                                        }
+                                    },
+                                    {
+                                        'label': App.translate("Tab"),
+                                        cssClass: 'btn-m btn-default',
+                                        'action': function (dialog) {
+                                            window.open($iframe.get(0).contentWindow.location, '_blank');
+                                            dialog.close();
+                                        }
+                                    },
+                                    {
+                                        'label': null,
+                                        icon: 'fa fa-times',
+                                        cssClass: 'btn-m btn-default btn-empty-with-icon',
+                                        'action': function (dialog) {
+                                            dialog.close();
+                                        }
+                                    }
+                                ]
+                            }
+
                             let dialog = BootstrapDialog.show({
                                 message: $iframe,
                                 draggable: true,
@@ -339,45 +384,7 @@
                                     };
                                     check();
                                 },
-                                buttons: [
-                                    {
-                                        'label': App.translate("Refresh"),
-                                        cssClass: 'btn-m btn-default',
-                                        'action': function () {
-                                            $iframe.get(0).contentWindow.location.reload();
-                                        }
-                                    },
-                                    {
-                                        'label': App.translate('Open'),
-                                        cssClass: 'btn-m btn-default',
-                                        'action': function (dialog) {
-                                            try {
-                                                if ($iframe.get(0).contentWindow.sessionStorage.linkObject)
-                                                    linkObject = JSON.parse($iframe.get(0).contentWindow.sessionStorage.linkObject);
-                                            } catch (e) {
-
-                                            }
-                                            openLinkLocation('self');
-                                            //dialog.close();
-                                        }
-                                    },
-                                    {
-                                        'label': App.translate("Tab"),
-                                        cssClass: 'btn-m btn-default',
-                                        'action': function (dialog) {
-                                            window.open($iframe.get(0).contentWindow.location, '_blank');
-                                            dialog.close();
-                                        }
-                                    },
-                                    {
-                                        'label': null,
-                                        icon: 'fa fa-times',
-                                        cssClass: 'btn-m btn-default btn-empty-with-icon',
-                                        'action': function (dialog) {
-                                            dialog.close();
-                                        }
-                                    }
-                                ]
+                                buttons: btns
                             });
                             $iframe.on('load', function () {
                                 let _window = $iframe.get(0).contentWindow;
@@ -1052,16 +1059,20 @@
 
 
     let dialog = function (title, body, width, refresh, type, model, btns) {
-        btns = btns || [];
-        btns.push({
-            'label': null,
-            icon: 'fa fa-times',
+        if (btns === false) {
+            btns = []
+        } else {
+            btns = btns || [];
+            btns.push({
+                'label': null,
+                icon: 'fa fa-times',
 
-            cssClass: 'btn-m btn-default btn-empty-with-icon',
-            'action': function (dialog) {
-                dialog.close();
-            }
-        });
+                cssClass: 'btn-m btn-default btn-empty-with-icon',
+                'action': function (dialog) {
+                    dialog.close();
+                }
+            });
+        }
 
         return window.top.BootstrapDialog.show({
             message: body,
@@ -1183,6 +1194,11 @@
                 }
             });
         }
+
+        if (data.elseData && data.elseData.bottombuttons === false) {
+            btns = false
+        }
+
         let _dialog = dialog(data['title'], $iframe, data.width, data.refresh, null, model, btns);
         $iframe.on('load', function () {
             let _window = $iframe.get(0).contentWindow;
