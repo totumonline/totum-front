@@ -91,6 +91,7 @@
         let sections = [];
         let sectionField;
         let blocktitle = {};
+        let platemaxdiff = false;
 
 
         $.each(fields, function (k, field) {
@@ -110,6 +111,7 @@
                 sectionField = field;
                 blocktitle = {};
                 formatsFromSection = {};
+                platemaxdiff = false;
 
 
                 let sectionParams = {};
@@ -129,6 +131,7 @@
                                 case 'glue':
                                 case 'fill':
                                 case 'breakwidth':
+
                                 case 'titleleft':
                                 case 'titleright':
                                     let func;
@@ -142,7 +145,8 @@
 
 
                                     break;
-
+                                case 'platemaxdiff':
+                                    platemaxdiff = addSectionParam(platemaxdiff, split, ((str) => str === true ? true : str), true)
                                 case 'outline':
                                     outline = addSectionParam(outline, split, ((str) => str === true ? true : str), true)
                                     break;
@@ -221,6 +225,7 @@
                     sectionField: sectionField,
                     outline: outline,
                     blocktitle: blocktitle,
+                    platemaxdiff: platemaxdiff,
                     border: border,
                     plateh: plateh,
                     platemh: platemh
@@ -399,7 +404,7 @@
 
                 field._showMeWidth = field.field.showMeWidth;
 
-                if (field.format.breakwidth) {
+                if (field.format.breakwidth && field.field._showMeWidth < field.format.breakwidth) {
                     field.field.showMeWidth = parseInt(field.format.breakwidth);
                 }
                 if (field.format.nextline && !floatStarted) floatInner.append('<br/>');
@@ -534,29 +539,36 @@
                 addFieldGap(field, sectionGap)
             });
 
-
+            const getRight = (block, allWidth = false) => {
+                return block.offset().left + parseInt(block.css('paddingLeft')) + parseInt(block.css('borderLeftWidth')) + block.width()
+                    + (allWidth ? parseInt(block.css('paddingRight')) + parseInt(block.css('borderRightWidth')) : 0);
+            }
             const getDiff = function (FlInners) {
                 if (!FlInners.length) return 0;
                 let floatBlock = FlInners[0].div.parent();
-                let rightParent = floatBlock.position().left + parseInt(floatBlock.css('paddingLeft')) + floatBlock.width();
-                let lastLeft;
+
+                let rightParent = getRight(floatBlock)
+                let lastLeft, leftLast;
                 let widestLine;
                 for (let f in FlInners) {
-                    let inner = FlInners[FlInners.length - 1].div;
+                    let inner = FlInners[f].div;
                     inner.w = false;
-                    let leftLast = inner.position().left + inner.outerWidth();
+                    leftLast = getRight(inner, true);
                     if (!lastLeft || leftLast > lastLeft) {
                         lastLeft = leftLast;
-                        widestLine = FlInners[FlInners.length - 1];
+                        widestLine = FlInners[f];
                     }
                 }
-                widestLine.w = true;
-                return rightParent - lastLeft;
+                let diff = rightParent - lastLeft;
+                diff++;
+                if (diff < 0) {
+                    widestLine.w = true;
+                }
+                return diff;
             };
 
             const getBlockDiff = function (inner, floatBlock) {
-                let rightParent = floatBlock.offset().left + floatBlock.outerWidth() - parseInt(floatBlock.css('paddingRight'));
-                return rightParent - (inner.offset().left + inner.outerWidth());
+                return getRight(floatBlock) - getRight(inner, true);
             };
 
 
@@ -717,6 +729,9 @@
 
                                 if (LastFirstLineInner > 0) {
                                     let fInner = FlowLines[0][LastFirstLineInner];
+                                    if (!fInner.w) {
+                                        return false;
+                                    }
                                     let inner = fInner.div;
                                     inner.before('<br/>');
                                     FlowLines.push([fInner]);
@@ -803,6 +818,29 @@
                                         if (leftField) {
                                             leftField.fieldCell.before('<br class="wrapped"/>');
                                             leftField.fieldCell.nextAll('br.wrapped').remove();
+                                            if (iF > 0 && getBlockDiff(leftField.fieldCell, leftField.fieldCell.closest('.pcTable-floatBlock')) > -50) {
+                                                if (sec.platemaxdiff) {
+                                                    let plateDiff;
+                                                    if (inner.blockNum !== undefined) {
+                                                        if (sec.platemaxdiff[inner.blockNum]) {
+                                                            plateDiff = isSmallerSize ? sec.platemaxdiff[inner.blockNum]['_small'] : sec.platemaxdiff[inner.blockNum]['_big'];
+                                                        }
+                                                    }
+                                                    if (sec.platemaxdiff['_small']) {
+                                                        plateDiff = isSmallerSize ? sec.platemaxdiff['_small'] : sec.platemaxdiff['_big'];
+                                                    }
+                                                    if (plateDiff) {
+                                                        let h1 = inner.div.offset().top + inner.div.outerHeight();
+                                                        let innerPrev = FloatInners[iF - 1];
+                                                        let h2 = innerPrev.div.offset().top + innerPrev.div.outerHeight();
+                                                        if ((h1 - h2) > parseInt(plateDiff)) {
+                                                            moveBlockToNewLine();
+                                                            return;
+                                                        }
+
+                                                    }
+                                                }
+                                            }
                                             for (let i = leftFieldI; i <= inner.fields.length - 1; i++) {
                                                 addFieldGap(inner.fields[i], sectionGap)
                                             }
@@ -827,7 +865,7 @@
                 FlowLines.forEach(function (FloatInners, i) {
                     FloatInners.forEach(({div, fields}) => {
                         fields.forEach((field) => {
-                            if (field.format.breakwidth) {
+                            if (field.format.breakwidth && field.field._showMeWidth < field.format.breakwidth) {
                                 field.fieldCell.css('width', field._showMeWidth);
                                 field.field.showMeWidth = field._showMeWidth
                             }
