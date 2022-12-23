@@ -404,7 +404,7 @@
 
                 field._showMeWidth = field.field.showMeWidth;
 
-                if (field.format.breakwidth && field.field._showMeWidth < field.format.breakwidth) {
+                if (field.format.breakwidth && field._showMeWidth < field.format.breakwidth) {
                     field.field.showMeWidth = parseInt(field.format.breakwidth);
                 }
                 if (field.format.nextline && !floatStarted) floatInner.append('<br/>');
@@ -553,6 +553,7 @@
                 for (let f in FlInners) {
                     let inner = FlInners[f].div;
                     inner.w = false;
+                    inner.left = false;
                     leftLast = getRight(inner, true);
                     if (!lastLeft || leftLast > lastLeft) {
                         lastLeft = leftLast;
@@ -564,6 +565,7 @@
                 if (diff < 0) {
                     widestLine.w = true;
                 }
+                widestLine.left = true;
                 return diff;
             };
 
@@ -695,7 +697,7 @@
             const checkDiffs = function (FlowLines) {
                 let result = true;
                 FlowLines.some((FloatInners, i) => {
-                    if (getDiff(FloatInners) < 0) {
+                    if (getDiff(FloatInners) < -10) {
                         result = false;
                         return true;
                     }
@@ -720,7 +722,7 @@
 
                         let FlowLineI = i;
                         let diff = getDiff(FloatInners);
-                        if (diff < 0) {
+                        if (diff < -10) {
                             isSmallerSize = true;
 
                             const moveBlockToNewLine = function () {
@@ -817,8 +819,7 @@
                                         }
                                         if (leftField) {
                                             leftField.fieldCell.before('<br class="wrapped"/>');
-                                            leftField.fieldCell.nextAll('br.wrapped').remove();
-                                            if (iF > 0 && getBlockDiff(leftField.fieldCell, leftField.fieldCell.closest('.pcTable-floatBlock')) > -50) {
+                                            if (iF > 0 && inner.left) {
                                                 if (sec.platemaxdiff) {
                                                     let plateDiff;
                                                     if (inner.blockNum !== undefined) {
@@ -834,6 +835,7 @@
                                                         let innerPrev = FloatInners[iF - 1];
                                                         let h2 = innerPrev.div.offset().top + innerPrev.div.outerHeight();
                                                         if ((h1 - h2) > parseInt(plateDiff)) {
+                                                            inner.w = true;
                                                             moveBlockToNewLine();
                                                             return;
                                                         }
@@ -841,6 +843,9 @@
                                                     }
                                                 }
                                             }
+
+                                            leftField.fieldCell.nextAll('br.wrapped').remove();
+
                                             for (let i = leftFieldI; i <= inner.fields.length - 1; i++) {
                                                 addFieldGap(inner.fields[i], sectionGap)
                                             }
@@ -851,7 +856,7 @@
                             }
 
 
-                            if (!moveBlockToNewLine()) {
+                            if (getDiff(FloatInners) > -10 || !moveBlockToNewLine()) {
                                 done.push(i);
                                 //console.log('done ' + i);
                             }
@@ -865,7 +870,7 @@
                 FlowLines.forEach(function (FloatInners, i) {
                     FloatInners.forEach(({div, fields}) => {
                         fields.forEach((field) => {
-                            if (field.format.breakwidth && field.field._showMeWidth < field.format.breakwidth) {
+                            if (field.format.breakwidth && field._showMeWidth < field.format.breakwidth) {
                                 field.fieldCell.css('width', field._showMeWidth);
                                 field.field.showMeWidth = field._showMeWidth
                             }
