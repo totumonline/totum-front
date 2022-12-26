@@ -54,9 +54,17 @@ App.pcTableMain.prototype.__formatFunctions = {
     topbuttons: function () {
         let btns = this._beforeSpace_title.find('.common-table-title');
         if(this.f.topbuttons === false){
-            btns.hide()
+            if(this.isCreatorView){
+                btns.addClass('admin-hidden')
+            }else{
+                btns.hide()
+            }
         }else{
-            btns.show()
+            if(this.isCreatorView){
+                btns.removeClass('admin-hidden')
+            }else{
+                btns.show()
+            }
         }
     },
     blockorder: function () {
