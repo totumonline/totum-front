@@ -76,6 +76,17 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
             if (json.settings.__form_width) {
                 document.getElementById('form').style.maxWidth = json.settings.__form_width + 'px';
             }
+            if (json.settings.__css) {
+                let style = document.createElement('style');
+                document.head.appendChild(style);
+                style.type = 'text/css';
+                if (style.styleSheet){
+                    // This is required for IE8 and below.
+                    style.styleSheet.cssText = css;
+                } else {
+                    style.appendChild(document.createTextNode(json.settings.__css));
+                }
+            }
         }
 
         if (json.error) {
