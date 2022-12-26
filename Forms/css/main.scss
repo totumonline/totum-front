@@ -1,12 +1,14 @@
+@import "./fonts.scss";
 .ttm-form {
-  @import "./fonts.scss";
-  @import "../../css/fonts.scss";
   @import "simpleElements";
 
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 13px;
   overflow: auto;
 
+  .MuiButton-root{
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
   .ttm-section + .ttm-section {
     margin-top: 10px;
   }
