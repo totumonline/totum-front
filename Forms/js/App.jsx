@@ -28,6 +28,10 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
     if (!form_address) console.log('Do not correct form path');
     div.classList.add("ttm-form");
 
+    if(!div.style.fontSize){
+        div.style.fontSize = '16px'
+    }
+
     let params_string = "ttm-form-cache:" + JSON.stringify([form_address, post, get, input]);
     let sess_hash, model, error;
 
