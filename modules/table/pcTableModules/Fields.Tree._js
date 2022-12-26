@@ -508,7 +508,7 @@
             if ((field.category === 'column' || field.category === 'filter')) {
                 Object.keys(item).forEach((k) => {
                     if (field.category === 'filter') {
-                        if (!this.pcTable.fields[k] || this.pcTable.fields[k].category !== 'filter') {
+                        if (!field.pcTable.fields[k] || field.pcTable.fields[k].category !== 'filter') {
                             return;
                         }
                     }
