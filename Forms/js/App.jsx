@@ -9,6 +9,7 @@ import {ruLang} from './components/lang/ru.js'
 
 const theme = createMuiTheme({
     typography: {
+        fontSize: 16,
         fontFamily: [
             'IBM Plex Sans',
             'Helvetica',
