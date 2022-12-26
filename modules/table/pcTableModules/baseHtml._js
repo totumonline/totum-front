@@ -760,7 +760,12 @@
             if (this.withTopButtons) {
                 this._beforeSpace_title.append(csv);
                 if (this.f.topbuttons === false) {
-                    csv.hide();
+                    if(this.isCreatorView){
+                        csv.addClass('admin-hidden');
+                    }else{
+                        csv.hide();
+                    }
+
                 }
             }
 
