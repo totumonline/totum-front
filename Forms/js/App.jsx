@@ -2,25 +2,25 @@ import TotumModel from "./TotumModel";
 import {TotumForm} from "./components/TotumForm";
 import {Trobber} from "./components/Trobber";
 
-import {withStyles} from "@material-ui/core/styles";
+import {createMuiTheme} from '@material-ui/core/styles';
+import {ThemeProvider} from '@material-ui/styles';
 
 import {ruLang} from './components/lang/ru.js'
 
-const styles = theme => ({
-    "@global": {
-        // MUI typography elements use REMs, so you can scale the global
-        // font size by setting the font-size on the <html> element.
-        html: {
-            fontSize: 16,
-        }
+const theme = createMuiTheme({
+    typography: {
+        fontFamily: [
+            'IBM Plex Sans',
+            'Helvetica',
+            'Arial',
+            'sans-serif'
+        ].join(','),
     }
 });
 
 
 let React = require('react');
 let ReactDom = require('react-dom');
-
-const TotumFormStyled = withStyles(styles)(TotumForm);
 
 
 window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
@@ -80,7 +80,7 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
                 let style = document.createElement('style');
                 document.head.appendChild(style);
                 style.type = 'text/css';
-                if (style.styleSheet){
+                if (style.styleSheet) {
                     // This is required for IE8 and below.
                     style.styleSheet.cssText = css;
                 } else {
@@ -107,7 +107,9 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
 
             if (sess_hash_in === true)
                 localStorage.setItem(params_string, sess_hash)
-            ReactDom.render(<TotumFormStyled data={json} container={div} model={model}/>, div);
+            ReactDom.render(<ThemeProvider theme={theme}>
+                <TotumForm data={json} container={div} model={model}/>;
+            </ThemeProvider>, div);
         }
         resolve(true);
 
