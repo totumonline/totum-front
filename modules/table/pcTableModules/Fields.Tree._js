@@ -505,7 +505,7 @@
 
             let itemTmp = {};
 
-            if (!this.hash && (field.category === 'column' || field.category === 'filter')) {
+            if ((field.category === 'column' || field.category === 'filter')) {
                 Object.keys(item).forEach((k) => {
                     if (field.category === 'filter') {
                         if (!this.pcTable.fields[k] || this.pcTable.fields[k].category !== 'filter') {
@@ -516,7 +516,7 @@
                     if (!/^\$/.test(k)) {
                         if (k === 'id') {
                             itemTmp[k] = item[k];
-                        } else {
+                        } else if (!this.hash) {
                             if (item[k] !== null && typeof item[k] === 'object' && Object.keys(item[k]).indexOf('v') !== -1) {
                                 itemTmp[k] = item[k]['v'];
                             } else {
