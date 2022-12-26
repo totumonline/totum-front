@@ -2,7 +2,7 @@ import TotumModel from "./TotumModel";
 import {TotumForm} from "./components/TotumForm";
 import {Trobber} from "./components/Trobber";
 
-import {createMuiTheme} from '@material-ui/core/styles';
+import {createMuiTheme, withStyles} from '@material-ui/core/styles';
 import {ThemeProvider} from '@material-ui/styles';
 
 import {ruLang} from './components/lang/ru.js'
@@ -18,7 +18,15 @@ const theme = createMuiTheme({
         ].join(','),
     }
 });
-
+const TotumFormStyled = withStyles(theme => ({
+    "@global": {
+        // MUI typography elements use REMs, so you can scale the global
+        // font size by setting the font-size on the <html> element.
+        html: {
+            fontSize: 16,
+        }
+    }
+}))(TotumForm);
 
 let React = require('react');
 let ReactDom = require('react-dom');
@@ -27,10 +35,6 @@ let ReactDom = require('react-dom');
 window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
     if (!form_address) console.log('Do not correct form path');
     div.classList.add("ttm-form");
-
-    if(!div.style.fontSize){
-        div.style.fontSize = '16px'
-    }
 
     let params_string = "ttm-form-cache:" + JSON.stringify([form_address, post, get, input]);
     let sess_hash, model, error;
@@ -113,7 +117,7 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
             if (sess_hash_in === true)
                 localStorage.setItem(params_string, sess_hash)
             ReactDom.render(<ThemeProvider theme={theme}>
-                <TotumForm data={json} container={div} model={model}/>;
+                <TotumFormStyled data={json} container={div} model={model}/>;
             </ThemeProvider>, div);
         }
         resolve(true);
