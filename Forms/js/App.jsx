@@ -117,7 +117,7 @@ window.ttmForm = function (div, form_address, sess_hash_in, post, get, input) {
             if (sess_hash_in === true)
                 localStorage.setItem(params_string, sess_hash)
             ReactDom.render(<ThemeProvider theme={theme}>
-                <TotumFormStyled data={json} container={div} model={model}/>;
+                <TotumFormStyled data={json} container={div} model={model}/>
             </ThemeProvider>, div);
         }
         resolve(true);
