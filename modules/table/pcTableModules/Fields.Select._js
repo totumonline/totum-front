@@ -1015,7 +1015,8 @@ fieldTypes.select = {
             };
             ['click', 'keyup', 'focus'].forEach((eventName) => {
                 input.data('selectpicker').$button.on(eventName, eventFunc)
-                let clicks = $._data(input.data('selectpicker').$button.get(0), "events")[eventName];
+                let clicks, events = $._data(input.data('selectpicker').$button.get(0), "events");
+                if(events && (clicks = events[eventName]))
                 clicks.unshift(clicks.pop());
             })
         }

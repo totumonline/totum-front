@@ -118,7 +118,7 @@ export class FieldFile extends FieldDefault {
         }
     }
 
-    render(style, format, blocked) {
+    render() {
         return <div className="ttm-cellValueWrapper ttm-cell-button">
             <div {...this.__getDivParams()}>
                 {this._render()}
@@ -126,9 +126,11 @@ export class FieldFile extends FieldDefault {
         </div>
     }
 
-    _render(style, format, blocked) {
-
+    _render() {
         let previews;
+        let {field, format} = this.props;
+        let blocked = !field.editable || format.block || false;
+
         if (this.props.data.v_ && this.props.data.v_.length) {
 
 
@@ -177,7 +179,12 @@ export class FieldFile extends FieldDefault {
         }
 
         if (blocked) {
-            return previews;
+            return <div className="ttm-file-field-area">
+                {previews}
+                <Button className="ttm-add-file" variant="contained" color="secondary" disabled>
+                    {this.lng('Upload files')}
+                </Button>
+            </div>;
         } else {
             let {field, format} = this.props;
             format.viewdata = format.viewdata || {};
