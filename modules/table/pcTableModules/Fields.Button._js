@@ -73,7 +73,7 @@ fieldTypes.button = {
                     width = this.width > this.pcTable.__$rowsButtons.width() - 10 ? this.pcTable.__$rowsButtons.width() - 10 : this.width;
                     td.width(width);
                     btn.width(width);
-                    if (width === 20) {
+                    if (width <= 20) {
                         setTimeout(() => {
                             this.pcTable.rowButtonsCalcWidth();
                             width = this.width > this.pcTable.__$rowsButtons.width() - 20 ? this.pcTable.__$rowsButtons.width() - 20 : this.width;

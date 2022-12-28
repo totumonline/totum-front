@@ -25,8 +25,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         }
 
         let textDivHeight = 200;
-
-        let columnName = $('<div class="column-name"></div>').text(field.title);
+        let val = item[field.name];
+        let format = $.extend({}, (pcTable.f || {}), (item.f || {}), (val.f || {}));
+        let columnName = $('<div class="column-name"></div>').text(format.fieldtitle && field.name in format.fieldtitle ? format.fieldtitle[field.name] : field.title);
         if (field.unitType) {
             columnName.append(', ' + field.unitType);
         }
@@ -47,8 +48,6 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         }
 
 
-        let val = item[field.name];
-
         let allTextData = $('<div id="selectPanelBig">');
         let textDiv = $('<div class="field-value"><div class="copytext-wrapper"><div class="copytext"></div></div></div>').css('white-space', 'pre-wrap');
         if (pcTable.isMobile) {
@@ -68,7 +67,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             }
         }
 
-        let format = $.extend({}, (pcTable.f || {}), (item.f || {}), (val.f || {}));
+
         let textAsValue = format.textasvalue && ('text' in format);
 
         if (!textAsValue && format.text)
