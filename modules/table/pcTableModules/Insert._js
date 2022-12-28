@@ -54,6 +54,8 @@ $.extend(App.pcTableMain.prototype, {
                     pcTable.__insertRowActions('saveInsertRow', function () {
                         pcTable._saveInsertRow('close').always(function () {
                             panel.removeClass('onSaving');
+                        }).then(()=>{
+                            pcTable.__$rowsButtons.find('[data-action="add"]:first').focus();
                         });
                     });
                 }
@@ -63,7 +65,7 @@ $.extend(App.pcTableMain.prototype, {
                 if (!panel.is('.onSaving')) {
                     panel.addClass('onSaving');
                     pcTable.__insertRowActions('saveInsertRow', function () {
-                        pcTable._saveInsertRow.call(pcTable).always(function () {
+                        pcTable._saveInsertRow().always(function () {
                             panel.removeClass('onSaving');
                         });
                     });
