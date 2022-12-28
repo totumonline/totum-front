@@ -124,7 +124,7 @@ fieldTypes.date = {
                 if (popover && popover.is(':visible')) {
                     popover.hide();
                     setDateTimePickerDate();
-                    blurClbk($input, event);
+                    blurClbk($input, event, undefined, true);
                 }
             }, 200);
         });

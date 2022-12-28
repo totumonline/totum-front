@@ -269,9 +269,7 @@ var defaultField = {
             let field = this;
             field.target = element;
             let events = element.is('button') ? 'click keydown' : 'focus';
-            if (field.type === 'date') {
-                events = 'click keydown focus'
-            } else if (field.type === 'select' || field.type === 'checkbox') {
+            if (field.type === 'select' || field.type === 'checkbox') {
                 events = 'mousedown keydown focus'
             }
             element.on(events, function (evt, elseData) {
