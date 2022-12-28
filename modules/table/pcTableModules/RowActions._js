@@ -559,7 +559,7 @@
 
 
             if (!pcTable.isPanel) {
-                if (json.filtersString) {
+                if ('filtersString' in json) {
                     pcTable._refreshFiltersBlock.call(pcTable, json)
                 }
                 pcTable._headCellIdButtonsState();
