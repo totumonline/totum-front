@@ -760,9 +760,9 @@
             if (this.withTopButtons) {
                 this._beforeSpace_title.append(csv);
                 if (this.f.topbuttons === false) {
-                    if(this.isCreatorView){
+                    if (this.isCreatorView) {
                         csv.addClass('admin-hidden');
-                    }else{
+                    } else {
                         csv.hide();
                     }
                 }
@@ -1185,16 +1185,20 @@
         }
         ,
         _createTableText: function () {
-            this.tableText = $('<div class="pcTable-tableText"></div>').html(this.f.tabletext);
+
+            this.tableText = $('<div class="pcTable-tableText"></div>').text(this.f.tabletext);
+
             if (this.f.tablehtml) {
-                this.tableText.append(this.f.tablehtml);
+               let div = $('<div>').html(this.f.tablehtml);
+                div.find('script').remove()
+                this.tableText.append(div.children());
             }
 
             return this.tableText;
         }
         ,
         _refreshTableText: function () {
-            this.tableText.text(this.f.tabletext);
+            this.tableText.replaceWith(this._createTableText());
         }
         ,
         _createRowsTitle: function (parent = null) {

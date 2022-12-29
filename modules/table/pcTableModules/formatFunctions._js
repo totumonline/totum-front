@@ -79,6 +79,8 @@ App.pcTableMain.prototype.__formatFunctions = {
     },
     tabletext: function () {
         this._refreshTableText();
+    }, tablehtml: function () {
+        this._refreshTableText();
     }
     , text: function () {
         this._refreshTableText();
