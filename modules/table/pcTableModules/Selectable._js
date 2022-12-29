@@ -1179,15 +1179,49 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                             }
                                             prev = f.name;
                                         })
+                                    } else if (field.category === 'footer') {
+                                        if (field.column) {
+                                            return;
+                                        }
+                                        let prev;
+                                        pcTable.fieldCategories.footer.some((f, i) => {
+                                            if (f.column) {
+                                                return;
+                                            }
+                                            if (f.name == field.name) {
+                                                if (prev) {
+                                                    tdNext = pcTable._footersSubTable.find('[data-field="' + prev + '"]');
+                                                    return true;
+                                                }
+                                                return true;
+                                            }
+                                            prev = f.name;
+                                        })
                                     }
                                     break;
                                 case 'ArrowDown':
                                 case 'ArrowRight':
+                                    let isNext = false;
                                     if (field.category === 'param') {
-                                        let isNext = false;
                                         pcTable.fieldCategories.param.some((f, i) => {
                                             if (isNext) {
                                                 tdNext = pcTable._paramsBlock.find('[data-field="' + f.name + '"]');
+                                                return true;
+                                            }
+                                            if (f.name == field.name) {
+                                                isNext = true;
+                                            }
+                                        })
+                                    } else if (field.category === 'footer') {
+                                        if (field.column) {
+                                            return;
+                                        }
+                                        pcTable.fieldCategories.footer.some((f, i) => {
+                                            if (f.column) {
+                                                return;
+                                            }
+                                            if (isNext) {
+                                                tdNext = pcTable._footersSubTable.find('[data-field="' + f.name + '"]');
                                                 return true;
                                             }
                                             if (f.name == field.name) {
@@ -1207,10 +1241,10 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         }
                         break;
                     case 'Enter':
-                        if(event.shiftKey){
+                        if (event.shiftKey) {
                             if (td.is('.edt')) {
                                 td.trigger('dblclick');
-                                setTimeout(()=>{
+                                setTimeout(() => {
                                     td.find('input[type="text"]').get(0).select()
                                 })
                             }

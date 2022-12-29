@@ -348,7 +348,7 @@ $.extend(App.pcTableMain.prototype, {
             } else if (pcTable.selectedCells.ids[field.name].length > 1) {
                 isGroupSelected = true;
             }
-        } else {
+        } else if (item.id) {
             pcTable.selectedCells.empty();
         }
 

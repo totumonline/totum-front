@@ -1189,7 +1189,7 @@
             this.tableText = $('<div class="pcTable-tableText"></div>').text(this.f.tabletext);
 
             if (this.f.tablehtml) {
-               let div = $('<div>').html(this.f.tablehtml);
+                let div = $('<div>').html(this.f.tablehtml);
                 div.find('script').remove()
                 this.tableText.append(div.children());
             }
@@ -3064,6 +3064,12 @@
                 td.css(field.td_style(format))
             }
 
+            if (field.category !== 'column') {
+                if(pcTable.selectedCells && pcTable.selectedCells.notRowCell && pcTable.selectedCells.notRowCell.data('field') === field.name){
+                    td.addClass('selected');
+                    pcTable.selectedCells.notRowCell = td;
+                }
+            }
             return td;
         }
         ,
