@@ -1206,12 +1206,24 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                             }
                         }
                         break;
+                    case 'Enter':
+                        if(event.shiftKey){
+                            if (td.is('.edt')) {
+                                td.trigger('dblclick');
+                                setTimeout(()=>{
+                                    td.find('input[type="text"]').get(0).select()
+                                })
+                            }
+                        }
+                        break;
                     case ' ':
                         if (td.is('.edt')) {
                             td.trigger('dblclick');
-                        }else if (td.is('.cell-button')){
+                        }/*
+                        Не нажимаем кнопку - ибо котики
+                        else if (td.is('.cell-button')){
                             td.find('.button-field').click();
-                        }
+                        }*/
                         break;
                 }
             }
