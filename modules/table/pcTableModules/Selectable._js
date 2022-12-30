@@ -1143,13 +1143,11 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             if (td) {
                 let tdNext;
 
-                const isSomeOneOpened = () => {
-
-                    return this._container.find('iframe:visible').length
-                        || this._container.find('.editing:first').length
-                        || this._container.find('.InsertRow:first').length
-                        || $('.modal-backdrop:first').length
-                }
+                if (this._container.find('iframe:visible').length
+                    || this._container.find('.editing:first').length
+                    || this._container.find('.InsertRow:first').length
+                    || $('.modal-backdrop:first').length)
+                    return;
 
                 switch (event.key) {
                     case 'ArrowUp':
@@ -1250,7 +1248,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         }
                         break;
                     case 'Enter':
-                        if (event.shiftKey && !isSomeOneOpened()) {
+                        if (event.shiftKey) {
                             if (td.is('.edt')) {
                                 td.trigger('dblclick');
                                 setTimeout(() => {
@@ -1260,7 +1258,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         }
                         break;
                     case ' ':
-                        if (td.is('.edt') && !isSomeOneOpened()) {
+                        if (td.is('.edt')) {
                             td.trigger('dblclick');
                         }/*
                         Не нажимаем кнопку - ибо котики
