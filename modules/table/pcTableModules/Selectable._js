@@ -1254,17 +1254,15 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 setTimeout(() => {
                                     td.find('input[type="text"]').get(0).select()
                                 })
+                            } else if (td.is('.cell-button')){
+                                td.find('.button-field').click();
                             }
                         }
                         break;
                     case ' ':
                         if (td.is('.edt')) {
                             td.trigger('dblclick');
-                        }/*
-                        Не нажимаем кнопку - ибо котики
-                        else if (td.is('.cell-button')){
-                            td.find('.button-field').click();
-                        }*/
+                        }
                         break;
                 }
             }
