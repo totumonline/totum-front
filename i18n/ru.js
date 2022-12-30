@@ -261,6 +261,18 @@ App.langs.ru =
                 'Calculated value': 'Расчетное значение',
                 'Same as calculated': 'Cовпадает с расчетным',
                 'Show logs': 'Показать логи',
+                'Debugging': 'Отладка',
+
+                    'Without highlightning': 'Без подсветки',
+                    'With code': 'С кодом',
+                    'With code only on adding': 'С кодом при добавлении',
+                    'With action code': 'С кодом действия',
+                    'With action code on add': 'С кодом действия при добавлении',
+                    'With action code on change': 'С кодом действия при изменении',
+                    'With action code on delete': 'С кодом действия при удалении',
+                    'With action code on click': 'С кодом действия при клике',
+                    'With format code': 'С кодом форматирования',
+
                 'Log': 'Лог',
                 'Calculate log': 'Лог расчета',
                 'Log of field manual changes': 'Лог ручных изменений по полю',
@@ -446,7 +458,7 @@ App.langs.ru =
                 'In the fields marked with a checkmark, their Code on Addition will be executed when recalculating': 'В полях, отмеченных галочкой, при пересчете будет выполнен их код при добавлении',
                 'The field accept only following types: %s': 'Это поле принимает только следующие типы: %s',
 
-                    'mobileToDesctopWarning':'Этот тип отображения предназначен только для ПК с маленьким экраном. Не включайте его, если у вас мобильное устройство, например, телефон или *PAD',
+                'mobileToDesctopWarning': 'Этот тип отображения предназначен только для ПК с маленьким экраном. Не включайте его, если у вас мобильное устройство, например, телефон или *PAD',
 
                 'Dark mode': 'Темный режим',
                 'This option works only in PRO.': 'Эта опция работает только в PRO.',
