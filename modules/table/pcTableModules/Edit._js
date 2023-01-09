@@ -46,6 +46,11 @@ $.extend(App.pcTableMain.prototype, {
             } else {
                 if (cell.is('.edt')) {
                     pcTable._createEditCell.call(pcTable, cell, true)
+                    if(event.shiftKey){
+                        setTimeout(()=>{
+                            cell.find('input[type="text"]').get(0).select()
+                        })
+                    }
                 } else {
 
                     let field = pcTable._getFieldBytd.call(pcTable, cell);
@@ -274,7 +279,7 @@ $.extend(App.pcTableMain.prototype, {
         $td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>');
     },
     _createEditCell: function (td, editNow, item) {
-    
+
         let pcTable = this;
 
         let field = this._getFieldBytd(td);
@@ -284,29 +289,44 @@ $.extend(App.pcTableMain.prototype, {
 
         let tr = td.closest('tr');
         let columnIndex = pcTable._getColumnIndexByTd(td, tr);
-        let goToFunc = function (direction) {
-            if (!direction) return false;
+        let goToFunc = function (event) {
+            if (!event) return false;
 
-            let next;
+            let direction = event.altKey ? 'right' : (event.shiftKey || event.ctrlKey ? 'down' : false);
+            let select = !!event.shiftKey;
+
+            const editIt = function (td) {
+                td.trigger('dblclick');
+                if (event.shiftKey) {
+                    setTimeout(() => {
+                        td.find('input[type="text"]').get(0).select()
+                    })
+                }
+            }
+
+            let next, nextTr;
             switch (direction) {
                 case 'right':
-                    next = pcTable._getTdByColumnIndex.call(pcTable, tr, ++columnIndex);
-                    while (next.length) {
-                        let field = pcTable._getFieldBytd.call(pcTable, next);
-                        if (field.editable === true) {
-                            next.trigger('dblclick');
+                    do {
+                        next = pcTable._getTdByColumnIndex(tr, ++columnIndex);
+                        if (next.is('.edt')) {
+                            editIt(next);
                             break;
-                        } else {
-                            next = next.next('td');
                         }
-                    }
+                    } while (next.length);
                     break;
                 case 'down':
-                    next = tr.next('tr');
-                    while (next.length && next.is('.Blocked')) {
-                        next = next.next('tr');
-                    }
-                    pcTable._getTdByColumnIndex.call(pcTable, next, columnIndex).trigger('dblclick');
+                    do {
+                        tr = tr.next('tr');
+                        if (!tr.length) {
+                            break;
+                        }
+                        next = pcTable._getTdByColumnIndex(tr, columnIndex);
+                        if (next.is('.edt')) {
+                            editIt(next);
+                            break;
+                        }
+                    } while (next.length);
             }
         };
 
@@ -331,12 +351,12 @@ $.extend(App.pcTableMain.prototype, {
             var tdNew = pcTable._removeEditing.call(pcTable, td);
             if (!noColorize) {
                 pcTable._colorizeElement(tdNew, pcTable_COLORS.blured);
-                goToFunc(event && event.altKey ? 'right' : (event && event.shiftKey ? 'down' : false))
+                goToFunc(event)
             }
         };
-        let revert = function (goTo) {
+        let revert = function (event) {
             pcTable._removeEditing.call(pcTable, td);
-            goToFunc(goTo)
+            goToFunc(event)
         };
 
         let isGroupSelected, isMultiGroupSelected;
@@ -392,7 +412,7 @@ $.extend(App.pcTableMain.prototype, {
                 });
             } else {
                 pcTable._saveEdited.call(pcTable, td, EdData, function () {
-                    goToFunc(event && event.altKey ? 'right' : (event && event.shiftKey ? 'down' : false))
+                    goToFunc(event)
                 });
             }
         };
@@ -438,10 +458,8 @@ $.extend(App.pcTableMain.prototype, {
                 return;
             }
 
-            let goTo = event && event.altKey ? 'right' : (event && event.shiftKey ? 'down' : false);
-
             if (!field.name in item || !field.isDataModified(editVal, item[field.name].v)) {
-                revert(goTo);
+                revert(event);
             } else {
                 save(editVal, event);
 
@@ -482,8 +500,7 @@ $.extend(App.pcTableMain.prototype, {
         var $btn = $('<button class="btn btn-sm btn-default btn-empty-with-icon"><i class="fa fa-times"></i></button>')
             .data('click', function (event) {
                 onAction = true;
-                let goTo = event.altKey ? 'right' : (event.shiftKey ? 'down' : false);
-                revert(goTo)
+                revert(event)
             });
 
         editCellsBlock.append($btn);
@@ -854,7 +871,7 @@ $.extend(App.pcTableMain.prototype, {
                     td.append(input);
 
                     dialogShow();
-                    setTimeout(()=>input.focus(), 21);
+                    setTimeout(() => input.focus(), 21);
                     break;
             }
         })
