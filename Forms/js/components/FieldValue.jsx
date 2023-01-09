@@ -26,6 +26,9 @@ export const FieldValue = ({field, data, format, model, item}) => {
     let Module = FieldDefault;
 
     switch (field.type) {
+        case 'unic':
+            Module = FieldString;
+            break;
         case 'string':
             switch (format.viewtype) {
                 case 'text':

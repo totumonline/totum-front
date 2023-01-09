@@ -6,6 +6,7 @@ class TotumModel {
         this.rows = {};
         this.header = {};
         this.footer = {};
+        this.wait = false;
     }
 
     setSessHash(sess_hash) {
@@ -28,6 +29,7 @@ class TotumModel {
 
     async __connect(method, data, extraData) {
         let response, text;
+        this.wait = true;
         try {
             response = await fetch(this.path, {
                 method: 'POST',
@@ -41,8 +43,10 @@ class TotumModel {
                 }, extraData || {}))
             });
             text = await response.text();
+            this.wait = false;
         } catch (e) {
             console.log('e:' + e);
+            this.wait = false;
             throw Error("Server connect error");
         }
         let json;

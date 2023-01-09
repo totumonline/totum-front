@@ -21,22 +21,41 @@ export class FieldButton extends React.Component {
                     checkClick: true
                 })
             } else {
-                this.click()
+                if (this.props.field.name === '__save') {
+                    const checkProps = () => {
+                        if (this.props.model.wait) {
+                            setTimeout(checkProps, 10)
+                        } else {
+                            this.click();
+                        }
+                    }
+                    checkProps();
+                } else {
+                    this.click();
+                }
+
             }
         }
     }
 
     click() {
         if (!this.state.clicked) {
+            let {field} = this.props;
             this.setState({
                 clicked: "click"
             });
-            let {field} = this.props;
-
-            if (this.props.field.name === '__save' && this.props.model.elseData !== 'saveButtonClicked') {
-                this.props.model.elseData = 'saveButtonClicked';
-                this.props.model.setChangesToForm({statusData: 'saveButtonClicked'});
+            if (this.props.field.name === '__save') {
+                if (this.props.model.elseData !== 'saveButtonClicked') {
+                    this.props.model.elseData = 'saveButtonClicked';
+                    this.props.model.setChangesToForm({statusData: 'saveButtonClicked'});
+                } else {
+                    this.setState({
+                        clicked: false
+                    });
+                    return;
+                }
             }
+
 
             return this.props.model.click(this.props.item, field.name).then((json) => {
 
