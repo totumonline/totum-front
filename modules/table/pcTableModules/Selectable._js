@@ -551,6 +551,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
         App.pcTableMain.prototype._addSelectable = function () {
             var pcTable = this;
             pcTable.selectedCells = {
+                movingSelection: false,
                 fieldName: null,
                 ids: {},
                 notRowCell: null,
@@ -1283,12 +1284,20 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 }
                                 break;
                             case 'Enter':
-                                if (event.shiftKey) {
+                                if (event.shiftKey && !pcTable.selectedCells.movingSelection) {
                                     if (td.is('.edt')) {
                                         td.trigger('dblclick');
                                         setTimeout(() => {
-                                            td.find('input[type="text"]').get(0).select()
+                                            let input = td.find('input[type="text"]');
+                                            if (input.length)
+                                                input.get(0).select()
                                         })
+                                    } else if (td.is('.cell-button')) {
+                                        td.find('.button-field').click();
+                                    }
+                                } else if (event.ctrlKey) {
+                                    if (td.is('.edt')) {
+                                        td.trigger('dblclick');
                                     } else if (td.is('.cell-button')) {
                                         td.find('.button-field').click();
                                     }

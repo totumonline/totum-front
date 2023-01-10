@@ -46,9 +46,11 @@ $.extend(App.pcTableMain.prototype, {
             } else {
                 if (cell.is('.edt')) {
                     pcTable._createEditCell.call(pcTable, cell, true)
-                    if(event.shiftKey){
-                        setTimeout(()=>{
-                            cell.find('input[type="text"]').get(0).select()
+                    if (event.shiftKey) {
+                        setTimeout(() => {
+                            let input = cell.find('input[type="text"]');
+                            if (input.length)
+                                input.get(0).select()
                         })
                     }
                 } else {
@@ -81,11 +83,6 @@ $.extend(App.pcTableMain.prototype, {
             $(this).data('click')(event);
         });
 
-    },
-
-    goToEditNextCell: function (goTo) {
-
-        return next;
     },
     _buttonClick: function ($td, field, item) {
         if ($td.data('clicked')) return Promise.resolve();
@@ -291,42 +288,85 @@ $.extend(App.pcTableMain.prototype, {
         let columnIndex = pcTable._getColumnIndexByTd(td, tr);
         let goToFunc = function (event) {
             if (!event) return false;
-
             let direction = event.altKey ? 'right' : (event.shiftKey || event.ctrlKey ? 'down' : false);
+
+            if (!direction) {
+                return;
+            }
+
+            if (event.shiftKey && event.originalEvent) {
+                pcTable.selectedCells.movingSelection = true;
+                setTimeout(() => {
+                    pcTable.selectedCells.movingSelection = false;
+                }, 100);
+            }
+
             let select = !!event.shiftKey;
 
-            const editIt = function (td) {
-                td.trigger('dblclick');
-                if (event.shiftKey) {
+            const editOrSelectIt = function (td) {
+                if (td.is('.edt')) {
+                    td.trigger('dblclick');
+                    if (event.shiftKey) {
+                        setTimeout(() => {
+                            let input = td.find('input[type="text"]');
+                            if (input.length) {
+                                input.get(0).select()
+                            }
+                        })
+                    }
+                }
+                if (!isGroupSelected) {
                     setTimeout(() => {
-                        td.find('input[type="text"]').get(0).select()
-                    })
+                        pcTable.selectedCells.click(td, {});
+                    }, 100)
                 }
             }
 
-            let next, nextTr;
-            switch (direction) {
-                case 'right':
-                    do {
+            let fCategory, fName = td.data('field');
+            if (!fName || (fCategory = pcTable.fields[fName].category) === 'column') {
+                let next, nextTr;
+                switch (direction) {
+                    case 'right':
                         next = pcTable._getTdByColumnIndex(tr, ++columnIndex);
-                        if (next.is('.edt')) {
-                            editIt(next);
-                            break;
-                        }
-                    } while (next.length);
-                    break;
-                case 'down':
-                    do {
+                        editOrSelectIt(next);
+                        break;
+                    case 'down':
                         tr = tr.next('tr');
                         if (!tr.length) {
                             break;
                         }
                         next = pcTable._getTdByColumnIndex(tr, columnIndex);
-                        if (next.is('.edt')) {
-                            editIt(next);
-                            break;
+                        editOrSelectIt(next);
+                }
+            } else {
+                if (fCategory === 'footer') {
+                    if (pcTable.fields[fName].column) {
+                        return;
+                    }
+                } else if (fCategory !== 'param') {
+                    return;
+                }
+                let array = pcTable.fieldCategories[fCategory];
+                let isFound = false;
+                array.some((field) => {
+                    if (field.name === fName) {
+                        isFound = true;
+                    } else if (isFound) {
+                        let td;
+                        switch (fCategory) {
+                            case 'param':
+                                td = pcTable._paramsBlock.find('td[data-field="' + field.name + '"]');
+                                break;
+                            case 'footer':
+                                td = pcTable._footersSubTable.find('td[data-field="' + field.name + '"]');
+                                break;
                         }
-                    } while (next.length);
+                        if (td.length) {
+                            editOrSelectIt(td);
+                            return true;
+                        }
+                    }
+                })
             }
         };
 
@@ -371,6 +411,8 @@ $.extend(App.pcTableMain.prototype, {
         } else if (item.id) {
             pcTable.selectedCells.empty();
         }
+
+        let groupEdit = isGroupSelected && (isMultiGroupSelected ? field.editGroupMultiColumns : field.editGroup);
 
 
         let save = function (editVal, event, confirmed) {
@@ -439,7 +481,7 @@ $.extend(App.pcTableMain.prototype, {
             }
             isFromButton = isFromButton || false;
             if (!isFromButton) {
-                if (isGroupSelected) {
+                if (groupEdit) {
                     if (!isFromEnterPress && (field.type !== 'select' || field.multiple)) {
                         pcTable._removeEditCell();
                     }
@@ -505,7 +547,7 @@ $.extend(App.pcTableMain.prototype, {
 
         editCellsBlock.append($btn);
 
-        if (isGroupSelected && (isMultiGroupSelected ? field.editGroupMultiColumns : field.editGroup)) {
+        if (groupEdit) {
 
 
             $btn = $('<button class="btn btn-sm btn-warning" data-save="true" data-name="' + App.translate('Apply to selected') + '"><i class="fa fa-database" title="' + App.translate('Apply to selected') + '"></i></button>');
