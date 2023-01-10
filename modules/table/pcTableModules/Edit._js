@@ -293,7 +293,6 @@ $.extend(App.pcTableMain.prototype, {
             if (!direction) {
                 return;
             }
-
             if (event.shiftKey && event.originalEvent) {
                 pcTable.selectedCells.movingSelection = true;
                 setTimeout(() => {
@@ -315,11 +314,11 @@ $.extend(App.pcTableMain.prototype, {
                         })
                     }
                 }
-                if (!isGroupSelected) {
-                    setTimeout(() => {
-                        pcTable.selectedCells.click(td, {});
-                    }, 100)
-                }
+
+                setTimeout(() => {
+                    pcTable.selectedCells.click(td, 'force');
+                }, 100)
+
             }
 
             let fCategory, fName = td.data('field');

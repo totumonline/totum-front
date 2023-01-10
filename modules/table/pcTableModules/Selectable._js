@@ -829,8 +829,14 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         return false;
                     }
 
-                    let target;
-                    if (event.originalEvent) {
+                    let target, clickForce;
+                    if (event === 'force') {
+
+                        pcTable.selectedCells.empty();debugger
+                        td.trigger('click');
+
+                        return;
+                    } else if (event.originalEvent) {
                         if (event.originalEvent.path) {
                             target = event.originalEvent.path[0]
                         } else {
