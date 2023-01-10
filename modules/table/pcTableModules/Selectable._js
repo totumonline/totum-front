@@ -832,9 +832,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     let target, clickForce;
                     if (event === 'force') {
 
-                        pcTable.selectedCells.empty();debugger
-                        td.trigger('click');
-
+                        pcTable.selectedCells.empty();
+                        pcTable.selectedCells.click(td, {});
                         return;
                     } else if (event.originalEvent) {
                         if (event.originalEvent.path) {
@@ -857,11 +856,6 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 pcTable.selectedCells.empty();
                                 this.notRowCell = td;
                                 this.notRowCell.addClass('selected');
-                                let tr = this.notRowCell.closest('.DataRow');
-                                if (tr.length === 1) {
-                                    tr.addClass('selected');
-                                }
-
                             }
                             $('table.pcTable-table').removeClass('selected-multi').removeClass('selected-column');
 
