@@ -597,6 +597,11 @@ fieldTypes.select = {
                         } else {
                             selectPicker.$menuInner.width('auto')
                         }
+                        if(input.closest('.InsertPanel').length){
+                            setTimeout(()=>{
+                                input.data('selectpicker').$searchbox.focus();
+                            }, 50)
+                        }
                     });
                     input.on('changed.bs.select', function () {
                         input.data('changed', true);

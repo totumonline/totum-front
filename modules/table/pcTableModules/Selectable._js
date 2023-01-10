@@ -1019,10 +1019,10 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                             if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && (typeof pcTable.data[id][field].f.textasvalue === 'string') && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
                                                 if (pcTable.data[id][field].f.text !== null && pcTable.data[id][field].f.text !== "") {
                                                     let separator = pcTable.data[id][field].f.textasvalue.split('|')[1] || field.dectimalSeparator || '.'
-                                                    summ += parseFloat(pcTable.data[id][field].f.text.replace(separator, '.'));
+                                                    summ += parseFloat(pcTable.data[id][field].f.text.replace(separator, '.').replace(/[^\d.]/g, ''));
                                                 }
                                             } else if (pcTable.data[id][field].v !== null) {
-                                                summ += parseFloat(pcTable.data[id][field].v);
+                                                summ += parseFloat(pcTable.data[id][field].v.toString().replace(/[^\d.]/g, ''));
                                             }
                                         }
                                     })

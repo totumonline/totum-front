@@ -562,7 +562,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
             case 'string':
                 element = $('<input>').val(oldValue !== undefined ? oldValue : (f.default ? f.default : ''));
-
+                element.on('focus', ()=>{
+                    element.select();
+                })
                 break;
             case 'json':
                 element = $('<div class="JSONEditor">').height(500).on('blur', callback);
@@ -667,6 +669,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 if (f.min !== undefined) element.attr('min', f.min);
                 if (f.max !== undefined) element.attr('max', f.max);
                 if (f.step !== undefined) element.attr('step', f.step);
+                element.on('focus', ()=>{
+                    element.select();
+                })
                 break;
             case 'checkbox':
                 element = $('<input>').attr('type', 'checkbox').data('type', type);
