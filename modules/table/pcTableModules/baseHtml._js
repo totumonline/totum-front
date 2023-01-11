@@ -1191,7 +1191,7 @@
             if (this.f.tablehtml) {
                 let div = $('<div>').html(this.f.tablehtml);
                 div.find('script').remove()
-                this.tableText.append(div.children());
+                this.tableText.append(div);
             }
 
             return this.tableText;
