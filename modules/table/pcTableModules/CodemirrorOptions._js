@@ -629,7 +629,7 @@
                     }
                     state.isStart = false;
 
-                    if (stream.match(/(math|json|str|cond)`[^`]*`/)) {
+                    if (stream.match(/(math|json|str|cond|qrow)`[^`]*`/)) {
                         return "spec";
                     } else {
 
@@ -1137,6 +1137,12 @@
                 , title: '',
                 render: renderHint, type: '', curPos: token.start + 5, hint: hintFunc,
                 tab: true
+            }, $qrow = {
+                text: 'qrow``',
+                textVis: 'qrow``'
+                , title: '',
+                render: renderHint, type: '', curPos: token.start + 4, hint: hintFunc,
+                tab: true
             }, $str = {
                 text: 'str``',
                 textVis: 'str``'
@@ -1578,6 +1584,7 @@
                             keywords.unshift($math)
                             keywords.unshift($json)
                             keywords.unshift($cond)
+                            keywords.unshift($qrow)
                             keywords.unshift($str)
                         }
                     }
@@ -1608,7 +1615,7 @@
                 } else if (token.type != 'spec') {
                     keywords = [
                         'true',
-                        'false', $math, $json, $cond, $str
+                        'false', $math, $json, $cond, $str, $qrow
                     ];
                     if (token.state.functionParam === 'order') {
                         keywords = keywords.concat(['asc', 'desc'])

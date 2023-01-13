@@ -104,6 +104,9 @@
       &start, &dollar-dollar, &variable, &start {
         color: #a1af05;
       }
+      &fixed.cm-start {
+        color: #6c7207;
+      }
     }
   }
 
