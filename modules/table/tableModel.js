@@ -301,13 +301,14 @@
                             return;
                         }
                         startedQuery = (new Date()).getTime();
+
                         if (!url.match(/:\/\//)) {
                             url = window.location.protocol + '//' + window.location.host + url;
-                        }
+                                }
                         let _url = new URL(url);
-                        _url.searchParams.delete('rn')
-                        _url.searchParams.append('rn', Math.round(Math.random() * 100000) + (data_tmp['method'] || ''));
-                        url = _url.toString();
+                            _url.searchParams.delete('rn')
+                            _url.searchParams.append('rn', Math.round(Math.random() * 100000) + (data_tmp['method'] || ''));
+                            url = _url.toString();
                     }
                     if (!RequestObject || RequestObject.aborted !== true) {
                         $.ajax({
@@ -322,7 +323,8 @@
                                 }
 
                             }
-                        }).then(success).fail(fail)
+                        }).then(success).fail(fail);
+
                     } else {
                         fail({statusText: "abort"});
                     }
@@ -495,11 +497,11 @@
             },
             saveEditRow: function (data) {
                 var sendData = {};
-                    $.each(data, function (k, v) {
-                        if (v !== undefined) {
-                            sendData[k] = v;
-                        }
-                    });
+                $.each(data, function (k, v) {
+                    if (v !== undefined) {
+                        sendData[k] = v;
+                    }
+                });
                 return this.__ajax('post', {data: sendData, method: 'saveEditRow'});
             },
             getEditSelect: function (item, fieldName, q, parentid, withLoading, RequestObject, hash) {

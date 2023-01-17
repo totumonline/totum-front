@@ -224,6 +224,7 @@ fieldTypes.select = {
                     res.resolve({...field.loadedSelect});
                     delete field.loadedSelect;
                 } else {
+
                     res = field.pcTable.model.getEditSelect(itemTmp, field.name, q, null, null, RequestObject, field.hash);
                 }
             }
@@ -242,7 +243,7 @@ fieldTypes.select = {
 
 
                 def.resolve()
-            }, function () {
+            }).fail(function () {
                 def.reject();
             });
             return def.promise();
