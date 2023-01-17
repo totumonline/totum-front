@@ -345,18 +345,11 @@
                             }
                         )
 
-                        $(mirror.display.wrapper).on('dblclick contextmenu', function (event) {
-                            let target;
-                            target = event.originalEvent.path ? event.originalEvent.path[0] : event.originalEvent.explicitOriginalTarget;
-                            target = $(target);
-                            if (target.length) {
-                                if (target.is('.cm-function')) {
-                                    let func = target.text();
-                                    func = func.substring(0, func.length - 1)
-                                    funcHelp(func, target);
-                                    return false;
-                                }
-                            }
+                        $(mirror.display.wrapper).on('dblclick contextmenu', '.cm-function', function (event) {
+                            let func = $(this).text();
+                            func = func.substring(0, func.length - 1)
+                            funcHelp(func, $(this));
+                            return false;
                         })
                     }
 
