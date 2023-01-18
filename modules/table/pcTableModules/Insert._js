@@ -282,7 +282,6 @@ $.extend(App.pcTableMain.prototype, {
                     if (!active.length || (!inputElement.is('[type="checkbox"]') && active !== $(this).closest('td'))) {
                         active.removeClass('active');
                         pcTable._currentInsertCellIndex = $(this).closest('td').data('index');
-
                         $(this).closest('td').addClass('active');
                     }
                 })

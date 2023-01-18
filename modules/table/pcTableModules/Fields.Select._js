@@ -598,7 +598,7 @@ fieldTypes.select = {
                         } else {
                             selectPicker.$menuInner.width('auto')
                         }
-                        if(input.closest('.InsertPanel').length){
+                        if(input.closest('.InsertPanel').length ||  input.closest('.InsertRow').length){
                             setTimeout(()=>{
                                 input.data('selectpicker').$searchbox.focus();
                             }, 50)
@@ -857,14 +857,12 @@ fieldTypes.select = {
             }, 50)
         } else {
             if (div.closest('tr').is('.InsertRow')) {
-                this.pcTable._insertRow.find('.active').removeClass('active');
-                div.closest('td').addClass('active');
+                /*this.pcTable._insertRow.find('.active').removeClass('active');
+                div.closest('td').addClass('active');*/
                 if (button.attr('aria-expanded') !== 'true') {
                     button.click();
                 }
             }
-
-            div.data('input').data('selectpicker').$searchbox.focus();
         }
     }, isDataModified: function (edited, fromItem) {
 

@@ -444,7 +444,7 @@
                     if (['Tab', 'Esc'].indexOf(event.key) === -1) {
                         showDialog($(this).closest('div'))
                     } else if (event.key === 'Tab') {
-                        blurClbk(div, {});
+                        blurClbk(div, event, null, true);
                     }
                 });
 

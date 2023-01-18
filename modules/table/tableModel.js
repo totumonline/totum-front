@@ -36,6 +36,16 @@
             getUri: function () {
                 return this.url;
             },
+            isCreatorView: function () {
+                if('isCreatorView' in pcTable){
+                    return pcTable.isCreatorView;
+                }else{
+                    if($('#isCreator').length && localStorage.getItem('notCreator')){
+                        return true;
+                    }
+                    return false;
+                }
+            },
             setLoadedTableData: function (data, _offset, _onPage) {
                 dataRows = data;
                 offset = _offset;

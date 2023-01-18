@@ -299,9 +299,10 @@
                             let $iframe = $('<iframe src="' + uri + '" style="width: 100%; height: 70vh; border: none"></iframe>');
 
                             let btns;
-                            if (linkObject.elseData && linkObject.elseData.bottombuttons === false) {
+                            if (linkObject.elseData && linkObject.elseData.bottombuttons === false && !model.isCreatorView()) {
                                 btns = []
                             } else {
+
                                 btns = [
                                     {
                                         'label': App.translate("Refresh"),
@@ -341,6 +342,12 @@
                                         }
                                     }
                                 ]
+
+                                if (linkObject.elseData.bottombuttons === false) {
+                                    btns.forEach((btn) => {
+                                        btn.cssClass += ' admin-hidden';
+                                    })
+                                }
                             }
 
                             let dialog = BootstrapDialog.show({
@@ -1058,7 +1065,7 @@
     };
 
 
-    let dialog = function (title, body, width, refresh, type, model, btns) {
+    let dialog = function (title, body, width, refresh, type, model, btns, adminHiddenButtons) {
         if (btns === false) {
             btns = []
         } else {
@@ -1072,6 +1079,11 @@
                     dialog.close();
                 }
             });
+        }
+        if (adminHiddenButtons) {
+            btns.forEach((btn)=>{
+                btn.cssClass+=' admin-hidden'
+            })
         }
 
         return window.top.BootstrapDialog.show({
@@ -1195,11 +1207,16 @@
             });
         }
 
+        let adminButtonsHidden = false;
         if (data.elseData && data.elseData.bottombuttons === false) {
-            btns = false
+            if (model.isCreatorView()) {
+                adminButtonsHidden = true;
+            } else {
+                btns = false;
+            }
         }
 
-        let _dialog = dialog(data['title'], $iframe, data.width, data.refresh, null, model, btns);
+        let _dialog = dialog(data['title'], $iframe, data.width, data.refresh, null, model, btns, adminButtonsHidden);
         $iframe.on('load', function () {
             let _window = $iframe.get(0).contentWindow;
             _window.closeMe = function () {
