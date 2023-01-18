@@ -1007,7 +1007,9 @@
                 lastId = pageSplit[2] || null;
 
                 this.PageData.onPage = pageCount;
-                this.model.loadPage(this, lastId, pageCount, null, (new URL(document.location)).searchParams.get('offset'));
+                this.model.loadPage(this, lastId, pageCount, null, (new URL(document.location)).searchParams.get('offset')).then(()=>{
+                    this.selectedCells.applyPointing('pageLoaded');
+                });
 
                 return this.PageData.$block.empty().append('<i class="fa fa-spinner"></i>');
             }

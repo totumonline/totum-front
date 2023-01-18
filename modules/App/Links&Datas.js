@@ -294,7 +294,11 @@
                                 if (linkObject.elseData.topbuttons === false) {
                                     withoutCategories.push('tb')
                                 }
-                                uri += '#' + encodeURIComponent(JSON.stringify({wc: withoutCategories}));
+                                let hashData = {wc: withoutCategories};
+                                if (linkObject.elseData.pointing) {
+                                    hashData.pointing = linkObject.elseData.pointing;
+                                }
+                                uri += '#' + encodeURIComponent(JSON.stringify(hashData));
                             }
                             let $iframe = $('<iframe src="' + uri + '" style="width: 100%; height: 70vh; border: none"></iframe>');
 
@@ -399,6 +403,8 @@
                                     _window.closeMe = function () {
                                         dialog.close();
                                     };
+                                    $iframe.focus();
+                                    _window.focus();
                                 } catch (e) {
 
                                 }
@@ -1081,8 +1087,8 @@
             });
         }
         if (adminHiddenButtons) {
-            btns.forEach((btn)=>{
-                btn.cssClass+=' admin-hidden'
+            btns.forEach((btn) => {
+                btn.cssClass += ' admin-hidden'
             })
         }
 
@@ -1189,7 +1195,11 @@
             if (data.elseData.topbuttons === false) {
                 withoutCategories.push('tb')
             }
-            src += '#' + encodeURIComponent(JSON.stringify({wc: withoutCategories}));
+            let hashData = {wc: withoutCategories};
+            if (data.elseData.pointing) {
+                hashData.pointing = data.elseData.pointing;
+            }
+            src += '#' + encodeURIComponent(JSON.stringify(hashData));
         }
 
         let $iframe = $('<iframe style="width: 100%; height: ' + (height || "80vh") + '; border: none;" src="' + src + '">');
@@ -1219,6 +1229,8 @@
         let _dialog = dialog(data['title'], $iframe, data.width, data.refresh, null, model, btns, adminButtonsHidden);
         $iframe.on('load', function () {
             let _window = $iframe.get(0).contentWindow;
+            $iframe.focus();
+            _window.focus();
             _window.closeMe = function () {
                 _dialog.close();
             };

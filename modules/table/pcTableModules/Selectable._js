@@ -557,6 +557,36 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 notRowCell: null,
                 times: null,
                 lastSelected: null,
+                applyPointing: function (state) {
+                    let fieldName = pcTable.startPointing;
+                    if (!fieldName) {
+                        return;
+                    }
+                    let field = pcTable.fields[fieldName];
+                    if (field) {
+                        if (field.category === 'footer' && field.column) {
+                            return false;
+                        }
+                        if (field.category === 'column') {
+                            if (!pcTable.isTreeView && pcTable.tableRow.pagination && pcTable.tableRow.pagination !== '0/0') {
+                                if(state=='pageLoaded'){
+                                    let td = pcTable._getTdByFieldName(fieldName, pcTable.data[pcTable.dataSorted[0]].$tr);
+                                    pcTable.selectedCells.click(td, "force");
+                                }
+                            }else{
+                                if(pcTable.dataSorted.length){
+                                    let td = pcTable._getTdByFieldName(fieldName, pcTable.data[pcTable.dataSorted[0]].$tr);
+                                    pcTable.selectedCells.click(td, "force");
+                                }
+                            }
+                        } else {
+                            let td = pcTable._container.find('[data-field="' + fieldName + '"]');
+                            pcTable.selectedCells.click(td, "force");
+                            pcTable.startPointing = null;
+                        }
+                    }
+
+                },
                 getOneSelectedCell: function () {
                     let sFields = Object.keys(this.ids);
                     if (sFields.length === 1 && this.ids[sFields[0]].length === 1 && pcTable.data[this.ids[sFields[0]][0]].$tr) {
@@ -577,21 +607,26 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         this.notRowCell = null;
                     }
                 },
-                empty: function () {
-                    this.notRowCellEmpty();
-                    let selected = this;
-                    Object.keys(this.ids).forEach(function (fieldName) {
-                        selected.ids[fieldName].forEach(function (id) {
-                            let item = pcTable._getItemById(id);
-                            if (item && item.$tr) {
-                                item.$tr.find('.selected').removeClass('selected');
-                                item.$tr.removeClass('selected');
-                            }
-                        });
+                empty: function (category) {
 
-                    });
-                    this.ids = {};
-                    this.lastSelected = null;
+                    if (category !== 'column') {
+                        this.notRowCellEmpty();
+                    }
+                    if (!category || category === 'column') {
+                        let selected = this;
+                        Object.keys(this.ids).forEach(function (fieldName) {
+                            selected.ids[fieldName].forEach(function (id) {
+                                let item = pcTable._getItemById(id);
+                                if (item && item.$tr) {
+                                    item.$tr.find('.selected').removeClass('selected');
+                                    item.$tr.removeClass('selected');
+                                }
+                            });
+
+                        });
+                        this.ids = {};
+                        this.lastSelected = null;
+                    }
                 },
                 selectColumn: function (fieldName) {
                     pcTable.dataSortedVisible.forEach((id) => {

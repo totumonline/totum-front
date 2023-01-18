@@ -244,8 +244,11 @@
                 this._container.attr('id', this._containerId)
             }
             this._init();
+
             this.render(config.addVars);
+
             this.applyHideRows(this.f.hideRows, this.f.showRows)
+
         } else {
             this.initForPanel(config)
         }
@@ -1059,6 +1062,13 @@
                     this.refresh();
                     this.setWidthes();
                     this.__applyFilters();
+
+                    let hashData=JSON.parse(decodeURIComponent(window.location.hash.substring(1)) || '[]');
+                    if(hashData && hashData.pointing){
+                        this.startPointing = hashData.pointing;
+                    }
+                    this.selectedCells.applyPointing();
+
                     if (addVars) {
                         if (this.isMobile)
                             pcTable._addInsertWithPanel(addVars);
