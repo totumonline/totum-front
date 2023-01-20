@@ -1238,7 +1238,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                                 }
                                 if (div) {
-                                    return div.find('td:not(.id,.n):first');
+                                    return div.find('td:not(.id,.n)'+(direction===1?':first':':last'));
                                 }
                             }
                             let category;
