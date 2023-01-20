@@ -722,7 +722,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         this.ids[fieldName] = [];
                     }
                     this.ids[fieldName].push(id);
-                    if (pcTable.data[id].$tr) {
+                    if (pcTable.data[id] && pcTable.data[id].$tr) {
                         pcTable.data[id].$tr.addClass('selected');
                         if (selectTd) {
                             pcTable._getTdByFieldName(fieldName, pcTable.data[id].$tr).addClass('selected')
@@ -1184,6 +1184,27 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                     let scrollWrapper = this._container.find('.pcTable-scrollwrapper');
                     let td = pcTable.selectedCells.getOneSelectedCell();
+
+                    if (!td && event.shiftKey && ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp'].indexOf(event.key) !== -1) {
+
+                        let arrais = pcTable.dataSorted.length ? pcTable._innerContainer : $(), tdNext;
+                        arrais = arrais.add(pcTable._paramsBlock).add(pcTable._footersSubTable)
+                        switch (event.key) {
+                            case 'ArrowLeft':
+                            case 'ArrowUp':
+                                tdNext = arrais.find('td:not(.id,.n):first').first();
+                                break;
+                            case 'ArrowRight':
+                            case 'ArrowDown':
+                                tdNext = arrais.find('td:not(.id,.n):last').last();
+                                break;
+
+                        }
+                        if (tdNext && tdNext.length) {
+                            pcTable.selectedCells.click(tdNext, "force");
+                        }
+                    }
+
                     if (scrollWrapper.height() > this._container.height()) {
 
                         let move = null;
@@ -1221,7 +1242,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     if (td) {
                         let tdNext;
 
-                        if (event.shiftKey) {
+                        if (event.shiftKey && ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp'].indexOf(event.key) !== -1) {
                             const getFirstTdFromCategory = function (category, direction) {
                                 let categories = ['param', 'column', 'footer'];
                                 let categoryIndex = categories.indexOf(category) + direction;
@@ -1238,7 +1259,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                                 }
                                 if (div) {
-                                    return div.find('td:not(.id,.n)'+(direction===1?':first':':last'));
+                                    return div.find('td:not(.id,.n)' + (direction === 1 ? ':first' : ':last'));
                                 }
                             }
                             let category;
@@ -1261,7 +1282,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                         break;
 
                                 }
-                                if(tdNext.length){
+                                if (tdNext && tdNext.length) {
                                     pcTable.selectedCells.click(tdNext, "force");
                                 }
                             }
