@@ -569,12 +569,12 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         }
                         if (field.category === 'column') {
                             if (!pcTable.isTreeView && pcTable.tableRow.pagination && pcTable.tableRow.pagination !== '0/0') {
-                                if(state=='pageLoaded'){
+                                if (state == 'pageLoaded') {
                                     let td = pcTable._getTdByFieldName(fieldName, pcTable.data[pcTable.dataSorted[0]].$tr);
                                     pcTable.selectedCells.click(td, "force");
                                 }
-                            }else{
-                                if(pcTable.dataSorted.length){
+                            } else {
+                                if (pcTable.dataSorted.length) {
                                     let td = pcTable._getTdByFieldName(fieldName, pcTable.data[pcTable.dataSorted[0]].$tr);
                                     pcTable.selectedCells.click(td, "force");
                                 }
@@ -1220,129 +1220,178 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
                     if (td) {
                         let tdNext;
-                        switch (event.key) {
-                            case 'ArrowUp':
-                            case 'ArrowDown':
-                            case 'ArrowLeft':
-                            case 'ArrowRight':
-                                if (td.closest('.DataRow').length) {
-                                    switch (event.key) {
-                                        case 'ArrowUp':
-                                            tdNext = td.closest('tr').prev().find('td').get(td.closest('tr').find('td').index(td));
-                                            break;
-                                        case 'ArrowDown':
-                                            tdNext = td.closest('tr').next().find('td').get(td.closest('tr').find('td').index(td));
-                                            break;
-                                        case 'ArrowRight':
-                                            tdNext = td.next();
-                                            break;
-                                        case 'ArrowLeft':
-                                            tdNext = td.prev();
-                                            break;
-                                    }
-                                } else {
-                                    let field = pcTable._getFieldBytd(td);
-                                    switch (event.key) {
-                                        case 'ArrowUp':
-                                        case 'ArrowLeft':
-                                            if (field.category === 'param') {
-                                                let prev;
-                                                pcTable.fieldCategories.param.some((f, i) => {
-                                                    if (f.name == field.name) {
-                                                        if (prev) {
-                                                            tdNext = pcTable._paramsBlock.find('[data-field="' + prev + '"]');
-                                                            return true;
-                                                        }
-                                                        return true;
-                                                    }
-                                                    prev = f.name;
-                                                })
-                                            } else if (field.category === 'footer') {
-                                                if (field.column) {
-                                                    return;
-                                                }
-                                                let prev;
-                                                pcTable.fieldCategories.footer.some((f, i) => {
-                                                    if (f.column) {
-                                                        return;
-                                                    }
-                                                    if (f.name == field.name) {
-                                                        if (prev) {
-                                                            tdNext = pcTable._footersSubTable.find('[data-field="' + prev + '"]');
-                                                            return true;
-                                                        }
-                                                        return true;
-                                                    }
-                                                    prev = f.name;
-                                                })
-                                            }
-                                            break;
-                                        case 'ArrowDown':
-                                        case 'ArrowRight':
-                                            let isNext = false;
-                                            if (field.category === 'param') {
-                                                pcTable.fieldCategories.param.some((f, i) => {
-                                                    if (isNext) {
-                                                        tdNext = pcTable._paramsBlock.find('[data-field="' + f.name + '"]');
-                                                        return true;
-                                                    }
-                                                    if (f.name == field.name) {
-                                                        isNext = true;
-                                                    }
-                                                })
-                                            } else if (field.category === 'footer') {
-                                                if (field.column) {
-                                                    return;
-                                                }
-                                                pcTable.fieldCategories.footer.some((f, i) => {
-                                                    if (f.column) {
-                                                        return;
-                                                    }
-                                                    if (isNext) {
-                                                        tdNext = pcTable._footersSubTable.find('[data-field="' + f.name + '"]');
-                                                        return true;
-                                                    }
-                                                    if (f.name == field.name) {
-                                                        isNext = true;
-                                                    }
-                                                })
-                                            }
-                                            break;
 
-                                    }
+                        if (event.shiftKey) {
+                            const getFirstTdFromCategory = function (category, direction) {
+                                let categories = ['param', 'column', 'footer'];
+                                let categoryIndex = categories.indexOf(category) + direction;
+                                let div;
+                                switch (categories[categoryIndex]) {
+                                    case 'column':
+                                        div = pcTable._innerContainer;
+                                        break;
+                                    case 'param':
+                                        div = pcTable._paramsBlock;
+                                        break;
+                                    case 'footer':
+                                        div = pcTable._footersSubTable;
+
                                 }
-                                if (tdNext) {
-                                    tdNext = $(tdNext);
-                                    if (!tdNext.is('.id,.n')) {
-                                        pcTable.selectedCells.click(tdNext, event);
-                                    }
+                                if (div) {
+                                    return div.find('td:not(.id,.n):first');
                                 }
-                                break;
-                            case 'Enter':
-                                if (event.shiftKey && !pcTable.selectedCells.movingSelection) {
+                            }
+                            let category;
+                            if (td.closest('.DataRow').length) {
+                                category = 'column';
+                            } else if (td.closest(pcTable._paramsBlock).length) {
+                                category = 'param';
+                            } else if (td.closest(pcTable._footersSubTable).length) {
+                                category = 'footer';
+                            }
+                            if (category) {
+                                switch (event.key) {
+                                    case 'ArrowLeft':
+                                    case 'ArrowUp':
+                                        tdNext = getFirstTdFromCategory(category, -1);
+                                        break;
+                                    case 'ArrowRight':
+                                    case 'ArrowDown':
+                                        tdNext = getFirstTdFromCategory(category, +1);
+                                        break;
+
+                                }
+                                if(tdNext.length){
+                                    pcTable.selectedCells.click(tdNext, "force");
+                                }
+                            }
+                        } else {
+                            switch (event.key) {
+                                case 'ArrowUp':
+                                case 'ArrowDown':
+                                case 'ArrowLeft':
+                                case 'ArrowRight':
+                                    if (td.closest('.DataRow').length) {
+
+                                        switch (event.key) {
+                                            case 'ArrowUp':
+                                                tdNext = td.closest('tr').prev().find('td').get(td.closest('tr').find('td').index(td));
+                                                break;
+                                            case 'ArrowDown':
+                                                tdNext = td.closest('tr').next().find('td').get(td.closest('tr').find('td').index(td));
+                                                break;
+                                            case 'ArrowRight':
+                                                tdNext = td.next();
+                                                break;
+                                            case 'ArrowLeft':
+                                                tdNext = td.prev();
+                                                break;
+                                        }
+
+                                    } else {
+                                        let field = pcTable._getFieldBytd(td);
+                                        switch (event.key) {
+                                            case 'ArrowUp':
+                                            case 'ArrowLeft':
+                                                if (field.category === 'param') {
+                                                    let prev;
+                                                    pcTable.fieldCategories.param.some((f, i) => {
+                                                        if (f.name == field.name) {
+                                                            if (prev) {
+                                                                tdNext = pcTable._paramsBlock.find('[data-field="' + prev + '"]');
+                                                                return true;
+                                                            }
+                                                            return true;
+                                                        }
+                                                        prev = f.name;
+                                                    })
+                                                } else if (field.category === 'footer') {
+                                                    if (field.column) {
+                                                        return;
+                                                    }
+                                                    let prev;
+                                                    pcTable.fieldCategories.footer.some((f, i) => {
+                                                        if (f.column) {
+                                                            return;
+                                                        }
+                                                        if (f.name == field.name) {
+                                                            if (prev) {
+                                                                tdNext = pcTable._footersSubTable.find('[data-field="' + prev + '"]');
+                                                                return true;
+                                                            }
+                                                            return true;
+                                                        }
+                                                        prev = f.name;
+                                                    })
+                                                }
+                                                break;
+                                            case 'ArrowDown':
+                                            case 'ArrowRight':
+                                                let isNext = false;
+                                                if (field.category === 'param') {
+                                                    pcTable.fieldCategories.param.some((f, i) => {
+                                                        if (isNext) {
+                                                            tdNext = pcTable._paramsBlock.find('[data-field="' + f.name + '"]');
+                                                            return true;
+                                                        }
+                                                        if (f.name == field.name) {
+                                                            isNext = true;
+                                                        }
+                                                    })
+                                                } else if (field.category === 'footer') {
+                                                    if (field.column) {
+                                                        return;
+                                                    }
+                                                    pcTable.fieldCategories.footer.some((f, i) => {
+                                                        if (f.column) {
+                                                            return;
+                                                        }
+                                                        if (isNext) {
+                                                            tdNext = pcTable._footersSubTable.find('[data-field="' + f.name + '"]');
+                                                            return true;
+                                                        }
+                                                        if (f.name == field.name) {
+                                                            isNext = true;
+                                                        }
+                                                    })
+                                                }
+                                                break;
+
+                                        }
+                                    }
+                                    if (tdNext) {
+                                        tdNext = $(tdNext);
+                                        if (!tdNext.is('.id,.n')) {
+                                            pcTable.selectedCells.click(tdNext, event);
+                                        }
+                                    }
+                                    break;
+                                case 'Enter':
+                                    if (event.shiftKey && !pcTable.selectedCells.movingSelection) {
+                                        if (td.is('.edt')) {
+                                            td.trigger('dblclick');
+                                            setTimeout(() => {
+                                                let input = td.find('input[type="text"]');
+                                                if (input.length)
+                                                    input.get(0).select()
+                                            })
+                                        } else if (td.is('.cell-button')) {
+                                            td.find('.button-field').click();
+                                        }
+                                    } else if (event.ctrlKey) {
+                                        if (td.is('.edt')) {
+                                            td.trigger('dblclick');
+                                        } else if (td.is('.cell-button')) {
+                                            td.find('.button-field').click();
+                                        }
+                                    }
+                                    break;
+                                case ' ':
                                     if (td.is('.edt')) {
                                         td.trigger('dblclick');
-                                        setTimeout(() => {
-                                            let input = td.find('input[type="text"]');
-                                            if (input.length)
-                                                input.get(0).select()
-                                        })
-                                    } else if (td.is('.cell-button')) {
-                                        td.find('.button-field').click();
                                     }
-                                } else if (event.ctrlKey) {
-                                    if (td.is('.edt')) {
-                                        td.trigger('dblclick');
-                                    } else if (td.is('.cell-button')) {
-                                        td.find('.button-field').click();
-                                    }
-                                }
-                                break;
-                            case ' ':
-                                if (td.is('.edt')) {
-                                    td.trigger('dblclick');
-                                }
-                                break;
+                                    break;
+                            }
                         }
                     }
                 }
