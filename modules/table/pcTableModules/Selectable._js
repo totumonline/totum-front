@@ -1190,12 +1190,12 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         let arrais = pcTable.dataSorted.length ? pcTable._innerContainer : $(), tdNext;
                         arrais = arrais.add(pcTable._paramsBlock).add(pcTable._footersSubTable)
                         switch (event.key) {
-                            case 'ArrowLeft':
-                            case 'ArrowUp':
-                                tdNext = arrais.find('td:not(.id,.n):first').first();
-                                break;
                             case 'ArrowRight':
                             case 'ArrowDown':
+                                tdNext = arrais.find('td:not(.id,.n):first').first();
+                                break;
+                            case 'ArrowLeft':
+                            case 'ArrowUp':
                                 tdNext = arrais.find('td:not(.id,.n):last').last();
                                 break;
 
