@@ -341,7 +341,7 @@
 
             };
 
-            const save = function (dialog) {
+            const save = function (dialog, event, notEnter) {
                 let files = [];
                 dialog.$modalContent.find('.filePart').each(function () {
                     let fileDiv = $(this), file = fileDiv.data('file');
@@ -352,8 +352,10 @@
                 div.data('val', files);
                 Files = files;
                 isEntered = true;
-                enterClbk(div, {});
-                dialog.close();
+                if (!notEnter) {
+                    enterClbk(div, {});
+                    dialog.close();
+                }
             };
 
 
@@ -396,34 +398,63 @@
                         }
                     })
                 } else {
-                    dialog = window.top.BootstrapDialog.show({
-                        message: dialogBody,
-                        type: null,
-                        cssClass: 'fieldparams-edit-panel',
-                        title: title,
-                        draggable: true,
-                        buttons: buttons,
-                        onhide: function (event) {
-                            $('body').off(eventName);
-                            if (!isEntered) {
-                                escClbk(div, event);
-                            }
-                        },
-                        onshown: function (dialog) {
-                            dialog.$modalHeader.css('cursor', 'pointer');
-                            dialog.$modalContent.css({
-                                width: 600
-                            });
-                            formFill();
-                            dialog.$modalContent.find('.addFilesButton').focus();
+                    let btnClicked = false;
+                    setTimeout(() => {
 
-                            $('body').on(eventName, function (event) {
-                                save(dialog);
-                            });
+                        let cdiv = div.closest('td').find('.cdiv');
+                        if (cdiv.length > 0 && pcTable.isSelected(field.name, item.id) && (pcTable.selectedCells.ids[field.name].length > 1 || Object.keys(pcTable.selectedCells.ids).length > 1)) {
+                            buttons = [];
+                            cdiv.data('bs.popover').options.content.find('.btn').each(function () {
+                                let btn = $(this);
+                                let buttn = {};
+                                buttn.label = btn.data('name');
+                                buttn.cssClass = btn.attr('class').replace('btn-sm', 'btn-m');
+                                buttn.icon = btn.find('i').attr('class');
+                                buttn.save = btn.data('save');
+                                buttn.click = btn.data('click');
+                                buttn.action = function (dialog) {
+                                    if (buttn.save) {
+                                        save(dialog, {}, true);
+                                    }
+                                    buttn.click({});
+                                    btnClicked = true;
+                                    dialog.close();
+                                };
 
+                                buttons.push(buttn)
+                            });
+                            cdiv.popover('destroy');
                         }
+
+                        dialog = window.top.BootstrapDialog.show({
+                            message: dialogBody,
+                            type: null,
+                            cssClass: 'fieldparams-edit-panel',
+                            title: title,
+                            draggable: true,
+                            buttons: buttons,
+                            onhide: function (event) {
+                                $('body').off(eventName);
+                                if (!isEntered) {
+                                    escClbk(div, event);
+                                }
+                            },
+                            onshown: function (dialog) {
+                                dialog.$modalHeader.css('cursor', 'pointer');
+                                dialog.$modalContent.css({
+                                    width: 600
+                                });
+                                formFill();
+                                dialog.$modalContent.find('.addFilesButton').focus();
+
+                                $('body').on(eventName, function (event) {
+                                    save(dialog);
+                                });
+
+                            }
+                        })
+                        div.data('Dialog', dialog);
                     })
-                    div.data('Dialog', dialog);
                 }
 
 
