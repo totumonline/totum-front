@@ -402,7 +402,7 @@
                     setTimeout(() => {
 
                         let cdiv = div.closest('td').find('.cdiv');
-                        if (cdiv.length > 0 && pcTable.isSelected(field.name, item.id) && (pcTable.selectedCells.ids[field.name].length > 1 || Object.keys(pcTable.selectedCells.ids).length > 1)) {
+                        if (cdiv.length > 0) {
                             buttons = [];
                             cdiv.data('bs.popover').options.content.find('.btn').each(function () {
                                 let btn = $(this);
