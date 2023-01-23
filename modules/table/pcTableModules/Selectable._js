@@ -587,6 +587,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
 
                 },
+                isAnySelectedCells: function (){
+                    return !!(this.notRowCell || Object.keys(this.ids).length)
+                },
                 getOneSelectedCell: function () {
                     let sFields = Object.keys(this.ids);
                     if (sFields.length === 1 && this.ids[sFields[0]].length === 1 && pcTable.data[this.ids[sFields[0]][0]].$tr) {
@@ -627,6 +630,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         this.ids = {};
                         this.lastSelected = null;
                     }
+                    this.summarizer.check();
                 },
                 selectColumn: function (fieldName) {
                     pcTable.dataSortedVisible.forEach((id) => {

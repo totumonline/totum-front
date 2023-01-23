@@ -119,6 +119,7 @@ var defaultField = {
                     }
                     break;
                 case 27:
+                    event.stopPropagation();
                     escClbk($(this), event);
                     break;
             }
@@ -273,7 +274,7 @@ var defaultField = {
                 events = 'mousedown keydown focus'
             }
             element.on(events, function (evt, elseData) {
-            
+
                 let coggs = false;
                 const checkWaiting = () => {
                     if (field.waiting[0]) {

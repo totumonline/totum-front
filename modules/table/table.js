@@ -467,6 +467,17 @@
                         closeCallbacksFunc(event);
                     }
                 });
+                $('body').on('keydown', function (event) {
+                    if (event.which === 27) {
+                        if (!pcTable.closeCallbacks.length) {
+                            if (pcTable.selectedCells.isAnySelectedCells()) {
+                                if (!$('body .modal').length && !$('body .editing').length) {
+                                    pcTable.selectedCells.empty();
+                                }
+                            }
+                        }
+                    }
+                });
                 $('body').on('click _click', closeCallbacksFunc);
 
 
@@ -1063,8 +1074,8 @@
                     this.setWidthes();
                     this.__applyFilters();
 
-                    let hashData=JSON.parse(decodeURIComponent(window.location.hash.substring(1)) || '[]');
-                    if(hashData && hashData.pointing){
+                    let hashData = JSON.parse(decodeURIComponent(window.location.hash.substring(1)) || '[]');
+                    if (hashData && hashData.pointing) {
                         this.startPointing = hashData.pointing;
                     }
                     this.selectedCells.applyPointing();
