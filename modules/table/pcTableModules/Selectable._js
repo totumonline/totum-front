@@ -587,7 +587,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
 
                 },
-                isAnySelectedCells: function (){
+                isAnySelectedCells: function () {
                     return !!(this.notRowCell || Object.keys(this.ids).length)
                 },
                 getOneSelectedCell: function () {
@@ -1251,9 +1251,14 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 let categories = ['param', 'column', 'footer'];
                                 let categoryIndex = categories.indexOf(category) + direction;
                                 let div;
+                                if (!categories[categoryIndex]) {
+                                    return;
+                                }
                                 switch (categories[categoryIndex]) {
                                     case 'column':
-                                        div = pcTable._innerContainer;
+                                        if (pcTable.dataSorted.length) {
+                                            div = pcTable._innerContainer;
+                                        }
                                         break;
                                     case 'param':
                                         div = pcTable._paramsBlock;
@@ -1264,6 +1269,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 }
                                 if (div) {
                                     return div.find('td:not(.id,.n)' + (direction === 1 ? ':first' : ':last'));
+                                } else {
+                                    return getFirstTdFromCategory(categories[categoryIndex], direction);
                                 }
                             }
                             let category;
