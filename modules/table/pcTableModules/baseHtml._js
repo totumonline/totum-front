@@ -654,7 +654,7 @@
                 let btnAdd = $('<button class="btn btn-danger btn-xxs" id="addField">' + App.translate('Add field') + '</button>').width(113)
                     .on('click', function () {
                         let data = {
-                            table_id: {v: pcTable.tableRow.id}, data_src: {v: pcTable_default_field_data_src}
+                            table_id: {v: pcTable.tableRow.id}, data_src: {v: pcTable_default_field_data_src()}
                         };
                         if (pcTable.tableRow.__version) {
                             data['version'] = {v: pcTable.tableRow.__version};
@@ -2322,7 +2322,7 @@
                                 if (pcTable.tableRow.__version) {
                                     ee.version = {v: pcTable.tableRow.__version};
                                 }
-                                ee.data_src = {v: pcTable_default_field_data_src};
+                                ee.data_src = {v: pcTable_default_field_data_src()};
                                 (new EditPanel(pcTableTable, BootstrapDialog.TYPE_DANGER, ee, false, ee)).then(funcOnTableChanged);
                             })
                         });
