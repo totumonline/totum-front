@@ -214,8 +214,9 @@
                                 if (ext = file.name.match(/(\.[a-zA-Z0-9]+)$/)) {
                                     ext = ext[1].toLowerCase();
                                 }
-                                let accept = field.accept.split('|');
+                                let accept = field.accept.split(',');
                                 if (!accept.some((type) => {
+                                    type = type.trim();
                                     if (ext && ext === type.toLowerCase()) {
                                         return true;
                                     }
