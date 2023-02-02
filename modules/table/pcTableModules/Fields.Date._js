@@ -7,8 +7,9 @@ fieldTypes.date = {
 
         return this.getDbString(date);
     },
-    getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex) {
-        var $input = $('<input type="text" name="cell_edit" class="form-control" autocomplete="off" autocorrect="off" />');
+    getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex, _, cell) {
+        let wind = cell ? (cell.get(0).ownerDocument.defaultView || window) : window;
+        var $input = wind.$('<input type="text" name="cell_edit" class="form-control" autocomplete="off" autocorrect="off" />');
         this.checkWaiting($input);
 
         if (tabindex) $input.attr('tabindex', tabindex);
@@ -108,11 +109,13 @@ fieldTypes.date = {
                     if (popover) {
                         $input.popover('destroy')
                     }
+
                     popoverId = App.popNotify(cParent, $input, null);
                     popover = $($input.get(0).ownerDocument.getElementById(popoverId));
 
                     calendar.data("DateTimePicker").show();
                     popover.show();
+
                     setDateTimePickerDate();
                 };
                 $input.on('focus mouskeydown', showPopover);
