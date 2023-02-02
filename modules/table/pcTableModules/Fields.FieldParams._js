@@ -69,7 +69,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                         let fieldSettings = jsonFields.fieldSettings[fName];
                         if (!fieldSettings) return false;
 
-                        if (fieldSettings['categories']) {
+                        if (fieldSettings['categories'] && !(fName==='codeAction' && form.find('div[data-name="type"] select').val()==='button')) {
                             if (fieldSettings['categories'].indexOf(item['category']['v']) === -1) return false;
                         }
                         if (fieldSettings['names']) {
