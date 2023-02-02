@@ -903,7 +903,6 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                             this.notRowCellEmpty();
                         }
 
-
                         let tr = td.closest('tr');
                         let item = pcTable._getItemByTr(tr);
                         let field = pcTable._fieldByTd(td, tr);
@@ -1268,7 +1267,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                                 }
                                 if (div) {
-                                    return div.find('td:not(.id,.n)' + (direction === 1 ? ':first' : ':last'));
+                                    return div.find('td:not(.id,.n,.footer-empty)' + (direction === 1 ? ':first' : ':last') + ':visible');
                                 } else {
                                     return getFirstTdFromCategory(categories[categoryIndex], direction);
                                 }
@@ -1326,34 +1325,46 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                             case 'ArrowUp':
                                             case 'ArrowLeft':
                                                 if (field.category === 'param') {
-                                                    let prev;
+                                                    let prev=[];
                                                     pcTable.fieldCategories.param.some((f, i) => {
                                                         if (f.name == field.name) {
-                                                            if (prev) {
-                                                                tdNext = pcTable._paramsBlock.find('[data-field="' + prev + '"]');
-                                                                return true;
+                                                            if (prev.length) {
+                                                                prev.reverse();
+                                                                prev.some((prev)=>{
+                                                                    tdNext = pcTable._paramsBlock.find('[data-field="' + prev + '"]');
+                                                                    if (tdNext.is(':visible')) {
+                                                                        return true;
+                                                                    }
+                                                                    tdNext = null;
+                                                                })
                                                             }
                                                             return true;
                                                         }
-                                                        prev = f.name;
+                                                        prev.push(f.name);
                                                     })
                                                 } else if (field.category === 'footer') {
                                                     if (field.column) {
                                                         return;
                                                     }
-                                                    let prev;
+                                                    let prev=[];
                                                     pcTable.fieldCategories.footer.some((f, i) => {
                                                         if (f.column) {
                                                             return;
                                                         }
                                                         if (f.name == field.name) {
-                                                            if (prev) {
-                                                                tdNext = pcTable._footersSubTable.find('[data-field="' + prev + '"]');
-                                                                return true;
+                                                            if (prev.length) {
+                                                                prev.reverse();
+                                                                prev.some((prev)=>{
+                                                                    tdNext = pcTable._footersSubTable.find('[data-field="' + prev + '"]');
+                                                                    if (tdNext.is(':visible')) {
+                                                                        return true;
+                                                                    }
+                                                                    tdNext = null;
+                                                                })
                                                             }
                                                             return true;
                                                         }
-                                                        prev = f.name;
+                                                        prev.push(f.name);
                                                     })
                                                 }
                                                 break;
@@ -1364,7 +1375,10 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                                     pcTable.fieldCategories.param.some((f, i) => {
                                                         if (isNext) {
                                                             tdNext = pcTable._paramsBlock.find('[data-field="' + f.name + '"]');
-                                                            return true;
+                                                            if (tdNext.is(':visible')) {
+                                                                return true;
+                                                            }
+                                                            tdNext = null;
                                                         }
                                                         if (f.name == field.name) {
                                                             isNext = true;
@@ -1380,7 +1394,10 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                                         }
                                                         if (isNext) {
                                                             tdNext = pcTable._footersSubTable.find('[data-field="' + f.name + '"]');
-                                                            return true;
+                                                            if (tdNext.is(':visible')) {
+                                                                return true;
+                                                            }
+                                                            tdNext = null;
                                                         }
                                                         if (f.name == field.name) {
                                                             isNext = true;
@@ -1391,7 +1408,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                                         }
                                     }
-                                    if (tdNext) {
+                                    if (tdNext && tdNext.length) {
                                         tdNext = $(tdNext);
                                         if (!tdNext.is('.id,.n')) {
                                             pcTable.selectedCells.click(tdNext, event);
