@@ -508,7 +508,8 @@
                     csv.append(btn);
                 }
             }
-            if (!this.isAnonim && !pcTable.beforeSpaceHide)
+
+            if (!this.isAnonim && !pcTable.beforeSpaceHide && !window.location.pathname.match(/^\/[^\/]+\/\d+\/\d+\/\d+\/\d+$/))
                 csv.append(this._getFavoriteStar());
 
 
