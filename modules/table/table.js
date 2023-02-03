@@ -277,6 +277,7 @@
 //=include pcTableModules/Csv._js
 //=include pcTableModules/FieldsHidding._js
 //=include pcTableModules/Print._js
+//=include pcTableModules/ExtButtons._js
 //=include pcTableModules/SortingN._js
 //=include pcTableModules/formatFunctions._js
 //=include pcTableModules/TableTreeView._js

@@ -51,21 +51,32 @@ App.pcTableMain.prototype.__formatFunctions = {
         this._rerenderColumnsFooter();
         this._rowsButtons();
     },
+    printbuttons: function () {
+        this._rerendParamsblock();
+        this._rerendBottomFoolers();
+        this._rerenderColumnsFooter();
+    },
     topbuttons: function () {
         let btns = this._beforeSpace_title.find('.common-table-title');
-        if(this.f.topbuttons === false){
-            if(this.isCreatorView){
+        if (this.f.topbuttons === false) {
+            if (this.isCreatorView) {
                 btns.addClass('admin-hidden')
-            }else{
+            } else {
                 btns.hide()
             }
-        }else{
-            if(this.isCreatorView){
+        } else {
+            if (this.isCreatorView) {
                 btns.removeClass('admin-hidden')
-            }else{
+            } else {
                 btns.show()
             }
         }
+    },
+    extbuttons: function () {
+        this._rerendParamsblock();
+        this._rerendBottomFoolers();
+        this._rerenderColumnsFooter();
+        this._beforeSpace_title.find('#ttm-extButtonsBar').css("display", pcTable.f.extbuttons && pcTable.f.extbuttons.length ? 'inline' : 'none');
     },
     blockorder: function () {
         this._refreshHead();

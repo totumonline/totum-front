@@ -446,6 +446,16 @@
                         }).appendTo(csv);
                 }
 
+                //extbuttons
+                if (!pcTable.isCreatorView) {
+                    $('<button class="btn btn-default btn-sm" id="ttm-extButtonsBar"><i class="fa fa-bars"></i></button>')
+                        .on('click', function () {
+                            pcTable._tableExtButtons()
+                        }).appendTo(csv).css("display", pcTable.f.extbuttons && pcTable.f.extbuttons.length ? 'inline' : 'none');
+
+                }
+
+
                 if (pcTable.withCsvButtons) {
                     let btn = $('<button class="btn btn-default btn-sm">CSV-' + App.translate('export') + '</button>')
                         .on('click', function () {
@@ -1008,7 +1018,7 @@
                 lastId = pageSplit[2] || null;
 
                 this.PageData.onPage = pageCount;
-                this.model.loadPage(this, lastId, pageCount, null, (new URL(document.location)).searchParams.get('offset')).then(()=>{
+                this.model.loadPage(this, lastId, pageCount, null, (new URL(document.location)).searchParams.get('offset')).then(() => {
                     this.selectedCells.applyPointing('pageLoaded');
                 });
 
@@ -1059,7 +1069,7 @@
                     const $addButtons = ($btns) => {
                         let width = 0;
                         pcTable.f.buttons.forEach((name) => {
-                            if (pcTable.isReplacedButton(name)) {
+                            if (pcTable.fields[name]) {
                                 let $td = $('<span class="button-wrapper">').data('field', name);
                                 let button = pcTable.fields[name].getCellText(null, $td, pcTable.data_params);
 
@@ -1419,8 +1429,9 @@
                     let sectionDiv;
                     let sections = [];
                     $.each(pcTable.fieldCategories.param, function (k, field) {
-                            if (pcTable.isReplacedButton(field.name))
+                            if (pcTable.isReplacedButton(field.name)){
                                 return;
+                            }
 
                             let panelColor;
                             if (field.panelColor !== undefined) {
@@ -1951,7 +1962,13 @@
 
         isReplacedButton(fieldName) {
             let pcTable = this;
-            return pcTable.fields[fieldName] && pcTable.f && ((pcTable.f.buttons && pcTable.f.buttons.length && pcTable.f.buttons.indexOf(fieldName) !== -1) || (pcTable.f.printbuttons && pcTable.f.printbuttons.length && pcTable.f.printbuttons.indexOf(fieldName) !== -1));
+            return pcTable.fields[fieldName] && pcTable.f && (
+                (pcTable.f.buttons && pcTable.f.buttons.length && pcTable.f.buttons.indexOf(fieldName) !== -1)
+                ||
+                (pcTable.f.printbuttons && pcTable.f.printbuttons.length && pcTable.f.printbuttons.indexOf(fieldName) !== -1)
+                ||
+                (pcTable.f.extbuttons && pcTable.f.extbuttons.length && pcTable.f.extbuttons.indexOf(fieldName) !== -1)
+            );
         },
         _createHeadCell: function (index, field, panelColor) {
             let pcTable = this;
@@ -2148,8 +2165,12 @@
                 if (pcTable.f) {
                     if (pcTable.f.printbuttons && pcTable.f.printbuttons.indexOf && pcTable.f.printbuttons.indexOf(field.name) !== -1) {
                         creatorIcons.append('<i class="roles reordered">P</i>');
-                    } else if (pcTable.f.buttons && pcTable.f.buttons.indexOf && pcTable.f.buttons.indexOf(field.name) !== -1) {
+                    }
+                    if (pcTable.f.buttons && pcTable.f.buttons.indexOf && pcTable.f.buttons.indexOf(field.name) !== -1) {
                         creatorIcons.append('<i class="roles reordered">B</i>');
+                    }
+                    if (pcTable.f.extbuttons && pcTable.f.extbuttons.indexOf && pcTable.f.extbuttons.indexOf(field.name) !== -1) {
+                        creatorIcons.append('<i class="roles reordered">E</i>');
                     }
                 }
 
@@ -3068,7 +3089,7 @@
             }
 
             if (field.category !== 'column') {
-                if(pcTable.selectedCells && pcTable.selectedCells.notRowCell && pcTable.selectedCells.notRowCell.data('field') === field.name){
+                if (pcTable.selectedCells && pcTable.selectedCells.notRowCell && pcTable.selectedCells.notRowCell.data('field') === field.name) {
                     td.addClass('selected');
                     pcTable.selectedCells.notRowCell = td;
                 }
