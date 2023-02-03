@@ -2,6 +2,7 @@
 
 .btn {
   background-color: #fff;
+
   &:focus, &:active {
     outline: none !important;
     box-shadow: none !important;
@@ -13,23 +14,28 @@
 .btn-success {
   background-color: $btn-success-bgcolor;
 }
-.bootstrap-dialog .btn-empty-with-icon .bootstrap-dialog-button-icon{
+
+.bootstrap-dialog .btn-empty-with-icon .bootstrap-dialog-button-icon {
   margin: 0;
 }
+
 .bootstrap-select span.text small.text-muted {
   padding-left: 3px;
 }
+
 .bootstrap-select .dropdown-toggle {
   &:focus {
     outline: #333 !important;
   }
+
   border-color: transparent !important;
 }
 
 .bootstrap-select > .dropdown-toggle.bs-placeholder, .bootstrap-select > .dropdown-toggle.bs-placeholder:active, .bootstrap-select > .dropdown-toggle.bs-placeholder:focus, .bootstrap-select > .dropdown-toggle.bs-placeholder:hover {
   color: #333;
 }
-.bootstrap-select .dropdown-menu{
+
+.bootstrap-select .dropdown-menu {
   overflow-x: auto;
 }
 
@@ -67,6 +73,11 @@
     font-family: 'PTRootUIWeb', serif;
     margin-right: 20px;
     margin-top: -20px;
+
+    .switched-off-code {
+      color: #ff8585;
+      padding-left: 10px
+    }
   }
 
   .bootstrap-dialog-message {
@@ -83,9 +94,10 @@
     color: #fff;
   }
 
-  .bootstrap-dialog-footer-buttons{
+  .bootstrap-dialog-footer-buttons {
     line-height: 41px;
   }
+
   .bootstrap-dialog-close-button .close {
     opacity: 1;
     color: #000;
@@ -96,15 +108,15 @@
     cursor: pointer;
   }
 
- /* &.type-default .modal-header {
-    background-color: #ffffff;
-  }
+  /* &.type-default .modal-header {
+     background-color: #ffffff;
+   }
 
-  &.type-default .bootstrap-dialog-title {
-    color: #333;
-  }*/
+   &.type-default .bootstrap-dialog-title {
+     color: #333;
+   }*/
 
-  .modal-header{
+  .modal-header {
     font-weight: bold;
   }
 
@@ -129,20 +141,23 @@
   }
 
   input {
-      border-radius: 3px;
-    }
+    border-radius: 3px;
+  }
 }
-button{
+
+button {
   &:focus, &:active {
     outline: none !important;
     box-shadow: none !important;
   }
 }
+
 label.field-param-lable {
   span {
     font-weight: 500;
   }
-  &.switcheble{
+
+  &.switcheble {
     margin-bottom: 10px;
   }
 }

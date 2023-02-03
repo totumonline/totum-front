@@ -1,9 +1,11 @@
 (function () {
-    App.totumCodeEdit = function (code, title, codeData, checkboxes, canBeSwitchOff) {
+    App.totumCodeEdit = function (code, title, codeData, checkboxes, canBeSwitchOff, isSwitchedOff) {
         return new Promise((resolve, reject) => {
 
             let newCodemirrorDiv = $('<div class="HTMLEditor" id="bigOneCodemirror" style="height: 100%;"></div>');
             let wrapper = $('<div class="totum-edit-codes"></div>').append(newCodemirrorDiv);
+
+
 
             let eventName = 'ctrlS.CodeEdit';
 
@@ -104,6 +106,10 @@
                     cssClass: 'btn-default btn-save',
                     label: App.translate("Disable")
                 })
+
+            if(isSwitchedOff){
+                title = $(title).append('<span class="switched-off-code"><i class="fa fa-chain-broken"></i></span>');
+            }
 
             window.top.BootstrapDialog.show({
                 message: wrapper,

@@ -317,7 +317,7 @@
                                                                 cycle_id: cycle_id,
                                                                 table: table,
                                                                 codeType: codeType
-                                                            }).then((valCode) => {
+                                                            }, undefined, !(val['value'][codeType] && val['value'][codeType].isOn)).then((valCode) => {
                                                                 App.fullScreenProcesses.showCog();
                                                                 let _val = val['value'];
                                                                 _val[codeType] = _val[codeType] || {Val: '', isOn: false};

@@ -952,7 +952,8 @@
                                     codeType: codeType
                                 },
                                 checkboxes,
-                                (codeType !== 'codeSelect' && json.row.data_src.v[codeType] && json.row.data_src.v[codeType].isOn)
+                                (codeType !== 'codeSelect' && (json.row.data_src.v[codeType] && json.row.data_src.v[codeType].isOn)),
+                                !(json.row.data_src.v[codeType] && json.row.data_src.v[codeType].isOn)
                             )
                                 .then((data) => {
                                     pcTableTablesFields.model.checkEditRow({id: field.id}).then(function (json) {
