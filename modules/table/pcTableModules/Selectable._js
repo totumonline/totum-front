@@ -515,10 +515,19 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 let spanOffsetLeft = td.offset().left,
                     containerOffsetLeft = pcTable._container.offset().left,
                     containerWidth = pcTable._container.width(),
-                    tdWidth = td.width(),
-                    panelWidth = $panel.is('.text') ? 340 : 240,
+                    tdWidth = td.outerWidth(),
+                    panelWidth = 240,
                     placeToRight = (containerWidth - (spanOffsetLeft - containerOffsetLeft) - tdWidth);
 
+                if ($panel.is('.text')) {
+                    panelWidth = 340;
+                }
+                if ($panel.is('.panel-wide')) {
+                    panelWidth = 440;
+                }
+                if ($panel.is('.panel-extrawide')) {
+                    panelWidth = 540;
+                }
 
                 if (placeToRight < panelWidth) {
                     placement = 'left';
@@ -1325,12 +1334,12 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                             case 'ArrowUp':
                                             case 'ArrowLeft':
                                                 if (field.category === 'param') {
-                                                    let prev=[];
+                                                    let prev = [];
                                                     pcTable.fieldCategories.param.some((f, i) => {
                                                         if (f.name == field.name) {
                                                             if (prev.length) {
                                                                 prev.reverse();
-                                                                prev.some((prev)=>{
+                                                                prev.some((prev) => {
                                                                     tdNext = pcTable._paramsBlock.find('[data-field="' + prev + '"]');
                                                                     if (tdNext.is(':visible')) {
                                                                         return true;
@@ -1346,7 +1355,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                                     if (field.column) {
                                                         return;
                                                     }
-                                                    let prev=[];
+                                                    let prev = [];
                                                     pcTable.fieldCategories.footer.some((f, i) => {
                                                         if (f.column) {
                                                             return;
@@ -1354,7 +1363,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                                         if (f.name == field.name) {
                                                             if (prev.length) {
                                                                 prev.reverse();
-                                                                prev.some((prev)=>{
+                                                                prev.some((prev) => {
                                                                     tdNext = pcTable._footersSubTable.find('[data-field="' + prev + '"]');
                                                                     if (tdNext.is(':visible')) {
                                                                         return true;
