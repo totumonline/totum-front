@@ -279,6 +279,7 @@
 
                                             } else {
                                                 switch (funcName) {
+                                                    case 'panelButton':
                                                     case 'linkToInput':
                                                     case 'linkToDataJson':
                                                     case 'linkToFileUpload':
