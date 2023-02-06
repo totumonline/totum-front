@@ -236,7 +236,7 @@
             let fields = {};
             let pcTable = this;
             Object.values(pcTable.fields).forEach(function (field) {
-                if (!field.hidden) {
+                if (!field.hidden && !pcTable.fields[field.name].__hidden) {
                     fields[field.name] = field.width;
                 } else {
                     fields[field.name] = 0;
@@ -484,11 +484,19 @@
                         if(field.__hidden){
                            return;
                         }
+                        if(!pcTable.isCreatorView && pcTable.isReplacedButton(field.name)){
+                            return;
+                        }
                         let hidden = '';
                         if (field.hidden) {
                             hidden = ' (' + App.translate('Hidden by default') + ')';
                         }
-                        let fCheckbox = $('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="' + field.name + '" class="form-check-input"> ' + (field.title || '-') + hidden + '</label> <input type="number" placeholder="' + field.width + '" value="' + (field.showMeWidth && field.showMeWidth !== field.width ? field.showMeWidth : field.width) + '"/></div>');
+                        let fCheckbox = $('<div class="form-check no-bold">' +
+                            '<label class="form-check-label">' +
+                            '<input type="checkbox" name="' + field.name + '" class="form-check-input">' +
+                            ' ' + (field.title || '-') + hidden + '</label> ' +
+                            '<input type="number" placeholder="' + field.width + '" value="' + (field.showMeWidth && field.showMeWidth !== field.width ? field.showMeWidth : field.width) + '"/>' +
+                            '</div>');
                         if (field.showMeWidth) {
                             fCheckbox.find('input').prop('checked', true);
                             fCheckbox.attr('data-checked', true);
@@ -642,9 +650,12 @@
                         if (field.__hidden) {
                             return;
                         }
+                        if(!pcTable.isCreatorView && pcTable.isReplacedButton(field.name)){
+                            return;
+                        }
 
                         let hidden = '';
-                        if (field.hidden) {
+                        if (field.hidden || (pcTable.f && pcTable.f.fieldhide && pcTable.f.fieldhide[field.name] === 'force')) {
                             hidden = ' (' + App.translate('Hidden by default') + ')';
                         }
                         let fCheckbox = $('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="' + field.name + '" class="form-check-input"> ' + field.title + hidden + '</label></div>');
@@ -719,7 +730,9 @@
             }
 
             let isHidedExtraFields = Object.values(pcTable.fields).some(function (field) {
-                if (field.showInWeb && !field.hidden && !field.__hidden && !field.showMeWidth) return true;
+                if (field.showInWeb && !field.hidden && !field.__hidden && !field.showMeWidth && !(pcTable.isCreatorView || pcTable.isReplacedButton(field.name))) {
+                    return true;
+                }
             });
 
             if (!isHidedExtraFields) {
