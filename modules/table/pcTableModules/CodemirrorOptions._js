@@ -1511,7 +1511,7 @@
                         keywords.push(...(token.state.lineCodeNames || []))
                     }
 
-                } else if (!token.state.inTotumBlock && (match = token.string.match(/(.*)\#(?:(old|s|h|c|l)\.)?[а-яa-z0-9_]*$/i))) {
+                } else if ((match = token.string.match(/(.*)\#(?:(old|s|h|c|l)\.)?[а-яa-z0-9_]*$/i))) {
 
 
                     keywords = [];
