@@ -2,7 +2,8 @@
     let bodyClassSetted = false;
 
     App.isMobile = function (indeed) {
-        let byScreenIsMobile = screen.width <= window.MOBILE_MAX_WIDTH;
+        let byScreenIsMobile = screen.width < 800 ||
+            !(window.matchMedia("(any-pointer: fine)").matches && window.matchMedia("(hover: hover)").matches);
 
         if (!bodyClassSetted) {
             bodyClassSetted = true;
@@ -13,11 +14,19 @@
             }
         }
 
-        if (indeed) {
+        if (indeed === 'isButton') {
+            return screen.width >= 800;
+        } else if (indeed) {
             return byScreenIsMobile;
         }
-        if (byScreenIsMobile && localStorage.getItem('notMobileView')) {
-            return false;
+        if (byScreenIsMobile) {
+            if (localStorage.getItem('notMobileView') === 'true') {
+                return false;
+            }
+        } else {
+            if (localStorage.getItem('notMobileView') === 'false') {
+                return true;
+            }
         }
         return byScreenIsMobile;
     };

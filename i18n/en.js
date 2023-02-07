@@ -6,8 +6,8 @@ App.langs.en =
     {
         "locale": "en-EN",
         "localeDatetimepicker": "en",
-        "dateFormat":'DD/MM/YY',
-        "dateTimeFormat":'DD/MM/YY HH:mm',
+        "dateFormat": 'DD/MM/YY',
+        "dateTimeFormat": 'DD/MM/YY HH:mm',
         "timeDateFormatNoYear": 'HH:mm DD/MM',
         filtersExtenders: App.commonFiltersExtenders,
         modelMethods: {
@@ -44,7 +44,7 @@ App.langs.en =
             'Creator-tableEditButtons-row_format': 'Row format',
             'Creator-tableEditButtons-table_format': 'Table format',
 
-            "PATH-TO-DOCUMENTATION":"https://docs.totum.online/",
+            "PATH-TO-DOCUMENTATION": "https://docs.totum.online/",
 
             'Close context data': '<b>Close</b> context data',
             'Open context data': '<b>Open</b> context data',
@@ -58,14 +58,20 @@ App.langs.en =
             'FormatShort': 'Format',
             'SelectShort': 'Select',
             'treeAddTable': 'Table',
-            'treeAddFolder':'Folder/Link',
+            'treeAddFolder': 'Folder/Link',
 
-            'isCreatorSelector-NotCreatorView':'Switch off admin layer',
-            'isCreatorSelector-CommonView':'Switch off special view',
+            'isCreatorSelector-NotCreatorView': 'Switch off admin layer',
+            'isCreatorSelector-CommonView': 'Switch off special view',
             'isCreatorSelector-MobileView': 'Switch to desktop view',
 
-            'mobileToDesctopWarning':'This display type is only for PCs with a small screen. Do not turn it on if you have a mobile device such as a phone or *PAD',
-
+            'mobileToDesctopWarning': 'This display type is only for PCs with a small screen. Do not turn it on if you have a mobile device such as a phone or *PAD',
+            'mobileToDesctopUserWarning': 'We detected the page type automatically.\n' +
+                '\n' +
+                'If we made a mistake, you can switch the mobile/desktop view manually.\n' +
+                '\n' +
+                'You have to be sure of the action you\'re performing!\n' +
+                '\n' +
+                'If you switch to desktop view on your mobile device, the page will not work!',
         }
     }
 ;

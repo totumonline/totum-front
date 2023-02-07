@@ -98,7 +98,7 @@
                                 } else if (!localStorage.getItem('notMobileView')) {
                                     App.confirmation(App.translate('mobileToDesctopWarning'), {
                                         'OK': function (dialog) {
-                                            localStorage.setItem('notMobileView', true)
+                                            localStorage.setItem('notMobileView', 'true')
                                             window.location.reload(true)
                                             dialog.close();
                                         },
@@ -152,6 +152,36 @@
 
 
                 $('#docs-link').before(creatorButton)
+            }
+        }
+        if (App.isTopWindow() && !isCreatorView) {
+            if (App.isMobile('isButton') && !$('#mobileSwitcher').length) {
+                let userButton = $('<span id="mobileSwitcher" class="btn btn-sm"><i class="fa-mobile fa"></i></span>');
+                if (!App.isMobile()) {
+                    userButton = $('<span id="mobileSwitcher" class="btn btn-sm"><i class="fa-desktop fa"></i></span>');
+                    userButton.on('click', () => {
+                        localStorage.setItem('notMobileView', 'false')
+                        window.location.reload(true);
+                    })
+                } else {
+                    userButton.on('click', () => {
+                        if (App.isMobile(true)) {
+                            App.confirmation('<div style="white-space: pre-wrap">' + App.translate("mobileToDesctopUserWarning") + '</div>', {
+                                [App.translate('Cancel')]: (dialog) => {
+                                    dialog.close();
+                                },
+                                [App.translate("OK")]: (dialog) => {
+                                    localStorage.setItem('notMobileView', 'true')
+                                    window.location.reload(true);
+                                }
+                            })
+                        } else {
+                            localStorage.setItem('notMobileView', 'true')
+                            window.location.reload(true);
+                        }
+                    })
+                }
+                $('#docs-link').before(userButton)
             }
         }
 

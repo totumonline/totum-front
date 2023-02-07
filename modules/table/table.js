@@ -3,7 +3,6 @@
     let BUTTONS_TIMEOUT = 2000;
 
     const pcTABLE_ROW_HEIGHT = 35;
-    window.MOBILE_MAX_WIDTH = 1199;
 
     const pcTable_DATA_KEY = 'pctable';
     const pcTable_DATA_INDEX = 'pctablettemtndex';
