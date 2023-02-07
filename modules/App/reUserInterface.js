@@ -156,9 +156,9 @@
         }
         if (App.isTopWindow() && !isCreatorView) {
             if (App.isMobile('isButton') && !$('#mobileSwitcher').length) {
-                let userButton = $('<span id="mobileSwitcher" class="btn btn-sm"><i class="fa-mobile fa"></i></span>');
+                let userButton = $('<span id="mobileSwitcher" class="btn btn-sm btn-default"><i class="fa-mobile fa"></i></span>');
                 if (!App.isMobile()) {
-                    userButton = $('<span id="mobileSwitcher" class="btn btn-sm"><i class="fa-desktop fa"></i></span>');
+                    userButton = $('<span id="mobileSwitcher" class="btn btn-sm btn-default"><i class="fa-desktop fa"></i></span>');
                     userButton.on('click', () => {
                         localStorage.setItem('notMobileView', 'false')
                         window.location.reload(true);
