@@ -256,7 +256,7 @@
                                         localStorage.setItem('notMobileView', 'true')
                                         window.location.reload(true);
                                     }
-                                })
+                                }, App.translate('Attention'))
                             } else {
                                 localStorage.setItem('notMobileView', 'true')
                                 window.location.reload(true);
