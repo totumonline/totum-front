@@ -241,9 +241,9 @@
                 let logOutButton = $('<a href="/Auth/logout/" class="btn">' + App.translate('Logout') + '</a>');
                 let divLogout = $('<div class="bottomButtons">').append(logOutButton);
                 if (App.isMobile('isButton')) {
-                    let deviceButton = $('<span id="mobileSwitcher" class="btn"><i class="fa-mobile fa"></i></span>');
+                    let deviceButton = $('<span id="mobileSwitcher" class="btn"><i class="fa-desktop fa"></i></span>');
                     if (!App.isMobile()) {
-                        deviceButton = $('<span id="mobileSwitcher" class="btn"><i class="fa-desktop fa"></i></span>');
+                        deviceButton = $('<span id="mobileSwitcher" class="btn"><i class="fa-mobile fa"></i></span>');
                     }
                     deviceButton.on('click', () => {
                         if (App.isMobile()) {
