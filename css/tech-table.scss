@@ -3,13 +3,16 @@
 .tech-table {
   position: relative;
 
-  > button {
+  > .bottomButtons {
+    display: grid;
+    grid-template-columns: 1fr;
     position: absolute;
     bottom: -5px;
     padding: 5px;
     width: 100%;
-    background-color: #fafafa;
-
+    .btn{
+      background-color: #fafafa;
+    }
     a {
       color: #333;
     }

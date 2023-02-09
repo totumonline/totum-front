@@ -19,6 +19,11 @@
         } else if (indeed) {
             return byScreenIsMobile;
         }
+
+        if (screen.width < 800) {
+            return true;
+        }
+
         if (byScreenIsMobile) {
             if (localStorage.getItem('notMobileView') === 'true') {
                 return false;

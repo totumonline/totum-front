@@ -14,7 +14,6 @@
         } else if (App.isTopWindow() && isCreatorView) {
 
             if ($('#isCreator').length === 0) {
-                let isMobile = App.isMobile();
                 let creatorButton = $('<span id="isCreator" class="btn btn-sm"><i class="fa-user-circle fa"></i></span>');
 
                 if (localStorage.getItem('notCreator')) {
@@ -41,7 +40,7 @@
                 creatorButton.on('click', () => {
                     let mainTable = $('#table').data('pctable');
                     let specView = mainTable && (isCommonView || mainTable.isTreeView || mainTable.viewType);
-                    if (specView || isMobile) {
+                    if (specView) {
                         let showed;
                         if (!creatorButton.data('bs.popover')) {
 
@@ -51,9 +50,7 @@
                             if (specView) {
                                 $selects.append('<div><input type="checkbox" data-type="CommonView"> ' + App.translate('isCreatorSelector-CommonView') + '</div>');
                             }
-                            if (isMobile) {
-                                $selects.append('<div><input type="checkbox" data-type="MobileView"> ' + App.translate('isCreatorSelector-MobileView') + '</div>');
-                            }
+
                             $selects.append('<div><button>' + App.translate('Apply') + '</button></div>');
 
                             if ($.cookie('ttm__commonTableView') === 'true') {
@@ -62,22 +59,13 @@
                             if (localStorage.getItem('notCreator')) {
                                 $selects.find('[data-type="NotCreatorView"]').prop('checked', true);
                             }
-                            if (localStorage.getItem('notMobileView')==='true') {
-                                $selects.find('[data-type="MobileView"]').prop('checked', true);
-                            }
 
-                            if (isMobile) {
-                                const checkAdminActive = () => {
-                                    if (!$selects.find('[data-type="MobileView"]').is(':checked')) {
-                                        $selects.find('[data-type="NotCreatorView"]').parent().addClass('disabled')
-                                        $selects.find('[data-type="NotCreatorView"]').prop('disabled', true)
-                                    } else {
-                                        $selects.find('[data-type="NotCreatorView"]').parent().removeClass('disabled')
-                                        $selects.find('[data-type="NotCreatorView"]').prop('disabled', false)
-                                    }
-                                }
-                                $selects.on('change', 'input[type="checkbox"]', checkAdminActive)
-                                checkAdminActive();
+                            if (App.isMobile()) {
+                                $selects.find('[data-type="NotCreatorView"]').parent().addClass('disabled')
+                                $selects.find('[data-type="NotCreatorView"]').prop('disabled', true)
+                            } else {
+                                $selects.find('[data-type="NotCreatorView"]').parent().removeClass('disabled')
+                                $selects.find('[data-type="NotCreatorView"]').prop('disabled', false)
                             }
 
 
@@ -91,25 +79,6 @@
                                     $.removeCookie('ttm__commonTableView', {path: path})
                                 } else {
                                     $.cookie('ttm__commonTableView', 'true', {path: path})
-                                }
-
-                                if (!MobileView) {
-                                    localStorage.setItem('notMobileView', 'false');
-                                } else if (localStorage.getItem('notMobileView')!=='true') {
-                                    App.confirmation(App.translate('mobileToDesctopWarning'), {
-                                        'OK': function (dialog) {
-                                            localStorage.setItem('notMobileView', 'true')
-                                            window.location.reload(true)
-                                            dialog.close();
-                                        },
-                                        [App.translate("Cancel")]: function (dialog) {
-                                            $selects.find('[data-type="MobileView"]').prop('checked', false);
-                                            dialog.close();
-                                        }
-                                    }, App.translate('Change warning'));
-
-
-                                    return;
                                 }
 
                                 window.location.reload(true)
@@ -152,36 +121,6 @@
 
 
                 $('#docs-link').before(creatorButton)
-            }
-        }
-        if (App.isTopWindow() && !isCreatorView) {
-            if (App.isMobile('isButton') && !$('#mobileSwitcher').length) {
-                let userButton = $('<span id="mobileSwitcher" class="btn btn-sm btn-default"><i class="fa-mobile fa"></i></span>');
-                if (!App.isMobile()) {
-                    userButton = $('<span id="mobileSwitcher" class="btn btn-sm btn-default"><i class="fa-desktop fa"></i></span>');
-                    userButton.on('click', () => {
-                        localStorage.setItem('notMobileView', 'false')
-                        window.location.reload(true);
-                    })
-                } else {
-                    userButton.on('click', () => {
-                        if (App.isMobile(true)) {
-                            App.confirmation('<div style="white-space: pre-wrap">' + App.translate("mobileToDesctopUserWarning") + '</div>', {
-                                [App.translate('Cancel')]: (dialog) => {
-                                    dialog.close();
-                                },
-                                [App.translate("OK")]: (dialog) => {
-                                    localStorage.setItem('notMobileView', 'true')
-                                    window.location.reload(true);
-                                }
-                            })
-                        } else {
-                            localStorage.setItem('notMobileView', 'true')
-                            window.location.reload(true);
-                        }
-                    })
-                }
-                $('#docs-link').before(userButton)
             }
         }
 
@@ -299,7 +238,41 @@
 
             setTimeout(() => {
                 UserFio.popover('show');
-                selectDiv.height(selectDiv.height() + 30).append('<button class="btn"><a href="/Auth/logout/">' + App.translate('Logout') + '</a></button>')
+                let logOutButton = $('<a href="/Auth/logout/" class="btn">' + App.translate('Logout') + '</a>');
+                let divLogout = $('<div class="bottomButtons">').append(logOutButton);
+                if (App.isMobile('isButton')) {
+                    let deviceButton = $('<span id="mobileSwitcher" class="btn"><i class="fa-mobile fa"></i></span>');
+                    if (!App.isMobile()) {
+                        deviceButton = $('<span id="mobileSwitcher" class="btn"><i class="fa-desktop fa"></i></span>');
+                    }
+                    deviceButton.on('click', () => {
+                        if (App.isMobile()) {
+                            if (App.isMobile(true)) {
+                                App.confirmation('<div style="white-space: pre-wrap">' + App.translate("mobileToDesctopUserWarning") + '</div>', {
+                                    [App.translate('Cancel')]: (dialog) => {
+                                        dialog.close();
+                                    },
+                                    [App.translate("OK")]: (dialog) => {
+                                        localStorage.setItem('notMobileView', 'true')
+                                        window.location.reload(true);
+                                    }
+                                })
+                            } else {
+                                localStorage.setItem('notMobileView', 'true')
+                                window.location.reload(true);
+                            }
+                        }else{
+                            localStorage.setItem('notMobileView', 'false')
+                            window.location.reload(true);
+                        }
+                    })
+
+                    divLogout.prepend(deviceButton);
+                    divLogout.css({
+                        'grid-template-columns': '45px 1fr'
+                    })
+                }
+                selectDiv.height(selectDiv.height() + 30).append(divLogout)
 
                 $('body').one('click.FioPopover', function (e) {
                     if (e.altKey !== undefined) {
