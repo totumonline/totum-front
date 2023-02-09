@@ -244,7 +244,7 @@
             let _gap = -1;
             let $div = field.fieldCell;
             if (sectionGap) {
-                if (!$div.prev().is('br') && !($div.is(':first-child') || $div.prev().is('[data-type="blocknum"]'))) {
+                if (!$div.prev().is('br') && !($div.is(':first-child') || $div.prev().is('[data-type="blocknum"]') || $div.prev().is('.blocktitle'))) {
                     if (typeof sectionGap !== 'object') {
                         _gap = sectionGap;
                     } else {

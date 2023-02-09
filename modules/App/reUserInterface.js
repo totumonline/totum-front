@@ -14,7 +14,7 @@
         } else if (App.isTopWindow() && isCreatorView) {
 
             if ($('#isCreator').length === 0) {
-                let isMobile = App.isMobile(true);
+                let isMobile = App.isMobile();
                 let creatorButton = $('<span id="isCreator" class="btn btn-sm"><i class="fa-user-circle fa"></i></span>');
 
                 if (localStorage.getItem('notCreator')) {
@@ -62,7 +62,7 @@
                             if (localStorage.getItem('notCreator')) {
                                 $selects.find('[data-type="NotCreatorView"]').prop('checked', true);
                             }
-                            if (localStorage.getItem('notMobileView')) {
+                            if (localStorage.getItem('notMobileView')==='true') {
                                 $selects.find('[data-type="MobileView"]').prop('checked', true);
                             }
 
@@ -94,8 +94,8 @@
                                 }
 
                                 if (!MobileView) {
-                                    localStorage.removeItem('notMobileView')
-                                } else if (!localStorage.getItem('notMobileView')) {
+                                    localStorage.setItem('notMobileView', 'false');
+                                } else if (localStorage.getItem('notMobileView')!=='true') {
                                     App.confirmation(App.translate('mobileToDesctopWarning'), {
                                         'OK': function (dialog) {
                                             localStorage.setItem('notMobileView', 'true')
