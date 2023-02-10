@@ -6,10 +6,16 @@
             },
             token: function (stream, state) {
 
-                if (stream.lineOracle.line===0) {
+                if (stream.lineOracle.line === 0) {
                     stream.skipToEnd();
                     state.isStart = false;
                     return 'sec-title';
+                }
+                let line = stream.lineOracle.doc.cm.lineInfo(stream.lineOracle.line);
+                if (line.text.trim().substring(0, 2) === '//') {
+                    stream.skipToEnd();
+                    state.isStart = false;
+                    return 'comment';
                 }
 
                 if (stream.pos === 0) {
@@ -20,7 +26,7 @@
 
                     return 'sec-param';
                 } else {
-                    let lastString=stream.string.substring(stream.pos);
+                    let lastString = stream.string.substring(stream.pos);
 
                     if (state.isParamsPart && lastString.match(':')) {
                         let val = 'sec-parts';
@@ -71,9 +77,9 @@
 
             if (isBigOneSave) {
                 event.stopPropagation();
-                if(typeof cm.options.bigOneDialog=== 'function'){
+                if (typeof cm.options.bigOneDialog === 'function') {
                     cm.options.bigOneDialog();
-                }else {
+                } else {
                     cm.options.bigOneDialog.close()
                 }
 

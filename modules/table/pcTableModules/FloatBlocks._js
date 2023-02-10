@@ -39,8 +39,7 @@
             return param;
         }
 
-
-        if (splitted.length === 3 && /^([a-z_0-9]+\s*,?\s*)+$/.test(splitted[1])) {
+        if (splitted.length === 3 && /^([a-z_0-9]+\s*,\s*)*([a-z_0-9]+\s*)?$/.test(splitted[1])) {
             if (typeof param !== 'object') {
                 param = {_ALL: param}
             }
@@ -118,6 +117,10 @@
                 let sectionParamsMatch = sectionTitle.match(/\*\*(.*)/);
                 if (sectionParamsMatch) {
                     sectionParamsMatch[1].trim().split(/\s*;\s*/).forEach((param) => {
+                        //comments
+                        if (param.trim().substring(0, 2) === '//') {
+                            return;
+                        }
                         let split = param.trim().split(/\s*:\s*/);
                         split[0] = split[0].toLowerCase();
 
