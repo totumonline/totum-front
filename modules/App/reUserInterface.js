@@ -210,7 +210,7 @@
                 content: selectDiv,
                 trigger: 'manual',
                 container: 'body',
-                placement: 'auto bottom',
+                placement: 'bottom',
                 template: '<div class="popover" role="tooltip" style=""><div class="arrow" style="left: 50%;"></div><div class="popover-content" style=" padding: 3px 5px;"></div></div>'
             });
 
