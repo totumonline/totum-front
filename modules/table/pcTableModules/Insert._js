@@ -656,11 +656,10 @@ $.extend(App.pcTableMain.prototype, {
                     ee[field.name] = null;
                 }
                 let opened = 0;
+                let randomId = window.top.App.randomIds.get();
                 $(window.top.document.body)
-                    .on('pctable-opened.select-add-' + field.name, function () {
-                        opened++;
-                    })
-                    .on('pctable-closed.select-add-' + field.name, function (event, data) {
+                    .on('pctable-closed.select-add-' + randomId, function (event, data) {
+                        if (data.panel.srcRandomId !== randomId) return;
                         opened--;
                         let isAdded = (data /*&& data.tableId === field.selectTableId*/ && data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
                         if (opened === 0 || isAdded) {
@@ -679,11 +678,26 @@ $.extend(App.pcTableMain.prototype, {
                                 }
                                 saveClbck(inputOld, {type: 'hidden'}, false, newVal)
                             }
-                            $('body').off('.select-add-' + field.name);
+                            $('body').off('.select-add-' + randomId);
                             // parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
                         }
                     });
-                pcTable.model.selectSourceTableAction(field.name, ee);
+                pcTable.model.selectSourceTableAction(field.name, ee).then(() => {
+                    let offTimeout;
+                    $(window.top.document.body)
+                        .on('pctable-opened.select-add-' + randomId, function (event, data) {
+                            data.panel.srcRandomId = randomId;
+                            opened++;
+                            if (offTimeout) {
+                                clearTimeout(offTimeout)
+                            }
+                            offTimeout = setTimeout(() => {
+                                $(window.top.document.body).off('pctable-opened.select-add-' + randomId);
+                                window.top.App.randomIds.delete(randomId);
+                            }, 200)
+                        })
+
+                })
                 return false;
             };
             btn.on('click', function () {

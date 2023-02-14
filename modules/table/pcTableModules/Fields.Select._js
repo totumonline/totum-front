@@ -947,12 +947,10 @@ fieldTypes.select = {
         let opened = 0;
 
         let LastData;
-
+        let randomId = window.top.App.randomIds.get();
         $(window.top.document.body)
-            .on('pctable-opened.select-' + field.name, function () {
-                opened++;
-            })
             .on('pctable-closed.select-' + field.name, function (event, data) {
+                if (data.panel.srcRandomId !== randomId) return;
                 opened--;
                 if (data && data.json) {
                     LastData = data;
@@ -967,7 +965,22 @@ fieldTypes.select = {
                 setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть
             });
 
-        pcTable.model.selectSourceTableAction(field.name, ee);
+        pcTable.model.selectSourceTableAction(field.name, ee).then(() => {
+            let offTimeout;
+            $(window.top.document.body)
+                .on('pctable-opened.select-add-' + randomId, function (event, data) {
+                    data.panel.srcRandomId = randomId;
+                    opened++;
+                    if (offTimeout) {
+                        clearTimeout(offTimeout)
+                    }
+                    offTimeout = setTimeout(() => {
+                        $(window.top.document.body).off('pctable-opened.select-add-' + randomId)
+                        window.top.App.randomIds.delete(randomId);
+                    }, 200)
+                })
+
+        })
 
         return $d;
     },

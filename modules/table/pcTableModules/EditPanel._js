@@ -32,7 +32,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     let saveMethod = data.id ? 'saveEditRow' : 'add';
     this.panelType = data.id ? 'edit' : 'insert';
     this.editItem = data || {};
-    $('body').trigger('pctable-opened', {'type': 'panel'});
+    $('body').trigger('pctable-opened', {'type': 'panel', 'panel': EditPanelFunc});
 
     EditPanelFunc.resolved = false;
     EditPanelFunc.error = {};
@@ -137,7 +137,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         'type': 'panel',
                         json: json,
                         method: EditPanelFunc.panelType,
-                        tableId: EditPanelFunc.pcTable.tableRow.id
+                        tableId: EditPanelFunc.pcTable.tableRow.id,
+                        panel: EditPanelFunc
                     });
                     EditPanelFunc.bootstrapPanel.close();
                 }).fail(function () {
@@ -881,11 +882,10 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         ee[field.name] = null;
                     }
                     let opened = 0;
+                    let randomId = window.top.App.randomIds.get();
                     $(window.top.document.body)
-                        .on('pctable-opened.select-' + EditPanelFunc.panelId, function () {
-                            opened++;
-                        })
                         .on('pctable-closed.select-' + EditPanelFunc.panelId, function (event, data) {
+                            if (data.panel.srcRandomId !== randomId) return;
                             opened--;
                             let isAdded = (data && /*data.tableId === field.selectTableId &&*/ data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
                             const refreshInputAndPage = function () {
@@ -916,7 +916,22 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                             };
                             setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть
                         });
-                    EditPanelFunc.pcTable.model.selectSourceTableAction(field.name, ee)
+                    EditPanelFunc.pcTable.model.selectSourceTableAction(field.name, ee).then(() => {
+                        let offTimeout;
+                        $(window.top.document.body)
+                            .on('pctable-opened.select-add-' + randomId, function (event, data) {
+                                data.panel.srcRandomId = randomId;
+                                opened++;
+                                if (offTimeout) {
+                                    clearTimeout(offTimeout)
+                                }
+                                offTimeout = setTimeout(() => {
+                                    $(window.top.document.body).off('pctable-opened.select-add-' + randomId);
+                                    window.top.App.randomIds.delete(randomId);
+                                }, 200)
+                            })
+
+                    })
                 };
 
                 let selectBtns = $('<span class="select-btns">').appendTo(btns);
