@@ -916,7 +916,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                             };
                             setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть
                         });
-                    EditPanelFunc.pcTable.model.selectSourceTableAction(field.name, ee).then(() => {
+
+                    EditPanelFunc.pcTable.model.selectSourceTableAction(field.name, hash).then(() => {
                         let offTimeout;
                         $(window.top.document.body)
                             .on('pctable-opened.select-add-' + randomId, function (event, data) {
