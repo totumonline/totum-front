@@ -169,6 +169,7 @@ App.langs.ru =
                 'Action not executed': 'Действие не выполнено',
 
                 'Manually changing the json field': 'Ручное изменение json-поля',
+                'Manually changing the json': 'Ручное изменение json',
                 'JSON format error': 'Ошибка формата JSON',
                 'Fill in by the default settings': 'Заполнить настройками по умолчанию',
 
@@ -263,15 +264,15 @@ App.langs.ru =
                 'Show logs': 'Показать логи',
                 'Debugging': 'Отладка',
 
-                    'Without highlightning': 'Без подсветки',
-                    'With code': 'С кодом',
-                    'With code only on adding': 'С кодом при добавлении',
-                    'With action code': 'С кодом действия',
-                    'With action code on add': 'С кодом действия при добавлении',
-                    'With action code on change': 'С кодом действия при изменении',
-                    'With action code on delete': 'С кодом действия при удалении',
-                    'With action code on click': 'С кодом действия при клике',
-                    'With format code': 'С кодом форматирования',
+                'Without highlightning': 'Без подсветки',
+                'With code': 'С кодом',
+                'With code only on adding': 'С кодом при добавлении',
+                'With action code': 'С кодом действия',
+                'With action code on add': 'С кодом действия при добавлении',
+                'With action code on change': 'С кодом действия при изменении',
+                'With action code on delete': 'С кодом действия при удалении',
+                'With action code on click': 'С кодом действия при клике',
+                'With format code': 'С кодом форматирования',
 
                 'Log': 'Лог',
                 'Calculate log': 'Лог расчета',
@@ -460,13 +461,13 @@ App.langs.ru =
 
                 'mobileToDesctopWarning': 'Этот тип отображения предназначен только для ПК с маленьким экраном. Не включайте его, если у вас мобильное устройство, например, телефон или *PAD',
 
-                 'mobileToDesctopUserWarning': 'Мы определили тип страницы автоматически.\n' +
-                     '\n' +
-                     'Если мы ошиблись, то вы можете переключить мобильный/десктопный вид вручную.\n' +
-                     '\n' +
-                     'Вы должны быть уверены в выполняемом действии!\n' +
-                     '\n' +
-                     'Если вы на мобильном устройстве переключитесь в десктопный вид, то страница будет неисправна!',
+                'mobileToDesctopUserWarning': 'Мы определили тип страницы автоматически.\n' +
+                    '\n' +
+                    'Если мы ошиблись, то вы можете переключить мобильный/десктопный вид вручную.\n' +
+                    '\n' +
+                    'Вы должны быть уверены в выполняемом действии!\n' +
+                    '\n' +
+                    'Если вы на мобильном устройстве переключитесь в десктопный вид, то страница будет неисправна!',
 
                 'Dark mode': 'Темный режим',
                 'This option works only in PRO.': 'Эта опция работает только в PRO.',

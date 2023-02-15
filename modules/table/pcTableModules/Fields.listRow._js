@@ -130,75 +130,22 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                 } catch (e) {
                     window.top.App.modal(App.translate('JSON format error'));
                 }
+                if (window.top.innerHeight > 460) {
+                    dialog.css('min-height', 200);
+                    element.css('min-height', 200);
+                }
 
                 let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
-                    let div = $('<div>');
-                    let textarea = $('<textarea class="form-control">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
-
-                    if (window.top.innerHeight > 460) {
-                        dialog.css('min-height', 200);
-                        element.css('min-height', 200);
-                        textarea.height(350)
-                    }
-
-                    const saveM = function (dialog) {
+                    const save = function (val) {
                         try {
-                            editor.setText(textarea.val());
-                            dialog.close();
+                            editor.setText(val);
+                            return true;
                         } catch (e) {
                             window.top.App.modal(App.translate('JSON format error'))
                         }
                     };
-                    let title = App.translate('Manually changing the json field'), buttons = [
-                        {
-                            'label': App.translate('Save') + ' Alt+S',
-                            cssClass: 'btn-m btn-warning',
-                            action: saveM
-                        }, {
-                            'label': null,
-                            icon: 'fa fa-times',
-                            cssClass: 'btn-m btn-default btn-empty-with-icon',
-                            'action': function (dialog) {
-                                dialog.close();
-                            }
-                        }
-                    ];
 
-                    if (field.pcTable.isMobile) {
-                        App.mobilePanel(title, div, {
-                            buttons: buttons,
-                        })
-                    } else {
-                        let eventName = 'ctrlS.Manually';
-                        window.top.BootstrapDialog.show({
-                            message: div,
-                            type: null,
-                            title: title,
-                            draggable: true,
-                            cssClass: 'fieldparams-edit-panel',
-                            buttons: buttons,
-                            onhide: function (event) {
-                                $('body').off(eventName);
-                            },
-                            onshown: function (dialog) {
-                                dialog.$modalContent.position({
-                                    of: window.top
-                                });
-                                $('body').on(eventName, () => {
-                                    saveM(dialog)
-                                })
-                            },
-                            onshow: function (dialog) {
-                                dialog.$modalHeader.css('cursor', 'pointer')
-                                dialog.$modalContent.css({
-                                    width: 500
-                                });
-                            }
-
-                        });
-                    }
-
-
+                    App.ManuallyJsonChanging(App.translate('Manually changing the json field'), editor.get(), save);
                     return false;
                 });
                 element.find('.jsoneditor-menu').append(btn);

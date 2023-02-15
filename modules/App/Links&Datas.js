@@ -1141,6 +1141,21 @@
             })
         }
 
+        let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
+            const save = function (val) {
+                try {
+                    editor.setText(val);
+                    return true;
+                } catch (e) {
+                    window.top.App.modal(App.translate('JSON format error'))
+                }
+            };
+
+            App.ManuallyJsonChanging(App.translate('Manually changing the json'), editor.get(), save);
+            return false;
+        });
+        div.find('.jsoneditor-menu').append(btn);
+
         dialog(data['title'], div, data.width, data.close ? 'close' : data.refresh, null, model, btns)
     }
 
