@@ -70,8 +70,15 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
             let textAsValue = format.textasvalue && ('text' in format);
 
-            if (!textAsValue && format.text)
-                textDiv.prepend($('<div class="sp-element"><i class="fa fa-font"></i> </div>').append(format.text));
+            let FormatText;
+            if (format.text) {
+                FormatText = $('<div class="sp-element"><i class="fa fa-font"></i> </div>').append(format.text)
+                if (textAsValue) {
+                    FormatText.hide();
+                }
+                textDiv.prepend(FormatText);
+            }
+
             if (format.comment)
                 textDiv.prepend($('<div class="sp-element"><i class="fa fa-info"></i> </div>').append(format.comment));
 
@@ -386,8 +393,30 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     .appendTo(btns);
             }
 
+            let fieldText;
+            if (textAsValue) {
+                if ((field.type === 'listRow')) {
+                    fieldText = $.Deferred();
 
-            let fieldText = textAsValue ? format.text : field.getPanelText(val.v, $panel, item);
+                    field.getValue(val.v, $panel, item).then((_val) => {
+                        if (field.isPanelTextAsTable(_val.value)) {
+
+                            fieldText.resolve(field.getPanelText(val.v, $panel, item));
+                            FormatText.show().find('i').remove();
+
+                            textDiv.find('.creator-select-val').remove();
+                        } else {
+                            fieldText.resolve(format.text);
+                        }
+                    })
+
+
+                } else {
+                    fieldText = format.text;
+                }
+            } else {
+                fieldText = field.getPanelText(val.v, $panel, item);
+            }
 
             if (field.type === 'select' && field.withPreview && val['v'] && (!field.multiple || val['v'].length === 1)) {
                 let _panel = $('<div class="previews">').appendTo(textDiv);
@@ -403,7 +432,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             }
 
             if (pcTable.isCreatorView) {
-                if (['select', 'tree', 'date'].indexOf(field.type) !== -1 || format.textasvalue) {
+                if (['select', 'tree', 'date'].indexOf(field.type) !== -1 || textAsValue) {
                     textDiv.append($('<div class="creator-select-val">' + JSON.stringify(val.v) + '</div>'));
                 }
             }

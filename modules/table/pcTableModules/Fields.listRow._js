@@ -1,8 +1,11 @@
 fieldTypes.listRow = $.extend({}, fieldTypes.default, {
     icon: 'fa-code',
     isPanelField: true,
+    isPanelTextAsTable: function (fieldValue) {
+        return typeof fieldValue === 'object' && fieldValue !== null && fieldValue.settings && fieldValue.data && fieldValue.settings.columns && fieldValue.settings.columns.length
+    },
     getPanelTextAsTable: function (fieldValue) {
-        if (typeof fieldValue === 'object' && fieldValue !== null && fieldValue.settings && fieldValue.data && fieldValue.settings.columns && fieldValue.settings.columns.length) {
+        if (this.isPanelTextAsTable(fieldValue)) {
             const table = $('<table class="json-table">');
             let field = this;
             let settings = fieldValue.settings;
@@ -28,7 +31,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                         let val = listItem[column];
                         if (typeof val != "string" || val === "") {
                             val = JSON.stringify(val)
-                            switch (val){
+                            switch (val) {
                                 case 'true':
                                     val = '✓'
                                     break;
