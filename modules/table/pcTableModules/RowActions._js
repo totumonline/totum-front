@@ -683,12 +683,8 @@
             }
 
             if (pcTable.isCreatorView) {
-                if (['calcs', 'globcalcs', 'tmp'].indexOf(pcTable.tableRow.type) == -1) {
-                    text.append($('<div class="menu-item pro-function recalculate_with_fields color-danger"><span class="available-in-pro">'+App.translate('Available in PRO')+'</span><i class="fa fa-refresh"></i> ' + App.translate('Recalculate +') + '</div>').attr('data-tr', trId));
-                }
                 if (pcTable.tableRow.type === 'cycles') {
                     text.append($('<div class="menu-item cycle_refresh color-danger"><i class="fa fa-refresh"></i> ' + App.translate('Recalculate cycle') + '</div>').attr('data-tr', trId));
-                    text.append($('<div class="menu-item pro-function recalculate_cycle_with_fields color-danger"><span class="available-in-pro">'+App.translate('Available in PRO')+'</span><i class="fa fa-refresh"></i> ' + App.translate('Recalculate cycle +') + '</div>').attr('data-tr', trId));
                 }
 
             }
