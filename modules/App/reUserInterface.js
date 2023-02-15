@@ -216,7 +216,7 @@
 
             if (select) {
 
-                selectDiv.height(350)
+                selectDiv.height(360)
 
                 select.selectpicker('render').selectpicker('toggle');
                 select.data('container', selectDiv);
