@@ -963,6 +963,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 }
             }
 
+            cell.find('.format-text,.format-comment').remove();
+
             if (format.text) {
                 let text = $('<div class="format-text">').text(format.text);
                 cell.append(text)
