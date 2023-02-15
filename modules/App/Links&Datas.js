@@ -773,7 +773,7 @@
 
                     setTimeout(() => {
                         input.focus();
-                    }, 1)
+                    }, 10)
 
                     props = {
                         buttons: [
