@@ -22,6 +22,9 @@ $.extend(App.pcTableMain.prototype, {
         };
 
         const blockFunc = (cell, title) => {
+            if(cell.is('.cell-button')){
+                return;
+            }
             let newcell = cell.clone(true).insertAfter(cell);
             cell.hide();
             newcell.html('<span class="cell-value blocked" style="height: ' + newcell.height() + '">' + title + '</span>');
@@ -31,6 +34,9 @@ $.extend(App.pcTableMain.prototype, {
             }, 500);
         }
 
+        arias.on('click', '.pcTable-filtersTable td.val:not(.edt)', function (event) {
+            blockFunc($(this), App.translate('Blocked'))
+        })
 
         arias.on('dblclick', 'td.val:not(.editing), td.edt:not(.editing), .dataRows tr:not(.treeRow) td:not(.editing,.id,.n)', function (event) {
             let cell = $(this);
@@ -81,7 +87,7 @@ $.extend(App.pcTableMain.prototype, {
                 return false;
             }
             $(this).data('click')(event);
-        });
+        })
 
     },
     _buttonClick: function ($td, field, item) {
