@@ -453,9 +453,9 @@
 
                 let td = pcTable._createCell(pcTable.data_params, field.field).appendTo(tdWrapper);
 
-
+                let extraHeight;
                 if (pcTable.isCreatorView) {
-                    let extraHeight = 33;
+                    extraHeight = 33;
                     if (!field.field.isNoTitles) {
                         extraHeight = 68;
                     }
@@ -468,7 +468,7 @@
 
                 } else {
                     if (!field.field.isNoTitles) {
-                        let extraHeight = 35;
+                        extraHeight = 35;
                         if (field.format.maxheight) {
                             field.format.maxheight = parseInt(field.format.maxheight) + extraHeight
                         }
@@ -483,7 +483,7 @@
                     let style = {'maxHeight': field.format.maxheight};
                     if (field.format.height) {
                         style.minHeight = field.format.height;
-                        tdWrapper.css('minHeight', field.format.height);
+                        tdWrapper.css('minHeight', field.format.height - extraHeight);
                     }
                     td.height('');
                     fieldCell.css(style);
