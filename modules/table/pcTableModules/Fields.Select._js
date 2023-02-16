@@ -535,9 +535,12 @@ fieldTypes.select = {
                         let $selectContainer = input.data('container');
                         $selectContainer.on('keydown.selectContainer.' + input.data('AppUin'), function (event) {
                             if (event.key === 'Tab') {
-                                if ((input.data('selectpicker').$newElement.get(0).contains(event.originalEvent.target) || input.data('selectpicker').$menu.get(0).contains(event.originalEvent.target))) {
+
+
+                                if (input.data('selectpicker').$searchbox.get(0).contains(event.originalEvent.target) ||
+                                    (input.data('selectpicker').$newElement.get(0).contains(event.originalEvent.target) || input.data('selectpicker').$menu.get(0).contains(event.originalEvent.target))) {
                                     if (input.data('selectpicker').$menu.is('.open')) {
-                                        input.selectpicker('toggle')
+                                        input.data('selectpicker').$button.trigger('click', {doIt: true})
                                     }
                                     enterClbk(divParent, event);
                                 }
@@ -554,6 +557,7 @@ fieldTypes.select = {
                     }
 
                     input.on('hidden.bs.select', function (event) {
+
                         let changed = input.data('changed');
                         let keyPressed = input.data('keyPressed');
                         if (keyPressed) event[keyPressed] = true;
@@ -598,8 +602,8 @@ fieldTypes.select = {
                         } else {
                             selectPicker.$menuInner.width('auto')
                         }
-                        if(input.closest('.InsertPanel').length ||  input.closest('.InsertRow').length){
-                            setTimeout(()=>{
+                        if (input.closest('.InsertPanel').length || input.closest('.InsertRow').length) {
+                            setTimeout(() => {
                                 input.data('selectpicker').$searchbox.focus();
                             }, 50)
                         }
@@ -654,9 +658,7 @@ fieldTypes.select = {
 
                     input.on('remove', function () {
                         input.data('selectpicker').$bsContainer.remove();
-                        input.data('container')
-                            .off('keydown.selectContainer.' + input.data('AppUin'))
-                            .off('click.selectContainer.' + input.data('AppUin'))
+                        input.data('container').off('.selectContainer.' + input.data('AppUin'))
                     })
 
                     if (input.closest('.InsertRow, .InsertPanel').length === 0) {
@@ -860,7 +862,7 @@ fieldTypes.select = {
                 /*this.pcTable._insertRow.find('.active').removeClass('active');
                 div.closest('td').addClass('active');*/
                 if (button.attr('aria-expanded') !== 'true') {
-                    button.click();
+                    button.trigger('click', {doIt: true});
                 }
             }
         }
@@ -997,6 +999,10 @@ fieldTypes.select = {
             let passIt = false;
             input.data('selectpicker').waiter = true;
             const eventFunc = function (evt, elseData) {
+                if (elseData && elseData.doIt) {
+                    return true;
+                }
+
                 let coggs = false;
                 if (!evt._id) {
                     evt._id = Math.random();
@@ -1033,8 +1039,8 @@ fieldTypes.select = {
             ['click', 'keyup', 'focus'].forEach((eventName) => {
                 input.data('selectpicker').$button.on(eventName, eventFunc)
                 let clicks, events = $._data(input.data('selectpicker').$button.get(0), "events");
-                if(events && (clicks = events[eventName]))
-                clicks.unshift(clicks.pop());
+                if (events && (clicks = events[eventName]))
+                    clicks.unshift(clicks.pop());
             })
         }
     }
