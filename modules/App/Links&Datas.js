@@ -630,6 +630,9 @@
         let dialogs = [];
         let model = this;
         let props;
+        if (window.top != window) {
+            return window.top.App.showDatas.call(model, datas, notificationId, wnd);
+        }
         datas.forEach(function (data) {
             switch (data[0]) {
                 case 'fileUpload':
@@ -905,7 +908,7 @@
                     notification.$ele.on('click', '.timer:not(.disabled)', function () {
                         let clocks = $(this);
                         clocks.addClass('disabled');
-                        $div = $('<div>').append(getNotificationPanel('notification_clock_panel', App.translate('Shelve')));
+                        let $div = $('<div>').append(getNotificationPanel('notification_clock_panel', App.translate('Shelve')));
                         $div.on('click', 'button', function () {
 
                             let num = $div.find('input').val();
