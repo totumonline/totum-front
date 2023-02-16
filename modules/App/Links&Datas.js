@@ -112,6 +112,30 @@
         }
     }
 
+    const rmWcFromHash = function (link) {
+        if(link && link.hash){
+            try{
+                let parce = JSON.parse(decodeURIComponent(link.hash.substring(1)));
+                if(parce && parce.wc && parce.wc.indexOf('tb')!==-1){
+                    parce.wc.splice(parce.wc.indexOf('tb'), 1);
+                    if(!parce.wc.length){
+                        delete parce.wc;
+                        if(Object.keys(parce).length===0){
+                            link.hash = '';
+                        }else{
+                            link.hash='#'+encodeURIComponent(JSON.stringify(parce));
+                        }
+                    }
+                }
+                return link.toString();
+            }catch (e){
+
+            }
+            return link;
+        }
+      return
+    };
+
     App.showLInks = function (links, model) {
         links.forEach(function (linkObject) {
 
@@ -195,7 +219,7 @@
                                     'label': App.translate("Tab"),
                                     cssClass: 'btn-m btn-default',
                                     'action': function (dialog) {
-                                        window.open($iframe.get(0).contentWindow.location, '_blank');
+                                        window.open(rmWcFromHash($iframe.get(0).contentWindow.location), '_blank');
                                         dialog.close();
                                     }
                                 },
@@ -333,7 +357,7 @@
                                         'label': App.translate("Tab"),
                                         cssClass: 'btn-m btn-default',
                                         'action': function (dialog) {
-                                            window.open($iframe.get(0).contentWindow.location, '_blank');
+                                            window.open(rmWcFromHash($iframe.get(0).contentWindow.location), '_blank');
                                             dialog.close();
                                         }
                                     },
