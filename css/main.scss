@@ -619,6 +619,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
   &.with-code {
     background-color: $tdWithCodeColor;
   }
+
   &.selected {
     box-shadow: inset 0 0 1000px 1000px $tdBackgroundSelectedNonEditColor !important;
 
@@ -1630,6 +1631,10 @@ th {
     .DataRow {
       tr {
         height: 35px;
+      }
+
+      &.id-checked td {
+        box-shadow: inset 0 0 100px 100px rgba(243, 251, 255, 0.5);
       }
 
       &.selected td {

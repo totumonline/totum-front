@@ -200,7 +200,7 @@
                     this.row_actions_icons_hide(item.$tr);
                 }*/
                 $tdId.addClass('checked');
-
+                item.$tr.addClass('id-checked');
             }
 
             if (!isGroupAction) {
@@ -221,6 +221,7 @@
             if (item.$tr) {
                 $tdId = item.$tr.find('.id');
                 $tdId.removeClass('checked');
+                item.$tr.removeClass('id-checked');
                 $tdId.find('.chbox i').attr('class', 'fa fa-square-o');
             }
 
