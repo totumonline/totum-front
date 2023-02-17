@@ -83,7 +83,7 @@
                         self.table.find('th.id .pcTable-filters:first').append($topButton);
 
                         if (!pcTable.isMobile && !self.topButton) {
-                            self.topButton = $('<button class="scroll-top-button"><i class="fa fa-arrow-up"></i></button>').appendTo(pcTable._innerContainer).on('click', function () {
+                            self.topButton = $('<button class="scroll-top-button"><i class="fa fa-arrow-up"></i></button>').appendTo(pcTable.RightBottomPanel).on('click', function () {
                                 pcTable._container.scrollTop(pcTable._container.find('.pcTable-rowsWrapper').offset().top - pcTable.scrollWrapper.offset().top);
                             });
                         }

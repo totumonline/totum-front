@@ -725,7 +725,7 @@
                     if (!attached) {
                         attached = true;
                         this._innerContainer.append(cln)
-                        this._innerContainer.append(topButton)
+                        this.RightBottomPanel.append(topButton)
 
                         cln.scrollLeft(this._innerContainer.scrollLeft())
                     }

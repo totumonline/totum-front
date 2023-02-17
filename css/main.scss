@@ -847,8 +847,9 @@ th {
       box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
     }
   }
-  &.admin-hidden{
-    .btn{
+
+  &.admin-hidden {
+    .btn {
       border-color: #facdcd;
     }
   }
@@ -1164,25 +1165,32 @@ th {
       }
     }
 
-
-    .scroll-top-button, .summarizer {
+    #right-bottom-panel {
+      &:empty{
+        display: none;
+      }
       position: fixed;
       bottom: 20px;
       right: 20px;
-      border: none;
-      font-size: 16px;
-      background-color: #f3f2f2;
-      padding: 10px;
-      border-radius: 4px;
+      display: inline-flex;
+      grid-column-gap: 5px;
       z-index: 100;
-      box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
-    }
 
-    .summarizer {
-      right: 60px;
+      .scroll-top-button, .summarizer {
+        border: none;
+        font-size: 16px;
+        background-color: #f3f2f2;
+        padding: 10px;
+        border-radius: 4px;
 
-      span {
-        font-size: 14px;
+        box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+      }
+      .summarizer {
+        right: 60px;
+
+        span {
+          font-size: 14px;
+        }
       }
     }
   }
@@ -1547,7 +1555,8 @@ th {
             height: 26px;
 
           }
-          .cell-value{
+
+          .cell-value {
             padding: 0;
           }
         }
@@ -2151,7 +2160,8 @@ ul.CodeMirror-hints {
       max-width: 99%;
     }
   }
-  .modal-dialog .admin-hidden.btn{
+
+  .modal-dialog .admin-hidden.btn {
     border-color: #facdcd;
   }
 
@@ -2346,7 +2356,7 @@ input {
 
   .full-title {
     white-space: normal;
-    font-size: 15px;
+    font-size: 14px;
     font-family: PTRootUIWeb;
     font-weight: 500;
   }
