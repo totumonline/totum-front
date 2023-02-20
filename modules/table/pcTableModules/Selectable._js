@@ -1446,8 +1446,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                                         }
                                     }
-                                    if (tdNext && tdNext.length) {
-                                        tdNext = $(tdNext);
+                                    if (tdNext && (tdNext = $(tdNext)) && tdNext.length) {
                                         if (!tdNext.is('.id,.n')) {
                                             pcTable.selectedCells.click(tdNext, event);
                                         }
