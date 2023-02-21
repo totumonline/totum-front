@@ -1213,6 +1213,15 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             });
 
             $('body').on('keyup', (event) => {
+                    if (top.window === window && BootstrapDialog.getTopDialog()) {
+                        if (BootstrapDialog.getTopDialog().$modalBody.find('iframe').length) {
+                            let win = BootstrapDialog.getTopDialog().$modalBody.find('iframe')[0].contentWindow;
+                            win.$('body').trigger(event)
+                        }
+                        return;
+                    }
+
+
                     if ($(event.target).closest('.dropdown-menu').length) {
                         return;
                     }
