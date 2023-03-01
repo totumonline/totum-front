@@ -419,7 +419,7 @@
                 return this.__ajax('post', {fieldName: fieldName, fieldVal: val, method: 'checkUnic'});
             },
             add: function (hash, data, idsString) {
-                return this.__ajax('post', {hash: hash, method: 'add', data: data, ids: idsString});
+                return this.__ajax('post', {hash: hash, method: 'add', fields: this.onlyFields, data: data, ids: idsString});
             },
             getValue: function (data, table_id) {
                 return this.__ajax('post', {data: data, method: 'getValue', table_id: table_id});
@@ -437,7 +437,8 @@
                 return this.__ajax('post', {status: status, method: 'setTableFavorite'});
             },
             checkInsertRow: function (data, hash, clearField, loadSelects) {
-                var sendData = {};
+                let sendData = {};
+
                 $.each(data, function (k, v) {
                     if (v != undefined) {
                         sendData[k] = v;
@@ -446,6 +447,7 @@
                 return this.__ajax('post', {
                     data: sendData,
                     hash: hash,
+                    fields: this.onlyFields,
                     clearField: clearField,
                     loadSelects: loadSelects,
                     method: 'checkInsertRow'
@@ -460,6 +462,7 @@
                 });
                 return this.__ajax('post', {
                     data: sendData,
+                    fields: this.onlyFields,
                     method: 'checkEditRow',
                     loadSelects: loadSelects,
                     hash: hash
@@ -512,7 +515,7 @@
                         sendData[k] = v;
                     }
                 });
-                return this.__ajax('post', {data: sendData, method: 'saveEditRow'});
+                return this.__ajax('post', {data: sendData, fields: this.onlyFields, method: 'saveEditRow'});
             },
             getEditSelect: function (item, fieldName, q, parentid, withLoading, RequestObject, hash) {
                 var sendData = {};
@@ -575,8 +578,8 @@
                     visibleFields: JSON.stringify(visibleFields)
                 });
             },
-            getTableData: function (sess_hash) {
-                return this.__ajax('post', {method: 'getTableData', tableData: {sess_hash: sess_hash}});
+            getTableData: function (sess_hash, fields) {
+                return this.__ajax('post', {method: 'getTableData', fields: fields, tableData: {sess_hash: sess_hash}});
             },
             panelsView: function (switcher) {
                 return this.__ajax('post', {method: 'panelsViewCookie', switcher: switcher ? 1 : 0});

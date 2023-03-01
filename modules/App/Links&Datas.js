@@ -113,27 +113,27 @@
     }
 
     const rmWcFromHash = function (link) {
-        if(link && link.hash){
-            try{
+        if (link && link.hash) {
+            try {
                 let parce = JSON.parse(decodeURIComponent(link.hash.substring(1)));
-                if(parce && parce.wc && parce.wc.indexOf('tb')!==-1){
+                if (parce && parce.wc && parce.wc.indexOf('tb') !== -1) {
                     parce.wc.splice(parce.wc.indexOf('tb'), 1);
-                    if(!parce.wc.length){
+                    if (!parce.wc.length) {
                         delete parce.wc;
-                        if(Object.keys(parce).length===0){
+                        if (Object.keys(parce).length === 0) {
                             link.hash = '';
-                        }else{
-                            link.hash='#'+encodeURIComponent(JSON.stringify(parce));
+                        } else {
+                            link.hash = '#' + encodeURIComponent(JSON.stringify(parce));
                         }
                     }
                 }
                 return link.toString();
-            }catch (e){
+            } catch (e) {
 
             }
             return link;
         }
-      return
+        return
     };
 
     App.showLInks = function (links, model) {
@@ -1040,19 +1040,23 @@
             };
 
             if (panel.uri !== window.location.pathname) {
-                if (pcTables[panel.uri]) {
+                let jsonFields = JSON.stringify(panel.fields);
+                let cacheString = panel.uri + "|||" + jsonFields;
+                if (pcTables[cacheString]) {
                     show(pcTables[panel.uri]);
                 } else {
-                    (new App.models.table(panel.uri, {}, {})).getTableData().then(function (config) {
+                    let model = (new App.models.table(panel.uri, {}, {}));
+                    if (panel.fields && panel.fields.length) {
+                        model.onlyFields = JSON.stringify(panel.fields);
+                    }
+                    model.getTableData(null, jsonFields).then(function (config) {
                         config.model = new App.models.table(panel.uri, {'updated': config.updated});
 
                         if (data.id) {
                             config.rows = [{id: data.id}];
                         }
 
-                        pcTables[panel.uri] = new App.pcTableMain(null, config);
-
-                        show(pcTables[panel.uri]);
+                        show(pcTables[cacheString] = new App.pcTableMain(null, config));
                     });
                 }
             } else {
