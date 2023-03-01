@@ -31,13 +31,7 @@ App.langs.en =
         css: {
             table: '.pcTable-container .loading-row td {background: url("/imgs/loading_en.png") repeat #fff;}'
         },
-        "search_prepare_function": function (string1, string2) {
-            string1 = string1.toLowerCase();
-            if (string2) {
-                string2 = string2.toLowerCase();
-            }
-            return [string1, string2];
-        },
+        "search_prepare_function": function (string1, string2) {string1 = string1.toLowerCase();if (string2) {string2 = string2.toLowerCase();} return [string1, string2];},
         "translates": {
             'Creator-tableEditButtons-default_action': 'Action',
             'Creator-tableEditButtons-on_duplicate': 'Duplicate',

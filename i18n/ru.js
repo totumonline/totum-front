@@ -9,16 +9,7 @@ App.langs.ru =
         "dateTimeFormat": 'DD.MM.YY HH:mm',
         "timeDateFormatNoYear": 'HH:mm DD.MM',
         "localeDatetimepicker": "ru",
-        "letter_replaces": {"ё": "e"},
-        "search_prepare_function": function (string1, string2) {
-            Object.keys(this.letter_replaces).forEach((_) => {
-                string1 = string1.toLowerCase().replace(_, this.letter_replaces[_]);
-                if (string2) {
-                    string2 = string2.toLowerCase().replace(_, this.letter_replaces[_]);
-                }
-            })
-            return [string1, string2];
-        },
+        "search_prepare_function": function (string1, string2) { let letter_replaces= {"ё": "е"}; Object.keys(letter_replaces).forEach((_) => {string1 = string1.toLowerCase().replace(_, letter_replaces[_]);if (string2) {string2 = string2.toLowerCase().replace(_, letter_replaces[_]);}}); return [string1, string2];},
         filtersExtenders: App.commonFiltersExtenders,
         css: {
             table: '.pcTable-container .loading-row td {background: url("/imgs/loading_ru.png") repeat #fff;}'
@@ -391,7 +382,7 @@ App.langs.ru =
                 'calcuated table cycle id': 'cycle id расчетной таблицы',
                 'field NAME': 'NAME поля',
                 'new line': 'новая строка',
-                'tab': 'Ттабуляция',
+                'tab': 'Табуляция',
                 'action code action type': 'тип экшена кода действия',
                 'the ids of the checked fields': 'id отмеченных галочками полей',
                 'current field value (for selections/actions/formats)': 'значение текущего поля (для селектов/действий/форматов)',
