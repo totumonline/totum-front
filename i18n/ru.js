@@ -388,7 +388,9 @@ App.langs.ru =
 "Dark mode":"Темный режим",
 "This option works only in PRO.":"Эта опция работает только в PRO.",
 "If you enable it and you have files in this field, they stay on the server, but you cannot access them from totum.":"Если вы включите ее и у вас есть файлы в этом поле, они останутся на сервере, но вы не сможете получить их из totum.",
-"This option can be enabled only. You will not be able to turn it off.":"Эта опция может быть только включена. У вас не будет возможности отключить ее."
+"This option can be enabled only. You will not be able to turn it off.":"Эта опция может быть только включена. У вас не будет возможности отключить ее.",
+"Page":"Страница",
+"Orientation":"Ориентация"
 }
 
 	}

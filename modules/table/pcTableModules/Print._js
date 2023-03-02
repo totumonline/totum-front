@@ -104,8 +104,8 @@ App.pcTableMain.prototype._print = function () {
                 dialogRef.close();
 
                 $printSettings = $('<div id="pdfPrintForm">' +
-                    '<div class="pdfFormLabel">Page:</div><div><select id="PdfPageType" class="form-control"><option>A4</option><option>A5</option></select></div>' +
-                    '<div class="pdfFormLabel">Orientation:</div><div><select id="PdfPageOrientaion" class="form-control"><option>Portrate</option><option>Landscape</option></select></div>' +
+                    '<div class="pdfFormLabel">'+App.translate('Page')+':</div><div><select id="PdfPageType" class="form-control"><option>A4</option><option>A5</option></select></div>' +
+                    '<div class="pdfFormLabel">'+App.translate('Orientation')+':</div><div><select id="PdfPageOrientaion" class="form-control"><option>Portrate</option><option>Landscape</option></select></div>' +
                     '</div>');
 
                 buttons = [
