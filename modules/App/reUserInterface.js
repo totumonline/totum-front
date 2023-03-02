@@ -145,7 +145,7 @@
                 })
             } else if (!isCreatorView) {
 
-                selectDiv.height(60)
+                selectDiv.height(70)
 
                 let divForPannelFormats = $('<div>');
                 selectDiv.prepend(divForPannelFormats);
