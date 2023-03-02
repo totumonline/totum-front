@@ -1,0 +1,9 @@
+#pdfPrintForm{
+  display: grid;
+  grid-template-columns: minmax(70px, max-content) 1fr;
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  .pdfFormLabel{
+    padding-top: 12px;
+  }
+}
