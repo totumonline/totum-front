@@ -105,7 +105,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         EditPanelFunc.pcTable.model[checkMethod](self.getDataForPost(val), hash, clearField, (isFirstLoad ? 'all' : 'true')).then(success).fail(ups);
                         break;
                     case 'viewRow':
-                        EditPanelFunc.pcTable.model[checkMethod]({id: data.id}, hash).then(success).fail(ups);
+                        EditPanelFunc.pcTable.model[checkMethod](data.id, hash).then(success).fail(ups);
                         break;
                 }
 
