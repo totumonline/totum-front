@@ -719,6 +719,10 @@
                     let input, Dialog;
                     let html = $('<div>').html(data[1].html);
 
+                    if(data[1].height){
+                        html.height(data[1].height)
+                    }
+
                     let getVal;
                     if (data[1].type === 'select') {
 
@@ -1153,7 +1157,11 @@
     };
 
     function showText(data, model) {
-        dialog(data['title'], data['text'], data.width, (data.close ? 'close' : data.refresh), null, model)
+        let body = data['text'];
+        if(data.height){
+             body = $('<div>').html(body).height(data.height)
+        }
+        dialog(data['title'], body, data.width, (data.close ? 'close' : data.refresh), null, model)
     }
 
     function showJson(data, model) {
