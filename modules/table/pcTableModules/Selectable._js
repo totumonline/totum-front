@@ -1129,7 +1129,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 if (!pcTable.selectedCells.summarizer.status) {
                                     pcTable.selectedCells.summarizer.status = 1;
                                     pcTable.selectedCells.summarizer.timeout = setTimeout(() => {
-                                        pcTable.selectedCells.summarizer.element.insertAfter(this.RightBottomServicesButton);
+                                        pcTable.selectedCells.summarizer.element.insertBefore(this.RightBottomServicesButton);
                                     }, 1000);
                                 }
                             } else {

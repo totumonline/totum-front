@@ -149,7 +149,7 @@
                         $popover.prepend('<div><button class="btn-default btn btn-sm" data-name="copy-with-names"><i class="fa fa-clone"></i>Copy selected with names</button></div>')
                     }
                     if (this.tableRow.__xlsx) {
-                        $popover.prepend('<div><button class="btn-default btn btn-sm" data-name="xlsx-export"><i class="fa fa-file-excel-o"></i>Exlxs export</button></div>')
+                        $popover.prepend('<div><button class="btn-default btn btn-sm" data-name="xlsx-export"><i class="fa fa-file-excel-o"></i>Excel export</button></div>')
                     }
 
 
