@@ -835,7 +835,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                             let res = format.textasvalue && ('text' in format) ? format.text : pcTable.fields[field].getCopyText.call(pcTable.fields[field], pcTable.data[id][field], pcTable.data[id]);
 
-                            if (typeof res === 'object') {
+                            if (typeof res === 'object' && res !== null) {
                                 deffs.push(res);
                                 res.done(function (resData) {
 
@@ -1097,7 +1097,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 let count = 0;
                                 let summ = 0;
                                 const getNum = function (val) {
-                                    let isMinus = val.toString().match(/^\s*-/)?-1:1;
+                                    let isMinus = val.toString().match(/^\s*-/) ? -1 : 1;
 
                                     return isMinus * parseFloat(val.toString().replace(/[^\d.]/g, ''));
                                 };

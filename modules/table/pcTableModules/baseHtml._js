@@ -93,7 +93,7 @@
 
             this.RightBottomPanel = $('<div id="right-bottom-panel">').appendTo(this._innerContainer);
             if (!this.isMobile && window.top === window) {
-                this.RightBottomServicesButton = $('<button id="servicesButton" disabled><i class="fa fa-bars"/></button>').prependTo(this.RightBottomPanel)
+                this.RightBottomServicesButton = $('<button id="servicesButton" disabled><i class="fa fa-ellipsis-h"/></button>').prependTo(this.RightBottomPanel)
                 setTimeout(() => {
                     pcTable.RightBottomServicesButtonRefresh()
                 }, 10)
@@ -118,9 +118,9 @@
 
         },
         RightBottomServicesButtonDone: function () {
-            this.RightBottomServicesButton.find('i').removeClass('fa-bars').addClass('fa-check');
+            this.RightBottomServicesButton.find('i').removeClass('fa-ellipsis-h').addClass('fa-check');
             setTimeout(()=>{
-                this.RightBottomServicesButton.find('i').removeClass('fa-check').addClass('fa-bars');
+                this.RightBottomServicesButton.find('i').removeClass('fa-check').addClass('fa-ellipsis-h');
             }, 200)
         },
         RightBottomServicesButtonRefresh: function () {
