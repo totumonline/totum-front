@@ -392,7 +392,10 @@ App.langs.ru =
 "Page":"Страница",
 "Orientation":"Ориентация",
 "Portrate":"Книжная",
-"Landscape":"Альбомная"
+"Landscape":"Альбомная",
+"Excel export":"Excel экспорт",
+"Copy selected":"Копировать выделенное",
+"Copy with names":"Копировать с названиями"
 }
 
 	}

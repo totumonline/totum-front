@@ -145,11 +145,14 @@
                     });
 
                     if (this.selectedCells.isMultySelectedCells()) {
-                        $popover.prepend('<div><button class="btn-default btn btn-sm" data-name="copy"><i class="fa fa-copy"></i>Copy selected</button></div>')
-                        $popover.prepend('<div><button class="btn-default btn btn-sm" data-name="copy-with-names"><i class="fa fa-clone"></i>Copy selected with names</button></div>')
+                        let title = App.translate('Copy selected');
+                        $popover.append('<div><button class="btn-default btn btn-sm" data-name="copy" title="'+title+'"><i class="fa fa-copy"></i>'+title+'</button></div>')
+                        title = App.translate('Copy with names');
+                        $popover.append('<div><button class="btn-default btn btn-sm" data-name="copy-with-names" title="'+title+'"><i class="fa fa-clone"></i>'+title+'</button></div>')
                     }
                     if (this.tableRow.__xlsx) {
-                        $popover.prepend('<div><button class="btn-default btn btn-sm" data-name="xlsx-export"><i class="fa fa-file-excel-o"></i>Excel export</button></div>')
+                        let title = App.translate('Excel export');
+                        $popover.append('<div><button class="btn-default btn btn-sm" title="'+title+'" data-name="xlsx-export"><i class="fa fa-file-excel-o"></i>'+title+'</button></div>')
                     }
 
 

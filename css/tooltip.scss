@@ -1,4 +1,4 @@
-.available-in-pro {
+.ttm-tooltip {
   position: absolute;
   display: none;
   background-color: rgba(255, 255, 255, 0.7);
@@ -7,10 +7,13 @@
   right: 3px;
   margin-top: -15px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-
-
+  opacity: 0;
 }
 
-.pro-function:hover .available-in-pro {
+.tooltiped:hover .ttm-tooltip {
   display: block;
+  transition-delay: opacity(1);
+}
+.tooltiped{
+  position: static;
 }
