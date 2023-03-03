@@ -628,6 +628,13 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 isAnySelectedCells: function () {
                     return !!(this.notRowCell || Object.keys(this.ids).length)
                 },
+                isMultySelectedCells: function () {
+                    if (this.notRowCell) return false;
+                    if (!Object.keys(this.ids).length) return false;
+                    if (Object.keys(this.ids).length > 1) return true;
+                    if (Object.keys(this.ids)[0].length > 1) return true;
+                    return false;
+                },
                 getOneSelectedCell: function () {
                     let sFields = Object.keys(this.ids);
                     if (sFields.length === 1 && this.ids[sFields[0]].length === 1 && pcTable.data[this.ids[sFields[0]][0]].$tr) {
@@ -1055,6 +1062,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     } else {
                         $('table.pcTable-table').removeClass('selected-multi').removeClass('selected-column');
                     }
+                    pcTable.RightBottomServicesButtonRefresh();
                 },
                 summarizer: {
                     timeout: null,
@@ -1088,17 +1096,23 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                                 let count = 0;
                                 let summ = 0;
+                                const getNum = function (val) {
+                                    let isMinus = val.toString().match(/^\s*-/)?-1:1;
+
+                                    return isMinus * parseFloat(val.toString().replace(/[^\d.]/g, ''));
+                                };
                                 selFields.forEach((field) => {
                                     pcTable.selectedCells.ids[field].forEach((id) => {
                                         count++;
                                         if (allNumbers) {
+
                                             if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && (typeof pcTable.data[id][field].f.textasvalue === 'string') && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
                                                 if (pcTable.data[id][field].f.text !== null && pcTable.data[id][field].f.text !== "") {
                                                     let separator = pcTable.data[id][field].f.textasvalue.split('|')[1] || field.dectimalSeparator || '.'
-                                                    summ += parseFloat(pcTable.data[id][field].f.text.replace(separator, '.').replace(/[^\d.]/g, ''));
+                                                    summ += getNum(pcTable.data[id][field].f.text.replace(separator, '.'))
                                                 }
                                             } else if (pcTable.data[id][field].v !== null) {
-                                                summ += parseFloat(pcTable.data[id][field].v.toString().replace(/[^\d.]/g, ''));
+                                                summ += getNum(pcTable.data[id][field].v)
                                             }
                                         }
                                     })
@@ -1115,7 +1129,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 if (!pcTable.selectedCells.summarizer.status) {
                                     pcTable.selectedCells.summarizer.status = 1;
                                     pcTable.selectedCells.summarizer.timeout = setTimeout(() => {
-                                        pcTable.selectedCells.summarizer.element.prependTo(this.RightBottomPanel);
+                                        pcTable.selectedCells.summarizer.element.insertAfter(this.RightBottomServicesButton);
                                     }, 1000);
                                 }
                             } else {

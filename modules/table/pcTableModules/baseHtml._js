@@ -92,7 +92,12 @@
                 .append(this._innerContainer);
 
             this.RightBottomPanel = $('<div id="right-bottom-panel">').appendTo(this._innerContainer);
-
+            if (!this.isMobile && window.top === window) {
+                this.RightBottomServicesButton = $('<button id="servicesButton" disabled><i class="fa fa-bars"/></button>').prependTo(this.RightBottomPanel)
+                setTimeout(() => {
+                    pcTable.RightBottomServicesButtonRefresh()
+                }, 10)
+            }
             this._footersSubTable = this._createFootersSubtable(scrollWrapper);
             scrollWrapper
                 .append(this._footersSubTable)
@@ -110,6 +115,67 @@
                 this._hideHell_storage.checkIssetFields.call(this)
             }
 
+
+        },
+        RightBottomServicesButtonDone: function () {
+            this.RightBottomServicesButton.find('i').removeClass('fa-bars').addClass('fa-check');
+            setTimeout(()=>{
+                this.RightBottomServicesButton.find('i').removeClass('fa-check').addClass('fa-bars');
+            }, 200)
+        },
+        RightBottomServicesButtonRefresh: function () {
+            if (this.tableRow.__xlsx || this.selectedCells.isMultySelectedCells()) {
+                this.RightBottomServicesButton.prop('disabled', '');
+                this.RightBottomServicesButton.on('click', () => {
+                    let pcTable = this;
+                    let $popover = $('<div style="width: 150px"></div>').on('click', 'button', function () {
+                        let btn = $(this);
+                        switch (btn.data('name')) {
+                            case 'copy':
+                                pcTable.selectedCells.copySepected.call(pcTable);
+                                pcTable.RightBottomServicesButtonDone();
+                                break;
+                            case 'copy-with-names':
+                                pcTable.selectedCells.copySepected.call(pcTable, true);
+                                pcTable.RightBottomServicesButtonDone();
+                                break;
+                            case 'xlsx-export':
+                                break;
+                        }
+                    });
+
+                    if (this.selectedCells.isMultySelectedCells()) {
+                        $popover.prepend('<div><button class="btn-default btn btn-sm" data-name="copy"><i class="fa fa-copy"></i>Copy selected</button></div>')
+                        $popover.prepend('<div><button class="btn-default btn btn-sm" data-name="copy-with-names"><i class="fa fa-clone"></i>Copy selected with names</button></div>')
+                    }
+                    if (this.tableRow.__xlsx) {
+                        $popover.prepend('<div><button class="btn-default btn btn-sm" data-name="xlsx-export"><i class="fa fa-file-excel-o"></i>Exlxs export</button></div>')
+                    }
+
+
+                    let popover = App.popNotify({
+                        isParams: true,
+                        $text: $popover,
+                        element: this.RightBottomServicesButton,
+                        trigger: 'manual',
+                        container: $('body'),
+                        placement: "top",
+                        class: "bottomRightPopover",
+                    });
+                    this.RightBottomServicesButton.popover('show');
+                    setTimeout(() => {
+                        this.closeCallbacks.push(() => {
+                            this.RightBottomServicesButton.popover('destroy')
+                        })
+                    }, 200);
+
+                });
+
+
+            } else {
+                this.RightBottomServicesButton.prop('disabled', 'disabled')
+                this.RightBottomServicesButton.off('click')
+            }
         },
         _refreshHiddenFieldsBlock: function () {
 
@@ -1430,7 +1496,7 @@
                     let sectionDiv;
                     let sections = [];
                     $.each(pcTable.fieldCategories.param, function (k, field) {
-                            if (pcTable.isReplacedButton(field.name)){
+                            if (pcTable.isReplacedButton(field.name)) {
                                 return;
                             }
 

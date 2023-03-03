@@ -962,6 +962,21 @@ th {
   background-color: whitesmoke;
 }
 
+.bottomRightPopover {
+  i {
+    padding-right: 5px;
+  }
+
+  button {
+    width: 100%;
+    text-align: left;
+    margin-top: 3px;
+  }
+  .popover-content{
+    padding: 3px;
+  }
+}
+
 .pcTable-container {
 
   padding-right: 5px;
@@ -1167,9 +1182,10 @@ th {
     }
 
     #right-bottom-panel {
-      &:empty{
+      &:empty {
         display: none;
       }
+
       position: fixed;
       bottom: 20px;
       right: 20px;
@@ -1177,7 +1193,7 @@ th {
       grid-column-gap: 5px;
       z-index: 100;
 
-      .scroll-top-button, .summarizer {
+      .scroll-top-button, .summarizer, #servicesButton {
         border: none;
         font-size: 16px;
         background-color: #ffe486;
@@ -1186,6 +1202,18 @@ th {
 
         box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
       }
+
+      #servicesButton {
+        width: 40px;
+        cursor: pointer;
+
+        &:disabled {
+          background-color: #efefef;
+          cursor: auto;
+        }
+      }
+
+
       .summarizer {
         right: 60px;
 
