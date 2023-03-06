@@ -809,7 +809,7 @@ fieldTypes.select = {
                             d.add('select-item');
                         }
 
-                        if (td.is('td') && field.multiSeparator && k > 0) {
+                        if (td && td.is('td') && field.multiSeparator && k > 0) {
                             $div.append($('<span class="separator">').text(field.multiSeparator));
                         }
 

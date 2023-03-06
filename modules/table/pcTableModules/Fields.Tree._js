@@ -580,7 +580,7 @@
                                 } else {
                                     let span = $('<span class="select-item">');
                                     fieldValue.forEach((fVal, i) => {
-                                        if (td.is('td') && field.multiSeparator && i > 0) {
+                                        if (td && td.is('td') && field.multiSeparator && i > 0) {
                                             span.append($('<span class="separator">').text(field.multiSeparator));
                                         }
                                         span.append(field.getElementSpan(fVal, arrayVals[i]))
