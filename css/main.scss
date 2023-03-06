@@ -1798,16 +1798,6 @@ th.id .pcTable-filters.for-selected {
   display: none
 }
 
-.selected-multi, .selected-column {
-  th.id .pcTable-filters {
-    display: none
-  }
-
-  th.id .pcTable-filters.for-selected {
-    display: block
-  }
-}
-
 th.id .pcTable-filters.for-selected .btn {
   width: 30px;
 }

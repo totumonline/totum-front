@@ -89,9 +89,6 @@
                         pcTable._headCellIdButtonsState();
                     });
 
-                    panel = $('<div class="pcTable-filters for-selected"><button class="btn btn-default btn-xxs"><i class="fa fa-copy"></i></button> <button class="btn btn-default btn-xxs" data-names="true"><i class="fa fa-clone"></i></button></div>');
-                    $th.append(panel);
-
                     this._refreshCheckedStatus();
 
                     return $th;
