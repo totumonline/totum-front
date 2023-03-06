@@ -47,7 +47,7 @@ App.pcTableMain.prototype._printSelect = function () {
 
 }
 
-App.pcTableMain.prototype._print = function () {
+App.pcTableMain.prototype._print = function (exportFunction) {
     "use strict";
     let $printSettings = $('<div class="hidding-form">');
 
@@ -73,16 +73,21 @@ App.pcTableMain.prototype._print = function () {
     }
 
     let pcTable = this;
+    let title = App.translate(exportFunction ? 'Export' : 'Print');
     let buttons = [
         {
-            label: App.translate('Print'),
+            label: title,
             action: function (dialogRef) {
                 let settings = [];
                 $printSettings.find('input:checked').each(function () {
                     settings.push($(this).attr('name'));
                 });
                 dialogRef.close();
-                pcTable._printTable.call(pcTable, settings);
+                if (exportFunction) {
+                    exportFunction(settings)
+                } else {
+                    pcTable._printTable.call(pcTable, settings);
+                }
             }
         },
         {
@@ -93,7 +98,7 @@ App.pcTableMain.prototype._print = function () {
         }
     ];
 
-    if (this.tableRow.__withPDF) {
+    if (!exportFunction && this.tableRow.__withPDF) {
         buttons.splice(0, 0, {
             label: App.translate('Print PDF'),
             action: function (dialogRef) {
@@ -104,8 +109,8 @@ App.pcTableMain.prototype._print = function () {
                 dialogRef.close();
 
                 $printSettings = $('<div id="pdfPrintForm">' +
-                    '<div class="pdfFormLabel">'+App.translate('Page')+':</div><div><select id="PdfPageType" class="form-control"><option>A4</option><option>A5</option></select></div>' +
-                    '<div class="pdfFormLabel">'+App.translate('Orientation')+':</div><div><select id="PdfPageOrientaion" class="form-control"><option value="Portrate">'+App.translate('Portrate')+'</option><option value="Landscape">'+App.translate('Landscape')+'</option></select></div>' +
+                    '<div class="pdfFormLabel">' + App.translate('Page') + ':</div><div><select id="PdfPageType" class="form-control"><option>A4</option><option>A5</option></select></div>' +
+                    '<div class="pdfFormLabel">' + App.translate('Orientation') + ':</div><div><select id="PdfPageOrientaion" class="form-control"><option value="Portrate">' + App.translate('Portrate') + '</option><option value="Landscape">' + App.translate('Landscape') + '</option></select></div>' +
                     '</div>');
 
                 buttons = [
@@ -142,7 +147,7 @@ App.pcTableMain.prototype._print = function () {
     window.top.BootstrapDialog.show({
         message: $printSettings,
         type: null,
-        title: App.translate('Print'),
+        title: title,
         buttons: buttons,
         draggable: true
     })
@@ -199,6 +204,7 @@ App.pcTableMain.prototype._printTable = function (settings, pdfSettings) {
     if (pcTable.viewType === 'rotated') {
         settingsObject.rotated = pcTable.tableRow.rotated_view;
     }
+
 
     pcTable.model.printTable(settingsObject);
 

@@ -517,6 +517,13 @@
                 });
                 return this.__ajax('post', {data: sendData, fields: this.onlyFields, method: 'saveEditRow'});
             },
+            excelExport: function (data, title) {
+                return this.__ajax('post', {
+                    data: JSON.stringify(data),
+                    title: title,
+                    method: 'excelExport'
+                });
+            },
             getEditSelect: function (item, fieldName, q, parentid, withLoading, RequestObject, hash) {
                 var sendData = {};
                 return this.__ajax('post', {

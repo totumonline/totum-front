@@ -119,7 +119,7 @@
         },
         RightBottomServicesButtonDone: function () {
             this.RightBottomServicesButton.find('i').removeClass('fa-ellipsis-h').addClass('fa-check');
-            setTimeout(()=>{
+            setTimeout(() => {
                 this.RightBottomServicesButton.find('i').removeClass('fa-check').addClass('fa-ellipsis-h');
             }, 200)
         },
@@ -139,20 +139,37 @@
                                 pcTable.selectedCells.copySepected.call(pcTable, true);
                                 pcTable.RightBottomServicesButtonDone();
                                 break;
+                            case 'xlsx-export-with-names':
                             case 'xlsx-export':
+                                let withNames = btn.data('name') === 'xlsx-export-with-names';
+                                if (pcTable.selectedCells.isMultySelectedCells()) {
+                                    pcTable.selectedCells.copySepected.call(pcTable, withNames, (result) => {
+                                        pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).then(()=>{pcTable.RightBottomServicesButtonDone()})
+                                    });
+                                } else {
+                                    pcTable._print((settings)=>{
+                                        pcTable.selectedCells.copySepected.call(pcTable, withNames, (result) => {
+                                            pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).then(()=>{pcTable.RightBottomServicesButtonDone()})
+                                        }, settings);
+                                    })
+                                }
                                 break;
                         }
                     });
 
                     if (this.selectedCells.isMultySelectedCells()) {
                         let title = App.translate('Copy selected');
-                        $popover.append('<div><button class="btn-default btn btn-sm" data-name="copy" title="'+title+'"><i class="fa fa-copy"></i>'+title+'</button></div>')
+                        $popover.append('<div><button class="btn-default btn btn-sm" data-name="copy" title="' + title + '"><i class="fa fa-copy"></i>' + title + '</button></div>')
                         title = App.translate('Copy with names');
-                        $popover.append('<div><button class="btn-default btn btn-sm" data-name="copy-with-names" title="'+title+'"><i class="fa fa-clone"></i>'+title+'</button></div>')
+                        $popover.append('<div><button class="btn-default btn btn-sm" data-name="copy-with-names" title="' + title + '"><i class="fa fa-clone"></i>' + title + '</button></div>')
                     }
                     if (this.tableRow.__xlsx) {
-                        let title = App.translate('Excel export');
-                        $popover.append('<div><button class="btn-default btn btn-sm" title="'+title+'" data-name="xlsx-export"><i class="fa fa-file-excel-o"></i>'+title+'</button></div>')
+
+                        let title = App.translate('Excel export with names');
+                        $popover.append('<div><button class="btn-default btn btn-sm" title="' + title + '" data-name="xlsx-export-with-names"><i class="fa fa-file-excel-o"></i>' + title + '</button></div>')
+
+                        title = App.translate('Excel export');
+                        $popover.append('<div><button class="btn-default btn btn-sm" title="' + title + '" data-name="xlsx-export"><i class="fa fa-file-excel-o"></i>' + title + '</button></div>')
                     }
 
 

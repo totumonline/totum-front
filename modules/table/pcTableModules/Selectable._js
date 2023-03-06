@@ -632,7 +632,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     if (this.notRowCell) return false;
                     if (!Object.keys(this.ids).length) return false;
                     if (Object.keys(this.ids).length > 1) return true;
-                    if (Object.keys(this.ids)[0].length > 1) return true;
+                    if (this.ids[Object.keys(this.ids)[0]].length > 1) return true;
                     return false;
                 },
                 getOneSelectedCell: function () {
@@ -813,9 +813,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
                     return false;
                 },
-                copySepected: function (withNames, onDoneClbck) {
+                copySepected: function (withNames, actionFunction, placements) {
                     let pcTable = this;
-                    let result = '';
+
                     let allIds = [];
                     let allFields = [];
 
@@ -823,85 +823,238 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     let deffs = [];
 
 
-                    Object.keys(pcTable.selectedCells.ids).forEach(function (field) {
-                        let ids = pcTable.selectedCells.ids[field];
-                        allIds = allIds.concat(ids);
-                        allFields.push(field);
+                    let copiedInRowsSection = {};
+                    let withId;
 
-                        ids.forEach(function (id) {
-                            if (!data[id]) data[id] = {};
 
-                            let format = $.extend({}, (pcTable.f || {}), (pcTable.data[id].f || {}), (pcTable.data[id][field].f || {}));
+                    const getFieldData = (field, id) => {
+                        let item;
+                        if (id) {
+                            item = pcTable.data[id] || {}
+                        } else {
+                            item = pcTable.data_params || {};
+                        }
 
-                            let res = format.textasvalue && ('text' in format) ? format.text : pcTable.fields[field].getCopyText.call(pcTable.fields[field], pcTable.data[id][field], pcTable.data[id]);
+                        let format = $.extend({}, (pcTable.f || {}), (item.f || {}), (item[field].f || {}));
 
-                            if (typeof res === 'object' && res !== null) {
-                                deffs.push(res);
-                                res.done(function (resData) {
 
+                        let res = format.textasvalue && ('text' in format) ? format.text : pcTable.fields[field].getCopyText.call(pcTable.fields[field], item[field], item);
+
+                        if (typeof res === 'object' && res !== null && res.done) {
+                            deffs.push(res);
+                            res.done(function (resData) {
+                                if (id) {
                                     data[id][field] = resData;
-                                })
-                            } else {
+                                } else {
+                                    data[field] = resData;
+                                }
+                            })
+                        } else {
+                            if (id) {
                                 data[id][field] = res;
+                            } else {
+                                data[field] = res;
+                            }
+                        }
+                    };
+
+                    let plTr = {
+                        'params': 'param',
+                        'filters': 'filter',
+                        'column-footers': 'footer',
+                        'other-footers': 'footer'
+                    }
+                    if (placements) {
+                        ['params', 'filters', 'rows', 'column-footers', 'other-footers'].forEach((pl) => {
+                            if (placements.indexOf[pl] !== -1) {
+                                if (pl === 'rows') {
+                                    withId = placements.indexOf('with-id') !== -1
+                                    pcTable.fieldCategories.visibleColumns.forEach((field) => {
+                                        copiedInRowsSection[field.name] = [];
+                                        pcTable.dataSorted.forEach((id) => {
+                                            copiedInRowsSection[field.name].push(id)
+                                        })
+                                    })
+                                } else {
+                                    pcTable.fieldCategories[plTr[pl]].forEach((field) => {
+                                        if (!field.hidden && field.showMeWidth) {
+                                            switch (pl) {
+                                                case 'column-footers':
+                                                    if (field.column) {
+                                                        getFieldData(field.name)
+                                                    }
+                                                    break;
+                                                case 'other-footers':
+                                                    if (!field.column) {
+                                                        getFieldData(field.name)
+                                                    }
+                                                    break;
+                                                default:
+                                                    getFieldData(field.name)
+                                            }
+
+                                        }
+                                    })
+                                }
                             }
                         })
-                    });
-                    allIds = Array.from(new Set(allIds));
-                    allIds = pcTable.dataSortedVisible.filter(id => allIds.findIndex((_id) => {
-                        return _id == id;
-                    }) !== -1);
-                    allFields = Array.from(new Set(allFields));
-                    let fields = [];
-                    pcTable.fieldCategories.visibleColumns.forEach(function (field) {
-                        if (allFields.indexOf(field.name) !== -1) {
-                            fields.push(field.name)
-                        }
-                    });
-                    allFields = fields;
-                    const DELIM = "\t";
 
-                    if (withNames) {
-                        result += 'id';
-                        allFields.forEach(function (field) {
-                            result += DELIM;
-
-                            result += pcTable.fields[field].title;
-                        });
+                    } else {
+                        copiedInRowsSection = pcTable.selectedCells.ids
+                        withId = withNames;
+                        placements = ['rows'];
                     }
 
-                    let onDoneClbck2 = onDoneClbck;
+
+                    if (copiedInRowsSection) {
+
+                        Object.keys(copiedInRowsSection).forEach(function (field) {
+                            let ids = copiedInRowsSection[field];
+                            allIds = allIds.concat(ids);
+                            allFields.push(field);
+
+                            ids.forEach(function (id) {
+                                if (!data[id]) data[id] = {};
+                                getFieldData(field, id)
+                            })
+                        });
+                        allIds = Array.from(new Set(allIds));
+                        allIds = pcTable.dataSortedVisible.filter(id => allIds.findIndex((_id) => {
+                            return _id == id;
+                        }) !== -1);
+                        allFields = Array.from(new Set(allFields));
+                        let fields = [];
+                        pcTable.fieldCategories.visibleColumns.forEach(function (field) {
+                            if (allFields.indexOf(field.name) !== -1) {
+                                fields.push(field.name);
+                            }
+                        });
+                        allFields = fields;
+
+                    }
+
+                    let _actionFunction = actionFunction;
+
+                    const prepareStr = function (_str) {
+                        if (typeof _str === "undefined" || _str === null) _str = "";
+                        if (typeof _str === 'object') {
+                            _str = JSON.stringify(_str)
+                        }
+                        return _str;
+                    }
 
                     $.when(...deffs).done(function () {
-                        allIds.forEach(function (id) {
-                            if (result !== '') result += "\n";
-                            let start = true;
-                            if (withNames) {
-                                result += id;
-                                start = false;
+                        const DELIM = "\t";
+
+                        let resData = [];
+
+                        ['params', 'filters', 'rows', 'column-footers', 'other-footers'].forEach((pl) => {
+                            if (placements.indexOf(pl) !== -1) {
+                                switch (pl) {
+                                    case 'rows':
+                                        if (withNames) {
+                                            resData.push([]);
+                                            let dataKey = resData.length - 1;
+                                            if (withId) {
+                                                resData[dataKey] = ['id'];
+                                            }
+                                            allFields.forEach(function (field) {
+                                                let title = pcTable.__getCellTitle(pcTable.fields[field]);
+                                                resData[dataKey].push(title)
+                                            });
+                                        }
+
+                                        allIds.forEach(function (id) {
+                                            resData.push([]);
+                                            let dataKey = resData.length - 1;
+                                            if (withId) {
+                                                resData[dataKey].push(id)
+                                            }
+                                            allFields.forEach(function (field) {
+                                                resData[dataKey].push(prepareStr(data[id][field]))
+                                            });
+                                        });
+                                        break;
+                                    case 'column-footers':
+                                        let fRows = {};
+                                        pcTable.fieldCategories.footer.forEach((field) => {
+                                            if (!field.hidden && field.showMeWidth && field.column && allFields.indexOf(field.column) !== -1) {
+                                                fRows[field.column] = fRows[field.column] || [];
+                                                fRows[field.column].push(field.name)
+                                            }
+                                        });
+                                        let titlesRow = false;
+
+                                        while (Object.keys(fRows).length) {
+                                            if (withNames) {
+                                                titlesRow = !titlesRow;
+                                            }
+                                            resData.push([]);
+                                            let dataKey = resData.length - 1;
+                                            if (withId) {
+                                                resData[dataKey].push('')
+                                            }
+                                            allFields.forEach(function (field) {
+                                                if (fRows[field]) {
+                                                    if (titlesRow) {
+                                                        resData[dataKey].push(pcTable.__getCellTitle(pcTable.fields[field]));
+                                                    } else {
+                                                        resData[dataKey].push(prepareStr(data[fRows[field][0]]))
+                                                        if (fRows[field].length === 1) {
+                                                            delete fRows[field];
+                                                        } else {
+                                                            fRows[field].splice(0, 1)
+                                                        }
+                                                    }
+                                                } else {
+                                                    resData[dataKey].push('')
+                                                }
+                                            });
+                                        }
+
+                                        break;
+                                    default:
+
+                                        pcTable.fieldCategories[plTr[pl]].forEach((field) => {
+                                            if (!field.hidden && field.showMeWidth && !(plTr[pl] === 'footer' && field.column)) {
+                                                resData.push([]);
+                                                let dataKey = resData.length - 1;
+                                                if (withNames) {
+                                                    resData[dataKey].push(pcTable.__getCellTitle(field))
+                                                }
+                                                resData[dataKey].push(prepareStr(data[field.name]))
+                                            }
+                                        })
+                                }
                             }
-                            allFields.forEach(function (field) {
-                                if (start === true) start = false;
-                                else {
-                                    result += DELIM;
+                        })
+
+
+                        if (actionFunction) {
+                            actionFunction(resData);
+                        } else {
+
+                            let result = '';
+                            resData.forEach((row) => {
+                                if (result !== '') {
+                                    result += "\n"
                                 }
-                                let _str = data[id][field];
-
-                                if (typeof _str === "undefined") _str = "";
-
-                                if (typeof _str == 'string' && _str.replace(/\t/g, '').match(/[\s"]/)) {
-                                    if (allFields.length !== 1) {
-                                        _str = '"' + _str.replace(/"/g, '""') + '"';
+                                row.forEach((_str, i) => {
+                                    if (i !== 0) {
+                                        result += DELIM;
                                     }
-                                }
-                                result += _str;
-                            });
-                        });
+                                    if (typeof _str == 'string' && _str.replace(/\t/g, '').match(/[\s"]/)) {
+                                        if (row.length !== 1) {
+                                            _str = '"' + _str.replace(/"/g, '""') + '"';
+                                        }
+                                    }
+                                    result += _str;
+                                })
+                            })
 
-                        App.copyMe(result);
-                        setTimeout(onDoneClbck2, 400);
+                            App.copyMe(result);
+                        }
                     });
-
-
                 },
                 click: function (td, event) {
                     let table = pcTable._table;
@@ -1215,15 +1368,6 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         }, 200);
                     }
                 }
-            });
-
-            this._container.on('click', 'th.id .for-selected button', function () {
-                let btn = $(this);
-                let html = btn.html();
-                btn.text(App.translate('Copied'));
-                pcTable.selectedCells.copySepected.call(pcTable, btn.data('names'), function () {
-                    btn.html(html)
-                });
             });
 
             $('body').on('keyup', (event) => {
