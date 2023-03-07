@@ -661,7 +661,7 @@ fieldTypes.select = {
                         input.data('container').off('.selectContainer.' + input.data('AppUin'))
                     })
 
-                    if (input.closest('.InsertRow, .InsertPanel').length === 0) {
+                    if (input.closest('.InsertRow, .InsertPanel').length === 0 && !(input.closest('.linkButtons').length && val)) {
                         divParent.find('button').click();
                     }
                 }
