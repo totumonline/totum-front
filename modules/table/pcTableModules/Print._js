@@ -113,6 +113,24 @@ App.pcTableMain.prototype._print = function (exportFunction) {
                     '<div class="pdfFormLabel">' + App.translate('Orientation') + ':</div><div><select id="PdfPageOrientaion" class="form-control"><option value="Portrate">' + App.translate('Portrate') + '</option><option value="Landscape">' + App.translate('Landscape') + '</option></select></div>' +
                     '</div>');
 
+                let storageData = JSON.parse(localStorage.getItem('printPdfSettings') || '{}');
+
+                $printSettings.on('change', 'select', function () {
+                    storageData[pcTable.tableRow.id] = storageData[pcTable.tableRow.id] || {}
+                    storageData[pcTable.tableRow.id] = {
+                        page: $('#PdfPageType').val(),
+                        orientation: $('#PdfPageOrientaion').val()
+                    }
+                    localStorage.setItem('printPdfSettings', JSON.stringify(storageData))
+                })
+                if (storageData[pcTable.tableRow.id]) {
+                    setTimeout(() => {
+                        $('#PdfPageType').val(storageData[pcTable.tableRow.id].page)
+                        $('#PdfPageOrientaion').val(storageData[pcTable.tableRow.id].orientation)
+                    })
+                }
+
+
                 buttons = [
                     {
                         label: App.translate('Print'),
