@@ -92,11 +92,13 @@
                 .append(this._innerContainer);
 
             this.RightBottomPanel = $('<div id="right-bottom-panel">').appendTo(this._innerContainer);
-            if (!this.isMobile && window.top === window) {
+            if (!this.isMobile && window.top === window && window.location.pathname.match(/^\/Table\//)) {
                 this.RightBottomServicesButton = $('<button id="servicesButton" disabled><i class="fa fa-ellipsis-h"/></button>').prependTo(this.RightBottomPanel)
                 setTimeout(() => {
                     pcTable.RightBottomServicesButtonRefresh()
                 }, 10)
+            }else{
+                this.RightBottomServicesButton = $('<button id="servicesButton" disabled><i class="fa fa-ellipsis-h"/></button>')
             }
             this._footersSubTable = this._createFootersSubtable(scrollWrapper);
             scrollWrapper
