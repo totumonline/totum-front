@@ -4,7 +4,7 @@
     $.extend(App.pcTableMain.prototype, {
         switchContainerNideScroll: function (on_off) {
             let pcTable = this;
-            if (pcTable.isAnonim) return;
+           // if (pcTable.isAnonim) return;
             if (niceScollTimer) clearTimeout(niceScollTimer);
             niceScollTimer = setTimeout(() => {
                 if (on_off !== niceScrollOn) {
@@ -146,7 +146,7 @@
             } else {
                 scrollable = pcTable._container
             }
-            scrollable.on('scroll', function () {
+            scrollable.on('scroll', function (event) {
                 clearTimeout(scroll_debounce);
                 scroll_debounce = setTimeout(function () {
                     scrollFunc.call(pcTable);
