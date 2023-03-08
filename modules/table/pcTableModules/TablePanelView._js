@@ -552,6 +552,8 @@
         }
 
         this._innerContainer.addClass('panelsView');
+        this.RightBottomPanel = $('<div id="right-bottom-panel">').appendTo(this._innerContainer);
+
 
         this._footersSubTable = this._createFootersSubtable(scrollWrapper);
         scrollWrapper
