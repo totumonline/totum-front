@@ -395,7 +395,8 @@ App.langs.ru =
 "Landscape":"Альбомная",
 "Excel export":"Excel экспорт",
 "Copy selected":"Копировать выделенное",
-"Copy with names":"Копировать с названиями"
+"Copy with names":"Копировать с заголовками",
+"Excel export with names":"Excel экспорт с заголовками"
 }
 
 	}
