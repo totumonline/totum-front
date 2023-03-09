@@ -1053,7 +1053,11 @@
                     if (panel.fields && panel.fields.length) {
                         model.onlyFields = JSON.stringify(panel.fields);
                     }
-                    model.getTableData(null, jsonFields).then(function (config) {
+                    let sess_hash = null;
+                    if(sess_hash=panel.uri.match(/\?sess_hash=([^&]+)/)){
+                        sess_hash=sess_hash[1];
+                    }
+                    model.getTableData(sess_hash, jsonFields).then(function (config) {
                         config.model = new App.models.table(panel.uri, {'updated': config.updated});
 
                         if (data.id) {
