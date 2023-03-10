@@ -98,6 +98,19 @@ var defaultField = {
         var $input = $oldInput;
         if (!$oldInput || !$oldInput.is('input')) {
             $input = $('<input type="text" class="form-control" name="cell_edit" autocomplete="off" autocorrect="off" />');
+
+            $input.on('blur', function (event) {
+                blurClbk($input, event);
+            });
+            setTimeout(() => {
+                if ($input.closest('.InsertRow').length === 0) {
+                    $input.on('focus', () => {
+                        $input.select()
+                    });
+                }
+            }, 10)
+
+
             this.checkWaiting($input);
         }
 
@@ -126,16 +139,7 @@ var defaultField = {
         });
 
 
-        $input.on('blur', function (event) {
-            blurClbk($input, event);
-        });
-        setTimeout(() => {
-            if ($input.closest('.InsertRow').length === 0) {
-                $input.on('focus', () => {
-                    $input.select()
-                });
-            }
-        }, 10)
+
 
 
         return $input;
