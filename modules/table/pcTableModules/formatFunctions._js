@@ -22,6 +22,9 @@ App.pcTableMain.prototype.__formatFunctions = {
         interlaceStyle.text(text)
 
     },
+    hidedots: function () {
+      this.RightBottomServicesButtonCheckAttached();
+    },
     fieldhide: function () {
         if (this.f && this.f.fieldhide && Object.keys(this.f.fieldhide).length) {
             this.loadVisibleFields(this.f.fieldhide);

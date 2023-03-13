@@ -92,14 +92,13 @@
                 .append(this._innerContainer);
 
             this.RightBottomPanel = $('<div id="right-bottom-panel">').appendTo(this._innerContainer);
-            if (!this.isMobile && window.top === window && window.location.pathname.match(/^\/Table\//)) {
-                this.RightBottomServicesButton = $('<button id="servicesButton" disabled><i class="fa fa-ellipsis-h"/></button>').prependTo(this.RightBottomPanel)
+            this.RightBottomServicesButton = $('<button id="servicesButton" disabled><i class="fa fa-ellipsis-h"/></button>');
+            if (this.RightBottomServicesButtonCheckAttached()) {
                 setTimeout(() => {
                     pcTable.RightBottomServicesButtonRefresh()
                 }, 10)
-            }else{
-                this.RightBottomServicesButton = $('<button id="servicesButton" disabled><i class="fa fa-ellipsis-h"/></button>')
             }
+
             this._footersSubTable = this._createFootersSubtable(scrollWrapper);
             scrollWrapper
                 .append(this._footersSubTable)
@@ -118,6 +117,43 @@
             }
 
 
+        },
+        RightBottomServicesButtonCheckAttached: function () {
+            let isAttached = this.RightBottomServicesButton.isAttached();
+            let mustBeAttached;
+            if (this.isMobile || !window.location.pathname.match(/^\/Table\//)) {
+                mustBeAttached = false;
+            } else {
+                if (window.top != window) {
+                    mustBeAttached = false;
+                    if(typeof this.hideWindowDots === 'boolean'){
+                        mustBeAttached = !this.hideWindowDots
+                    }else{
+                        if(this.f && this.f.hidedots){
+                            mustBeAttached =  !this.f.hidedots.w;
+                        }
+                    }
+                }else{
+                    mustBeAttached = true;
+                    if(this.f && this.f.hidedots){
+                        mustBeAttached =  !this.f.hidedots.t;
+                    }
+                }
+            }
+            if (isAttached) {
+                if (!mustBeAttached) {
+                    this.RightBottomServicesButton.detach();
+                }
+            } else {
+                if (mustBeAttached) {
+                    if (this.RightBottomPanel.is(':empty') || this.RightBottomPanel.find('#summarizer').length === 0) {
+                        this.RightBottomServicesButton.prependTo(this.RightBottomPanel)
+                    } else {
+                        this.RightBottomServicesButton.insertAfter(this.selectedCells.summarizer.element)
+                    }
+                }
+            }
+            return mustBeAttached;
         },
         RightBottomServicesButtonDone: function () {
             this.RightBottomServicesButton.find('i').removeClass('fa-ellipsis-h').addClass('fa-check');
@@ -146,12 +182,16 @@
                                 let withNames = btn.data('name') === 'xlsx-export-with-names';
                                 if (pcTable.selectedCells.isMultySelectedCells()) {
                                     pcTable.selectedCells.copySepected.call(pcTable, withNames, (result) => {
-                                        pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).then(()=>{pcTable.RightBottomServicesButtonDone()})
+                                        pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).then(() => {
+                                            pcTable.RightBottomServicesButtonDone()
+                                        })
                                     });
                                 } else {
-                                    pcTable._print((settings)=>{
+                                    pcTable._print((settings) => {
                                         pcTable.selectedCells.copySepected.call(pcTable, withNames, (result) => {
-                                            pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).then(()=>{pcTable.RightBottomServicesButtonDone()})
+                                            pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).then(() => {
+                                                pcTable.RightBottomServicesButtonDone()
+                                            })
                                         }, settings);
                                     })
                                 }

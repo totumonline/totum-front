@@ -318,6 +318,11 @@
                                 if (linkObject.elseData.topbuttons === false) {
                                     withoutCategories.push('tb')
                                 }
+                                if (linkObject.elseData.hidedots === false) {
+                                    withoutCategories.push('hdf')
+                                }else if(linkObject.elseData.hidedots === true){
+                                    withoutCategories.push('hdt')
+                                }
                                 let hashData = {wc: withoutCategories};
                                 if (linkObject.elseData.pointing) {
                                     hashData.pointing = linkObject.elseData.pointing;

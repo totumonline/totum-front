@@ -627,6 +627,13 @@
                 if (withoutCategories.indexOf("tb") !== -1) {
                     this.withTopButtons = false;
                 }
+                if(window.top!==window){
+                    if (withoutCategories.indexOf("hdf") !== -1) {
+                        this.hideWindowDots = false;
+                    }else if(withoutCategories.indexOf("hdt") !== -1) {
+                        this.hideWindowDots = true;
+                    }
+                }
 
                 let reorderedFields = false;
 
