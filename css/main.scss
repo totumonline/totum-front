@@ -454,7 +454,6 @@ input:not([type="checkbox"]):focus {
   font-weight: 500;
   padding-bottom: 4px;
 
-
   .updated {
     padding-top: 6px;
     font-weight: normal;
@@ -875,6 +874,9 @@ th {
 
 .pcTable-paramsTables {
   padding-bottom: 10px;
+  &:empty{
+    display: none;
+  }
 }
 
 .pcTable-paramsTable, .pcTable-footersTable, .pcTable-filtersTable, .pcTable-hiddenFieldsTable {
