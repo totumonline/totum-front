@@ -113,24 +113,30 @@
     }
 
     const rmWcFromHash = function (link) {
-        if (link && link.hash) {
-            try {
-                let parce = JSON.parse(decodeURIComponent(link.hash.substring(1)));
-                if (parce && parce.wc && parce.wc.indexOf('tb') !== -1) {
-                    parce.wc.splice(parce.wc.indexOf('tb'), 1);
-                    if (!parce.wc.length) {
-                        delete parce.wc;
-                        if (Object.keys(parce).length === 0) {
-                            link.hash = '';
-                        } else {
-                            link.hash = '#' + encodeURIComponent(JSON.stringify(parce));
+        if (link) {
+            if (link.hash) {
+                try {
+                    let parce = JSON.parse(decodeURIComponent(link.hash.substring(1)));
+                    if (parce && parce.wc && parce.wc.indexOf('tb') !== -1) {
+                        parce.wc.splice(parce.wc.indexOf('tb'), 1);
+                        if (!parce.wc.length) {
+                            delete parce.wc;
+                            if (Object.keys(parce).length === 0) {
+                                link.hash = '';
+                            } else {
+                                link.hash = '#' + encodeURIComponent(JSON.stringify(parce));
+                            }
                         }
                     }
-                }
-                return link.toString();
-            } catch (e) {
 
+                } catch (e) {
+
+                }
             }
+
+            link = link.toString();
+            link = link.replace(/iframe\=1\&?/, '');
+
             return link;
         }
         return
@@ -320,7 +326,7 @@
                                 }
                                 if (linkObject.elseData.hidedots === false) {
                                     withoutCategories.push('hdf')
-                                }else if(linkObject.elseData.hidedots === true){
+                                } else if (linkObject.elseData.hidedots === true) {
                                     withoutCategories.push('hdt')
                                 }
                                 let hashData = {wc: withoutCategories};
@@ -724,7 +730,7 @@
                     let input, Dialog;
                     let html = $('<div>').html(data[1].html);
 
-                    if(data[1].height){
+                    if (data[1].height) {
                         html.height(data[1].height)
                     }
 
@@ -1059,8 +1065,8 @@
                         model.onlyFields = JSON.stringify(panel.fields);
                     }
                     let sess_hash = null;
-                    if(sess_hash=panel.uri.match(/\?sess_hash=([^&]+)/)){
-                        sess_hash=sess_hash[1];
+                    if (sess_hash = panel.uri.match(/\?sess_hash=([^&]+)/)) {
+                        sess_hash = sess_hash[1];
                     }
                     model.getTableData(sess_hash, jsonFields).then(function (config) {
                         config.model = new App.models.table(panel.uri, {'updated': config.updated});
@@ -1167,8 +1173,8 @@
 
     function showText(data, model) {
         let body = data['text'];
-        if(data.height){
-             body = $('<div>').html(body).height(data.height)
+        if (data.height) {
+            body = $('<div>').html(body).height(data.height)
         }
         dialog(data['title'], body, data.width, (data.close ? 'close' : data.refresh), null, model)
     }
