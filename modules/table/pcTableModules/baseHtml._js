@@ -161,6 +161,12 @@
                 this.RightBottomServicesButton.find('i').removeClass('fa-check').addClass('fa-ellipsis-h');
             }, 200)
         },
+        RightBottomServicesButtonTrobber: function () {
+            this.RightBottomServicesButton.find('i').removeClass('fa-ellipsis-h').addClass('fa-spinner fa-spin');
+            return ()=>{
+                this.RightBottomServicesButton.find('i').removeClass('fa-spinner fa-spin').addClass('fa-ellipsis-h');
+            }
+        },
         RightBottomServicesButtonRefresh: function () {
             if (this.tableRow.__xlsx || this.selectedCells.isMultySelectedCells()) {
                 this.RightBottomServicesButton.prop('disabled', '');
@@ -182,17 +188,20 @@
                                 break;
                             case 'xlsx-export-with-names':
                             case 'xlsx-export':
+
                                 let withNames = btn.data('name') === 'xlsx-export-with-names';
                                 if (pcTable.selectedCells.isMultySelectedCells()) {
+                                    let endCallback = pcTable.RightBottomServicesButtonTrobber();
                                     pcTable.selectedCells.copySepected.call(pcTable, withNames, (result) => {
-                                        pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).then(() => {
+                                        pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).always(endCallback).then(() => {
                                             pcTable.RightBottomServicesButtonDone()
                                         })
                                     });
                                 } else {
                                     pcTable._print((settings) => {
+                                        let endCallback = pcTable.RightBottomServicesButtonTrobber();
                                         pcTable.selectedCells.copySepected.call(pcTable, withNames, (result) => {
-                                            pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).then(() => {
+                                            pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).always(endCallback).then(() => {
                                                 pcTable.RightBottomServicesButtonDone()
                                             })
                                         }, settings);
