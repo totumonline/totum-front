@@ -165,6 +165,9 @@
             if (this.tableRow.__xlsx || this.selectedCells.isMultySelectedCells()) {
                 this.RightBottomServicesButton.prop('disabled', '');
                 this.RightBottomServicesButton.on('click', () => {
+                    if(this.RightBottomServicesButton.attr('aria-describedby')){
+                        return;
+                    }
                     let pcTable = this;
                     let $popover = $('<div style="width: 150px"></div>').on('click', 'button', function () {
                         let btn = $(this);
