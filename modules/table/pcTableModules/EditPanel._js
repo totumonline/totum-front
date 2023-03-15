@@ -12,6 +12,10 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
     let inCycleId;
 
+    let columnSettings={};
+    columnSettings.count = inData.__columns;
+    delete inData.__columns;
+
     let isEditFieldPanel = pcTable === 2 || (typeof pcTable === 'object' && pcTable.tableRow.id === 2);
     if (isEditFieldPanel || pcTable === 1 || (typeof pcTable === 'object' && pcTable.tableRow.id === 2)) {
         inCycleId = inData.cycle_id;
@@ -199,6 +203,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             return ['text', 'comments', 'file', 'listRow'].indexOf(field.type) !== -1 || field.multiple ? 1.5 : 1
         };
 
+        let oneCcolumnPanel = false;
+
         if (!column1.length) {
             EditPanelFunc.fields.forEach(function (field, index) {
                 if (field.name === 'n') return;
@@ -217,10 +223,11 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 column3 = $('<div>').appendTo(this.$panel);
                 columns['column2'] = column2;
                 columns['column3'] = column3;
-            } else if (fCount > 6) {
+            } else if (columnSettings.count!==1 && (columnSettings.count === 2 || fCount > 6) ) {
                 column2 = $('<div>').appendTo(this.$panel);
                 columns['column2'] = column2;
             } else {
+                oneCcolumnPanel = true;
                 this.$panel.css('grid-template-columns', 'minmax(0, 1fr)');
             }
 
@@ -538,7 +545,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             }
 
-            EditPanelFunc.cleateBootstrapPanel.call(EditPanelFunc, title, dialogType, (EditPanelFunc.type === 'insert' || isAnyEditableFields), fCount < 7 ? 'one-column-panel' : '');
+            EditPanelFunc.cleateBootstrapPanel.call(EditPanelFunc, title, dialogType, (EditPanelFunc.type === 'insert' || isAnyEditableFields), oneCcolumnPanel ? 'one-column-panel' : '');
             EditPanelFunc.isNewPanel = false;
 
         }

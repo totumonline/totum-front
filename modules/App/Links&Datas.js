@@ -1040,6 +1040,10 @@
 
             const show = function (pcTable) {
 
+                if(panel.columns){
+                    data.__columns = panel.columns
+                }
+
                 (new EditPanel(pcTable, null, data, panels.length > 0, fixed)).then(function (json, isNext) {
                     if (json || isNext) {
                         if (panels.length) {
