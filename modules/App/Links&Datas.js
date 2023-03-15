@@ -1061,8 +1061,12 @@
                     show(pcTables[panel.uri]);
                 } else {
                     let model = (new App.models.table(panel.uri, {}, {}));
-                    if (panel.fields && panel.fields.length) {
-                        model.onlyFields = JSON.stringify(panel.fields);
+                    if (panel.fields) {
+                        if(panel.fields.length && panel.fields[0]){
+                            model.onlyFields = JSON.stringify(panel.fields);
+                        }else{
+                            model.onlyFields = JSON.stringify(Object.keys(panel.fields));
+                        }
                     }
                     let sess_hash = null;
                     if (sess_hash = panel.uri.match(/\?sess_hash=([^&]+)/)) {
