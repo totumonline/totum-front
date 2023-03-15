@@ -489,9 +489,9 @@
                 /*top th panel*/
                 if (this.isCreatorView) {
 
-                    this._container.on('click contextmenu', 'th:not(.panelsView-card-item)', function (event) {
+                    this._container.on('click contextmenu', 'th:not(.panelsView-card-item,.id)', function (event) {
 
-                        if (event.originalEvent && event.originalEvent.target.nodeName === 'BUTTON' || event.originalEvent.target.parentElement.nodeName === 'BUTTON') ;
+                        if (event.originalEvent && (event.originalEvent.target.nodeName === 'BUTTON' || (event.originalEvent.target.parentElement && event.originalEvent.target.parentElement.nodeName === 'BUTTON'))) ;
                         else {
                             let th = $(this);
                             if (!th.attr('aria-describedby')) {

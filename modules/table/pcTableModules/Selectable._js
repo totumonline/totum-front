@@ -943,6 +943,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         return _str;
                     }
 
+                    let def = $.Deferred();
+
                     $.when(...deffs).done(function () {
                         const DELIM = "\t";
 
@@ -1051,10 +1053,11 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                     result += _str;
                                 })
                             })
-
                             App.copyMe(result);
+                            def.resolve()
                         }
                     });
+                    return def;
                 },
                 click: function (td, event) {
                     let table = pcTable._table;
@@ -1368,6 +1371,19 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         }, 200);
                     }
                 }
+            });
+
+            this._container.on('click', 'th.id .for-selected button', function () {
+                let btn = $(this);
+                let html = btn.html();
+                btn.html('<i class="fa fa-spinner fa-spin"></i>');
+                pcTable.selectedCells.copySepected.call(pcTable, btn.data('names')).then(function () {
+                    btn.html('<i class="fa fa-check"></i>');
+                    setTimeout(()=>{
+                        btn.html(html)
+                    }, 300)
+
+                });
             });
 
             $('body').on('keyup', (event) => {

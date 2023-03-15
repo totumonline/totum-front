@@ -72,9 +72,9 @@
                 }
 
                 if (format.comment) {
-                    td.prepend($('<i class="fa fa-info">').attr('title', format.comment))
+                    td.prepend($('<i class="fa fa-info">').attr('title', format.comment)).addClass('with-icon')
                 } else if (format.icon) {
-                    td.prepend($('<i class="fa">').addClass('fa-' + format.icon))
+                    td.prepend($('<i class="fa">').addClass('fa-' + format.icon)).addClass('with-icon')
                 }
 
                 td.attr('data-field-type', Field.type).addClass('nonowrap');

@@ -32,9 +32,7 @@
       }
 
 
-      td > .fa {
-        padding-right: 4px;
-      }
+
 
       box-shadow: 0 0 7px 0px #0000000f;
       background-color: #fff;
@@ -62,6 +60,18 @@
           }
 
           padding-top: 7px;
+
+          td > .fa {
+            padding-right: 4px;
+          }
+          &.with-icon{
+            display: grid;
+            grid-template-columns: 20px 1fr;
+            .fa{
+              padding-top: 3px;
+            }
+          }
+
         }
 
         th {
