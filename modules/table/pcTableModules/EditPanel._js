@@ -821,11 +821,13 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                                     break;
                             }
                         }
-                        EditPanelFunc.checkRow(val);
+                        EditPanelFunc.checkRow(val).always(()=>{
+                            onAction = false;
+                        });
                         manuallyChanged[field.name] = true;
                     }
                 }
-                onAction = false;
+
             };
             let blurClbck = function ($input, event) {
                 setTimeout(function () {

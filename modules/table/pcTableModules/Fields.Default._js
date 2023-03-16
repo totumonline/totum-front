@@ -99,9 +99,33 @@ var defaultField = {
         if (!$oldInput || !$oldInput.is('input')) {
             $input = $('<input type="text" class="form-control" name="cell_edit" autocomplete="off" autocorrect="off" />');
 
+            this.checkWaiting($input);
+
             $input.on('blur', function (event) {
                 blurClbk($input, event);
             });
+
+            $input.on('keydown', function (event) {
+                switch (event.keyCode) {
+                    case 13:
+                    case 9:
+                        try {
+                            $input.data('enterClicked', true);
+                            enterClbk($(this), event, event.keyCode === 13 ? 'enter' : false);
+                        } catch (err) {
+                            $input.data('enterClicked', false);
+                            App.popNotify(err, $input, 'default');
+
+                            field.focusElement($input);
+                        }
+                        break;
+                    case 27:
+                        event.stopPropagation();
+                        escClbk($(this), event);
+                        break;
+                }
+            });
+
             setTimeout(() => {
                 if ($input.closest('.InsertRow').length === 0) {
                     $input.on('focus', () => {
@@ -110,37 +134,13 @@ var defaultField = {
                 }
             }, 10)
 
-
-            this.checkWaiting($input);
         }
 
         if (typeof tabindex !== 'undefined') $input.attr('tabindex', tabindex);
 
         var field = this;
         oldValue = oldValue.v;
-        $input.val(oldValue).on('keydown', function (event) {
-            switch (event.keyCode) {
-                case 13:
-                case 9:
-                    try {
-                        $input.data('enterClicked', true);
-                        enterClbk($(this), event, event.keyCode === 13 ? 'enter' : false);
-                    } catch (err) {
-                        $input.data('enterClicked', false);
-                        App.popNotify(err, $input, 'default');
-                        field.focusElement($input);
-                    }
-                    break;
-                case 27:
-                    event.stopPropagation();
-                    escClbk($(this), event);
-                    break;
-            }
-        });
-
-
-
-
+        $input.val(oldValue);
 
         return $input;
     },
