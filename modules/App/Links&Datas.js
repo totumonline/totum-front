@@ -1040,7 +1040,7 @@
 
             const show = function (pcTable) {
 
-                if(panel.columns){
+                if (panel.columns) {
                     data.__columns = panel.columns
                 }
 
@@ -1060,15 +1060,15 @@
 
             if (panel.uri !== window.location.pathname) {
                 let jsonFields = JSON.stringify(panel.fields);
-                let cacheString = panel.uri + "|||" + jsonFields;
+                let cacheString = panel.uri + "|||" + jsonFields + "|||" + JSON.stringify(panel.titles);
                 if (pcTables[cacheString]) {
                     show(pcTables[panel.uri]);
                 } else {
                     let model = (new App.models.table(panel.uri, {}, {}));
                     if (panel.fields) {
-                        if(panel.fields.length && panel.fields[0]){
+                        if (panel.fields.length && panel.fields[0]) {
                             model.onlyFields = JSON.stringify(panel.fields);
-                        }else{
+                        } else {
                             model.onlyFields = JSON.stringify(Object.keys(panel.fields));
                         }
                     }
@@ -1082,8 +1082,14 @@
                         if (data.id) {
                             config.rows = [{id: data.id}];
                         }
+                        pcTables[cacheString] = new App.pcTableMain(null, config);
+                        if (panel.titles) {
+                            Object.keys(panel.titles).forEach((f) => {
+                                pcTables[cacheString].fields[f].title = panel.titles[f];
+                            })
+                        }
 
-                        show(pcTables[cacheString] = new App.pcTableMain(null, config));
+                        show(pcTables[cacheString]);
                     });
                 }
             } else {
