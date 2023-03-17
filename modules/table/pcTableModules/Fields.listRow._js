@@ -85,7 +85,6 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
     getValue: function (value, item, editNow) {
         "use strict";
         let def = $.Deferred();
-
         if (!editNow || editNow === 'editField' || this.category === "filter" || typeof value === "object" || !value) {
             def.resolve({value: value});
             return def;

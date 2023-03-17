@@ -398,7 +398,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 if ((field.type === 'listRow')) {
                     fieldText = $.Deferred();
 
-                    field.getValue(val.v, item).then((_val) => {
+                    field.getValue(val.v, item, true).then((_val) => {
                         if (field.isPanelTextAsTable(_val.value)) {
 
                             fieldText.resolve(field.getPanelText(val.v, $panel, item));
