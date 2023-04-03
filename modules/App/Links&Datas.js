@@ -1085,7 +1085,9 @@
                         pcTables[cacheString] = new App.pcTableMain(null, config);
                         if (panel.titles) {
                             Object.keys(panel.titles).forEach((f) => {
-                                pcTables[cacheString].fields[f].title = panel.titles[f];
+                                if (pcTables[cacheString].fields[f]) {
+                                    pcTables[cacheString].fields[f].title = panel.titles[f];
+                                }
                             })
                         }
 
