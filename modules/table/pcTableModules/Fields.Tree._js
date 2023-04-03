@@ -681,6 +681,57 @@
             }
 
             return r;
-        }
+        }, sourceButtonClick: function (item, isAdd) {
+            let $d = $.Deferred();
+            let ee = {}, field = this, pcTable = this.pcTable;
+
+            $.each(item, function (k, v) {
+                if (k.substring(0, 1) !== '$') {
+                    ee[k] = v;
+                }
+            });
+            if (isAdd) {
+                ee[field.name] = null;
+            }
+            let opened = 0;
+
+            let LastData;
+            let randomId = window.top.App.randomIds.get();
+            $(window.top.document.body)
+                .on('pctable-closed.select-' + field.name, function (event, data) {
+                    if (data.panel.srcRandomId !== randomId) return;
+                    opened--;
+                    if (data && data.json) {
+                        LastData = data;
+                    }
+                    let isAdded = (data /*&& data.tableId === field.selectTableId*/ && data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
+                    const refreshInputAndPage = function () {
+                        if (opened === 0 || isAdded) {
+                            $('body').off('.select-' + field.name);
+                            $d.resolve(LastData);
+                        }
+                    };
+                    setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть
+                });
+
+            pcTable.model.selectSourceTableAction(field.name, ee).then(() => {
+                let offTimeout;
+                $(window.top.document.body)
+                    .on('pctable-opened.select-add-' + randomId, function (event, data) {
+                        data.panel.srcRandomId = randomId;
+                        opened++;
+                        if (offTimeout) {
+                            clearTimeout(offTimeout)
+                        }
+                        offTimeout = setTimeout(() => {
+                            $(window.top.document.body).off('pctable-opened.select-add-' + randomId)
+                            window.top.App.randomIds.delete(randomId);
+                        }, 200)
+                    })
+
+            })
+
+            return $d;
+        },
     };
 })();
