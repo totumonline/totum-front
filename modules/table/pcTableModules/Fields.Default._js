@@ -64,11 +64,11 @@ var defaultField = {
             })
             if (panelFormats.hash) {
                 interv = setInterval(() => {
-                    if (!divForPannelFormats.closest('body').length) {
+                    if (!$('body .popover').length) {
                         clearInterval(interv);
                         field.pcTable.model.panelButtonsClear(panelFormats.hash);
                     }
-                }, 1000)
+                }, 10000)
             }
         }
 
