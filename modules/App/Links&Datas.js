@@ -1194,9 +1194,15 @@
     }
 
     function showJson(data, model) {
+
         let div = $('<div>');
         let mode = data['hash'] ? {} : {mode: "view"};
-        let editor = new JSONEditor(div.get(0), mode, data['json'])
+        let editor = new JSONEditor(div.get(0), mode, "");
+
+        setTimeout(() => {
+            editor.setText(JSON.stringify(data['json']))
+        });
+
         let btns = [];
         if (data['hash']) {
             btns.push({
