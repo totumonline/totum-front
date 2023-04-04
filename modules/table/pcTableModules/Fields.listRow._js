@@ -54,14 +54,24 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
             }
         }
     },
-    getPanelText: function (fieldValue, td, item) {
+    getPanelText: function (fieldValue, td, item, textDiv) {
         let def = $.Deferred();
         let field = this;
-
+        let format = $.extend({}, item.f || {}, item[field.name].f);
         const panelHtmlResult = function (val) {
             let table = field.getPanelTextAsTable.call(field, val);
             if (table) {
-                table.copyText = JSON.stringify(val)
+
+                let copyVal = JSON.stringify(val)
+                if (format.textasvalue) {
+                    copyVal = format.text;
+                }
+                setTimeout(() => {
+                    textDiv.find('.creator-select-val').text(copyVal)
+                })
+                table.copyText = copyVal
+
+
                 def.resolve(table);
                 return;
             }

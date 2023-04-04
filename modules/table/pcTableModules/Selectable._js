@@ -402,7 +402,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     field.getValue(val.v, item, true).then((_val) => {
                         if (field.isPanelTextAsTable(_val.value)) {
                             filedTableView = _val.value;
-                            fieldText.resolve(field.getPanelText(val.v, $panel, item));
+                            fieldText.resolve(field.getPanelText(val.v, $panel, item, textDiv));
                             FormatText.show().find('i').remove();
                         } else {
                             fieldText.resolve(format.text);
@@ -414,10 +414,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     fieldText = format.text;
                 }
             } else {
-                fieldText = field.getPanelText(val.v, $panel, item);
-                if ((field.type === 'listRow') && field.isPanelTextAsTable(val.v)) {
-                    filedTableView = "";
-                }
+                fieldText = field.getPanelText(val.v, $panel, item, textDiv);
             }
 
             if (field.type === 'select' && field.withPreview && val['v'] && (!field.multiple || val['v'].length === 1)) {
@@ -434,8 +431,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             }
 
             if (pcTable.isCreatorView) {
-                if (['select', 'tree', 'date'].indexOf(field.type) !== -1 || textAsValue || filedTableView !== null) {
-                    textDiv.append($('<div class="creator-select-val">' + JSON.stringify(filedTableView || val.v) + '</div>'));
+                textDiv.append($('<div class="creator-select-val">'));
+                if (['select', 'tree', 'date'].indexOf(field.type) !== -1 || textAsValue) {
+                    textDiv.find('.creator-select-val').text(JSON.stringify(val.v));
                 }
             }
             const applyText = function (text) {
