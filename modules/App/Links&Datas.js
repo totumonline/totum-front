@@ -1193,9 +1193,9 @@
     };
 
     function showText(data, model) {
-        let body = data['text'];
+        let body = $('<div>').css('white-space', 'pre-wrap').text(data['text']);
         if (data.height) {
-            body = $('<div>').html(body).height(data.height)
+            body = body.height(data.height)
         }
         dialog(data['title'], body, data.width, (data.close ? 'close' : data.refresh), null, model)
     }
