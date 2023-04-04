@@ -394,17 +394,16 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             }
 
             let fieldText;
+            let filedTableView = null
             if (textAsValue) {
                 if ((field.type === 'listRow')) {
                     fieldText = $.Deferred();
 
                     field.getValue(val.v, item, true).then((_val) => {
                         if (field.isPanelTextAsTable(_val.value)) {
-
+                            filedTableView = _val.value;
                             fieldText.resolve(field.getPanelText(val.v, $panel, item));
                             FormatText.show().find('i').remove();
-
-                            textDiv.find('.creator-select-val').remove();
                         } else {
                             fieldText.resolve(format.text);
                         }
@@ -416,6 +415,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 }
             } else {
                 fieldText = field.getPanelText(val.v, $panel, item);
+                if ((field.type === 'listRow') && field.isPanelTextAsTable(val.v)) {
+                    filedTableView = "";
+                }
             }
 
             if (field.type === 'select' && field.withPreview && val['v'] && (!field.multiple || val['v'].length === 1)) {
@@ -432,8 +434,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             }
 
             if (pcTable.isCreatorView) {
-                if (['select', 'tree', 'date'].indexOf(field.type) !== -1 || textAsValue) {
-                    textDiv.append($('<div class="creator-select-val">' + JSON.stringify(val.v) + '</div>'));
+                if (['select', 'tree', 'date'].indexOf(field.type) !== -1 || textAsValue || filedTableView !== null) {
+                    textDiv.append($('<div class="creator-select-val">' + JSON.stringify(filedTableView || val.v) + '</div>'));
                 }
             }
             const applyText = function (text) {
@@ -1285,9 +1287,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 if (!pcTable.selectedCells.summarizer.status) {
                                     pcTable.selectedCells.summarizer.status = 1;
                                     pcTable.selectedCells.summarizer.timeout = setTimeout(() => {
-                                        if(this.RightBottomServicesButton.isAttached()){
+                                        if (this.RightBottomServicesButton.isAttached()) {
                                             pcTable.selectedCells.summarizer.element.insertBefore(this.RightBottomServicesButton);
-                                        }else{
+                                        } else {
                                             pcTable.selectedCells.summarizer.element.prependTo(this.RightBottomPanel)
                                         }
                                     }, 1000);
@@ -1383,7 +1385,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 btn.html('<i class="fa fa-spinner fa-spin"></i>');
                 pcTable.selectedCells.copySepected.call(pcTable, btn.data('names')).then(function () {
                     btn.html('<i class="fa fa-check"></i>');
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         btn.html(html)
                     }, 300)
 
