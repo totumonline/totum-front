@@ -300,9 +300,12 @@ export class FieldSelect extends FieldDefault {
 
                     let func = commonFiltersExtenders(inputValue)
                     newData.list = newData.list.filter((v) => {
-                        return func(v)
+                        return func(this.state.indexed[v][0])
                     })
-                    this.setState(newData)
+
+                    setTimeout(()=>{
+                        this.setState(newData)
+                    })
                 }
             }
         }
