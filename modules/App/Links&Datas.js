@@ -802,7 +802,12 @@
                         }
                     }
 
+                    let block = false;
                     let save = function () {
+                        if (block) {
+                            return;
+                        }
+                        block = true;
                         model.inputClick(data[1].hash, getVal()).then(function () {
                             if (data[1].close && wnd && wnd.closeMe) {
                                 window.closeMe();

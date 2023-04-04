@@ -2,13 +2,6 @@ fieldTypes.password = {
     icon: 'fa-lock',
     getEditVal: function (input) {
         var val = input.val().trim();
-        var error = false;
-        if (val === undefined || val === '' || val === null) {
-            notify = App.translate('The field %s must be entered', this.title);
-            error = true;
-        }
-        if (error) throw notify;
-
         return val;
     },
     getCellText: function (val) {
