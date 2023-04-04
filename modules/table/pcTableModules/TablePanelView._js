@@ -644,7 +644,7 @@
         }
     }
     const refreshRow = function (tr, item, newData, onlyChanged) {
-        if (tr.is('.panelsView-card')) {
+        if (tr && tr.is('.panelsView-card')) {
             let changed = false;
             if (newData && onlyChanged) {
                 Object.keys(newData).some((k) => {
