@@ -12,7 +12,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
     let inCycleId;
 
-    let columnSettings={};
+    let columnSettings = {};
     columnSettings.count = inData.__columns;
     delete inData.__columns;
 
@@ -223,7 +223,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 column3 = $('<div>').appendTo(this.$panel);
                 columns['column2'] = column2;
                 columns['column3'] = column3;
-            } else if (columnSettings.count!==1 && (columnSettings.count === 2 || fCount > 6) ) {
+            } else if (columnSettings.count !== 1 && (columnSettings.count === 2 || fCount > 6)) {
                 column2 = $('<div>').appendTo(this.$panel);
                 columns['column2'] = column2;
             } else {
@@ -571,11 +571,16 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 if (EditPanelFunc.beforeSave) {
                     EditPanelFunc.beforeSave();
                 }
-                setTimeout(function () {
-                    EditPanelFunc.pcTable.model.doAfterProcesses(function () {
-                        EditPanel.saveRow.call(EditPanel, panel, btn);
-                    });
+                let inetrval = setInterval(() => {
+                    if (!EditPanelFunc.waiting[0]) {
+                        clearInterval(inetrval);
+                        
+                        EditPanelFunc.pcTable.model.doAfterProcesses(function () {
+                            EditPanel.saveRow.call(EditPanel, panel, btn);
+                        });
+                    }
                 }, 250)
+                
             };
             buttons.push({
                 action: save,
@@ -821,7 +826,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                                     break;
                             }
                         }
-                        EditPanelFunc.checkRow(val).always(()=>{
+                        EditPanelFunc.checkRow(val).finally(() => {
                             onAction = false;
                         });
                         manuallyChanged[field.name] = true;
