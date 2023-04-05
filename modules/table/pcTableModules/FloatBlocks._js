@@ -601,9 +601,10 @@
                     let lastField;
 
                     inner.fields.forEach(function (field) {
-                        if ((field.format.maxwidth && field.field.width < field.format.maxwidth) || (field.format.fill && (isSmallerSize || field.fieldCell.position().top !== LineTop || LineTop === null))) {
-                            if (lineTop != field.fieldCell.position().top) {
-                                lineTop = field.fieldCell.position().top;
+                        if ((field.format.maxwidth && field.field.width < field.format.maxwidth) || (field.format.fill && (isSmallerSize || Math.round(field.fieldCell.position().top) !== LineTop || LineTop === null))) {
+                            let fieldPositionTop = Math.round(field.fieldCell.position().top);
+                            if (lineTop != fieldPositionTop) {
+                                lineTop = fieldPositionTop;
                                 lineObj = {width: 0, fields: []};
                                 if (lineTop !== LineTop) {
                                     otherLines.push(lineObj)
@@ -627,14 +628,14 @@
 
                     let parent = line.fields[0].fieldCell.parent();
 
-                    let top = line.fields[0].fieldCell.position().top;
+                    let top = Math.round(line.fields[0].fieldCell.position().top);
                     let left;
                     let lastField;
                     parent.find('>div').each(function (i, field) {
                         let $field = $(field);
                         let position = $field.position();
-                        if (position.top === top && (!left || position.left > left)) {
-                            left = position.left;
+                        if (Math.round(position.top) === top && (!left || Math.round(position.left) > left)) {
+                            left = Math.round(position.left);
                             lastField = $field;
                         }
                     });
@@ -773,7 +774,7 @@
                                             if ((glueExceptions[FlowLineI] && glueExceptions[FlowLineI].indexOf(i) !== -1)) {
                                                 glueMode = true;
                                             } else {
-                                                leftPosition = field.fieldCell.position().left;
+                                                leftPosition = Math.round(field.fieldCell.position().left);
                                                 leftField = field;
                                                 leftFieldI = i;
                                             }
