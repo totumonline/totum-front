@@ -97,6 +97,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 const ups = (data) => {
                     EditPanelFunc.reCreateInputsForce = true;
                     EditPanelFunc.editRow.call(EditPanelFunc, {f: EditPanelFunc.f, row: EditPanelFunc.editItem});
+
                     reject(data)
                     EditPanelFunc.waiting[0] = false;
                 }
@@ -124,6 +125,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
     };
     this.saveRow = function (panel, btn) {
         let postData = this.getDataForPost(EditPanelFunc.editItem);
+
 
         const save = () => {
             EditPanelFunc.pcTable.model[saveMethod](saveMethod === 'saveEditRow' ? postData : hash, null)
@@ -574,13 +576,13 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 let inetrval = setInterval(() => {
                     if (!EditPanelFunc.waiting[0]) {
                         clearInterval(inetrval);
-                        
+
                         EditPanelFunc.pcTable.model.doAfterProcesses(function () {
                             EditPanel.saveRow.call(EditPanel, panel, btn);
                         });
                     }
                 }, 250)
-                
+
             };
             buttons.push({
                 action: save,
@@ -797,18 +799,14 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
 
             let saveClbck = async function ($input, event, onBlur) {
-                onAction = true;
+
+
                 let editValResult = await getEditVal($input);
                 if (editValResult === null) {
-                    /*if (!Object.keys(EditPanelFunc.error).length)
-                        EditPanelFunc.FocusIt.call(EditPanelFunc, fieldIndex);*/
 
                 } else {
-                    /*if (!onBlur) {
-
-                        EditPanelFunc.FocusIt.call(EditPanelFunc, fieldIndex + 1);
-                    }*/
                     if (field.isDataModified(editValResult, EditPanelFunc.editItem[field.name].v)) {
+                        onAction = true;
                         let val = {};
                         val[field.name] = {
                             v: editValResult
@@ -843,7 +841,6 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                             saveClbck($input, event, true);
                         }
                     }
-
                 }, 40);
                 return false;
             };
