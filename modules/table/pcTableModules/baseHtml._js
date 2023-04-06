@@ -2988,7 +2988,7 @@
                                 chData.push(k);
                                 delete newData[k].changed;
                                 changed = true;
-                            } else if (!Object.equals(newData[k], item[k]) && (k in this.fields) && this.fields[k].type !== "listRow") {
+                            } else if (!Object.equals(newData[k], item[k]) && (k in this.fields)) {
                                 chData.push(k);
                                 changed = true;
                             }
