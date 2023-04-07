@@ -454,6 +454,11 @@ $.extend(App.pcTableMain.prototype, {
 
             if (f.icon || f.text || f.comment)
                 td.on('click', () => {
+                    if (td.attr('aria-describedby')) {
+                        return true;
+                    }
+
+
                     let $panel = $('<div>');
                     let _val = $('<div>').text(val).appendTo($panel);
                     if (f.icon) {
@@ -497,30 +502,15 @@ $.extend(App.pcTableMain.prototype, {
                             'placement': placement,
                             'trigger': 'manual'
                         };
+
+
                         App.popNotify(params);
-
-                        let eventNameKeyUp = 'keyup.insertPanelDestroy';
-                        let eventNameClick = 'click.insertPanelDestroy';
-
-                        const insertPanelDestroy = function () {
-                            $('body').off('.selectPanelDestroy');
+                        pcTable.closeCallbackAdd(() => {
                             td.popover('destroy');
-                        };
+                        }, 'insertPanelDestroy', 120)
 
-                        $('body').on(eventNameClick, function (event) {
-                            if ($(event.target).closest('#selectPanel').length === 0) {
-                                insertPanelDestroy();
-                            }
-                        })
-                            .on(eventNameKeyUp, function (event) {
-                                if (event.which == 27) {
-                                    insertPanelDestroy();
-                                }
-                            });
-
-                        return false;
+                        return true;
                     }
-
                 });
             return td;
         }
