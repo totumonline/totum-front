@@ -595,6 +595,7 @@
 
                 if (refreshType === 'reload') {
                     App.windowReloadWithHash(this);
+                    return ;
                 }
 
                 func = func || function (json) {
