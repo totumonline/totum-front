@@ -773,7 +773,7 @@
                         }, () => {
                         }, () => {
                         }, 1, 'editField')
-                        html.html(input)
+                        html.html(input).addClass('input-select')
                     } else {
 
                         if (html.find('#ttmInput').length) {
