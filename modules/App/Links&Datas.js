@@ -1193,7 +1193,8 @@
     };
 
     function showText(data, model) {
-        let body = $('<div>').css('white-space', 'pre-wrap').text(data['text']);
+        //Для текста html экранирован на сервере
+        let body = $('<div>').css('white-space', 'pre-wrap').html(data['text']);
         if (data.height) {
             body = body.height(data.height)
         }
