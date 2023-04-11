@@ -59,6 +59,12 @@ App.pcTableMain.prototype.__formatFunctions = {
         this._rerendBottomFoolers();
         this._rerenderColumnsFooter();
     },
+    dotbuttons: function () {
+        this._rerendParamsblock();
+        this._rerendBottomFoolers();
+        this._rerenderColumnsFooter();
+        this.RightBottomServicesButtonRefresh();
+    },
     topbuttons: function () {
         let btns = this._beforeSpace_title.find('.common-table-title');
         if (this.f.topbuttons === false) {

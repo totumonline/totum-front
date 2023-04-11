@@ -126,17 +126,17 @@
             } else {
                 if (window.top != window) {
                     mustBeAttached = false;
-                    if(typeof this.hideWindowDots === 'boolean'){
+                    if (typeof this.hideWindowDots === 'boolean') {
                         mustBeAttached = !this.hideWindowDots
-                    }else{
-                        if(this.f && this.f.hidedots){
-                            mustBeAttached =  !this.f.hidedots.w;
+                    } else {
+                        if (this.f && this.f.hidedots) {
+                            mustBeAttached = !this.f.hidedots.w;
                         }
                     }
-                }else{
+                } else {
                     mustBeAttached = true;
-                    if(this.f && this.f.hidedots){
-                        mustBeAttached =  !this.f.hidedots.t;
+                    if (this.f && this.f.hidedots) {
+                        mustBeAttached = !this.f.hidedots.t;
                     }
                 }
             }
@@ -163,15 +163,15 @@
         },
         RightBottomServicesButtonTrobber: function () {
             this.RightBottomServicesButton.find('i').removeClass('fa-ellipsis-h').addClass('fa-spinner fa-spin');
-            return ()=>{
+            return () => {
                 this.RightBottomServicesButton.find('i').removeClass('fa-spinner fa-spin').addClass('fa-ellipsis-h');
             }
         },
         RightBottomServicesButtonRefresh: function () {
-            if (this.tableRow.__xlsx || this.selectedCells.isMultySelectedCells()) {
+            if (this.tableRow.__xlsx || this.selectedCells.isMultySelectedCells() || (this.f.dotbuttons && this.f.dotbuttons.length)) {
                 this.RightBottomServicesButton.prop('disabled', '');
                 this.RightBottomServicesButton.on('click', () => {
-                    if(this.RightBottomServicesButton.attr('aria-describedby')){
+                    if (this.RightBottomServicesButton.attr('aria-describedby')) {
                         return;
                     }
                     let pcTable = this;
@@ -208,6 +208,8 @@
                                     })
                                 }
                                 break;
+                            default:
+                                pcTable._buttonClick(btn.parent(), pcTable.fields[btn.data('field')]);
                         }
                     });
 
@@ -222,8 +224,16 @@
                         let title = App.translate('Excel export with names');
                         $popover.append('<div><button class="btn-default btn btn-sm" title="' + title + '" data-name="xlsx-export-with-names"><i class="fa fa-file-excel-o"></i>' + title + '</button></div>')
 
-                        title = App.translate('Excel export');
                         $popover.append('<div><button class="btn-default btn btn-sm" title="' + title + '" data-name="xlsx-export"><i class="fa fa-file-excel-o"></i>' + title + '</button></div>')
+                        title = App.translate('Excel export');
+                    }
+
+                    if (this.f.dotbuttons && this.f.dotbuttons.forEach) {
+                        this.f.dotbuttons.forEach((fName) => {
+                            let title = this.fields[fName].f && 'text' in this.fields[fName].f ? this.fields[fName].f.text : this.fields[fName].buttonText;
+                            let ico = this.data_params[fName].f && 'icon' in this.data_params[fName].f ? this.data_params[fName].f.icon : 'hand-pointer-o';
+                            $popover.append('<div><button class="btn-default btn btn-sm" title="' + title + '" data-field="' + fName + '"><i class="fa fa-' + ico + '"></i>' + title + '</button></div>')
+                        })
                     }
 
 

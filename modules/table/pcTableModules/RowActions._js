@@ -574,7 +574,7 @@
         }
         ,
         apptyTableFormats: function (newf) {
-            ['hidedots', 'blockadd', 'topbuttons', 'hideadd', 'buttons', 'printbuttons', 'extbuttons', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment', 'tabletext', 'tablehtml', 'browsertitle', 'fieldhide', 'kanban_html', 'interlace'].forEach((k) => {
+            ['hidedots', 'blockadd', 'topbuttons', 'hideadd', 'buttons', 'printbuttons', 'dotbuttons', 'extbuttons', 'blockdelete', 'blockorder', 'background', 'blockduplicate', 'block', 'tabletitle', 'rowstitle', 'fieldtitle', 'tablecomment', 'tabletext', 'tablehtml', 'browsertitle', 'fieldhide', 'kanban_html', 'interlace'].forEach((k) => {
                 if (k in newf || k in this.f) {
                     if (typeof newf[k] == "object") {
                         if (!Object.equals(newf[k], this.f[k])) {
