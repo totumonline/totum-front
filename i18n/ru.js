@@ -396,7 +396,11 @@ App.langs.ru =
 "Excel export":"Excel экспорт",
 "Copy selected":"Копировать выделенное",
 "Copy with names":"Копировать с заголовками",
-"Excel export with names":"Excel экспорт с заголовками"
+"Excel export with names":"Excel экспорт с заголовками",
+"Xlsx export":"Excel экспорт",
+"Export":"Экспорт",
+"Create PDF":"Создать PDF",
+"Download":"Скачать"
 }
 
 	}

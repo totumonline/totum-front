@@ -73,10 +73,11 @@ App.pcTableMain.prototype._print = function (exportFunction) {
     }
 
     let pcTable = this;
-    let title = App.translate(exportFunction ? 'Export' : 'Print');
+    let title = App.translate(exportFunction ? 'Xlsx export' : 'Print');
+    let Button = App.translate(exportFunction ? 'Export' : 'Print');
     let buttons = [
         {
-            label: title,
+            label: Button,
             action: function (dialogRef) {
                 let settings = [];
                 $printSettings.find('input:checked').each(function () {
@@ -100,7 +101,7 @@ App.pcTableMain.prototype._print = function (exportFunction) {
 
     if (!exportFunction && this.tableRow.__withPDF) {
         buttons.splice(0, 0, {
-            label: App.translate('Print PDF'),
+            label: App.translate('Create PDF'),
             action: function (dialogRef) {
                 let settings = [];
                 $printSettings.find('input:checked').each(function () {
@@ -133,7 +134,7 @@ App.pcTableMain.prototype._print = function (exportFunction) {
 
                 buttons = [
                     {
-                        label: App.translate('Print'),
+                        label: App.translate('Download'),
                         action: function (dialogRef) {
                             pcTable._printTable.call(pcTable, settings, {
                                 page: $('#PdfPageType').val(),
@@ -153,7 +154,7 @@ App.pcTableMain.prototype._print = function (exportFunction) {
                 window.top.BootstrapDialog.show({
                     message: $printSettings,
                     type: null,
-                    title: App.translate('Print'),
+                    title: App.translate('Create PDF'),
                     buttons: buttons,
                     draggable: true
                 })
