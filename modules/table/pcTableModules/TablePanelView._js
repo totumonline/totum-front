@@ -4,8 +4,8 @@
         let data = this.data[id];
         let div = data.$tr || $('<div class="panelsView-card pcTable-floatInner">')
             .css({
-                'min-height': this.tableRow.panels_view.height + 'px',
-                height: this.tableRow.panels_view.height,
+                'min-height':(this.tableRow.panels_view.height || 50) + 'px',
+                height: this.tableRow.panels_view.height || "auto",
                 width: this.tableRow.panels_view.width
             });
         data.$tr = div.empty();
@@ -15,7 +15,7 @@
             let td = $('<td>');
             let css = {};
 
-            css['height'] = field.height;
+            css['height'] = field.height || "auto";
 
             td.data('name', field.field);
 
