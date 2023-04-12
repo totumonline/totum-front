@@ -10,7 +10,7 @@ App.langs.de =
 "dateTimeFormat":"DD.MM.YY HH:mm",
 "timeDateFormatNoYear":"HH:mm DD.MM",
 "filtersExtenders":App.commonFiltersExtenders,
-"search_prepare_function":function (string1, string2) {         	let letter_replaces = {"ß": "ss"};             Object.keys(letter_replaces).forEach((_) => {                 string1 = string1.toLowerCase().replace(_, letter_replaces[_]);                 if (string2) {                     string2 = string2.toLowerCase().replace(_, letter_replaces[_]);                 }             })             return [string1, string2];         },
+"search_prepare_function":function (string1, string2) { let letter_replaces= {"ß": "ss"}; Object.keys(letter_replaces).forEach((_) => {string1 = string1.toLowerCase().replace(_, letter_replaces[_]);if (string2) {string2 = string2.toLowerCase().replace(_, letter_replaces[_]);}}); return [string1, string2];},
 "css":{
 "table":".pcTable-container .loading-row td {background: url(\"\/imgs\/loading_en.png\") repeat #fff;}"
 }
@@ -396,7 +396,13 @@ App.langs.de =
 "Excel export":"Excel-Export",
 "Copy selected":"Markierte Kopie",
 "Copy with names":"Kopie mit Titeln",
-"Excel export with names":"Excel-Export mit Titeln"
+"Excel export with names":"Excel-Export mit Titeln",
+"Xlsx export":"Excel-Export",
+"Export":"Exportieren",
+"Create PDF":"PDF-Datei erstellen",
+"Download":"Herunterladen",
+"CSV-export":"CSV-Ausfuhr",
+"CSV-import":"CSV-Einfuhr"
 }
 
 	}

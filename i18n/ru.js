@@ -400,7 +400,9 @@ App.langs.ru =
 "Xlsx export":"Excel экспорт",
 "Export":"Экспорт",
 "Create PDF":"Создать PDF",
-"Download":"Скачать"
+"Download":"Скачать",
+"CSV-export":"CSV-экспорт",
+"CSV-import":"CSV-импорт"
 }
 
 	}

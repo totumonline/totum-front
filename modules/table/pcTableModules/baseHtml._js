@@ -608,7 +608,7 @@
 
 
                 if (pcTable.withCsvButtons) {
-                    let btn = $('<button class="btn btn-default btn-sm">CSV-' + App.translate('export') + '</button>')
+                    let btn = $('<button class="btn btn-default btn-sm">' + App.translate('CSV-export') + '</button>')
                         .on('click', function () {
                             let $panel = $('<div>' +
                                 '<div class="menu-item" data-type="full">' + App.translate('Full') + '</div>' +
@@ -637,7 +637,7 @@
                     csv.append(btn);
                 }
                 if (pcTable.withCsvEditButtons && this.control.editing) {
-                    let btn = $('<button class="btn btn-default btn-sm">CSV-' + App.translate('import') + '</button>')
+                    let btn = $('<button class="btn btn-default btn-sm">' + App.translate('CSV-import') + '</button>')
                         .on('click', function () {
                             let $panel = $('<div><div class="menu-item" data-type="full">' + App.translate('Full') + '</div>' +
                                 '<div class="menu-item"  data-type="rows">' + App.translate('Only rows') + '</div></div>')
