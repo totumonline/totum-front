@@ -302,13 +302,6 @@
 
                 this.width = $('body').width() - TreeWidth;
                 this._container.width(this.width);
-                if (!this.isMobile && !$('body').is('.table-in-notification')) {
-                    this._innerContainer.width(this.width - 80);
-                    this.addInnerContainerScroll();
-                } else {
-                    this._innerContainer.width('auto');
-                }
-
                 let $block;
 
                 this._rerendParamsblock();
@@ -323,6 +316,16 @@
 
                 if (this._container.width() < this._table.width()) {
                     this._addHorizontalDraggable();
+                }
+                if (!this.isMobile && !$('body').is('.table-in-notification')) {
+                    if(this.width - 80 > this._table.width()){
+                        this._innerContainer.width(this._table.width() - 45);
+                    }else{
+                        this._innerContainer.width(this.width - 80);
+                    }
+                    this.addInnerContainerScroll();
+                } else {
+                    this._innerContainer.width('auto');
                 }
                 this._container.height(window.innerHeight - this._container.offset().top - 10);
             },

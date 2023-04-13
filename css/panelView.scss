@@ -104,7 +104,7 @@
 
     >.kanban{
       box-sizing: content-box;
-      background-color: #f6f6f6;
+      background-color: #f0f0f0;
       padding-left: 5px;
       padding-right: 5px;
     }
@@ -123,7 +123,7 @@
       border-color: transparent;
       color: #adadad;
       height: 44px;
-      background-color: #f1f1f1;
+      background-color: #ede9e9;
       &:hover {
         box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
       }
@@ -147,7 +147,7 @@
       font-weight: 500;
       padding: 20px;
       font-size: 20px;
-      background-color: #f1f1f1;
+      background-color: #ede9e9;
       padding: 10px 15px 10px 15px;
       font-size: 16px;
       margin-bottom: 10px;
