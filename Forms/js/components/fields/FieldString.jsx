@@ -96,7 +96,7 @@ export class FieldString extends FieldDefault {
     }
 
     save(force) {
-        if (force || this.state.inVal !== this.state.val) {
+        if (force === true || this.state.inVal !== this.state.val) {
             if (this.state.error) {
                 this._blur()
             } else {

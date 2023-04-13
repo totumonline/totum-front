@@ -179,6 +179,16 @@ export class FieldSelect extends FieldDefault {
         }
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.field.codeSelectIndividual && 'selects' in this.props.format && this.props.format.selects.indexed != this.state.indexed) {
+            this.setState({
+                indexed: this.props.format.selects.indexed,
+                list: this.props.format.selects.list
+            })
+            return false;
+        }
+    }
+
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         if (this.constructor === FieldSelect) {
             if (this.props.model.elseData !== nextProps.model.elseData) {
@@ -303,7 +313,7 @@ export class FieldSelect extends FieldDefault {
                         return func(this.state.indexed[v][0])
                     })
 
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         this.setState(newData)
                     })
                 }
