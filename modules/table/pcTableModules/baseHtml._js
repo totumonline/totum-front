@@ -1179,14 +1179,14 @@
         }
         ,
         rowButtonsCalcWidth: function () {
-            if (this.tableWidth < this._innerContainer.width()) {
+            if (this.tableWidth < this.width - 80) {
                 if (this.isMobile || $('body').is('.table-in-notification')) {
                     this.__$rowsButtons.width(parseInt(this._table.width()) - 10);
                 } else {
                     this.__$rowsButtons.width(this._table.width() - 70);
                 }
             } else if (!this.isMobile) {
-                this.__$rowsButtons.width(this._innerContainer.width() - 5)
+                this.__$rowsButtons.width(this.width - 80)
             }
         },
         _rowsButtons: function () {
