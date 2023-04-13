@@ -318,7 +318,7 @@
                     this._addHorizontalDraggable();
                 }
                 if (!this.isMobile && !$('body').is('.table-in-notification')) {
-                    if(this.width - 80 > this._table.width()){
+                    if(this.width - 80 > this._table.width() && this.viewType !== 'panels'){
                         this._innerContainer.width(this._table.width() - 45);
                     }else{
                         this._innerContainer.width(this.width - 80);
