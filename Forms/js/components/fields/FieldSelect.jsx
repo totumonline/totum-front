@@ -399,6 +399,8 @@ export class FieldSelect extends FieldDefault {
             params.onBlur = this.blurMe;
             params.filterOptions = this.filterAndLoad;
             params.clearOnBlur = true;
+            params.selectOnFocus = false;
+
             params.autoComplete = true;
         }
 
