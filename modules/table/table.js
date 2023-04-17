@@ -719,7 +719,7 @@
 
             },
             workerIconsPopover: async function (th, title) {
-                title = title || this.fields[th.data('field')].title;
+                title = title || this.__getCellTitle(this.fields[th.data('field')]);
                 if (!th.attr('aria-describedby') && title) {
                     let div = $('<div style="width:200px" class="creator-icons">');
                     let unitType = this.fields[th.data('field')].unitType ? ', ' + this.fields[th.data('field')].unitType : '';
@@ -749,7 +749,7 @@
                 if (!th.attr('aria-describedby')) {
                     let div = $('<div style="width:200px" class="creator-icons">');
                     let unitType = this.fields[th.data('field')].unitType ? ', ' + this.fields[th.data('field')].unitType : '';
-                    div.append($('<div class="full-title">').text(this.fields[th.data('field')].title + unitType));
+                    div.append($('<div class="full-title">').text(this.__getCellTitle(this.fields[th.data('field')])+ unitType));
 
                     th.find('i:not(.fa-caret-down):not(.fa-info)').each((i, icon) => {
                         if (['fa-star', 'fa-star-o', 'fa-cogs'].some((c) => {
