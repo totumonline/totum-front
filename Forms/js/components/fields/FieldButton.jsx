@@ -48,11 +48,6 @@ export class FieldButton extends React.Component {
                 if (this.props.model.elseData !== 'saveButtonClicked') {
                     this.props.model.elseData = 'saveButtonClicked';
                     this.props.model.setChangesToForm({statusData: 'saveButtonClicked'});
-                } else {
-                    this.setState({
-                        clicked: false
-                    });
-                    return;
                 }
             }
 
