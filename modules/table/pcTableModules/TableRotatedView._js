@@ -57,14 +57,10 @@
                     /*******Кнопка показать поле n*****/
                     let OrderClass = 'btn-warning';
 
-                    let $btnNHiding = $('<button class="btn btn-default btn-xxs" id="n-expander"><i class="fa fa-sort"></i></button>')
-                    $btnNHiding.prop('disabled', true)
 
                     if (!pcTable.isMobile) {
                         let filterButton = this._getIdFilterButton();
-                        panel.append($btnNHiding)
-                            .append(' ')
-                            .append(filterButton)
+                        panel .append(filterButton)
                             .append(' ')
                             .append(pcTable._idCheckButton);
                     }

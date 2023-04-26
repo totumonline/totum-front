@@ -1,4 +1,5 @@
 #table .innerContainer.rotatedPcTable {
+
   table  {
     width: fit-content;
     display: flex;
@@ -41,6 +42,9 @@
     }
     tr {
       display: block;
+      th.id .check-status-bar{
+        padding-top: 0;
+      }
       td, th{
         display: block;
         margin-left: -1px;
