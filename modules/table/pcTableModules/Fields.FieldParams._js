@@ -36,22 +36,25 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
         let formFill = async function (oldValueParam) {
             if (!App.tableTypes[item['table_id']['v']]) {
                 let type;
-                if (item['table_id']['v'] != $('#table').data('pctable').tableRow.id) {
-                    if (!field.pcTable.model.getTableParam) {
-                        field.pcTable.model.getTableParam = function (tableId, type) {
-                            return this.__ajax('post', {
-                                method: 'getTableParam',
-                                tableId: tableId,
-                                param: type
-                            })
+                if (item['table_id']['v']) {
+                    if (item['table_id']['v'] != $('#table').data('pctable').tableRow.id) {
+                        if (!field.pcTable.model.getTableParam) {
+                            field.pcTable.model.getTableParam = function (tableId, type) {
+                                return this.__ajax('post', {
+                                    method: 'getTableParam',
+                                    tableId: tableId,
+                                    param: type
+                                })
+                            }
                         }
+                        let json = await field.pcTable.model.getTableParam(item['table_id']['v'], 'type')
+                        type = json.type;
+                    } else {
+                        type = $('#table').data('pctable').tableRow.type;
                     }
-                    let json = await field.pcTable.model.getTableParam(item['table_id']['v'], 'type')
-                    type = json.type;
-                } else {
-                    type = $('#table').data('pctable').tableRow.type;
+
+                    App.tableTypes[item['table_id']['v']] = type;
                 }
-                App.tableTypes[item['table_id']['v']] = type;
             }
 
 
@@ -69,7 +72,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                         let fieldSettings = jsonFields.fieldSettings[fName];
                         if (!fieldSettings) return false;
 
-                        if (fieldSettings['categories'] && !(fName==='codeAction' && form.find('div[data-name="type"] select').val()==='button')) {
+                        if (fieldSettings['categories'] && !(fName === 'codeAction' && form.find('div[data-name="type"] select').val() === 'button')) {
                             if (fieldSettings['categories'].indexOf(item['category']['v']) === -1) return false;
                         }
                         if (fieldSettings['names']) {
@@ -174,7 +177,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                                     }
 
                                 })
-                            }else if (fName === 'dateTime') {
+                            } else if (fName === 'dateTime') {
                                 divInput.find('input[type="checkbox"]').on("change", () => {
                                     if (oldValue.dateTime.Val !== form.find('div[data-name="dateTime"] input').is(':checked')) {
                                         divInput.append('<div class="code-checkboxes-active-warning"><div class="code-checkboxes-warning-panel">' + App.translate('Recalculate all table rows after changing the field type') + '</div></div>');
@@ -193,7 +196,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                                         App.translate('If you enable it and you have files in this field, they stay on the server, but you cannot access them from totum.') + ' ' : '')
                                     + App.translate('This option can be enabled only. You will not be able to turn it off.') + '</div>');
                             } else {
-                                  divInput.find('input').on('click', ()=>{return false}).addClass('disabled')
+                                divInput.find('input').on('click', () => {
+                                    return false
+                                }).addClass('disabled')
                             }
                         }
 
@@ -562,7 +567,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
 
             case 'string':
                 element = $('<input>').val(oldValue !== undefined ? oldValue : (f.default ? f.default : ''));
-                element.on('focus', ()=>{
+                element.on('focus', () => {
                     element.select();
                 })
                 break;
@@ -669,7 +674,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 if (f.min !== undefined) element.attr('min', f.min);
                 if (f.max !== undefined) element.attr('max', f.max);
                 if (f.step !== undefined) element.attr('step', f.step);
-                element.on('focus', ()=>{
+                element.on('focus', () => {
                     element.select();
                 })
                 break;
