@@ -224,8 +224,8 @@
                         let title = App.translate('Excel export with names');
                         $popover.append('<div><button class="btn-default btn btn-sm" title="' + title + '" data-name="xlsx-export-with-names"><i class="fa fa-file-excel-o"></i>' + title + '</button></div>')
 
-                        $popover.append('<div><button class="btn-default btn btn-sm" title="' + title + '" data-name="xlsx-export"><i class="fa fa-file-excel-o"></i>' + title + '</button></div>')
                         title = App.translate('Excel export');
+                        $popover.append('<div><button class="btn-default btn btn-sm" title="' + title + '" data-name="xlsx-export"><i class="fa fa-file-excel-o"></i>' + title + '</button></div>')
                     }
 
                     if (this.f.dotbuttons && this.f.dotbuttons.forEach) {
