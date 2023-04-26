@@ -317,17 +317,20 @@
                 if (this._container.width() < this._table.width()) {
                     this._addHorizontalDraggable();
                 }
+                this.setInnerContainerWidth();
+                this._container.height(window.innerHeight - this._container.offset().top - 10);
+            },
+            setInnerContainerWidth: function () {
                 if (!this.isMobile && !$('body').is('.table-in-notification')) {
-                    if(this.width - 80 > this._table.width() && this.viewType !== 'panels'){
+                    if (this.width - 80 > this._table.width() && this.viewType !== 'panels') {
                         this._innerContainer.width(this._table.width() - 45);
-                    }else{
+                    } else {
                         this._innerContainer.width(this.width - 80);
                     }
                     this.addInnerContainerScroll();
                 } else {
                     this._innerContainer.width('auto');
                 }
-                this._container.height(window.innerHeight - this._container.offset().top - 10);
             },
             addInnerContainerScroll: function () {
 
@@ -630,10 +633,10 @@
                 if (withoutCategories.indexOf("tb") !== -1) {
                     this.withTopButtons = false;
                 }
-                if(window.top!==window){
+                if (window.top !== window) {
                     if (withoutCategories.indexOf("hdf") !== -1) {
                         this.hideWindowDots = false;
-                    }else if(withoutCategories.indexOf("hdt") !== -1) {
+                    } else if (withoutCategories.indexOf("hdt") !== -1) {
                         this.hideWindowDots = true;
                     }
                 }
@@ -749,7 +752,7 @@
                 if (!th.attr('aria-describedby')) {
                     let div = $('<div style="width:200px" class="creator-icons">');
                     let unitType = this.fields[th.data('field')].unitType ? ', ' + this.fields[th.data('field')].unitType : '';
-                    div.append($('<div class="full-title">').text(this.__getCellTitle(this.fields[th.data('field')])+ unitType));
+                    div.append($('<div class="full-title">').text(this.__getCellTitle(this.fields[th.data('field')]) + unitType));
 
                     th.find('i:not(.fa-caret-down):not(.fa-info)').each((i, icon) => {
                         if (['fa-star', 'fa-star-o', 'fa-cogs'].some((c) => {

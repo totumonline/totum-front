@@ -17,12 +17,23 @@
 
                 rowButtonsCalcWidth: function () {
                     if (!this.isMobile) {
-                        let width = this._table.width()-80;
-                        if (width < this._innerContainer.width())
-                            this.__$rowsButtons.width(width)
+                        if (this.width - 80 > this._table.width())
+                            this.__$rowsButtons.width(this._table.width()-80)
                         else {
-                            this.__$rowsButtons.width(this._innerContainer.width())
+                            this.__$rowsButtons.width(this.width - 80)
                         }
+                    }
+                },
+                setInnerContainerWidth: function(){
+                    if (!this.isMobile) {
+                        if (this.width - 80 > this._table.width() && this.viewType !== 'panels') {
+                            this._innerContainer.width(this._table.width() - 45);
+                        } else {
+                            this._innerContainer.width(this.width - 80);
+                        }
+                        this.addInnerContainerScroll();
+                    } else {
+                        this._innerContainer.width('auto');
                     }
                 },
                 _addCellId: function (item, $row) {
@@ -137,6 +148,13 @@
                     })
                     return r;
                 };
+
+                setTimeout(()=>{
+                    pcTable._content.on('refreshed', ()=>{
+                        pcTable.setInnerContainerWidth();
+                        pcTable.rowButtonsCalcWidth();
+                    });
+                })
         }
     })
 })();

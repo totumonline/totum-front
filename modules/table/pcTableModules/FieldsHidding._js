@@ -194,7 +194,7 @@
                     this._refreshContentTable(true);
                     this._rowsButtons();
                     this._rerenderColumnsFooter();
-                    this.setWidthes();
+                    this.setInnerContainerWidth();
 
                     /*Удаляем строки с не тем количеством столбцов*/
                     Object.keys(this.data).forEach((id) => {
