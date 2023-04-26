@@ -2580,7 +2580,7 @@
 
 
                             if (field.category !== 'column' || !pcTable.isRotatedView) {
-                                //ширина
+                      //ширина
                                 btn = $('<div class="menu-item">');
                                 btn.append('<i class="fa fa-arrows-h"></i> ' + App.translate('Field width'));
                                 btn.on('click', function () {
