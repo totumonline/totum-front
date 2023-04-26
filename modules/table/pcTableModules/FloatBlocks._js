@@ -150,6 +150,7 @@
                                     break;
                                 case 'platemaxdiff':
                                     platemaxdiff = addSectionParam(platemaxdiff, split, ((str) => str === true ? true : str), true)
+                                    break;
                                 case 'outline':
                                     outline = addSectionParam(outline, split, ((str) => str === true ? true : str), true)
                                     break;
