@@ -76,6 +76,15 @@
           }
         }
 
+        &.editing{
+          position: relative;
+          .text-center{
+            position: absolute;
+            top: 12px;
+            width: 100%;
+          }
+        }
+
         &.id {
           font-size: inherit;
 
