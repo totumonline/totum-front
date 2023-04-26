@@ -223,7 +223,7 @@ $.extend(App.pcTableMain.prototype, {
             }
 
             if (!pcTable.isMobile && this.tableRow.panel) {
-                getAddButton('<i class="fa fa-th-large"></i>', AddWithPanel).css('margin-left', 5);
+                getAddButton('<i class="fa fa-th-large"></i>', AddWithPanel, "panel-adding").css('margin-left', 5);
             }
         }
         return this._insertButtons;

@@ -2884,7 +2884,7 @@
             } else if (this.isInsertable() && !this.f.hideadd) {
                 $addBtn = $('<button class="btn btn-warning btn-xxs">' + App.translate('Add row') + '</button>').width(120)
                     .on('click', () => {
-                        this.__$rowsButtons.find('[data-action="add"]:first').click();
+                        this.__$rowsButtons.find('[data-action="add"],[data-action="panel-adding"]').first().click();
                     });
             }
 
