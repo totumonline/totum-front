@@ -498,8 +498,10 @@
                                 $div = $('<div class="creator-log-checkboxes">');
                                 $div.append('<div><input type="checkbox" name="c"/> ' + App.translate('Code') + '</div>');
                                 $div.append('<div><input type="checkbox" name="a"/> ' + App.translate('Action code') + '</div>');
+                                $div.append('<div style="padding-left: 5px;"><input type="checkbox" name="C"/> ' + App.translate('CHANGES') + '</div>');
                                 $div.append('<div><input type="checkbox" name="s"/> ' + App.translate('Selects') + '</div>');
                                 $div.append('<div><input type="checkbox" name="f"/> ' + App.translate('Formating') + '</div>');
+
 
                                 let $times = $('<div><input type="checkbox" name="flds"/> ' + App.translate('Fields calculation time') + ' </div>');
                                 $div.append($times)
@@ -519,23 +521,39 @@
                                     if (codes.indexOf(input.attr('name')) !== -1) {
                                         input.prop('checked', 'checked');
                                     }
-                                    if (codes.indexOf("flds") !== -1 && input.attr('name') !== "flds") {
-                                        input.prop('disabled', true);
+                                    if (codes.indexOf("flds") !== -1) {
+                                        if (input.attr('name') !== "flds") {
+                                            input.prop('disabled', true);
+                                        }
+                                    } else if (codes.indexOf("a") === -1) {
+                                        if (input.attr('name') === "C") {
+                                            input.prop('disabled', true);
+                                        }
                                     }
                                 });
-                                $div.on('change', 'input[name="flds"]', function () {
-                                    let val = $(this).is(':checked')
-                                    $div.find('input').each((i, inp) => {
-                                        inp = $(inp)
-                                        if (inp.attr('name') !== 'flds') {
-                                            if (val) {
-                                                inp.prop("disabled", true)
-                                                inp.prop("checked", false)
+                                $div.on('change', 'input', function () {
+                                    switch ($(this).attr('name')) {
+                                        case 'flds':
+                                            let val = $(this).is(':checked')
+                                            $div.find('input').each((i, inp) => {
+                                                inp = $(inp)
+                                                if (inp.attr('name') !== 'flds') {
+                                                    if (val) {
+                                                        inp.prop("disabled", true)
+                                                        inp.prop("checked", false)
+                                                    } else {
+                                                        inp.prop("disabled", false)
+                                                    }
+                                                }
+                                            })
+                                            break;
+                                        case 'a':
+                                            if ($(this).is(':checked')) {
+                                                $div.find('input[name="C"]').prop('disabled',false)
                                             } else {
-                                                inp.prop("disabled", false)
+                                                $div.find('input[name="C"]').prop('disabled', true).prop('checked', false)
                                             }
-                                        }
-                                    })
+                                    }
                                 });
 
                                 $div.on('click', 'button', function () {
@@ -2580,7 +2598,7 @@
 
 
                             if (field.category !== 'column' || !pcTable.isRotatedView) {
-                      //ширина
+                                //ширина
                                 btn = $('<div class="menu-item">');
                                 btn.append('<i class="fa fa-arrows-h"></i> ' + App.translate('Field width'));
                                 btn.on('click', function () {
