@@ -8,7 +8,7 @@
         icon: 'fa-file-image-o',
         getFilePath: function (filename, thumb, rand) {
             if (thumb === 'docPreview') {
-                return '?field=' + this.name + '&docpreview=' + filename + (rand ? '&rand=' + Math.random() : '')
+                return '?field=' + this.name + '&docpreview=' + filename + '&title=' + encodeURIComponent(rand) + '&rand=' + Math.random()
             }
             return '/fls/' + filename + (thumb ? '_thumb.jpg' : '') + (rand ? '?rand=' + Math.random() : '');
         },
@@ -65,7 +65,7 @@
                             case 'xlsx':
                             case 'doc':
                             case 'docx':
-                                img = $(img).addClass('file-pdf-preview').attr('data-filename', this.getFilePath(file.file, 'docPreview', true));
+                                img = $(img).addClass('file-pdf-preview').attr('data-filename', this.getFilePath(file.file, 'docPreview', file.name));
                         }
                     }
                 }

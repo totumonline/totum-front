@@ -1341,10 +1341,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     })
                 } else if (event.target.className.match(/file-pdf-preview/)) {
                     let imgRand = Math.random();
-                    window.open(event.target.getAttribute('data-filename').match(/\?/) ?
-                        event.target.getAttribute('data-filename') + '&rand=' + imgRand
-                        : event.target.getAttribute('data-filename') + '?rand=' + imgRand
-                    );
+                    let w = window.open(event.target.getAttribute('data-filename'));
                     return false;
                 } else {
                     let element = $(this);
