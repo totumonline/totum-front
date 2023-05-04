@@ -136,223 +136,208 @@
             let Files = oldValue.v || [];
             let isEntered = false;
 
-            const printFile = (file) => {
-
-
-                let addDiv = $('<div class="filePart"><div><span class="name"></span><span class="size"></span><button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i></button></div></div>');
-
-                let fl = {
-                    name: file.name,
-                    type: file.type,
-                    tmpfile: file.tmpfile,
-                    size: file.size,
-                    file: file.file,
-                    ext: file.ext
-                };
-                let regExpName = new RegExp('^' + field.pcTable.tableRow.id + '_' + (item.id ? item.id : ''));
-
-                addDiv.data('file', fl);
-                addDiv.find('.name').text(file.name);
-                addDiv.find('.size').text(field.getSize(file.size));
-                if (!file.file) {
-                    addDiv.append('<div class="progressbar">&nbsp;</div>');
-                } else {
-                    let a = $('<a>').attr('href', this.getFilePath(file.file)).attr('download', file.name);
-                    addDiv.find('.name').wrap(a);
-                    if (['jpg', 'png'].indexOf(file.ext) !== -1) {
-                        $('<img>').attr('src', this.getFilePath(file.file, true, true)).insertBefore(addDiv.find('.name'));
-                        addDiv.addClass('with-img')
-                    }
-
-                }
-                if (file.tmpfile) {
-                    addDiv.addClass('addFile');
-                    let process = addDiv.find('.progressbar');
-                    process.text(App.translate('Required to save the item for file binding'));
-                }
-                return addDiv;
-            };
-
             const saveDisable = function (disable) {
                 dialogBody.closest('.modal-content').find('.modal-footer button:first').prop('disabled', disable);
             };
 
             const formFill = function () {
+
+                const printFile = (file) => {
+                    let addDiv = $('<div class="filePart"><div><span class="name"></span><span class="size"></span><button class="btn btn-danger btn-xs remove"><i class="fa fa-remove"></i></button></div></div>');
+
+                    let fl = {
+                        name: file.name,
+                        type: file.type,
+                        tmpfile: file.tmpfile,
+                        size: file.size,
+                        file: file.file,
+                        ext: file.ext
+                    };
+                    let regExpName = new RegExp('^' + field.pcTable.tableRow.id + '_' + (item.id ? item.id : ''));
+
+                    addDiv.data('file', fl);
+                    addDiv.find('.name').text(file.name);
+                    addDiv.find('.size').text(field.getSize(file.size));
+                    if (!file.file) {
+                        addDiv.append('<div class="progressbar">&nbsp;</div>');
+                    } else {
+                        let a = $('<a>').attr('href', field.getFilePath(file.file)).attr('download', file.name);
+                        addDiv.find('.name').wrap(a);
+                        if (['jpg', 'png'].indexOf(file.ext) !== -1) {
+                            $('<img>').attr('src', field.getFilePath(file.file, true, true)).insertBefore(addDiv.find('.name'));
+                            addDiv.addClass('with-img')
+                        }
+
+                    }
+                    if (file.tmpfile) {
+                        addDiv.addClass('addFile');
+                        let process = addDiv.find('.progressbar');
+                        process.text(App.translate('Required to save the item for file binding'));
+                    }
+                    return addDiv;
+                };
+                const getInputField = (isMultiple, formParentDiv, btnTitle) => {
+                    let addForm = $('<div>').appendTo(formParentDiv);
+                    let btn = $('<button class="btn btn-default btn-sm">' + btnTitle + '</button>').appendTo(addForm);
+                    btn.on('click', function () {
+                        //fileInput
+                        $('<input type="file" name = "file" ' + (isMultiple ? 'multiple' : '') + ' accept="' + field.accept + '" style="display: block; position: absolute; top: -3000px"/>')
+                            .appendTo(formParentDiv)
+                            .on('change', function () {
+                                save(this.files)
+                                $(this).remove();
+                            })
+                            .click();
+                    });
+                    btn.wrap('<div class="addFilesButton">');
+                    btn.wrap('<div>');
+                    let dropZone = $('<div class="ttm-dropzone" id="ttmDropzone">' + App.translate('Drag and drop the file here') + '</div>').insertAfter(btn.parent())
+                    dropZone.on('dragenter', () => dropZone.addClass('highlight'))
+                    dropZone.on('dragleave', () => dropZone.removeClass('highlight'))
+                    dropZone.on('drop', (e) => {
+                        e.preventDefault();
+                        dropZone.removeClass('highlight')
+                        if (!dropZone.is('.disabled')) {
+                            if (!isMultiple && e.originalEvent.dataTransfer.files.length > 1) {
+                                App.notify(App.translate('The field accepts only one file'), App.translate('Error'))
+                                return false
+                            }
+                            save(e.originalEvent.dataTransfer.files)
+                        }
+                        return false;
+                    })
+                    let checkBtnDisable = () => {
+                        if (!isMultiple) {
+                            if (formParentDiv.find('.filePart').length > 0) {
+                                btn.prop('disabled', true);
+                                dropZone.addClass('disabled');
+                            } else {
+                                btn.prop('disabled', false);
+                                dropZone.removeClass('disabled');
+                            }
+                        }
+                    };
+                    const save = function (files, addDivIn) {
+                        if (files) {
+                            let deffs = [];
+                            saveDisable(true);
+
+                            for (let i = 0, numFiles = files.length; i < numFiles; i++) {
+                                let file = files[i];
+                                if (field.accept) {
+                                    let ext;
+                                    if (ext = file.name.match(/(\.[a-zA-Z0-9]+)$/)) {
+                                        ext = ext[1].toLowerCase();
+                                    }
+                                    let accept = field.accept.split(',');
+                                    if (!accept.some((type) => {
+                                        type = type.trim();
+                                        if (ext && ext === type.toLowerCase()) {
+                                            return true;
+                                        }
+                                        if (type === file.type) {
+                                            return true;
+                                        }
+                                        let typeSplit = type.split('/');
+                                        if (typeSplit[1] === '*' && typeSplit[0] === file.type.split('/')[0]) {
+                                            return true;
+                                        }
+
+                                    })) {
+                                        saveDisable(false);
+                                        App.notify(App.translate('The field accept only following types: %s', [field.accept]));
+                                        return;
+                                    }
+                                }
+
+                                let addDiv = addDivIn || printFile(file).appendTo(dialogBody);
+                                addDiv.addClass('addFile');
+                                checkBtnDisable();
+
+
+                                let process = addDiv.find('.progressbar');
+
+                                let xhr = new XMLHttpRequest();
+                                let deff = $.Deferred();
+
+                                addDiv.on('click', '.remove', function () {
+                                    addDiv.remove();
+                                    xhr.abort();
+                                    deff.resolve();
+                                    checkBtnDisable();
+                                });
+
+                                xhr.upload.onprogress = function (event) {
+                                    process.css('box-shadow', 'inset ' + Math.round(parseInt(process.width()) * event.loaded / event.total).toString() + 'px 0px 0 0 ' + App.theme.getColor('#85FF82'));
+                                    if (event.loaded === event.total) {
+                                        process.text(App.translate('Checking the file with the server'));
+                                    }
+                                };
+
+
+                                xhr.onload = xhr.onerror = function (mess) {
+                                    deff.resolve();
+
+                                    if (this.status === 200) {
+                                        try {
+                                            let ans = JSON.parse(this.responseText);
+                                            if (ans.fname) {
+                                                process.text(App.translate('Done'));
+                                                addDiv.data('file').tmpfile = ans.fname;
+                                                return;
+                                            }
+                                        } catch (e) {
+
+                                        }
+                                    }
+                                    addDiv.data('file', null);
+                                    let error = '';
+                                    if (this.status === 413 && this.statusText === 'Request Entity Too Large') {
+                                        error = ': ' + App.translate('The file is too large');
+                                    } else if (this.statusText) {
+                                        error = ': ' + this.statusText;
+                                    }
+
+                                    process.text(App.translate('Error') + error).css({
+                                        'box-shadow': 'none'
+                                    }).addClass('load-fail')
+
+                                };
+
+                                xhr.open("POST", pcTable.model.getUri(), true);
+
+                                let formData = new FormData();
+                                formData.append("file", file);
+                                formData.append("method", 'tmpFileUpload');
+                                formData.append("ajax", true);
+                                xhr.send(formData);
+                                deffs.push(deff.promise());
+                            }
+                            $.when(...deffs).then(function () {
+                                saveDisable(false)
+                            })
+                        }
+                    };
+                    return checkBtnDisable;
+                }
+
                 dialogBody.empty();
                 if (editNow === 'editField') {
                     dialogBody = div
                 }
-                let fileAdd = $('<input type="file" name = "file" ' + (field.multiple ? 'multiple' : '') + ' accept="' + field.accept + '" style="display: block; position: absolute; top: -3000px"/>');//fileInput
 
-                let addForm = $('<div>').appendTo(dialogBody);
-                let btn = $('<button class="btn btn-default btn-sm">' + App.translate(field.multiple ? 'Adding files' : 'Adding file') + '</button>');
-                addForm.append(btn);
-                btn.wrap('<div class="addFilesButton">');
-                btn.wrap('<div>');
-                let dropZone = $('<div class="ttm-dropzone" id="ttmDropzone">' + App.translate('Drag and drop the file here') + '</div>').insertAfter(btn.parent())
-                dropZone.on('dragenter', () => dropZone.addClass('highlight'))
-                dropZone.on('dragleave', () => dropZone.removeClass('highlight'))
-                dropZone.on('drop', (e) => {
-                    e.preventDefault();
-                    dropZone.removeClass('highlight')
-                    if (!dropZone.is('.disabled')) {
-                        if (!this.multiple && e.originalEvent.dataTransfer.files.length > 1) {
-                            App.notify(App.translate('The field accepts only one file'), App.translate('Error'))
-                            return false
-                        }
-                        save(e.originalEvent.dataTransfer.files)
-                    }
-                    return false;
-                })
-                const checkBtnDisable = function () {
-                    if (!field.multiple) {
-                        if (dialogBody.find('.filePart').length > 0) {
-                            btn.prop('disabled', true);
-                            dropZone.addClass('disabled');
-                        } else {
-                            btn.prop('disabled', false);
-                            dropZone.removeClass('disabled');
-                        }
-                    }
-                };
-                const save = function (files) {
-                    if (files) {
-                        let deffs = [];
-                        saveDisable(true);
-
-                        for (let i = 0, numFiles = files.length; i < numFiles; i++) {
-                            let file = files[i];
-                            if (field.accept) {
-                                let ext;
-                                if (ext = file.name.match(/(\.[a-zA-Z0-9]+)$/)) {
-                                    ext = ext[1].toLowerCase();
-                                }
-                                let accept = field.accept.split(',');
-                                if (!accept.some((type) => {
-                                    type = type.trim();
-                                    if (ext && ext === type.toLowerCase()) {
-                                        return true;
-                                    }
-                                    if (type === file.type) {
-                                        return true;
-                                    }
-                                    let typeSplit = type.split('/');
-                                    if (typeSplit[1] === '*' && typeSplit[0] === file.type.split('/')[0]) {
-                                        return true;
-                                    }
-
-                                })) {
-                                    saveDisable(false);
-                                    App.notify(App.translate('The field accept only following types: %s', [field.accept]));
-                                    return;
-                                }
-                            }
-
-                            let addDiv = printFile(file).addClass('addFile').appendTo(dialogBody);
-                            checkBtnDisable();
-
-
-                            let process = addDiv.find('.progressbar');
-
-                            /*if (file.size > 10 * 1024 * 1024) {
-                                process.text('Ошибка - файл больше 10 Mb').css({
-                                    'box-shadow': 'none',
-                                    'background-color': '#ffe486'
-                                });
-                                addDiv.on('click', '.remove', function () {
-                                    addDiv.remove();
-                                    checkBtnDisable();
-                                });
-                                continue;
-                            }*/
-
-
-                            let xhr = new XMLHttpRequest();
-                            let deff = $.Deferred();
-
-                            addDiv.on('click', '.remove', function () {
-                                addDiv.remove();
-                                xhr.abort();
-                                deff.resolve();
-                                checkBtnDisable();
-                            });
-
-                            xhr.upload.onprogress = function (event) {
-                                process.css('box-shadow', 'inset ' + Math.round(parseInt(process.width()) * event.loaded / event.total).toString() + 'px 0px 0 0 ' + App.theme.getColor('#85FF82'));
-                                if (event.loaded === event.total) {
-                                    process.text(App.translate('Checking the file with the server'));
-                                }
-                            };
-
-
-                            xhr.onload = xhr.onerror = function (mess) {
-                                deff.resolve();
-
-                                if (this.status === 200) {
-                                    try {
-                                        let ans = JSON.parse(this.responseText);
-                                        if (ans.fname) {
-                                            process.text(App.translate('Done'));
-                                            addDiv.data('file').tmpfile = ans.fname;
-                                            return;
-                                        }
-                                    } catch (e) {
-
-                                    }
-                                }
-                                addDiv.data('file', null);
-                                let error = '';
-                                if (this.status === 413 && this.statusText === 'Request Entity Too Large') {
-                                    error = ': ' + App.translate('The file is too large');
-                                } else if (this.statusText) {
-                                    error = ': ' + this.statusText;
-                                }
-
-                                process.text(App.translate('Error') + error).css({
-                                    'box-shadow': 'none'
-                                }).addClass('load-fail')
-
-                            };
-
-                            xhr.open("POST", pcTable.model.getUri(), true);
-
-                            let formData = new FormData();
-                            formData.append("file", file);
-                            formData.append("method", 'tmpFileUpload');
-                            formData.append("ajax", true);
-                            xhr.send(formData);
-                            deffs.push(deff.promise());
-                        }
-                        $.when(...deffs).then(function () {
-                            saveDisable(false)
-                        })
-                    }
-                };
-
-
+                const checkBtnDisableMain = getInputField(field.multiple, dialogBody, App.translate(field.multiple ? 'Adding files' : 'Adding file'))
                 //Вывести файлы
                 if (Files && Files.forEach) {
                     Files.forEach(function (fl) {
                         let part = printFile(fl).appendTo(dialogBody);
                         part.on('click', '.remove', function () {
                             part.remove();
-                            checkBtnDisable();
+                            checkBtnDisableMain();
                         });
                     });
                 }
-
-                checkBtnDisable();
-
-                btn.on('click', function () {
-
-                    $('body').append(fileAdd);
-                    fileAdd.click();
-                    fileAdd.on('change', function () {
-                        save(this.files)
-                        fileAdd.remove();
-                    });
-                });
-
+                checkBtnDisableMain();
             };
 
             const save = function (dialog, event, notEnter) {
