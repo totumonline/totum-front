@@ -150,7 +150,6 @@
 
                         let pcTableObj = $('#table').data('pctable');
                         if (pcTableObj) {
-
                             if (json.LOGS) {
                                 if (!pcTableObj.LOGS) pcTableObj.LOGS = {};
                                 pcTableObj.LOGS = $.extend(pcTableObj.LOGS, json.LOGS);
@@ -162,7 +161,10 @@
                                 logs.children = json.FullLOGS;
                                 if (json.FullLOGS.length) {
                                     pcTableObj.FullLOGS.push(logs);
-                                    App.blink(pcTableObj.LogButton, 8, '#fff');
+                                    let codes = $.cookie('pcTableLogs') || '[]';
+                                    codes = JSON.parse(codes);
+
+                                    App.blink(pcTableObj.LogButton, 8, codes.length ? '#fff': 'red');
                                 }
                             }
                             if (json.FieldLOGS && Object.keys(json.FieldLOGS).length) {
