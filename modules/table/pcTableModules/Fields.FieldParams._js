@@ -189,8 +189,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                             }
                         }
 
-                        if (fName === 'secureFile') {
-                            if (!oldValue.secureFile || !oldValue.secureFile.Val) {
+                        let proTurnOnOnceOptions = ['secureFile', 'versioned'];
+                        if (proTurnOnOnceOptions.indexOf(fName) !== -1) {
+                            if (!oldValue[fName] || !oldValue[fName].Val) {
                                 divInput.append('<div class="code-checkboxes-warning-panel only-when-active">'
                                     + App.translate('This option works only in PRO.') + (item['id'] ? ' ' +
                                         App.translate('If you enable it and you have files in this field, they stay on the server, but you cannot access them from totum.') + ' ' : '')
