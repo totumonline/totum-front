@@ -498,7 +498,7 @@
                                 $div = $('<div class="creator-log-checkboxes">');
                                 $div.append('<div><input type="checkbox" name="c"/> ' + App.translate('Code') + '</div>');
                                 $div.append('<div><input type="checkbox" name="a"/> ' + App.translate('Action code') + '</div>');
-                                $div.append('<div style="padding-left: 5px;"><input type="checkbox" name="C"/> ' + App.translate('CHANGES') + '</div>');
+                                $div.append('<div style="padding-left: 5px;"><input type="checkbox" name="C"/> ' + App.translate('Changes') + '</div>');
                                 $div.append('<div><input type="checkbox" name="s"/> ' + App.translate('Selects') + '</div>');
                                 $div.append('<div><input type="checkbox" name="f"/> ' + App.translate('Formating') + '</div>');
 

@@ -189,11 +189,11 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                             }
                         }
 
-                        let proTurnOnOnceOptions = ['secureFile', 'versioned'];
+                        let proTurnOnOnceOptions = ['secureFile', 'versioned', 'customFileFolder', 'fileIdDivider'];
                         if (proTurnOnOnceOptions.indexOf(fName) !== -1) {
                             if (!oldValue[fName] || !oldValue[fName].Val) {
                                 divInput.append('<div class="code-checkboxes-warning-panel only-when-active">'
-                                    + App.translate('This option works only in PRO.') + (item['id'] ? ' ' +
+                                    + App.translate('This option works only in PRO.') + (proTurnOnOnceOptions === 'secureFile' ? ' ' +
                                         App.translate('If you enable it and you have files in this field, they stay on the server, but you cannot access them from totum.') + ' ' : '')
                                     + App.translate('This option can be enabled only. You will not be able to turn it off.') + '</div>');
                             } else {
