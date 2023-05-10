@@ -189,7 +189,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                             }
                         }
 
-                        let proTurnOnOnceOptions = ['secureFile', 'versioned', 'customFileFolder', 'fileIdDivider'];
+                        let proTurnOnOnceOptions = ['secureFile', 'versioned', 'fileIdDivider'];
                         if (proTurnOnOnceOptions.indexOf(fName) !== -1) {
                             if (!oldValue[fName] || !oldValue[fName].Val) {
                                 divInput.append('<div class="code-checkboxes-warning-panel only-when-active">'
