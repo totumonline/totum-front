@@ -60,12 +60,8 @@
                     }
 
                     if (this.pcTable.tableRow.__withDocPreviews) {
-                        switch (file.ext) {
-                            case 'xls':
-                            case 'xlsx':
-                            case 'doc':
-                            case 'docx':
-                                img = $(img).addClass('file-pdf-preview').attr('data-filename', this.getFilePath(file.file, 'docPreview', file.name));
+                        if (this.isDocPreviewExt(file.ext)) {
+                            img = $(img).addClass('file-pdf-preview').attr('data-filename', this.getFilePath(file.file, 'docPreview', file.name));
                         }
                     }
                 }
@@ -85,6 +81,16 @@
                 fieldValue.forEach(file_images);
             }
             return div.children();
+        },
+        isDocPreviewExt: function (ext) {
+            switch (ext) {
+                case 'xls':
+                case 'xlsx':
+                case 'doc':
+                case 'docx':
+                    return true
+            }
+            return false;
         },
         getCopyText: function (fieldValue, item) {
             fieldValue = fieldValue.v;
@@ -112,9 +118,21 @@
                     _class = 'with-img';
                     show_img(img, file);
                 }
-                $('<div>').addClass(_class).appendTo(div).append(img).append(
+                let fileDiv = $('<div>').addClass(_class).appendTo(div).append(img).append(
                     $('<div class="file-label">').html($('<a href="' + this.getFilePath(file.file) + '" download="' + $('<div>').text(file.name).html() + '">').text(file.name)).append(field.getSize(file.size))
                 );
+
+
+                if (file.ext === 'pdf' || (this.pcTable.tableRow.__withDocPreviews && this.isDocPreviewExt(file.ext))) {
+                    let path
+                    if(file.ext==='pdf'){
+                        path = field.getFilePath(file.file);
+                    }else{
+                        path = field.getFilePath(file.file, 'docPreview', file.name);
+                    }
+                    let eye = $('<a target="_blank" class="eye-preview">').attr('href', path).append('<i class="fa fa-eye">')
+                    fileDiv.find('.file-label').append(eye)
+                }
 
                 if (toCopy !== '') toCopy += "\n";
                 toCopy += window.location.protocol + '//' + window.location.host + '/fls/' + file.file;
