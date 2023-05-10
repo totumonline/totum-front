@@ -130,7 +130,7 @@
                     }else{
                         path = field.getFilePath(file.file, 'docPreview', file.name);
                     }
-                    let eye = $('<a target="_blank" class="eye-preview">').attr('href', path).append('<i class="fa fa-eye">')
+                    let eye = $('<a target="_blank" class="eye-preview btn btn-default btn-xs">').attr('href', path).append('<i class="fa fa-eye">')
                     fileDiv.find('.file-label').append(eye)
                 }
 
