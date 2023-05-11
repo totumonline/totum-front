@@ -21,6 +21,7 @@
             "addRoles": {"isOn": false, "Val": ["1"]},
             "editable": {"isOn": true, "Val": true},
             "editRoles": {"isOn": false, "Val": ["1"]},
+            "removeVersionsRoles": {"isOn": false, "Val": ["1"]},
             "hidden": {"isOn": true, "Val": false},
             "warningEditPanel": {"isOn": true, "Val": false},
             "warningEditText": {"isOn": false, "Val": App.translate('Surely to change?')},
