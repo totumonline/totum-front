@@ -402,7 +402,10 @@ App.langs.ru =
 "Create PDF":"Создать PDF",
 "Download":"Скачать",
 "CSV-export":"CSV-экспорт",
-"CSV-import":"CSV-импорт"
+"CSV-import":"CSV-импорт",
+"Adding version":"Добавление версии",
+"Last version will be removed":"Будет удалена последняя версия",
+"File %s verions":"Верии файла %s"
 }
 
 	}

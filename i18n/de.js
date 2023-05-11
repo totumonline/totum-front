@@ -42,7 +42,7 @@ App.langs.de =
 "Close context data":"<b>Schließen<\/b> weitere Informationen",
 "Open context data":"<b>Öffnen<\/b> weitere Informationen",
 "Element preview is empty":"Vorschauelement leer",
-"PATH-TO-DOCUMENTATION":"https:\/\/ru.docs.totum.online\/",
+"PATH-TO-DOCUMENTATION":"https:\/\/docs.totum.online\/",
 "Email for cron notifications":"E-Mail für Cron-Benachrichtigungen",
 "Password":"Kennwort",
 "Login":"Login",
