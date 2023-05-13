@@ -402,7 +402,10 @@ App.langs.de =
 "Create PDF":"PDF-Datei erstellen",
 "Download":"Herunterladen",
 "CSV-export":"CSV-Ausfuhr",
-"CSV-import":"CSV-Einfuhr"
+"CSV-import":"CSV-Einfuhr",
+"Adding version":"Hinzufügen einer Version",
+"Last version will be removed":"Die letzte Version wird gelöscht",
+"File %s verions":"Überprüfung der Datei %s"
 }
 
 	}

@@ -66,6 +66,11 @@ let path = {
         , 'bower_components/bootstrap-select/dist/js/i18n/defaults-de_DE.js'
         , 'i18n/de.js'
     ],
+    es: [
+        'bower_components/moment/locale/es.js'
+        , 'bower_components/bootstrap-select/dist/js/i18n/defaults-es_ES.js'
+        , 'i18n/es.js'
+    ],
     en: [
         , 'i18n/en.js'
     ],
@@ -200,6 +205,14 @@ gulp.task('QUICK-PROD-DEV', function () {
             }))
             .pipe(gulp.dest(path.jsLibsMini.dest+'i18n/'));
     });
+    gulp.task('product:langEs', function () {
+        return gulp.src(path.es)
+            .pipe(concat('es.js'))
+            .pipe(uglify().on('error', function (e) {
+                console.log(e);
+            }))
+            .pipe(gulp.dest(path.jsLibsMini.dest+'i18n/'));
+    });
     gulp.task('product:langEng', function () {
         return gulp.src(path.en)
             .pipe(concat('en.js'))
@@ -208,7 +221,7 @@ gulp.task('QUICK-PROD-DEV', function () {
             }))
             .pipe(gulp.dest(path.jsLibsMini.dest+'i18n/'));
     });
-    gulp.task('product:langs', ['product:langRu', 'product:langDe','product:langEng'], function () {
+    gulp.task('product:langs', ['product:langRu', 'product:langDe','product:langEs','product:langEng'], function () {
         return true;
     });
 
