@@ -405,7 +405,8 @@ App.langs.de =
 "CSV-import":"CSV-Einfuhr",
 "Adding version":"Hinzufügen einer Version",
 "Last version will be removed":"Die letzte Version wird gelöscht",
-"File %s verions":"Überprüfung der Datei %s"
+"File %s verions":"Überprüfung der Datei %s",
+"versions(%s)":"Versionen (%s)"
 }
 
 	}

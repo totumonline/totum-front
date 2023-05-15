@@ -405,7 +405,8 @@ App.langs.ru =
 "CSV-import":"CSV-импорт",
 "Adding version":"Добавление версии",
 "Last version will be removed":"Будет удалена последняя версия",
-"File %s verions":"Верии файла %s"
+"File %s verions":"Верии файла %s",
+"versions(%s)":"версии (%s)"
 }
 
 	}

@@ -405,7 +405,8 @@ App.langs.es =
 "CSV-import":"Importar CSV",
 "Adding version":"Añadir versión",
 "Last version will be removed":"Se eliminará la última versión",
-"File %s verions":"Fichero %s verions"
+"File %s verions":"Fichero %s verions",
+"versions(%s)":"versiones (%s)"
 }
 
 	}
