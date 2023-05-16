@@ -46,7 +46,7 @@
 .addFilesButton {
   margin-bottom: 10px;
   display: grid;
-  grid-template-columns: 108px 1fr;
+  grid-template-columns: min-content 1fr;
   grid-gap: 20px;
 
   .ttm-dropzone {
@@ -80,6 +80,11 @@
 
   button.remove {
     margin-left: 5px;
+  }
+
+  .size{
+    vertical-align: bottom;
+    margin: 0 5px;
   }
 
   img {

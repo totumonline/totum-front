@@ -406,7 +406,12 @@ App.langs.ru =
 "Adding version":"Добавление версии",
 "Last version will be removed":"Будет удалена последняя версия",
 "File %s verions":"Верии файла %s",
-"versions(%s)":"версии (%s)"
+"versions(%s)":"версии (%s)",
+"Leave a comment":"Оставить комментарий",
+"Last version will be replaced":"Последняя версия будет перезаписана",
+"No, create new version":"Нет, создать новую версию",
+"Rewrite last version by this file":"Заменить последнюю версию этим файлом",
+"Rewrite or create?":"Заменить или создать новую версию?"
 }
 
 	}

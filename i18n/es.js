@@ -206,7 +206,7 @@ App.langs.es =
 "Apply and close":"Aplicar y cerrar",
 "Shelve all":"Pausar todo",
 "Shelve":"Pausar",
-"__clock_shelve_panel":"<span class=\"clocks-na\">En<\/span> <input type=\"number\" step=\"1\" value=\"10\" class=\"form-control\"\/> <select class=\"form-control\"><option  selected value=\"1\">minutos<\/option><option value=\"2\">horas<\/option><option value=\"3\">días<\/option><\/select>.",
+"__clock_shelve_panel":"<span class=\"clocks-na\">En<\/span> <input type=\"number\" step=\"1\" value=\"10\" class=\"form-control\"\/> <select class=\"form-control\"><option  selected value=\"1\">minutos<\/option><option value=\"2\">horas<\/option><option value=\"3\">días<\/option><\/select>",
 "Calculated value":"Valor calculado",
 "Same as calculated":"Igual al calculado",
 "Show logs":"Mostrar registros",
@@ -406,7 +406,12 @@ App.langs.es =
 "Adding version":"Añadir versión",
 "Last version will be removed":"Se eliminará la última versión",
 "File %s verions":"Fichero %s verions",
-"versions(%s)":"versiones (%s)"
+"versions(%s)":"versiones (%s)",
+"Leave a comment":"Deja un comentario",
+"Last version will be replaced":"Se sobrescribirá la última versión",
+"No, create new version":"No, cree una nueva versión",
+"Rewrite last version by this file":"Sustituya la última versión por este archivo",
+"Rewrite or create?":"¿Sustituir o crear una nueva versión?"
 }
 
 	}

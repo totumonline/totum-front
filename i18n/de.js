@@ -406,7 +406,12 @@ App.langs.de =
 "Adding version":"Hinzufügen einer Version",
 "Last version will be removed":"Die letzte Version wird gelöscht",
 "File %s verions":"Überprüfung der Datei %s",
-"versions(%s)":"Versionen (%s)"
+"versions(%s)":"Versionen (%s)",
+"Leave a comment":"Hinterlassen Sie einen Kommentar",
+"Last version will be replaced":"Die letzte Version wird überschrieben",
+"No, create new version":"Nein, erstellen Sie eine neue Version",
+"Rewrite last version by this file":"Ersetzen Sie die letzte Version durch diese Datei",
+"Rewrite or create?":"Ersetzen oder eine neue Version erstellen?"
 }
 
 	}
