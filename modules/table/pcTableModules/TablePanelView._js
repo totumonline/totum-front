@@ -713,6 +713,9 @@
                         cln = $('<div class="kanbanWrapper pcTable-floatBlock cln">').css(css);
                         cln.width(this._innerContainer.width())
 
+                        if(wrapper.find('.kanban_left_buttons')){
+                            cln.append('<div>')
+                        }
 
                         $('.kanban').each(function () {
                             let exs = $(this);
