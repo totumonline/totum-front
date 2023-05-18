@@ -1320,7 +1320,7 @@
                     })
                     btnsWidth += 90;
                     comment.css('width', 'calc(100% - ' + (btnsWidth) + 'px)');
-                }, 1);
+                }, 100);
             }
 
             return buttons;
