@@ -411,7 +411,8 @@ App.langs.de =
 "Last version will be replaced":"Die letzte Version wird überschrieben",
 "No, create new version":"Nein, erstellen Sie eine neue Version",
 "Rewrite last version by this file":"Ersetzen Sie die letzte Version durch diese Datei",
-"Rewrite or create?":"Ersetzen oder eine neue Version erstellen?"
+"Rewrite or create?":"Ersetzen oder eine neue Version erstellen?",
+"File for version must be same type as main one: %s":"Die Datei für die Version muss vom gleichen Typ sein wie die Hauptdatei: %s"
 }
 
 	}
