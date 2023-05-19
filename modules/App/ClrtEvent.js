@@ -7,7 +7,7 @@ $(function (){
             window.top.lastCtrl = Date.now();
         }
         if (window.top.wasCtrl(event) || event.metaKey || event.altKey) {
-            if (String.fromCharCode(event.which).toLowerCase() === 's') {
+            if (!event.shiftKey && String.fromCharCode(event.which).toLowerCase() === 's') {
                 let events=$._data(document.body, 'events')['ctrlS'];
                 if(events && events.length){
                     let lastEvent = events[events.length - 1];
