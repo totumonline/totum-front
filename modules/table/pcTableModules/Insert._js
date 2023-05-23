@@ -649,7 +649,7 @@ $.extend(App.pcTableMain.prototype, {
                 let randomId = window.top.App.randomIds.get();
                 $(window.top.document.body)
                     .on('pctable-closed.select-add-' + randomId, function (event, data) {
-                        if (data.panel.srcRandomId !== randomId) return;
+                        if (!data.panel || data.panel.srcRandomId !== randomId) return;
                         opened--;
                         let isAdded = (data /*&& data.tableId === field.selectTableId*/ && data.method === 'insert' && data.json && data.json.chdata && data.json.chdata.rows);
                         if (opened === 0 || isAdded) {

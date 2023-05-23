@@ -2,6 +2,7 @@ let gulp = require('gulp'),
     uglify = require('gulp-uglify-es').default,
     sass = require('gulp-sass'),
     include = require('gulp-include'),
+    order = require('gulp-order'),
     del = require('del'),
     concat = require('gulp-concat'),
     cssBase64 = require('gulp-css-base64'),
@@ -256,8 +257,16 @@ gulp.task('QUICK-PROD-DEV', function () {
             .pipe(gulp.dest('./http/js/'));
 
 
-        let branch = gulp.src(path.js.src)
+        let branch = gulp.src(path.js.src, {debug:true})
             .pipe(include())
+            .pipe(order([
+                "modules/App/*.js",
+                "modules/auth/*.js",
+                "modules/Bootstrap.Helpers/*.js",
+                "modules/page_html/*.js",
+                "modules/tree/*.js",
+                "modules/table/*.js",
+            ]))
             .pipe(concat('main.js'));
         if (!dev) {
             branch = branch.pipe(uglify().on('error', function (e) {

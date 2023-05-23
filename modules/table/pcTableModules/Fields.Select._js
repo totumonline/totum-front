@@ -952,7 +952,7 @@ fieldTypes.select = {
         let randomId = window.top.App.randomIds.get();
         $(window.top.document.body)
             .on('pctable-closed.select-' + field.name, function (event, data) {
-                if (data.panel.srcRandomId !== randomId) return;
+                if (!data.panel || data.panel.srcRandomId !== randomId) return;
                 opened--;
                 if (data && data.json) {
                     LastData = data;
