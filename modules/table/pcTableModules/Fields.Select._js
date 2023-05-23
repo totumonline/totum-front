@@ -967,7 +967,7 @@ fieldTypes.select = {
                 setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть
             });
 
-        pcTable.model.selectSourceTableAction(field.name, ee).then(() => {
+        pcTable.model.selectSourceTableAction(field.name, ee, isAdd).then(() => {
             let offTimeout;
             $(window.top.document.body)
                 .on('pctable-opened.select-add-' + randomId, function (event, data) {

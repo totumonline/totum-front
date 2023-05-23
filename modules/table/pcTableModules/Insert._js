@@ -672,7 +672,7 @@ $.extend(App.pcTableMain.prototype, {
                             // parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
                         }
                     });
-                pcTable.model.selectSourceTableAction(field.name, ee).then(() => {
+                pcTable.model.selectSourceTableAction(field.name, ee, true).then(() => {
                     let offTimeout;
                     $(window.top.document.body)
                         .on('pctable-opened.select-add-' + randomId, function (event, data) {

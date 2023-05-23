@@ -503,10 +503,11 @@
                     et: excludeTop
                 });
             },
-            selectSourceTableAction: function (field_name, data) {
+            selectSourceTableAction: function (field_name, data, isPlus) {
                 return this.__ajax('post', {
                     field_name: field_name,
                     data: data,
+                    isPlus: isPlus,
                     method: 'selectSourceTableAction'
                 });
             },

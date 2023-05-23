@@ -888,6 +888,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
                 let sourseBtnClick = function () {
                     let ee = EditPanelFunc.getDataForPost();
+
                     let isAdd = $(this).is('.source-add');
                     if (isAdd) {
                         ee[field.name] = null;
@@ -928,7 +929,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                             setTimeout(refreshInputAndPage, 100);//Чтобы успело открыться окошко слещующей панели, если оно есть
                         });
 
-                    EditPanelFunc.pcTable.model.selectSourceTableAction(field.name, hash).then(() => {
+                    EditPanelFunc.pcTable.model.selectSourceTableAction(field.name, hash, isAdd).then(() => {
                         let offTimeout;
                         $(window.top.document.body)
                             .on('pctable-opened.select-add-' + randomId, function (event, data) {
