@@ -266,6 +266,9 @@ $.extend(App.pcTableMain.prototype, {
             this.insertRow = $row = $('<tr class="InsertRow" style="height: 35px;"><td class="id"></td></tr>')
                 .on('click focus keydown', 'input,button,select', function (event) {
                     let inputElement = $(this);
+                    if(inputElement.is('input') && ['focus', 'focusin'].indexOf(event.type)!==-1){
+                        inputElement.select();
+                    }
                     if (event.type === 'keydown') {
                         if (event.key === 'Tab') {
                             event.preventDefault();
