@@ -272,10 +272,11 @@ $.extend(App.pcTableMain.prototype, {
                             return false;
                         }
                         return true;
-                    } else if (event.type === 'focus' || event.type === 'click') {
+                    } else if (event.type === 'focus' || event.type === 'click' || event.type === 'focusin') {
                         if (pcTable._insertFocusTimeout) {
                             clearTimeout(pcTable._insertFocusTimeout);
                         }
+                        pcTable._insertBlurDelay = Date.now()+100;
                     }
 
                     let active = pcTable._insertRow.find('.active');
@@ -561,7 +562,7 @@ $.extend(App.pcTableMain.prototype, {
 
         };
         var blurClbck = function ($input, event, _, setNextIndex) {
-            if (setNextIndex) {
+            if (setNextIndex && pcTable._insertBlurDelay < Date.now()) {
                 pcTable._currentInsertCellIndex = index + (setNextIndex === -1 ? -1 : 1);
                 pcTable._insertFocusIt.call(pcTable);
             }

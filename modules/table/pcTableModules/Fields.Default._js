@@ -278,7 +278,6 @@ var defaultField = {
                 events = 'mousedown keydown focus'
             }
             element.on(events, function (evt, elseData) {
-
                 let coggs = false;
                 const checkWaiting = () => {
                     if (field.waiting[0]) {
@@ -321,6 +320,9 @@ var defaultField = {
                 } else {
                     setTimeout(checkWaiting, 20);
                 }
+                evt.preventDefault();
+                evt.stopPropagation();
+                evt.stopImmediatePropagation();
                 return false;
             })
         }

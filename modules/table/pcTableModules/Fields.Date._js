@@ -10,6 +10,7 @@ fieldTypes.date = {
     getEditElement: function ($oldInput, oldValue, item, enterClbk, escClbk, blurClbk, tabindex, _, cell) {
         let wind = cell ? (cell.get(0).ownerDocument.defaultView || window) : window;
         var $input = wind.$('<input type="text" name="cell_edit" class="form-control" autocomplete="off" autocorrect="off" />');
+
         this.checkWaiting($input);
 
         if (tabindex) $input.attr('tabindex', tabindex);
@@ -105,7 +106,7 @@ fieldTypes.date = {
                 });
 
             } else {
-                const showPopover = function () {
+                const showPopover = function (event) {
                     if (popover) {
                         $input.popover('destroy')
                     }
@@ -118,7 +119,8 @@ fieldTypes.date = {
 
                     setDateTimePickerDate();
                 };
-                $input.on('focus mouskeydown', showPopover);
+
+                $input.on('focus', showPopover);
             }
 
         }, 20);

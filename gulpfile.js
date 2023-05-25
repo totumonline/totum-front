@@ -257,7 +257,7 @@ gulp.task('QUICK-PROD-DEV', function () {
             .pipe(gulp.dest('./http/js/'));
 
 
-        let branch = gulp.src(path.js.src, {debug:true})
+        let branch = gulp.src(path.js.src)
             .pipe(include())
             .pipe(order([
                 "modules/App/*.js",
