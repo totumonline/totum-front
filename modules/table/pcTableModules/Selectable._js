@@ -887,7 +887,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                     withId = placements.indexOf('with-id') !== -1
                                     pcTable.fieldCategories.visibleColumns.forEach((field) => {
                                         copiedInRowsSection[field.name] = [];
-                                        pcTable.dataSorted.forEach((id) => {
+                                        pcTable.dataSortedVisible.forEach((id) => {
                                             copiedInRowsSection[field.name].push(id)
                                         })
                                     })
