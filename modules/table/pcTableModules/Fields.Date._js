@@ -61,7 +61,7 @@ fieldTypes.date = {
             if (event.keyCode >= 48) {
                 timeoutObject = setTimeout(function () {
                     setDateTimePickerDate();
-                }, 2000);
+                }, 5000);
             }
         });
         let popoverId, popover;
