@@ -90,6 +90,16 @@ fieldTypes.date = {
             if (cdiv.length > 0) {
                 let data_popover = cdiv.data('bs.popover');
                 if (data_popover) {
+                    data_popover.options.content.find('.btn').each((i, btn)=>{
+                        btn = $(btn);
+                        if(btn.data('click')){
+                            let click = btn.data('click');
+                            btn.data('click', ()=>{
+                                setDateTimePickerDate();
+                                click(...arguments);
+                            })
+                        }
+                    })
                     cParent.append(data_popover.options.content);
                     cdiv.popover('destroy');
                 }
