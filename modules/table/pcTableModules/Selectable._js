@@ -827,6 +827,22 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     let withId;
 
 
+                    let packetGetValueData = [];
+                    let newModel = {
+                        ...pcTable.model, ...{
+                            getValue: (data) => {
+                                let packIt = [$.Deferred(), data];
+                                packetGetValueData.push(packIt);
+                                return packIt[0];
+                            }
+                        }
+                    }
+
+                    let getFieldWithPaketModel = (Field) => {
+                        let _F = {...Field, ...{pcTable: {model: newModel}}};
+                        return _F;
+                    }
+
                     const getFieldData = (field, id) => {
                         let item;
                         if (id) {
@@ -838,7 +854,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         let format = $.extend({}, (pcTable.f || {}), (item.f || {}), (item[field].f || {}));
 
 
-                        let res = format.textasvalue && ('text' in format) ? format.text : pcTable.fields[field].getCopyText.call(pcTable.fields[field], item[field], item);
+                        let res = format.textasvalue && ('text' in format) ? format.text : getFieldWithPaketModel(pcTable.fields[field]).getCopyText(item[field], item);
 
                         if (typeof res === 'object' && res !== null && res.done) {
                             deffs.push(res);
@@ -942,6 +958,25 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         }
                         return _str;
                     }
+
+                    if (packetGetValueData.length) {
+                        let packData = [];
+                        packetGetValueData.forEach((row) => {
+                            packData.push(row[1])
+                        });
+
+                        (function (data) {
+                            return this.__ajax('post', {data: data, method: 'getValuePack'});
+                        }).call(pcTable.model, packData).then((json) => {
+                            if (json.values && json.values.forEach) {
+                                json.values.forEach((res, i) => {
+                                    packetGetValueData[i][0].resolve(res);
+                                })
+                            }
+                        })
+
+                    }
+
 
                     let def = $.Deferred();
 
