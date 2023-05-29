@@ -734,11 +734,11 @@
                         html.height(data[1].height)
                     }
 
-                    let getVal;
+                    let getVal, field;
                     if (data[1].type === 'select') {
 
                         let pcTable = {...model.pcTable};
-                        let field = $.extend({}, App.FieldTypes.select, {
+                        field = $.extend({}, App.FieldTypes.select, {
                             name: 'inputSelect',
                             multiple: data[1].multiple
                         });
@@ -817,6 +817,14 @@
                             Dialog.close();
                         }).fail(() => {
                             block = false;
+                            if (data[1].type === 'select') {
+                                let inputOld = input;
+                                inputOld.replaceWith(input = field.getEditElement(html, {v: data[1].value}, [], () => {
+                                }, () => {
+                                }, () => {
+                                }, 1, 'editField2'))
+
+                            }
                         });
                     };
 

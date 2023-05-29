@@ -134,7 +134,7 @@ fieldTypes.select = {
             _t();
         });
 
-    }, getEditElement: function ($oldParent, oldValue, item, enterClbk, escClbk, blurClbk, tabindex, _, cell) {
+    }, getEditElement: function ($oldParent, oldValue, item, enterClbk, escClbk, blurClbk, tabindex, someDatas, cell) {
         "use strict";
 
         if (!oldValue) oldValue = {};
@@ -663,7 +663,7 @@ fieldTypes.select = {
                         input.data('container').off('.selectContainer.' + input.data('AppUin'))
                     })
 
-                    if (input.closest('.InsertRow, .InsertPanel').length === 0 && !(input.closest('.linkButtons').length && val)) {
+                    if (input.closest('.InsertRow, .InsertPanel').length === 0 && !(input.closest('.linkButtons').length && val) && someDatas !== "editField2") {
                         divParent.find('button').click();
                     }
                 }
