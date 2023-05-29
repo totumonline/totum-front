@@ -1030,7 +1030,7 @@
         return $d.promise();
     };
     App.showPanels = function (panels, InPcTable) {
-        if (window.top != window) return window.top.App.showPanels.call(window.top, panels)
+        if (window.top != window) return window.top.App.showPanels.call(window.top, panels, InPcTable)
 
         let pcTables = {};
         let def = $.Deferred();
