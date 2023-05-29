@@ -205,6 +205,8 @@ fieldTypes.select = {
                             }
                         }
                     });
+                } else {
+                    itemTmp[field.name] = val;
                 }
 
             });
@@ -950,7 +952,7 @@ fieldTypes.select = {
 
         let LastData;
         let randomId = window.top.App.randomIds.get();
-        $(window.top.document.body)
+        window.top.jQuery('body')
             .on('pctable-closed.select-' + field.name, function (event, data) {
                 if (!data.panel || data.panel.srcRandomId !== randomId) return;
                 opened--;
@@ -969,7 +971,7 @@ fieldTypes.select = {
 
         pcTable.model.selectSourceTableAction(field.name, ee, isAdd).then(() => {
             let offTimeout;
-            $(window.top.document.body)
+            window.top.jQuery('body')
                 .on('pctable-opened.select-add-' + randomId, function (event, data) {
                     data.panel.srcRandomId = randomId;
                     opened++;
@@ -977,7 +979,7 @@ fieldTypes.select = {
                         clearTimeout(offTimeout)
                     }
                     offTimeout = setTimeout(() => {
-                        $(window.top.document.body).off('pctable-opened.select-add-' + randomId)
+                        window.top.jQuery('body').off('pctable-opened.select-add-' + randomId)
                         window.top.App.randomIds.delete(randomId);
                     }, 200)
                 })
