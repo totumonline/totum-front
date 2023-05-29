@@ -137,6 +137,7 @@ $.extend(App.pcTableMain.prototype, {
                                     }
                                 }
                             })
+                            pcTable._insertRow.html('<td class="id"></td>');
                             pcTable._createInsertRow(pcTable._insertRow, true, item);
                             break;
                         case 'close':
