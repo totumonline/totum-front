@@ -815,6 +815,8 @@
                                 model.refresh(null, data[1].refresh)
                             }
                             Dialog.close();
+                        }).fail(() => {
+                            block = false;
                         });
                     };
 
