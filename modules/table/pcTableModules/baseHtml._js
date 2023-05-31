@@ -84,7 +84,7 @@
                 .append(this._createRowsTitle(rowsParent))
                 .append(this._createFiltersBlock())
                 .append(() => {
-                    if (!this.isTreeView && this.tableRow.pagination && this.tableRow.pagination !== '0/0') {
+                    if (!this.isTreeView && this.tableRow.pagination && this.tableRow.pagination !== '0/0' && this.tableRow.pagination.match(/^[\d]+\/[\d]/)) {
                         return this._pagination();
                     }
                 })
