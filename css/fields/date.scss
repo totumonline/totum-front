@@ -8,6 +8,11 @@
     width: 198px;
   }
 }
+body.ttm-body-mobile#pk .pcTable-container .bootstrap-datetimepicker-widget {
+  td,th {
+    height: 20px;
+  }
+}
 
 .date-popover.popover {
   max-width: 450px;
