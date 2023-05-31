@@ -698,6 +698,7 @@
 
                     if (pcTable.panels === 'off') {
                         btn = $('<button class="btn btn-sm warning-bg" disabled><i class="fa fa-address-card-o"></i></button>');
+                        App.blink(btn, 5, '#fff')
                     } else {
                         if (this.viewType !== 'panels') {
                             btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
