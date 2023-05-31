@@ -549,7 +549,7 @@
                                             break;
                                         case 'a':
                                             if ($(this).is(':checked')) {
-                                                $div.find('input[name="C"]').prop('disabled',false)
+                                                $div.find('input[name="C"]').prop('disabled', false)
                                             } else {
                                                 $div.find('input[name="C"]').prop('disabled', true).prop('checked', false)
                                             }
@@ -693,21 +693,27 @@
 
 
             if (this.tableRow.panels_view) {
-                if (this.tableRow.panels_view.state === 'both' && !pcTable.isMobile && window === window.top && pcTable.panels !== 'off') {
+                if (this.tableRow.panels_view.state === 'both' && !pcTable.isMobile && window === window.top) {
                     let btn;
-                    if (this.viewType !== 'panels') {
-                        btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
-                            this.model.panelsView(true).then(() => {
-                                App.windowReloadWithHash(this.model);
-                            })
 
-                        });
+                    if (pcTable.panels === 'off') {
+                        btn = $('<button class="btn btn-sm warning-bg" disabled><i class="fa fa-address-card-o"></i></button>');
                     } else {
-                        btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-table"></i></button>').on('click', () => {
-                            this.model.panelsView(false).then(() => {
-                                App.windowReloadWithHash(this.model);
-                            })
-                        });
+                        if (this.viewType !== 'panels') {
+                            btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
+                                this.model.panelsView(true).then(() => {
+                                    App.windowReloadWithHash(this.model);
+                                })
+
+                            });
+                        } else {
+                            btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-table"></i></button>').on('click', () => {
+                                this.model.panelsView(false).then(() => {
+                                    App.windowReloadWithHash(this.model);
+                                })
+                            });
+                        }
+
                     }
                     csv.append(btn);
                 }
