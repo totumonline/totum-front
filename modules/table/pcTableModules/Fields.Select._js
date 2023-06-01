@@ -42,7 +42,7 @@ fieldTypes.select = {
                         case 'number':
                             if (preview[2] === 'currency' || preview[3].currency) {
                                 try {
-                                    $_html.text(App.numberFormat(parseFloat(preview[1]), preview[3].dectimalPlaces, preview[3].dectimalSeparator, preview[3].thousandthSeparator, preview[3].prefix, preview[3].postfix));
+                                    $_html.text(App.numberFormat(preview[1], preview[3].dectimalPlaces, preview[3].dectimalSeparator, preview[3].thousandthSeparator, preview[3].prefix, preview[3].postfix));
                                 } catch (e) {
                                     $_html.text(preview[1]);
                                 }

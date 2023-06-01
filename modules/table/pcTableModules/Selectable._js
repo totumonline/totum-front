@@ -1286,11 +1286,10 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 })
 
                                 let count = 0;
-                                let summ = 0;
+                                let summ = Big(0);
                                 const getNum = function (val) {
-                                    let isMinus = val.toString().match(/^\s*-/) ? -1 : 1;
-
-                                    return isMinus * parseFloat(val.toString().replace(/[^\d.]/g, ''));
+                                    let isMinus = val.toString().match(/^\s*-/) ? "-" : '';
+                                    return isMinus + val.toString().replace(/[^\d.]/g, '');
                                 };
                                 selFields.forEach((field) => {
                                     pcTable.selectedCells.ids[field].forEach((id) => {
@@ -1300,10 +1299,10 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                             if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && (typeof pcTable.data[id][field].f.textasvalue === 'string') && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
                                                 if (pcTable.data[id][field].f.text !== null && pcTable.data[id][field].f.text !== "") {
                                                     let separator = pcTable.data[id][field].f.textasvalue.split('|')[1] || field.dectimalSeparator || '.'
-                                                    summ += getNum(pcTable.data[id][field].f.text.replace(separator, '.'))
+                                                    summ = summ.plus(getNum(pcTable.data[id][field].f.text.replace(separator, '.')))
                                                 }
                                             } else if (pcTable.data[id][field].v !== null) {
-                                                summ += getNum(pcTable.data[id][field].v)
+                                                summ = summ.plus(getNum(pcTable.data[id][field].v))
                                             }
                                         }
                                     })
@@ -1311,7 +1310,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 let spans = pcTable.selectedCells.summarizer.element.find('span');
 
                                 if (allNumbers) {
-                                    spans[1].innerHTML = App.numberFormat(summ, numberField.dectimalPlaces || 0, '.');
+                                    spans[1].innerHTML = App.numberFormat(summ.toString(), numberField.dectimalPlaces || 0, '.');
                                 } else {
                                     spans[1].innerHTML = '-';
                                 }

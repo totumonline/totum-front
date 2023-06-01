@@ -2777,10 +2777,15 @@
                                 let table = $('<table class="totum-math-operations"><thead><tr><th>' + App.translate('Operation') + '</th><th>' + App.translate('Value') + '</th></tr></thead>').appendTo($div),
                                     tbody = $('<tbody>').appendTo(table);
 
-                                let format = function (num, notUnit) {
+                                let format = function (num, notUnit, simple) {
+
+
+                                    if (notUnit === 'simple') {
+                                        return App.numberFormat(num, 0, undefined, field.thousandthSeparator)
+                                    }
+
                                     let unit = '';
-                                    notUnit = notUnit || false;
-                                    if (field.unitType && !notUnit) {
+                                    if (field.unitType) {
                                         unit = ' ' + field.unitType;
                                     }
                                     if (field.currency) {
@@ -2788,17 +2793,17 @@
                                         if (field.dectimalPlaces) {
                                             options.minimumFractionDigits = field.dectimalPlaces;
                                         }
-                                        return parseFloat(num).toLocaleString(App.lang.locale, options) + unit;
+                                        return App.numberFormat(num, field.dectimalPlaces, field.dectimalSeparator, field.thousandthSeparator) + unit;
                                     }
                                     return num + unit;
                                 };
 
                                 $('<tr><td>' + App.translate('Summ') + '</td><td>' + format(summ) + '</td></tr>').appendTo(tbody);
-                                $('<tr><td>' + App.translate('Number of numbers') + '</td><td>' + format(count, true) + '</td></tr>').appendTo(tbody);
+                                $('<tr><td>' + App.translate('Number of numbers') + '</td><td>' + format(count, "simple") + '</td></tr>').appendTo(tbody);
                                 $('<tr><td>' + App.translate('Average') + '</td><td>' + (count !== 0 ? format(Big(summ).div(count).round(field.dectimalPlaces || 0)) : "null") + '</td></tr>').appendTo(tbody);
                                 $('<tr><td>' + App.translate('Max') + '</td><td>' + format(max) + '</td></tr>').appendTo(tbody);
                                 $('<tr><td>' + App.translate('Min') + '</td><td>' + format(min) + '</td></tr>').appendTo(tbody);
-                                $('<tr><td>' + App.translate('Non-numeric elements') + '</td><td>' + format(notNumber, true) + '</td></tr>').appendTo(tbody);
+                                $('<tr><td>' + App.translate('Non-numeric elements') + '</td><td>' + format(notNumber, "simple") + '</td></tr>').appendTo(tbody);
 
 
                                 if (pcTable.isTreeView) {
