@@ -51,15 +51,14 @@ App.pcTableMain.prototype._print = function (exportFunction) {
     "use strict";
     let $printSettings = $('<div class="hidding-form">');
 
-    const isAnyPrinfField = function (field) {
-        if (field.showMeWidth) return true;
-    };
+    const isAnyPrinfField = field => !!field.showMeWidth;
 
     if (this.fieldCategories.param.length && this.fieldCategories.param.some(isAnyPrinfField)) {
         $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="params" class="form-check-input" checked="checked"> ' + App.translate('Parameters') + '</label></div>');
     }
-    if (this.fieldCategories.filter.length)
+    if (this.fieldCategories.filter.length && this._content.find('.pcTable-filtersTable td:visible').length){
         $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="filters" class="form-check-input" checked="checked"> ' + App.translate('Filters') + '</label></div>');
+    }
     if (this.fieldCategories.column.length && this.fieldCategories.column.some(isAnyPrinfField) && this.dataSortedVisible.length) {
         $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="rows" class="form-check-input" checked="checked"> ' + App.translate('Rows part') + '</label></div>');
         $printSettings.append('<div class="form-check no-bold" style="padding-left: 20px;"><label class="form-check-label"><input type="checkbox" name="with-id" class="form-check-input"> ' + App.translate('with id') + '</label></div>');
@@ -72,6 +71,53 @@ App.pcTableMain.prototype._print = function (exportFunction) {
         $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="other-footers" class="form-check-input" checked="checked"> ' + App.translate('Out of column footers') + '</label></div>');
     }
 
+    if (exportFunction) {
+
+        let mainExportFunction = exportFunction;
+        let tableFormats = JSON.parse(localStorage.getItem('Excel-formats') || '{}')[this.tableRow.id] || {};
+
+        exportFunction = (settings) => {
+            let formats = JSON.parse(localStorage.getItem('Excel-formats') || '{}');
+            formats[this.tableRow.id] = formats[this.tableRow.id] || {};
+            settings.forEach((v) => {
+                if (typeof v === 'object') {
+                    if (v[0] === 'dates-format') {
+                        formats[this.tableRow.id].d = v[1]
+                    } else if (v[0] === 'number-format') {
+                        formats[this.tableRow.id].n = v[1]
+                    }
+                }
+            })
+            localStorage.setItem('Excel-formats', JSON.stringify(formats));
+            mainExportFunction(settings);
+        }
+
+
+        let df, nf;
+        if (!tableFormats.d) {
+            this.model.__ajax('post', {"method": "getSchemaFormats"}).then((json) => {
+                if (json.formats) {
+                    if (json.formats.dectimalSeparator && !nf.data('changed')) {
+                        nf.val(json.formats.dectimalSeparator)
+                    }
+                    if (json.formats.date && !df.data('changed')) {
+                        df.val(json.formats.date)
+                    }
+                }
+            })
+        }
+
+        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label">' + App.translate('Date formats') + '</label> <input type="text" name="dates-format"/></div>');
+        df = $printSettings.find('input[name="dates-format"]').val(tableFormats.d || App.lang.dateFormat).on('change', function () {
+            $(this).data('changed', true)
+        });
+        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label">' + App.translate('Number dectimal delimiter') + '</label> <input type="text" name="number-format"/></div>');
+        nf = $printSettings.find('input[name="number-format"]').val(tableFormats.n || (1.1).toLocaleString().substring(1, 2)).on('change', function () {
+            $(this).data('changed', true)
+        });
+
+    }
+
     let pcTable = this;
     let title = App.translate(exportFunction ? 'Xlsx export' : 'Print');
     let Button = App.translate(exportFunction ? 'Export' : 'Print');
@@ -80,8 +126,12 @@ App.pcTableMain.prototype._print = function (exportFunction) {
             label: Button,
             action: function (dialogRef) {
                 let settings = [];
-                $printSettings.find('input:checked').each(function () {
-                    settings.push($(this).attr('name'));
+                $printSettings.find('input:checked, input[type="text"]').each(function () {
+                    if ($(this).is('input:checked')) {
+                        settings.push($(this).attr('name'));
+                    } else {
+                        settings.push([$(this).attr('name'), $(this).val()]);
+                    }
                 });
                 dialogRef.close();
                 if (exportFunction) {

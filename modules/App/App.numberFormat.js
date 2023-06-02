@@ -9,7 +9,7 @@
                 dectimalSeparator = dectimalSeparator.split('**')[val >= 0 ? 0 : 1];
             }
         }
-        if (typeof _dectimalSeparator === 'string') {
+        if (typeof _thousandthSeparator === 'string') {
             thousandthSeparator = _thousandthSeparator;
             if (thousandthSeparator.match(/\*\*/)) {
                 thousandthSeparator = thousandthSeparator.split('**')[val >= 0 ? 0 : 1];

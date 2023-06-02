@@ -826,6 +826,19 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     let copiedInRowsSection = {};
                     let withId;
 
+                    let formatSettings = {};
+                    if (placements) {
+                        placements.forEach((v) => {
+                            if (typeof v === 'object') {
+                                if (v[0] === 'dates-format') {
+                                    formatSettings.date = v[1]
+                                } else if (v[0] === 'number-format') {
+                                    formatSettings.dectimal = v[1]
+                                }
+                            }
+                        })
+                    }
+
 
                     let packetGetValueData = [];
                     let newModel = {
@@ -839,7 +852,17 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
 
                     let getFieldWithPaketModel = (Field) => {
-                        let _F = {...Field, ...{pcTable: {model: newModel}}};
+                        let _F = {...Field, ...{pcTable: {...Field.pcTable, model: newModel}}};
+                        if (formatSettings.date && _F.type === 'date') {
+                            if (_F.dateTime) {
+                                _F.dateFormat = formatSettings.date + "H:i"
+                            } else {
+                                _F.dateFormat = formatSettings.date
+                            }
+                        } else if (formatSettings.dectimal && _F.type === 'number') {
+                            _F.dectimalSeparator = formatSettings.dectimal;
+                            _F.currency = true;
+                        }
                         return _F;
                     }
 
@@ -882,7 +905,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
                     if (placements) {
                         ['params', 'filters', 'rows', 'column-footers', 'other-footers'].forEach((pl) => {
-                            if (placements.indexOf[pl] !== -1) {
+                            if (placements.some(x => x === pl)) {
                                 if (pl === 'rows') {
                                     withId = placements.indexOf('with-id') !== -1
                                     pcTable.fieldCategories.visibleColumns.forEach((field) => {
@@ -986,7 +1009,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         let resData = [];
 
                         ['params', 'filters', 'rows', 'column-footers', 'other-footers'].forEach((pl) => {
-                            if (placements.indexOf(pl) !== -1) {
+                            if (placements.some(x => x === pl)) {
                                 switch (pl) {
                                     case 'rows':
                                         if (withNames) {

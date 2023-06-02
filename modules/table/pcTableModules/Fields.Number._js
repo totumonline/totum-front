@@ -42,8 +42,7 @@ fieldTypes.number = {
     },
     getCopyText: function (val, td, item) {
         if (val === null || val === undefined || val === '' || val.v === null) return '';
-
-        return (val.v).toString().replace(/\./g, ',');
+        return (val.v).toString().replace(/\./g, this.dectimalSeparator);
     },
     getCellText: function (val, td, item) {
         if (val === null || val === undefined || val === '') return '';
