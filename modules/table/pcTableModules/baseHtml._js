@@ -192,11 +192,15 @@
                                 let withNames = btn.data('name') === 'xlsx-export-with-names';
                                 if (pcTable.selectedCells.isMultySelectedCells()) {
                                     let endCallback = pcTable.RightBottomServicesButtonTrobber();
-                                    pcTable.selectedCells.copySepected.call(pcTable, withNames, (result) => {
-                                        pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).always(endCallback).then(() => {
-                                            pcTable.RightBottomServicesButtonDone()
-                                        })
+
+                                    pcTable._excelCopyExportForm((settings)=>{
+                                        pcTable.selectedCells.copySepected.call(pcTable, withNames, (result) => {
+                                            pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).always(endCallback).then(() => {
+                                                pcTable.RightBottomServicesButtonDone()
+                                            })
+                                        }, settings);
                                     });
+
                                 } else {
                                     pcTable._print((settings) => {
                                         let endCallback = pcTable.RightBottomServicesButtonTrobber();

@@ -47,6 +47,89 @@ App.pcTableMain.prototype._printSelect = function () {
 
 }
 
+App.pcTableMain.prototype._excelExportSettingForm = function (exportFunction, $formBlock) {
+
+    let mainExportFunction = exportFunction;
+    let tableFormats = JSON.parse(localStorage.getItem('Excel-formats') || '{}')[this.tableRow.id] || {};
+
+    exportFunction = (settings) => {
+        let formats = JSON.parse(localStorage.getItem('Excel-formats') || '{}');
+        formats[this.tableRow.id] = formats[this.tableRow.id] || {};
+        settings.forEach((v) => {
+            if (typeof v === 'object') {
+                if (v[0] === 'dates-format') {
+                    formats[this.tableRow.id].d = v[1]
+                } else if (v[0] === 'number-format') {
+                    formats[this.tableRow.id].n = v[1]
+                }
+            }
+        })
+        localStorage.setItem('Excel-formats', JSON.stringify(formats));
+        mainExportFunction(settings);
+    }
+
+
+    let df, nf;
+    if (!tableFormats.d) {
+        this.model.__ajax('post', {"method": "getSchemaFormats"}).then((json) => {
+            if (json.formats) {
+                if (json.formats.dectimalSeparator && !nf.data('changed')) {
+                    nf.val('.')
+                }
+                if (json.formats.date && !df.data('changed')) {
+                    df.val(json.formats.date)
+                }
+            }
+        })
+    }
+
+    let grid = $('<div class="label-grid no-bold">');
+    $formBlock.append(grid)
+    grid.append('<label class="form-check-label">' + App.translate('Date formats') + '</label> <input type="text" name="dates-format" class="form-control"/>');
+    df = $formBlock.find('input[name="dates-format"]').val(tableFormats.d || App.lang.dateFormat).on('change', function () {
+        $(this).data('changed', true)
+    });
+    grid.append('<label class="form-check-label">' + App.translate('Number dectimal delimiter') + '</label> <input type="text" name="number-format" class="form-control"/>');
+    nf = $formBlock.find('input[name="number-format"]').val(tableFormats.n || (1.1).toLocaleString().substring(1, 2)).on('change', function () {
+        $(this).data('changed', true)
+    });
+
+    return exportFunction;
+}
+
+App.pcTableMain.prototype._excelCopyExportForm = function (exportFunction) {
+    let $printSettings = $('<div class="hidding-form">');
+    exportFunction = this._excelExportSettingForm(exportFunction, $printSettings);
+    let title = 'Xlsx export';
+    let Button = 'Export';
+
+    let buttons = [
+        {
+            label: Button,
+            action: function (dialogRef) {
+                let settings = ['rows'];
+                $printSettings.find('input[type="text"]').each(function () {
+                    settings.push([$(this).attr('name'), $(this).val()]);
+                });
+                dialogRef.close();
+                exportFunction(settings)
+            }
+        },
+        {
+            label: App.translate('Cancel'),
+            action: function (dialogRef) {
+                dialogRef.close();
+            }
+        }
+    ];
+    window.top.BootstrapDialog.show({
+        message: $printSettings,
+        type: null,
+        title: title,
+        buttons: buttons,
+        draggable: true
+    })
+}
 App.pcTableMain.prototype._print = function (exportFunction) {
     "use strict";
     let $printSettings = $('<div class="hidding-form">');
@@ -56,7 +139,7 @@ App.pcTableMain.prototype._print = function (exportFunction) {
     if (this.fieldCategories.param.length && this.fieldCategories.param.some(isAnyPrinfField)) {
         $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="params" class="form-check-input" checked="checked"> ' + App.translate('Parameters') + '</label></div>');
     }
-    if (this.fieldCategories.filter.length && this._content.find('.pcTable-filtersTable td:visible').length){
+    if (this.fieldCategories.filter.length && this._content.find('.pcTable-filtersTable td:visible').length) {
         $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="filters" class="form-check-input" checked="checked"> ' + App.translate('Filters') + '</label></div>');
     }
     if (this.fieldCategories.column.length && this.fieldCategories.column.some(isAnyPrinfField) && this.dataSortedVisible.length) {
@@ -72,52 +155,7 @@ App.pcTableMain.prototype._print = function (exportFunction) {
     }
 
     if (exportFunction) {
-
-        let mainExportFunction = exportFunction;
-        let tableFormats = JSON.parse(localStorage.getItem('Excel-formats') || '{}')[this.tableRow.id] || {};
-
-        exportFunction = (settings) => {
-            let formats = JSON.parse(localStorage.getItem('Excel-formats') || '{}');
-            formats[this.tableRow.id] = formats[this.tableRow.id] || {};
-            settings.forEach((v) => {
-                if (typeof v === 'object') {
-                    if (v[0] === 'dates-format') {
-                        formats[this.tableRow.id].d = v[1]
-                    } else if (v[0] === 'number-format') {
-                        formats[this.tableRow.id].n = v[1]
-                    }
-                }
-            })
-            localStorage.setItem('Excel-formats', JSON.stringify(formats));
-            mainExportFunction(settings);
-        }
-
-
-        let df, nf;
-        if (!tableFormats.d) {
-            this.model.__ajax('post', {"method": "getSchemaFormats"}).then((json) => {
-                if (json.formats) {
-                    if (json.formats.dectimalSeparator && !nf.data('changed')) {
-                        nf.val('.')
-                    }
-                    if (json.formats.date && !df.data('changed')) {
-                        df.val(json.formats.date)
-                    }
-                }
-            })
-        }
-
-        let grid = $('<div class="label-grid no-bold">');
-        $printSettings.append(grid)
-        grid.append('<label class="form-check-label">' + App.translate('Date formats') + '</label> <input type="text" name="dates-format" class="form-control"/>');
-        df = $printSettings.find('input[name="dates-format"]').val(tableFormats.d || App.lang.dateFormat).on('change', function () {
-            $(this).data('changed', true)
-        });
-        grid.append('<label class="form-check-label">' + App.translate('Number dectimal delimiter') + '</label> <input type="text" name="number-format" class="form-control"/>');
-        nf = $printSettings.find('input[name="number-format"]').val(tableFormats.n || (1.1).toLocaleString().substring(1, 2)).on('change', function () {
-            $(this).data('changed', true)
-        });
-
+        exportFunction = this._excelExportSettingForm(exportFunction, $printSettings)
     }
 
     let pcTable = this;
