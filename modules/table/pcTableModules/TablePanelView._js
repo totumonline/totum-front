@@ -4,7 +4,7 @@
         let data = this.data[id];
         let div = data.$tr || $('<div class="panelsView-card pcTable-floatInner">')
             .css({
-                'min-height':(this.tableRow.panels_view.height || 50) + 'px',
+                'min-height': (this.tableRow.panels_view.height || 50) + 'px',
                 height: this.tableRow.panels_view.height || "auto",
                 width: this.tableRow.panels_view.width
             });
@@ -708,12 +708,12 @@
                         let css = {
                             left: offset.left + this._innerContainer.scrollLeft(),
                             'grid-template-columns': wrapper.css('grid-template-columns'),
-                            width: wrapper.width()
+                            width: parseInt(this._innerContainer.width()) + parseInt(this._innerContainer.css('padding-left'))
                         }
-                        cln = $('<div class="kanbanWrapper pcTable-floatBlock cln">').css(css);
-                        cln.width(this._innerContainer.width())
 
-                        if(wrapper.find('.kanban_left_buttons')){
+                        cln = $('<div class="kanbanWrapper pcTable-floatBlock cln">').css(css);
+
+                        if (wrapper.find('.kanban_left_buttons')) {
                             cln.append('<div>')
                         }
 
