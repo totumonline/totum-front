@@ -412,7 +412,9 @@ App.langs.ru =
 "No, create new version":"Нет, создать новую версию",
 "Rewrite last version by this file":"Заменить последнюю версию этим файлом",
 "Rewrite or create?":"Заменить или создать новую версию?",
-"File for version must be same type as main one: %s":"Файл для версии должен быть того же типа, что и основной: %s"
+"File for version must be same type as main one: %s":"Файл для версии должен быть того же типа, что и основной: %s",
+"Date formats":"Формат дат",
+"Number dectimal delimiter":"Десятичный разделитель"
 }
 
 	}

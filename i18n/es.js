@@ -412,7 +412,9 @@ App.langs.es =
 "No, create new version":"No, cree una nueva versión",
 "Rewrite last version by this file":"Sustituya la última versión por este archivo",
 "Rewrite or create?":"¿Sustituir o crear una nueva versión?",
-"File for version must be same type as main one: %s":"El archivo para la versión debe ser del mismo tipo que el archivo principal: %s"
+"File for version must be same type as main one: %s":"El archivo para la versión debe ser del mismo tipo que el archivo principal: %s",
+"Date formats":"Formatos de fecha",
+"Number dectimal delimiter":"Número delimitador dectimal"
 }
 
 	}
