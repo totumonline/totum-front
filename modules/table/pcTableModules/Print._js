@@ -98,7 +98,7 @@ App.pcTableMain.prototype._print = function (exportFunction) {
             this.model.__ajax('post', {"method": "getSchemaFormats"}).then((json) => {
                 if (json.formats) {
                     if (json.formats.dectimalSeparator && !nf.data('changed')) {
-                        nf.val(json.formats.dectimalSeparator)
+                        nf.val('.')
                     }
                     if (json.formats.date && !df.data('changed')) {
                         df.val(json.formats.date)
@@ -107,11 +107,13 @@ App.pcTableMain.prototype._print = function (exportFunction) {
             })
         }
 
-        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label">' + App.translate('Date formats') + '</label> <input type="text" name="dates-format"/></div>');
+        let grid = $('<div class="label-grid no-bold">');
+        $printSettings.append(grid)
+        grid.append('<label class="form-check-label">' + App.translate('Date formats') + '</label> <input type="text" name="dates-format" class="form-control"/>');
         df = $printSettings.find('input[name="dates-format"]').val(tableFormats.d || App.lang.dateFormat).on('change', function () {
             $(this).data('changed', true)
         });
-        $printSettings.append('<div class="form-check no-bold"><label class="form-check-label">' + App.translate('Number dectimal delimiter') + '</label> <input type="text" name="number-format"/></div>');
+        grid.append('<label class="form-check-label">' + App.translate('Number dectimal delimiter') + '</label> <input type="text" name="number-format" class="form-control"/>');
         nf = $printSettings.find('input[name="number-format"]').val(tableFormats.n || (1.1).toLocaleString().substring(1, 2)).on('change', function () {
             $(this).data('changed', true)
         });

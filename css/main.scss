@@ -2278,6 +2278,15 @@ ul.CodeMirror-hints {
 .hidding-form input[type=checkbox] {
   margin-right: 7px;
 }
+.hidding-form  .label-grid {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: minmax(70px, max-content) 1fr;
+  place-items: baseline;
+  .form-check-label{
+    text-align: left;
+  }
+}
 
 input {
   box-shadow: none !important;
