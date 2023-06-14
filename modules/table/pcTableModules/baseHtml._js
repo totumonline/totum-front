@@ -168,7 +168,7 @@
             }
         },
         RightBottomServicesButtonRefresh: function () {
-            if (this.tableRow.__xlsx || this.selectedCells.isMultySelectedCells() || (this.f.dotbuttons && this.f.dotbuttons.length)) {
+            if (this.tableRow.__xlsx || this.tableRow.__xlsx_import || this.selectedCells.isMultySelectedCells() || (this.f.dotbuttons && this.f.dotbuttons.length)) {
                 this.RightBottomServicesButton.prop('disabled', '');
                 this.RightBottomServicesButton.on('click', () => {
                     if (this.RightBottomServicesButton.attr('aria-describedby')) {
@@ -212,6 +212,12 @@
                                     })
                                 }
                                 break;
+                            case 'xlsx-import':
+                                let endCallback = pcTable.RightBottomServicesButtonTrobber();
+                                pcTable.model.excelImport(pcTable.f.title || pcTable.tableRow.title).always(endCallback).then(() => {
+                                    pcTable.RightBottomServicesButtonDone()
+                                })
+                                break;
                             default:
                                 pcTable._buttonClick(btn.parent(), pcTable.fields[btn.data('field')]);
                         }
@@ -224,12 +230,15 @@
                         $popover.append('<div><button class="btn-default btn btn-sm" data-name="copy-with-names" title="' + title + '"><i class="fa fa-clone"></i>' + title + '</button></div>')
                     }
                     if (this.tableRow.__xlsx) {
-
                         let title = App.translate('Excel export with names');
                         $popover.append('<div><button class="btn-default btn btn-sm" title="' + title + '" data-name="xlsx-export-with-names"><i class="fa fa-file-excel-o"></i>' + title + '</button></div>')
 
                         title = App.translate('Excel export');
                         $popover.append('<div><button class="btn-default btn btn-sm" title="' + title + '" data-name="xlsx-export"><i class="fa fa-file-excel-o"></i>' + title + '</button></div>')
+                    }
+                    if (this.tableRow.__xlsx_import) {
+                        let title = App.translate('Excel import');
+                        $popover.append('<div><button class="btn-default btn btn-sm" title="' + title + '" data-name="xlsx-import"><i class="fa fa-file-excel-o"></i>' + title + '</button></div>')
                     }
 
                     if (this.f.dotbuttons && this.f.dotbuttons.forEach) {

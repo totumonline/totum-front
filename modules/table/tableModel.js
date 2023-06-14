@@ -527,6 +527,12 @@
                     method: 'excelExport'
                 });
             },
+            excelImport: function (title) {
+                return this.__ajax('post', {
+                    method: 'excelImport',
+                    title: title
+                });
+            },
             getEditSelect: function (item, fieldName, q, parentid, withLoading, RequestObject, hash) {
                 var sendData = {};
                 return this.__ajax('post', {
