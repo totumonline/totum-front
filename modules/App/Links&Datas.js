@@ -338,7 +338,7 @@
                             let $iframe = $('<iframe src="' + uri + '" style="width: 100%; height: 70vh; border: none"></iframe>');
 
                             let btns;
-                            if (linkObject.elseData && linkObject.elseData.bottombuttons === false && !model.isCreatorView()) {
+                            if (linkObject.elseData && (linkObject.elseData.bottombuttons === 'force' || (linkObject.elseData.bottombuttons === false && !model.isCreatorView()))) {
                                 btns = []
                             } else {
 
@@ -1325,8 +1325,8 @@
         }
 
         let adminButtonsHidden = false;
-        if (data.elseData && data.elseData.bottombuttons === false) {
-            if (model.isCreatorView()) {
+        if (data.elseData && (data.elseData.bottombuttons === false || data.elseData.bottombuttons === 'force')) {
+            if (model.isCreatorView() && data.elseData.bottombuttons !== 'force') {
                 adminButtonsHidden = true;
             } else {
                 btns = false;

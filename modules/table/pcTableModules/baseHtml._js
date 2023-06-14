@@ -3114,6 +3114,8 @@
 
             if (pcTable.isMobile && field.type !== 'chart') {
                 editbutton = '<button class="fa fa-ellipsis-h ttm-panel pull-right ibtn"></button>' + editbutton;
+            }else if((!field.editable || format.block) && field.CodeActionOnClick && format.editbutton){
+                editbutton = '<button class="fa fa-ellipsis-h asUrl pull-right ibtn"></button>' + editbutton;
             }
 
             if (format.block) {
