@@ -414,7 +414,8 @@ App.langs.de =
 "Rewrite or create?":"Ersetzen oder eine neue Version erstellen?",
 "File for version must be same type as main one: %s":"Die Datei für die Version muss vom gleichen Typ sein wie die Hauptdatei: %s",
 "Date formats":"Datumsformate",
-"Number dectimal delimiter":"Nummer dezimales Trennzeichen"
+"Number dectimal delimiter":"Nummer dezimales Trennzeichen",
+"Excel import":"Excel-Import"
 }
 
 	}
