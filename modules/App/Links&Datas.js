@@ -773,7 +773,13 @@
                         }, () => {
                         }, () => {
                         }, 1, 'editField')
-                        html.html(input).addClass('input-select')
+                        html.html(input).addClass('input-select');
+                        if (!data[1].multiple && data[1].selectAndSave) {
+                            input.on('change', 'select', function () {
+                                save()
+                            })
+                        }
+
                     } else {
 
                         if (html.find('#ttmInput').length) {
