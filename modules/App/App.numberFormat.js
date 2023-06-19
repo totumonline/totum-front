@@ -20,7 +20,7 @@
             postfix = postfix.match(/\*\*/) ? postfix.split('**')[val >= 0 ? 0 : 1] : postfix;
         }
 
-        if (typeof _postfix === 'string') {
+        if (typeof _prefix === 'string') {
             prefix = _prefix;
             if (prefix.match(/\*\*/)) {
                 prefix = prefix.split('**')[val >= 0 ? 0 : 1];
