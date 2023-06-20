@@ -530,7 +530,8 @@
             excelImport: function (title) {
                 return this.__ajax('post', {
                     method: 'excelImport',
-                    title: title
+                    title: title,
+                    bwidth: window.top.document.body.clientWidth
                 });
             },
             getEditSelect: function (item, fieldName, q, parentid, withLoading, RequestObject, hash) {
