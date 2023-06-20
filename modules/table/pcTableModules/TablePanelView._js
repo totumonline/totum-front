@@ -713,7 +713,7 @@
 
                         cln = $('<div class="kanbanWrapper pcTable-floatBlock cln">').css(css);
 
-                        if (wrapper.find('.kanban_left_buttons')) {
+                        if (wrapper.find('.kanban_left_buttons').length) {
                             cln.append('<div>')
                         }
 
