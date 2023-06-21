@@ -3,6 +3,8 @@
 .btn {
   background-color: #fff;
 
+  border-radius: 6px;
+
   &:focus, &:active {
     outline: none !important;
     box-shadow: none !important;
@@ -96,6 +98,10 @@
 
   .bootstrap-dialog-footer-buttons {
     line-height: 41px;
+
+    .btn.btn-default {
+      border-color: #f4f4f4;
+    }
   }
 
   .bootstrap-dialog-close-button .close {

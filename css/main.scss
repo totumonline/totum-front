@@ -220,7 +220,7 @@ footer {
   padding: 1px 4px;
   font-size: 10px;
   line-height: 1.5;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 .modal-backdrop.in {
@@ -358,10 +358,10 @@ footer {
   background-image: none;
   border-radius: 0px;
   border: 0px;
-  background-color: #faf9f8;
+  background-color: #fbfbfb;
   margin: -5px -5px 17px -5px;
   box-shadow: none;
-
+  border-bottom: 1px solid #f4f4f4;
   .navbar-nav {
     margin-left: 0px;
 
@@ -451,7 +451,7 @@ input:not([type="checkbox"]):focus {
 .pcTable-title {
   font-size: 26px;
   font-family: 'PTRootUIWeb', sans-serif;
-  font-weight: 500;
+  font-weight: 400;
   padding-bottom: 4px;
 
   .warning-bg {
@@ -516,15 +516,15 @@ input:not([type="checkbox"]):focus {
 
 $idWidth: 70px;
 $blockedTdColor: rgba(128, 128, 128, 0.47);
-$tdWithCodeColor: #fffdf9;
-$tdDataRowMainColor: #fffdf9;
+$tdWithCodeColor: #fffefc;
+$tdDataRowMainColor: #fffefc;
 $tdBackgroundSelectedColor: #ccf0ff;
 $tdBackgroundSelectedNonEditColor: #cbe0ff;
 $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
 
 @mixin idClass() {
   width: $idWidth;
-  background-color: whitesmoke;
+  background-color: #fafafa;
   font-size: 10px;
   text-align: right;
   padding: 0;
@@ -700,7 +700,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
   }
   span.cell-title {
     font-family: PTRootUIWeb;
-    font-weight: 500;
+    font-weight: 400;
     white-space: nowrap;
     color: #4a4a4a;
   }
@@ -850,7 +850,7 @@ th {
     margin-right: 5px;
     margin-top: -3px;
 
-    border-color: transparent;
+    border-color: #f4f4f4;
 
     &:hover {
       box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
@@ -971,7 +971,7 @@ th {
 }
 
 .pcTable-table th:not(.id) {
-  background-color: whitesmoke;
+  background-color: #fafafa;
 }
 
 .bottomRightPopover {
@@ -1179,7 +1179,9 @@ th {
     padding-bottom: 25px;
     padding-left: $idWidth;
     margin-right: 10px;
-    background-color: whitesmoke;
+    background-color: #fafafa;
+    border: 1px solid #f4f4f4;
+    border-radius: 6px;
 
     .table-in-notification & {
       padding-left: 0;
@@ -1215,7 +1217,7 @@ th {
         padding: 10px;
         border-radius: 4px;
 
-        box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+        box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
       }
 
       #servicesButton {
@@ -1323,11 +1325,11 @@ th {
   td.buttons-go {
     button {
       border-color: transparent;
-      box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+      box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
 
       &:hover {
         border-color: transparent;
-        box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
+        box-shadow:  2px 2px 1px -1px rgba(0,0,0,0.11), 4px 4px 10px 0px rgba(0,0,0,0.02), 1px 1px 5px 0px rgba(0,0,0,0.02);
       }
     }
   }
@@ -1449,11 +1451,11 @@ th {
   button {
 
     border-color: transparent;
-    box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+    box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08);
 
     &:hover {
       border-color: transparent;
-      box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
+      box-shadow:  2px 2px 1px -1px rgba(0,0,0,0.11), 4px 4px 10px 0px rgba(0,0,0,0.02), 1px 1px 5px 0px rgba(0,0,0,0.02);
     }
 
     &:hover:disabled {
@@ -1961,7 +1963,7 @@ th.id .pcTable-filters.for-selected .btn {
     margin-top: 10px;
     margin-right: 0;
     border-radius: 5px;
-    box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+    box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
     //font-family: 'Open Sans', serif;
 
     width: 100%;
@@ -2372,11 +2374,11 @@ input {
 .insert-row-buttons {
   button {
     border-color: transparent;
-    box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+    box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
 
     &:hover {
       border-color: transparent;
-      box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
+      box-shadow:  2px 2px 1px -1px rgba(0,0,0,0.11), 4px 4px 10px 0px rgba(0,0,0,0.02), 1px 1px 5px 0px rgba(0,0,0,0.02);
     }
 
     &:focus {
@@ -2388,11 +2390,11 @@ input {
 .pcTable-noDataRow button {
   margin-left: 10px;
   border-color: transparent;
-  box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+  box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
 
   &:hover {
     border-color: transparent;
-    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.11), 0px 4px 3px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.02);
+    box-shadow:  2px 2px 1px -1px rgba(0,0,0,0.11), 4px 4px 10px 0px rgba(0,0,0,0.02), 1px 1px 5px 0px rgba(0,0,0,0.02);
   }
 
   height: 22px;

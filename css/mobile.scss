@@ -392,7 +392,7 @@ body.ttm-body-mobile {
       }
 
       button.button-field {
-        background-color: #fffdf9;
+        background-color: #fffefc;
       }
 
       &.pcTable-filtersTable td:not(.cell-button) {
@@ -421,7 +421,7 @@ body.ttm-body-mobile {
 
       &:disabled {
         background-color: #faf9f8;
-        box-shadow: 0px 2px 0px -1px rgba(0, 0, 0, 0.08), 0px 4px 2px 0px rgba(0, 0, 0, 0.01), 0px 1px 2px 0px rgba(0, 0, 0, 0.02);
+        box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
       }
     }
   }

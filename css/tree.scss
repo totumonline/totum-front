@@ -10,6 +10,7 @@
   -khtml-user-select: none;
   user-select: none;
 
+  border-right: 1px solid #f4f4f4;
 }
 
 #page-tree {
@@ -30,8 +31,8 @@
   padding-top: 10px;
 
   input {
-    border-color: transparent;
-    border-radius: 3px;
+    border-color: #f4f4f4;
+    border-radius: 6px;
     padding: 5px 10px;
   }
 }
@@ -41,6 +42,9 @@
   border-top: 1px solid lightgray;
   margin-right: 10px;
   margin-left: 10px;
+
+  font-family: 'PTRootUIWeb';
+
 
   a {
     width: 210px;
@@ -80,7 +84,7 @@
   -ms-overflow-style: none;
 
   position: absolute;
-  background-color: #f3f3f3;
+  background-color: #fcfcfc;
   /*color: #ccc;*/
   top: 0px;
   left: 0px;
@@ -100,9 +104,12 @@
 #leftTree {
   padding-left: 10px;
   padding-bottom: 30px;
-  background-color: #f3f3f3;
+  background-color: #fcfcfc;
   padding-top: 10px;
   width: 300px;
+
+  font-family: 'PTRootUIWeb';
+  font-weight: 400;
 
   .jstree-node {
     .tree-folder {
@@ -154,8 +161,8 @@
   .jstree-selected > a, a.jstree-hovered {
     color: #000;
     font-weight: 500;
-    background: #e8e8e8;
-    border-radius: 0;
+    background: #f4f4f4;
+    border-radius: 6px 0 0 6px;
     border: none;
     box-shadow: none;
   }
