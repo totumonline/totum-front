@@ -1178,7 +1178,7 @@ th {
     overflow-y: hidden;
     padding-bottom: 25px;
     padding-left: $idWidth;
-
+    margin-right: 10px;
     background-color: whitesmoke;
 
     .table-in-notification & {
@@ -1471,7 +1471,7 @@ th {
 }
 
 .pcTable-rowsWrapper {
-  background-color: $rowsBackColor;
+  background-color: transparent//$rowsBackColor;
 }
 
 #refresh-notify {

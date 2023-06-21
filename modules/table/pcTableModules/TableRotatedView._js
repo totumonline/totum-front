@@ -25,7 +25,8 @@
                     }
                 },
                 setInnerContainerWidth: function(){
-                    if (!this.isMobile) {
+                    this._innerContainer.width('auto');
+                   /* if (!this.isMobile) {
                         if (this.width - 80 > this._table.width() && this.viewType !== 'panels') {
                             this._innerContainer.width(this._table.width() - 45);
                         } else {
@@ -34,7 +35,7 @@
                         this.addInnerContainerScroll();
                     } else {
                         this._innerContainer.width('auto');
-                    }
+                    }*/
                 },
                 _addCellId: function (item, $row) {
                     let $tdId = $('<td class="id"></td>');

@@ -17,7 +17,7 @@ App.pcTableMain.prototype._addRowPanel = function (panelId, row, buttons) {
                         if ($var.func) {
                             btn.on('change', $var.func);
                         }
-                        btn=btn.wrap('<span style="font-size: 10px; padding-left: 8px;" >').parent().append(' <span style="padding-top: 2px;">'+text+'</span>');
+                        btn = btn.wrap('<span style="font-size: 10px; padding-left: 8px;" >').parent().append(' <span style="padding-top: 2px;">' + text + '</span>');
                     }
                 }
             }
@@ -43,7 +43,7 @@ App.pcTableMain.prototype._addRowPanel = function (panelId, row, buttons) {
         let popoverId = row.attr('aria-describedby');
         let popover = $('#' + popoverId).addClass('warning-bg');
         popover.find('.arrow').css('left', '80%');
-       pcTable._positionPanel.call(pcTable, popover, row);
+        pcTable._positionPanel.call(pcTable, popover, row);
         panel.show()
     }, 50);
 
@@ -52,11 +52,11 @@ App.pcTableMain.prototype._addRowPanel = function (panelId, row, buttons) {
 };
 App.pcTableMain.prototype._positionPanel = function (panel, row) {
     let p = row.position();
-    let left = this.tableWidth-120;
-    if (this._innerContainer.width()>this.tableWidth){
+    let left = this.tableWidth - 120;
+    if (this._innerContainer.width() > this.tableWidth) {
         panel.css({left: left})
-    }else{
-        panel.css({left: this._innerContainer.width()-120})
+    } else {
+        panel.css({left: this._innerContainer.width() - 120})
     }
 
     /*if (this._innerContainer.width()>this.tableWidth){
