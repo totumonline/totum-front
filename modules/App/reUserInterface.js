@@ -16,109 +16,137 @@
             if ($('#isCreator').length === 0) {
                 let creatorButton = $('<span id="isCreator" class="btn btn-sm"><i class="fa-user-circle fa"></i></span>');
 
-                if (localStorage.getItem('notCreator')) {
+                if (App.isMobile()) {
                     creatorButton.addClass('btn-warning');
-                    $('.plus-top-branch').hide();
-                } else {
-                    creatorButton.addClass('btn-danger');
-                }
+                    creatorButton.popover({
+                        html: false,
+                        content: App.translate('You are in mobile mode - switch to desktop mode to enable the admin layer.'),
+                        trigger: 'manual',
+                        container: 'body',
+                        placement: 'bottom',
+                        template: '<div class="popover" role="tooltip" style=""><div class="arrow" style="left: 50%;"></div><div class="popover-content" style=" padding: 3px 5px;"></div></div>'
+                    });
 
-                let isCommonView = false;
-                if ($.cookie('ttm__commonTableView') === 'true') {
-                    creatorButton.addClass('commonView');
-                    isCommonView = true;
-                }
-
-                const changeNotCreator = (setted) => {
-                    if (!setted) {
-                        localStorage.setItem('notCreator', true)
-                    } else {
-                        localStorage.removeItem('notCreator')
-                    }
-                }
-
-                creatorButton.on('click', () => {
-                    let mainTable = $('#table').data('pctable');
-                    let specView = mainTable && (isCommonView || mainTable.isTreeView || mainTable.viewType);
-                    if (specView) {
-                        let showed;
-                        if (!creatorButton.data('bs.popover')) {
-
-                            let $selects = $('<div id="isCreatorSelector"></div>');
-
-                            $selects.append('<div><input type="checkbox" data-type="NotCreatorView"> ' + App.translate('isCreatorSelector-NotCreatorView') + '</div>');
-                            if (specView) {
-                                $selects.append('<div><input type="checkbox" data-type="CommonView"> ' + App.translate('isCreatorSelector-CommonView') + '</div>');
-                            }
-
-                            $selects.append('<div><button>' + App.translate('Apply') + '</button></div>');
-
-                            if ($.cookie('ttm__commonTableView') === 'true') {
-                                $selects.find('[data-type="CommonView"]').prop('checked', true);
-                            }
-                            if (localStorage.getItem('notCreator')) {
-                                $selects.find('[data-type="NotCreatorView"]').prop('checked', true);
-                            }
-
-                            if (App.isMobile()) {
-                                $selects.find('[data-type="NotCreatorView"]').parent().addClass('disabled')
-                                $selects.find('[data-type="NotCreatorView"]').prop('disabled', true)
-                            } else {
-                                $selects.find('[data-type="NotCreatorView"]').parent().removeClass('disabled')
-                                $selects.find('[data-type="NotCreatorView"]').prop('disabled', false)
-                            }
-
-
-                            $selects.on('click', 'button', function () {
-                                let NotCreatorView = $selects.find('[data-type="NotCreatorView"]').is(':checked');
-                                let CommonView = $selects.find('[data-type="CommonView"]').is(':checked');
-                                let MobileView = $selects.find('[data-type="MobileView"]').is(':checked');
-                                changeNotCreator(!NotCreatorView);
-                                let path = window.location.pathname
-                                if (!CommonView) {
-                                    $.removeCookie('ttm__commonTableView', {path: path})
-                                } else {
-                                    $.cookie('ttm__commonTableView', 'true', {path: path})
-                                }
-
-                                window.location.reload(true)
-                            })
-                            $selects.on('click', (event) => {
-                                event.stopPropagation();
-                            })
-
-
-                            creatorButton.popover({
-                                trigger: "manual",
-                                placement: "bottom",
-                                content: $selects,
-                                html: true,
-                                animation: false,
-                                container: '#pk nav.navbar-default'
-                            })
-                        }
-                        if (!showed) {
-
+                    creatorButton.on('click', () => {
+                        if (!creatorButton.attr('aria-describedby')) {
                             creatorButton.popover('show');
                             setTimeout(() => {
-                                if (mainTable) {
-                                    mainTable.closeCallbacks.push(() => {
-                                        setTimeout(() => {
-                                            creatorButton.popover('hide');
-                                            showed = false;
-                                        }, 50)
-                                    })
-                                }
+                                $('body').one('click.creatorButton', function (e) {
+                                    if (e.altKey !== undefined) {
+                                        creatorButton.popover('hide');
+                                    }
+                                });
                             }, 100);
                         }
+                    })
 
 
+                } else {
+
+
+                    if (localStorage.getItem('notCreator')) {
+                        creatorButton.addClass('btn-warning');
+                        $('.plus-top-branch').hide();
                     } else {
-                        changeNotCreator(localStorage.getItem('notCreator'))
-                        window.location.reload(true);
+                        creatorButton.addClass('btn-danger');
                     }
-                })
 
+                    let isCommonView = false;
+                    if ($.cookie('ttm__commonTableView') === 'true') {
+                        creatorButton.addClass('commonView');
+                        isCommonView = true;
+                    }
+
+                    const changeNotCreator = (setted) => {
+                        if (!setted) {
+                            localStorage.setItem('notCreator', true)
+                        } else {
+                            localStorage.removeItem('notCreator')
+                        }
+                    }
+
+                    creatorButton.on('click', () => {
+                        let mainTable = $('#table').data('pctable');
+                        let specView = mainTable && (isCommonView || mainTable.isTreeView || mainTable.viewType);
+                        if (specView) {
+                            let showed;
+                            if (!creatorButton.data('bs.popover')) {
+
+                                let $selects = $('<div id="isCreatorSelector"></div>');
+
+                                $selects.append('<div><input type="checkbox" data-type="NotCreatorView"> ' + App.translate('isCreatorSelector-NotCreatorView') + '</div>');
+                                if (specView) {
+                                    $selects.append('<div><input type="checkbox" data-type="CommonView"> ' + App.translate('isCreatorSelector-CommonView') + '</div>');
+                                }
+
+                                $selects.append('<div><button>' + App.translate('Apply') + '</button></div>');
+
+                                if ($.cookie('ttm__commonTableView') === 'true') {
+                                    $selects.find('[data-type="CommonView"]').prop('checked', true);
+                                }
+                                if (localStorage.getItem('notCreator')) {
+                                    $selects.find('[data-type="NotCreatorView"]').prop('checked', true);
+                                }
+
+                                if (App.isMobile()) {
+                                    $selects.find('[data-type="NotCreatorView"]').parent().addClass('disabled')
+                                    $selects.find('[data-type="NotCreatorView"]').prop('disabled', true)
+                                } else {
+                                    $selects.find('[data-type="NotCreatorView"]').parent().removeClass('disabled')
+                                    $selects.find('[data-type="NotCreatorView"]').prop('disabled', false)
+                                }
+
+
+                                $selects.on('click', 'button', function () {
+                                    let NotCreatorView = $selects.find('[data-type="NotCreatorView"]').is(':checked');
+                                    let CommonView = $selects.find('[data-type="CommonView"]').is(':checked');
+                                    let MobileView = $selects.find('[data-type="MobileView"]').is(':checked');
+                                    changeNotCreator(!NotCreatorView);
+                                    let path = window.location.pathname
+                                    if (!CommonView) {
+                                        $.removeCookie('ttm__commonTableView', {path: path})
+                                    } else {
+                                        $.cookie('ttm__commonTableView', 'true', {path: path})
+                                    }
+
+                                    window.location.reload(true)
+                                })
+                                $selects.on('click', (event) => {
+                                    event.stopPropagation();
+                                })
+
+
+                                creatorButton.popover({
+                                    trigger: "manual",
+                                    placement: "bottom",
+                                    content: $selects,
+                                    html: true,
+                                    animation: false,
+                                    container: '#pk nav.navbar-default'
+                                })
+                            }
+                            if (!showed) {
+
+                                creatorButton.popover('show');
+                                setTimeout(() => {
+                                    if (mainTable) {
+                                        mainTable.closeCallbacks.push(() => {
+                                            setTimeout(() => {
+                                                creatorButton.popover('hide');
+                                                showed = false;
+                                            }, 50)
+                                        })
+                                    }
+                                }, 100);
+                            }
+
+
+                        } else {
+                            changeNotCreator(localStorage.getItem('notCreator'))
+                            window.location.reload(true);
+                        }
+                    })
+                }
 
                 $('#docs-link').before(creatorButton)
             }
@@ -261,7 +289,7 @@
                                 localStorage.setItem('notMobileView', 'true')
                                 window.location.reload(true);
                             }
-                        }else{
+                        } else {
                             localStorage.setItem('notMobileView', 'false')
                             window.location.reload(true);
                         }

@@ -415,7 +415,8 @@ App.langs.ru =
 "File for version must be same type as main one: %s":"Файл для версии должен быть того же типа, что и основной: %s",
 "Date formats":"Формат дат",
 "Number dectimal delimiter":"Десятичный разделитель",
-"Excel import":"Excel импорт"
+"Excel import":"Excel импорт",
+"You are in mobile mode - switch to desktop mode to enable the admin layer.":"Вы находитесь в мобильном режиме — переключитесь в десктоп режим, чтобы включить админ-слой."
 }
 
 	}

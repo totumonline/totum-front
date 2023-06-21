@@ -415,7 +415,8 @@ App.langs.es =
 "File for version must be same type as main one: %s":"El archivo para la versión debe ser del mismo tipo que el archivo principal: %s",
 "Date formats":"Formatos de fecha",
 "Number dectimal delimiter":"Número delimitador dectimal",
-"Excel import":"Importar de Excel"
+"Excel import":"Importar de Excel",
+"You are in mobile mode - switch to desktop mode to enable the admin layer.":"Estás en modo móvil - cambia a modo escritorio para habilitar la capa de administración."
 }
 
 	}
