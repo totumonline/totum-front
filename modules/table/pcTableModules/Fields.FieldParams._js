@@ -575,7 +575,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
             case 'json':
                 element = $('<div class="JSONEditor">').height(500).on('blur', callback);
                 var editor = new JSONEditor(element.get(0), {});
-                var btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
+                var btn = $('<a href="#" style="padding-top: 8px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
                     var div = $('<div>');
                     var textarea = $('<textarea class="form-control" style="height: 250px;">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
 
@@ -628,7 +628,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 element.find('.jsoneditor-menu').append(btn);
 
                 if (fName === 'chartOptions') {
-                    let btn2 = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Fill in by the default settings') + '</a>');
+                    let btn2 = $('<a href="#" style="padding-top: 8px; display: inline-block; padding-left: 20px;">' + App.translate('Fill in by the default settings') + '</a>');
                     btn2.on('click', () => {
                         let vl = $('div[data-name="chartType"] select').val();
 

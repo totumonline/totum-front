@@ -143,7 +143,7 @@ fieldTypes.text = {
                     }
 
 
-                    let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
+                    let btn = $('<a href="#" style="padding-top: 8px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
                         let div = $('<div>');
                         let textarea = $('<textarea class="form-control">').val(JSON.stringify(editor.get(), null, 2)).appendTo(div);
                         if (window.innerHeight > 460) {

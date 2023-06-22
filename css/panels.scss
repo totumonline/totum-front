@@ -156,6 +156,7 @@
 }
 
 .fieldparams-edit-panel {
+
   #fieldParamsLocker {
     z-index: 1000;
     position: absolute;
@@ -289,6 +290,7 @@ button[data-prop-disabled="true"] {
     }
     button{
       background-color: #fafafa;
+      padding: 4px;
     }
   }
 }

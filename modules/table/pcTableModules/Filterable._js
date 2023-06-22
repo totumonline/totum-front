@@ -329,11 +329,12 @@ App.pcTableMain.prototype.__addFilterable = function () {
             let select = $('<select class="selectpicker" data-size="6" multiple title="' + App.translate("Select values") + '" style="display: none" data-style="btn-sm btn-default" data-width="css-width" data-live-search="true" data-selected-text-format="count">').appendTo(selectDiv);
 
             const popoverDestroy = function () {
-                try {
-                    btn.popover('destroy');
-                } catch (e) {
+                setTimeout(() => {
+                    if (btn && btn.length && btn.attr('aria-describedby')) {
+                        btn.popover('destroy');
+                    }
+                }, 10)
 
-                }
             };
 
             const setSelectedFilters = function () {
@@ -352,10 +353,10 @@ App.pcTableMain.prototype.__addFilterable = function () {
                     if (fieldName === 'id' && !btn.closest('.pcTable-table').is(".pcTable-table:first")) {
                         pcTable._header.find('th.id .btn-filter').parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
                     }
-                    if(btn.closest('.scroll-table-head')){
+                    if (btn.closest('.scroll-table-head')) {
                         pcTable._innerContainer.scrollTop(0);
                         pcTable._refreshHead();
-                    }else{
+                    } else {
                         btn.parent().replaceWith(pcTable.__getFilterButton.call(pcTable, fieldName));
                     }
                     pcTable.__applyFilters.call(pcTable);
@@ -569,7 +570,7 @@ App.pcTableMain.prototype.__addFilterable = function () {
                         h_select.data('selectpicker').$menu.offset({
                             bottom: 15,
                             left: -90
-                        }).css('border', '1px solid grey');
+                        }).addClass('filter-with-hands-menu');
                     } catch (e) {
 
                     }

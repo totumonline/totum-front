@@ -60,7 +60,7 @@
                 }
             };
 
-            let title = '<b>' + (this.title) + '</b>' + this.pcTable._getRowTitleByMainField(item, ' (%s)');
+            let title = '<b>' + (this.title || '') + '</b>' + this.pcTable._getRowTitleByMainField(item, ' (%s)');
             let eventName = 'ctrlS.commentdialog';
             const onshown = function (dialog) {
                 if (!field.pcTable.isMobile) {

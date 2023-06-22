@@ -912,7 +912,7 @@
                             if (br.isCycleTable) {
                                 if (!addedBack) {
                                     if (!br.isOneUserCycle)
-                                        tablsUl.append('<li><a href="/Table/' + topPathId + '"><i class="fa fa-arrow-left"></a></li>');
+                                        tablsUl.append('<li><a href="/Table/' + topPathId + '" class="calcs-arrow-back"><i class="fa fa-arrow-left"></a></li>');
                                     else {
                                         tablsUl.css('padding-left', 45);
                                     }

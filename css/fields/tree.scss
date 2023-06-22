@@ -35,11 +35,27 @@ button.tree-button {
   padding-bottom: 5px;
 }
 
+.modal-body {
+  .jstree.jstree-default {
+    .jstree-clicked, .jstree-hovered {
+      box-shadow: none;
+      border-radius: 4px;
+    }
+
+    li {
+      margin-bottom: 0;
+    }
+    li a {
+      margin-bottom: 4px;
+    }
+  }
+}
+
 .jstree-default .jstree-node {
   background: none;
   margin-bottom: 4px;
 
-  &.deleted-node a{
+  &.deleted-node a {
     text-decoration: line-through;
   }
 }

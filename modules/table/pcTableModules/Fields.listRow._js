@@ -144,7 +144,7 @@ fieldTypes.listRow = $.extend({}, fieldTypes.default, {
                     element.css('min-height', 200);
                 }
 
-                let btn = $('<a href="#" style="padding-top: 5px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
+                let btn = $('<a href="#" style="padding-top: 8px; display: inline-block; padding-left: 20px;">' + App.translate('Manually') + '</a>').on('click', function () {
                     const save = function (val) {
                         try {
                             editor.setText(val);

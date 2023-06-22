@@ -71,8 +71,8 @@
   &.cell-button {
     .copytext-wrapper {
       button {
-        width: 100%;
-        padding: 3px;
+        width: calc(100% - 6px);
+        padding: 4px;
       }
     }
   }
@@ -125,7 +125,7 @@
 
 
   .row-name {
-    font-size: 12px;
+    font-size: 11px;
 
     .id-val {
       font-weight: bold;
@@ -135,6 +135,7 @@
   .column-name {
     font-weight: 500;
     font-family: PTRootUIWeb;
+    font-size: 14px;
   }
 
 
@@ -207,7 +208,7 @@
   .panel-buttons {
     button {
       width: calc(100% - 6px);
-      padding: 3px;
+      padding: 4px;
       margin-right: 5px;
 
       &:last-child {

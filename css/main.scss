@@ -120,7 +120,7 @@ input.error {
     border-color: transparent;
 
     &:hover {
-      box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+      box-shadow: 2px 2px 4px -1px rgba(0, 0, 0, 0.13), 1px 1px 6px 0px rgba(0, 0, 0, 0.07);
     }
   }
 }
@@ -148,10 +148,11 @@ input.error {
   line-height: 21px;
   position: relative;
 
-  .close-table-description {
+  button.close-table-description {
     position: absolute;
     top: 5px;
     right: 5px;
+    border-color: transparent;
   }
 }
 
@@ -249,9 +250,8 @@ footer {
 
 
 .btn.btn-default {
-  border-color: transparent;
+  border-color: #f4f4f4;
   background-color: #fafafa;
-
 }
 
 .btn, .btn:active {
@@ -311,12 +311,16 @@ footer {
 
 .popover, .popover.bottom > .arrow {
   border: none;
-  border-radius: 3px;
   margin-left: 0px;
+}
+
+.popover.bottom > .arrow {
+  border-radius: 3px;
 }
 
 .popover {
   max-width: 100%;
+  border-radius: 6px;
 
   &.warning-bg {
     background-color: $btn-danger-bgcolor;
@@ -330,13 +334,16 @@ footer {
 }
 
 .form-control, .dropdown-menu {
-  border-radius: 4px;
-
+  border-radius: 6px;
 }
 
 .dropdown-menu {
   border: 0px;
   font-size: 12px;
+
+  &.filter-with-hands-menu {
+    border: 1px solid #d4d4d4;
+  }
 }
 
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:focus, .dropdown-menu > .active > a:hover {
@@ -362,6 +369,7 @@ footer {
   margin: -5px -5px 17px -5px;
   box-shadow: none;
   border-bottom: 1px solid #f4f4f4;
+
   .navbar-nav {
     margin-left: 0px;
 
@@ -826,8 +834,12 @@ th {
       border-color: transparent;
 
       &:hover {
-        box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+        box-shadow: 2px 2px 4px -1px rgba(0, 0, 0, 0.13), 1px 1px 6px 0px rgba(0, 0, 0, 0.07);
       }
+    }
+
+    button.btn-xxs {
+      padding: 4px;
     }
 
   }
@@ -838,6 +850,7 @@ th {
     display: inline;
     font-size: 11px;
     margin-left: 10px;
+
   }
 
 }
@@ -850,10 +863,8 @@ th {
     margin-right: 5px;
     margin-top: -3px;
 
-    border-color: #f4f4f4;
-
     &:hover {
-      box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+      box-shadow: 2px 2px 4px -1px rgba(0, 0, 0, 0.13), 1px 1px 6px 0px rgba(0, 0, 0, 0.07);
     }
   }
 
@@ -925,6 +936,10 @@ th {
     }
   }
 
+}
+
+.iframed .pcTable-container .innerContainer #right-bottom-panel{
+  right: 25px;
 }
 
 
@@ -1025,7 +1040,7 @@ th {
     }
 
     padding-bottom: 0;
-    font-size: 18px;
+    font-size: 16px;
 
     .btn-i {
       width: 18px;
@@ -1036,6 +1051,10 @@ th {
         content: '\f0d7'; //down
       }
     }
+  }
+
+  .pcTable-rowsTitle {
+    font-size: 16px;
   }
 
   .pcTable-section {
@@ -1181,7 +1200,7 @@ th {
     margin-right: 10px;
     background-color: #fafafa;
     border: 1px solid #f4f4f4;
-    border-radius: 6px;
+
 
     .table-in-notification & {
       padding-left: 0;
@@ -1198,13 +1217,15 @@ th {
       }
     }
 
+
+
     #right-bottom-panel {
       &:empty {
         display: none;
       }
 
       position: fixed;
-      bottom: 20px;
+      bottom: 15px;
       right: 20px;
       display: inline-flex;
       grid-column-gap: 5px;
@@ -1217,7 +1238,10 @@ th {
         padding: 10px;
         border-radius: 4px;
 
-        box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
+        box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.08);
+        &:hover{
+          box-shadow:  2px 2px 1px -1px rgba(0, 0, 0, 0.11), 4px 4px 10px 0px rgba(0, 0, 0, 0.02), 1px 1px 5px 0px rgba(0, 0, 0, 0.02)
+        }
       }
 
       #servicesButton {
@@ -1260,9 +1284,6 @@ th {
   }
 }
 
-.pcTable-rowsTitle {
-  font-size: 18px;
-}
 
 #table.worker-view .pcTable-filtersTables th.worker-with-i .pcTable-filters {
   bottom: 7px;
@@ -1285,7 +1306,6 @@ th {
     font-size: 14px;
     padding-bottom: 0;
     padding-left: 49px;
-
   }
 
   td, td.with-code {
@@ -1325,11 +1345,11 @@ th {
   td.buttons-go {
     button {
       border-color: transparent;
-      box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
+      box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.08), 0px 0px 2px 0px rgba(0, 0, 0, 0.10);
 
       &:hover {
         border-color: transparent;
-        box-shadow:  2px 2px 1px -1px rgba(0,0,0,0.11), 4px 4px 10px 0px rgba(0,0,0,0.02), 1px 1px 5px 0px rgba(0,0,0,0.02);
+        box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.11), 4px 4px 10px 0px rgba(0, 0, 0, 0.02), 1px 1px 5px 0px rgba(0, 0, 0, 0.02);
       }
     }
   }
@@ -1385,7 +1405,8 @@ th {
   line-height: 21px;
 
   margin-bottom: 20px;
-  background-color: #faf9f8;
+  background-color: #fafafa;
+  border: 1px solid #f4f4f4;
   padding: 10px 20px;
   margin-right: 20px;
   margin-top: 15px;
@@ -1437,10 +1458,15 @@ th {
     button.button-field {
       font-size: 12px;
       line-height: 1.5;
-      border-radius: 3px;
       padding: 3px 7px;
       height: 26px;
       box-sizing: border-box;
+      box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.08);
+      background-color: #fdf9f9;
+
+      &:hover {
+        box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.11), 4px 4px 10px 0px rgba(0, 0, 0, 0.02), 1px 1px 5px 0px rgba(0, 0, 0, 0.02);
+      }
     }
   }
 
@@ -1451,11 +1477,11 @@ th {
   button {
 
     border-color: transparent;
-    box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08);
+    box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.08);
 
     &:hover {
       border-color: transparent;
-      box-shadow:  2px 2px 1px -1px rgba(0,0,0,0.11), 4px 4px 10px 0px rgba(0,0,0,0.02), 1px 1px 5px 0px rgba(0,0,0,0.02);
+      box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.11), 4px 4px 10px 0px rgba(0, 0, 0, 0.02), 1px 1px 5px 0px rgba(0, 0, 0, 0.02);
     }
 
     &:hover:disabled {
@@ -1473,7 +1499,7 @@ th {
 }
 
 .pcTable-rowsWrapper {
-  background-color: transparent//$rowsBackColor;
+  background-color: transparent //$rowsBackColor;
 }
 
 #refresh-notify {
@@ -1963,7 +1989,7 @@ th.id .pcTable-filters.for-selected .btn {
     margin-top: 10px;
     margin-right: 0;
     border-radius: 5px;
-    box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
+    box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.08), 0px 0px 2px 0px rgba(0, 0, 0, 0.10);
     //font-family: 'Open Sans', serif;
 
     width: 100%;
@@ -2010,7 +2036,7 @@ th.id .pcTable-filters.for-selected .btn {
 
     &:not([disabled]) {
       &:hover {
-        box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+        box-shadow: 2px 2px 4px -1px rgba(0, 0, 0, 0.13), 1px 1px 6px 0px rgba(0, 0, 0, 0.07);
       }
     }
 
@@ -2202,6 +2228,9 @@ ul.CodeMirror-hints {
       width: 1200px;
       max-width: 99%;
     }
+    .jsonForm{
+      box-shadow: none;
+    }
   }
 
   .sectionTitle-edit-panel {
@@ -2280,12 +2309,14 @@ ul.CodeMirror-hints {
 .hidding-form input[type=checkbox] {
   margin-right: 7px;
 }
-.hidding-form  .label-grid {
+
+.hidding-form .label-grid {
   display: grid;
   grid-gap: 10px;
   grid-template-columns: minmax(70px, max-content) 1fr;
   place-items: baseline;
-  .form-check-label{
+
+  .form-check-label {
     text-align: left;
   }
 }
@@ -2374,11 +2405,11 @@ input {
 .insert-row-buttons {
   button {
     border-color: transparent;
-    box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
+    box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.08), 0px 0px 2px 0px rgba(0, 0, 0, 0.10);
 
     &:hover {
       border-color: transparent;
-      box-shadow:  2px 2px 1px -1px rgba(0,0,0,0.11), 4px 4px 10px 0px rgba(0,0,0,0.02), 1px 1px 5px 0px rgba(0,0,0,0.02);
+      box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.11), 4px 4px 10px 0px rgba(0, 0, 0, 0.02), 1px 1px 5px 0px rgba(0, 0, 0, 0.02);
     }
 
     &:focus {
@@ -2390,11 +2421,11 @@ input {
 .pcTable-noDataRow button {
   margin-left: 10px;
   border-color: transparent;
-  box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
+  box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.08);
 
   &:hover {
     border-color: transparent;
-    box-shadow:  2px 2px 1px -1px rgba(0,0,0,0.11), 4px 4px 10px 0px rgba(0,0,0,0.02), 1px 1px 5px 0px rgba(0,0,0,0.02);
+    box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.11), 4px 4px 10px 0px rgba(0, 0, 0, 0.02), 1px 1px 5px 0px rgba(0, 0, 0, 0.02);
   }
 
   height: 22px;
@@ -2547,6 +2578,9 @@ input {
 
 .jsoneditor-anchor {
   z-index: 1000;
+}
+table.jsoneditor-search div.jsoneditor-frame{
+  border-radius: 6px;
 }
 
 .pcTable-container.withNoColumns .pcTable-rowsWrapper {
