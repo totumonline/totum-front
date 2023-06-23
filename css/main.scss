@@ -9,6 +9,10 @@ body {
   //overflow: hidden;
 }
 
+button:hover{
+  box-shadow: inset 0 0 1000px 1000px rgba(0, 0, 0, 0.05) !important;
+}
+
 td, th {
   background-clip: border-box;
 }
