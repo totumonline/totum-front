@@ -52,12 +52,12 @@ App.pcTableMain.prototype._addRowPanel = function (panelId, row, buttons) {
 };
 App.pcTableMain.prototype._positionPanel = function (panel, row) {
     let p = row.position();
-    let panelWinth = panel.width() + 30
+    let panelWinth = panel.outerWidth()
     let left;
     if (this._innerContainer.width() > this.tableWidth) {
-         left = this.tableWidth - panelWinth;
+         left = this.tableWidth + 70 - panelWinth;
     } else {
-        left = this._innerContainer.width() - panelWinth;
+        left = this._innerContainer.width() - panelWinth - 10;
     }
     if(left<0){
         left=10;
