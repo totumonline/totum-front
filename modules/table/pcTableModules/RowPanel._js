@@ -1,5 +1,5 @@
 App.pcTableMain.prototype._addRowPanel = function (panelId, row, buttons) {
-    var panel = $('<div style="width: 165px;"><div class="buttons insert-row-buttons"></div></div>');
+    var panel = $('<div style=""><div class="buttons insert-row-buttons"></div></div>');
     if (buttons !== undefined) {
         var buttonsDiv = panel.find('.buttons').empty();
         $.each(buttons, function (text, $var) {
@@ -52,12 +52,17 @@ App.pcTableMain.prototype._addRowPanel = function (panelId, row, buttons) {
 };
 App.pcTableMain.prototype._positionPanel = function (panel, row) {
     let p = row.position();
-    let left = this.tableWidth - 120;
+    let panelWinth = panel.width() + 30
+    let left;
     if (this._innerContainer.width() > this.tableWidth) {
-        panel.css({left: left})
+         left = this.tableWidth - panelWinth;
     } else {
-        panel.css({left: this._innerContainer.width() - 120})
+        left = this._innerContainer.width() - panelWinth;
     }
+    if(left<0){
+        left=10;
+    }
+    panel.css({left: left})
 
     /*if (this._innerContainer.width()>this.tableWidth){
         return panel.position({
