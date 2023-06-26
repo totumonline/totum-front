@@ -10,7 +10,7 @@
                 pcTable._actionTreeFolderRow(node, true)
             } else if (node.is('.ins')) {
                 pcTable._actionAddTreeFolderRow(node)
-            } else{
+            } else {
                 pcTable._actionTreeFolderRow(node)
             }
         })
@@ -219,11 +219,11 @@
             "use strict";
             let pcTable = this;
 
-            let ids=[];
-            pcTable.dataSortedVisible.forEach((branch)=>{
-                if(branch.row && branch.row.id){
+            let ids = [];
+            pcTable.dataSortedVisible.forEach((branch) => {
+                if (branch.row && branch.row.id) {
                     ids.push(branch.row.id)
-                }else if(typeof branch === 'string'){
+                } else if (typeof branch === 'string') {
                     ids.push(branch)
                 }
             })
@@ -561,9 +561,14 @@
 
     }
     App.pcTableMain.prototype._treeRefresh = function () {
+        let levelsChangedRows = [];
         const expandTree = (treeList, level) => {
             level = level || 0
             treeList.forEach((v) => {
+                if (this.treeIndex[v] && this.treeIndex[v].row && this.treeIndex[v].row.__tree && this.treeIndex[v].level != level) {
+                    this.treeIndex[v].row.__tree.level = level
+                    levelsChangedRows.push(v)
+                }
                 this.treeIndex[v].level = level;
                 if (level === 0 && !('opened' in this.treeIndex[v])) {
                     this.treeIndex[v].opened = true;
@@ -585,6 +590,15 @@
 
 
         expandTree(treeSortCopy)
+
+        levelsChangedRows.forEach((id) => {
+            if (this.treeIndex[id].tr && this.treeIndex[id].row) {
+                let td = this.treeIndex[id].tr.find('.id').next();
+                if (td.length) {
+                    this._removeEditing(this.treeIndex[id].tr.find('.id').next())
+                }
+            }
+        })
     }
     App.pcTableMain.prototype._treeApplyRows = function (rows) {
         rows.map((item) => {
