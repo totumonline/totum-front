@@ -330,9 +330,7 @@
                 }
             },
             addInnerContainerScroll: function () {
-
-                if (this._innerContainer.width() < this._innerContainer.find('>table:first, >div:first').width()) {
-
+                if (this._innerContainer.width() < this._innerContainer.find('>table.pcTable-table, >div:not(#right-bottom-panel)').width()) {
                     const scrollPosition = () => {
                         let innConTop = this._innerContainer.offset().top - this._container.offset().top - 3;
                         let innHeight = this._innerContainer.innerHeight() + parseInt($('#table').data('pctable')._innerContainer.css('paddingBottom'))
@@ -370,7 +368,6 @@
                         new ResizeObserver(scrollPosition).observe(this.scrollWrapper.get(0))
                     }
                     setTimeout(scrollPosition, 500)
-
 
                 } else if (this._innerContainerPS) {
                     this._container.off('scroll.scroller');

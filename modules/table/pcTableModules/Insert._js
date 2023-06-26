@@ -131,7 +131,7 @@ $.extend(App.pcTableMain.prototype, {
                         case 'notClean':
                             let item = {};
                             Object.keys(pcTable._insertItem).forEach((k) => {
-                                if (typeof pcTable._insertItem[k] === "object" && "v" in pcTable._insertItem[k]) {
+                                if (pcTable._insertItem[k] && typeof pcTable._insertItem[k] === "object" && "v" in pcTable._insertItem[k]) {
                                     if (!pcTable.fields[k].code || pcTable._insertItem[k].h || pcTable.fields[k].copyOnDuplicate) {
                                         item[k] = pcTable._insertItem[k].v;
                                     }
