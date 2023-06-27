@@ -53,12 +53,13 @@
     }
   }
 
+
   &.mobile-menu {
 
     #leftTree {
       width: 100%;
       display: block;
-
+      background-color: #f3f3f3;
     }
 
     .modal-header {
@@ -127,6 +128,7 @@ body.ttm-body-desktop {
     }
   }
 
+
   .id {
 
     &:hover {
@@ -184,6 +186,11 @@ body.ttm-body-mobile {
         padding-top: 3px;
       }
     }
+  }
+
+  td.cell-button button:not(.ibtn), span.cell-button button:not(.ibtn){
+    width: calc(100% - 4px);
+    margin-left: 2px;
   }
 
   &#pk .alert {
@@ -320,11 +327,7 @@ body.ttm-body-mobile {
      }*/
   }
 
-  th span.cell-title {
-    font-weight: 500;
-  }
-
-  .worker-view table th {
+    .worker-view table th {
     padding-top: 10px;
     padding-bottom: 10px;
   }
@@ -334,9 +337,22 @@ body.ttm-body-mobile {
   }
 
   .pcTable-container .pcTable-sectionTitle, .pcTable-container .pcTable-rowsTitle {
-    font-size: 20px;
+    font-size: 18px;
   }
 
+  .jstree-ocl{
+    margin-top: 3px;
+  }
+
+  #page-tree {
+
+    #branch-title {
+      background-color: #fcfcfc;
+    }
+    #leftTree, #branch-title{
+      max-width: 800px;
+    }
+  }
   .pcTable-filtersTables .pcTable-sectionTitle {
     font-size: 14px;
   }
@@ -396,7 +412,7 @@ body.ttm-body-mobile {
       }
 
       &.pcTable-filtersTable td:not(.cell-button) {
-        background-color: whitesmoke;
+        background-color: #f6f6f6;
       }
 
       th {
@@ -465,6 +481,9 @@ body.ttm-body-mobile {
       th.id, td.id {
         width: 40px;
       }
+      th.id span.id-name{
+        padding-top: 3px;
+      }
     }
 
     .pcTable-table tbody td {
@@ -484,7 +503,7 @@ body.ttm-body-mobile {
     }
 
     .pcTable-title {
-      font-size: 20px;
+      font-size: 24px;
       margin-right: 0px;
     }
 
@@ -500,8 +519,12 @@ body.ttm-body-mobile {
       padding-left: 5px;
     }
 
-    .table-description {
-      padding-right: 0;
+    .table-description, .pcTable-tableText {
+      padding: 10px;
+    }
+    .tree-view-td > .treeRow{
+      font-weight: 400;
+      font-size: 16px;
     }
 
     .pcTable-tabls {
@@ -524,6 +547,9 @@ body.ttm-body-mobile {
     .pcTable-table {
       td {
         font-size: 15px;
+        &.id{
+          font-size: 12px;
+        }
       }
     }
 
@@ -569,7 +595,8 @@ body.ttm-body-mobile {
     margin: 14px 8px 100px;
 
     .bootstrap-dialog-title {
-      width: calc(100% - 15px);
+      width: calc(100% - 33px);
+      margin-top: 0;
     }
   }
 
@@ -590,10 +617,15 @@ body.ttm-body-mobile {
       button {
         width: 40px;
         background-color: $btn-warning-bgcolor;
-        border-radius: 3px;
-        padding: 5px;
+        border-color: $btn-warning-bgcolor;
         margin-left: 5px;
       }
+    }
+
+    button{
+      padding: 7px 7px;
+      height: 34px;
+      box-sizing: border-box;
     }
 
     .ttm__burger-buttons {

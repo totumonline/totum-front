@@ -2396,6 +2396,7 @@
                 if (pcTable.isMobile) {
                     span_help.on('click', function () {
                         App.mobilePanel(App.translate('Field %s', field.title), field.help);
+                        return false;
                     })
                 } else
                     span_help.on('click open close', function (event) {

@@ -15,7 +15,7 @@
 
 #page-tree {
   #branch-title, #searchArea, #serverSearch {
-    background-color: #f3f3f3;
+    background-color: #fcfcfc;
     max-width: 400px;
     margin-left: 0;
   }
@@ -203,7 +203,7 @@
   height: 50px;
   width: 53px;
   color: #333;
-
+  border-bottom: 1px solid #f4f4f4;
   span {
     vertical-align: bottom;
     display: inline-block;
