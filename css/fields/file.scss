@@ -49,13 +49,17 @@
   grid-template-columns: min-content 1fr;
   grid-gap: 20px;
 
+
+  button{
+    padding: 7px;
+  }
   .ttm-dropzone {
     border: 1px dashed #ccc;
     border-radius: 3px;
     font-family: sans-serif;
     padding: 4px;
     font-size: 12px;
-    padding-left: 10px;
+    padding: 7px;
 
     &.disabled {
       color: gray
