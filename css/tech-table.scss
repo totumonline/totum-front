@@ -13,6 +13,9 @@
     .btn{
       background-color: #fafafa;
       border-color: #f4f4f4;
+      &:hover{
+      box-shadow: inset 0 0 1000px 1000px rgba(0, 0, 0, 0.03)
+      }
     }
     a {
       color: #333;

@@ -300,7 +300,7 @@
                         'grid-template-columns': '45px 1fr'
                     })
                 }
-                selectDiv.height(selectDiv.height() + 30).append(divLogout)
+                selectDiv.height(selectDiv.height() + 35).append(divLogout)
 
                 $('body').one('click.FioPopover', function (e) {
                     if (e.altKey !== undefined) {

@@ -595,7 +595,7 @@ fieldTypes.select = {
                             let diff = position.right - window.innerWidth + 20;
                             let width = selectPicker.$menuInner.width();
                             let newWidth = width - diff;
-                            selectPicker.$menuInner.width(newWidth).css('overflow-x', 'scroll');
+                            selectPicker.$menuInner.width(newWidth).css('overflow-x', 'auto');
                             setTimeout(() => {
                                 selectPicker.$bsContainer.width(newWidth);
 
