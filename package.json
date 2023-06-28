@@ -29,7 +29,7 @@
     "gulp-static-hash": "^0.1.4",
     "gulp-uglify-es": "^2.0.0",
     "gulp-watch": "^4.1.1",
-    "perfect-scrollbar": "^1.5.0",
+    "perfect-scrollbar": "1.5.5",
     "through2": "^4.0.2",
     "vinyl-buffer": "^1.0.1"
   },

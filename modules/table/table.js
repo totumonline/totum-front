@@ -324,7 +324,7 @@
             setInnerContainerWidth: function () {
                 if (!this.isMobile && !$('body').is('.table-in-notification')) {
                     this._innerContainer.width('auto');
-                    this.addInnerContainerScroll();
+                  //  this.addInnerContainerScroll();
                 } else {
                     this._innerContainer.width('auto');
                 }
@@ -338,6 +338,8 @@
                         /*Иннер не ниже высоты окна и не выше*/
 
                         if (this._innerContainerPS) {
+                            $('.ps__rail-x').appendTo(this._container);
+                            $('.ps__rail-y').appendTo(this._container);
                             let old = this._innerContainerPS.scrollbarXBottom;
                             this._innerContainerPS.scrollbarXBottom = 0;
 
@@ -360,6 +362,7 @@
                             scrollbarYActive: false,
                             scrollbarXActive: true
                         });
+
                         let timeout;
                         this._container.on('scroll.scroller', () => {
                             if (timeout) clearTimeout(timeout);
