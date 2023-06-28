@@ -331,7 +331,13 @@ App.pcTableMain.prototype.__addFilterable = function () {
             const popoverDestroy = function () {
                 setTimeout(() => {
                     if (btn && btn.length && btn.attr('aria-describedby')) {
-                        btn.popover('destroy');
+                        if (!btn.data('popover-destroed')) {
+                            btn.popover('destroy');
+                            btn.data('popover-destroed', true);
+                            setTimeout(()=>{
+                                btn.data('popover-destroed', false);
+                            }, 20)
+                        }
                     }
                 }, 10)
 
