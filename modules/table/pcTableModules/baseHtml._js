@@ -193,7 +193,7 @@
                                 if (pcTable.selectedCells.isMultySelectedCells()) {
                                     let endCallback = pcTable.RightBottomServicesButtonTrobber();
 
-                                    pcTable._excelCopyExportForm((settings)=>{
+                                    pcTable._excelCopyExportForm((settings) => {
                                         pcTable.selectedCells.copySepected.call(pcTable, withNames, (result) => {
                                             pcTable.model.excelExport(result, pcTable.f.title || pcTable.tableRow.title).always(endCallback).then(() => {
                                                 pcTable.RightBottomServicesButtonDone()
@@ -1053,6 +1053,9 @@
             let {offset, onPage, allCount} = this.PageData;
 
             if (onPage == '0') return '';
+            if (onPage > 30000) {
+                onPage = 30000;
+            }
 
             let $block = $('<span></span>');
 
@@ -1126,6 +1129,8 @@
                 let lastId = 0;
                 let prevLastId = null;
                 let val = selector.val();
+
+
 
                 if (this.PageData.countLimit && parseInt(val) > parseInt(this.PageData.countLimit)) {
                     val = this.PageData.countLimit;
@@ -3115,7 +3120,7 @@
 
             if (pcTable.isMobile && field.type !== 'chart') {
                 editbutton = '<button class="fa fa-ellipsis-h ttm-panel pull-right ibtn"></button>' + editbutton;
-            }else if((!field.editable || format.block) && field.CodeActionOnClick && format.editbutton){
+            } else if ((!field.editable || format.block) && field.CodeActionOnClick && format.editbutton) {
                 editbutton = '<button class="fa fa-ellipsis-h asUrl pull-right ibtn"></button>' + editbutton;
             }
 
