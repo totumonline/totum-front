@@ -739,7 +739,7 @@
                 $('<button class="btn btn-default btn-xxs field_name copy_me" data-copied-text="' + App.translate('Copied') + '"/>').text(this.tableRow.name).appendTo(creatorPart);
 
 
-                $('<button class="btn btn-danger btn-xxs" title="' + App.translate('Edit table settings') + '"/>')
+                $('<a class="btn btn-danger btn-xxs" title="' + App.translate('Edit table settings') + '"/>')
                     .html('<i class="fa fa-pencil-square-o"></i>').on('click', () => {
                     (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {
                         id: pcTable.tableRow.id,
@@ -747,6 +747,7 @@
                     })).then((json) => {
                         if (json) App.windowReloadWithHash(pcTable.model);
                     });
+                    return false;
                 }).appendTo(creatorPart);
 
 

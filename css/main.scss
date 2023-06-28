@@ -172,6 +172,10 @@ input.error {
   }
 }
 
+#LeftTree{
+  border-right: 1px solid #f4f4f4;
+}
+
 .btn-sm {
   padding: 3px 7px;
 }
@@ -833,6 +837,8 @@ th {
 
     .btn {
       border-color: transparent;
+      height: 25px;
+      padding-top: 4px;
 
       &:hover {
         box-shadow: 2px 2px 4px -1px rgba(0, 0, 0, 0.13), 1px 1px 6px 0px rgba(0, 0, 0, 0.07);
