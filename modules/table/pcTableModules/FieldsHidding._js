@@ -94,7 +94,7 @@
         loadVisibleFields: function (hideShowForse) {
 
             let visibleFields = {};
-            let storageDate = hiddingStorage.getDate(this.tableRow);
+            let storageDate = this.withTopButtons ? hiddingStorage.getDate(this.tableRow) : null;
             hideShowForse = hideShowForse || {};
 
             if (!storageDate || (this.tableRow.fields_actuality != '' && this.tableRow.fields_actuality > storageDate)) {
@@ -170,7 +170,9 @@
 
                 });
             }
-            hiddingStorage.set(visibleFields, this.tableRow, updatedDate);
+            if (pcTable.withTopButtons) {
+                hiddingStorage.set(visibleFields, this.tableRow, updatedDate);
+            }
             /*
                     let onlyVisibleFields = [];
                     Object.keys(visibleFields).forEach(function (fieldName) {
@@ -482,10 +484,10 @@
 
                     $fieldsDiv.append('<div class="category-name">' + categories[category] + '</div>');
                     $.each(pcTable.fieldCategories[category], function (k, field) {
-                        if(field.__hidden){
-                           return;
+                        if (field.__hidden) {
+                            return;
                         }
-                        if(!pcTable.isCreatorView && pcTable.isReplacedButton(field.name)){
+                        if (!pcTable.isCreatorView && pcTable.isReplacedButton(field.name)) {
                             return;
                         }
                         let hidden = '';
@@ -651,7 +653,7 @@
                         if (field.__hidden) {
                             return;
                         }
-                        if(!pcTable.isCreatorView && pcTable.isReplacedButton(field.name)){
+                        if (!pcTable.isCreatorView && pcTable.isReplacedButton(field.name)) {
                             return;
                         }
 
@@ -777,7 +779,6 @@
 
     let hiddingStorage = {
         set: function (fields, tableRow, dt) {
-
             let tableId = getTableId(tableRow);
 
             let sessionFilters = {};
