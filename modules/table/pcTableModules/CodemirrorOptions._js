@@ -590,7 +590,7 @@
                             }
                             state.lineName = state.lineName.replace(/=\s*[a-zA-Z0-9_]*\s*$/, '=');
 
-                            if (/^\s*=\s*$|^\s*[a-z]{1,2}\d+=$/i.test(state.lineName)) {
+                            if (/^\s*=\s*$|^\s*dn=\s*$|^\s*[a-z]{1,2}\d+=$/i.test(state.lineName)) {
                                 classes += ' exec'
                             } else if (!/^[a-z0-9_]+$/i.test(state.lineName)) {
                                 return error();
