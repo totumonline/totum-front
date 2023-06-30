@@ -733,6 +733,19 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                     }
                     return editedData;
                 },
+                removeId: function (id) {
+                    Object.keys(this.ids).forEach(fieldName => {
+                        let newIds = [];
+                        this.ids[fieldName].forEach(_id => {
+                            if (id != _id) {
+                                newIds.push(_id)
+                            } else if (pcTable.data[id].$tr) {
+                                pcTable.data[id].$tr.find('.selected').removeClass('selected');
+                            }
+                        })
+                        this.ids[fieldName] = newIds;
+                    })
+                },
                 remove: function (id, fieldName) {
                     let selected = this;
                     if (!this.ids[fieldName]) return;

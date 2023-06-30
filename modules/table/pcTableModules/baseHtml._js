@@ -3301,6 +3301,8 @@
                     td.addClass('selected');
                     pcTable.selectedCells.notRowCell = td;
                 }
+            } else if (item.id && pcTable.isSelected(field.name, item.id)) {
+                td.addClass('selected')
             }
             return td;
         }

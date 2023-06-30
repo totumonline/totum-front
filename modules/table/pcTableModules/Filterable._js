@@ -50,8 +50,7 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false, reCreateRows
         if (pcTable.tableRow['type'] !== "tmp") {
             this.sessionStorageFilters.setFilters(this.filters);
         }
-        if (this.selectedCells)
-            this.selectedCells.empty('column');
+
 
         if (Object.equals(this.filters, {})) {
             this.filtersClearButton.addClass('btn-default').removeClass('btn-warning').attr('disabled', true)
@@ -59,9 +58,10 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false, reCreateRows
             this.filtersClearButton.removeClass('btn-default').addClass('btn-warning').removeAttr('disabled');
             if (isFirstStart) {
                 App.blink(pcTable.filtersClearButton, 8, '#fff');
-                isFirstStart = false;
+
             }
         }
+        isFirstStart = false;
     }
 
 
@@ -74,6 +74,9 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false, reCreateRows
 
     if (this.isTreeView && !this.isTreeViewRestore) {
         if (this.filters && Object.keys(this.filters).length) {
+
+            if (this.selectedCells)
+                this.selectedCells.empty('column');
 
             let expands = [];
             this.dataSorted.forEach((v) => {
@@ -150,6 +153,9 @@ App.pcTableMain.prototype.__applyFilters = function (forse = false, reCreateRows
             if (item.$visible) {
                 new_.push(element);
                 new_check.push(element);
+            } else {
+                if (this.selectedCells)
+                    this.selectedCells.removeId(item.id);
             }
         }
     }
