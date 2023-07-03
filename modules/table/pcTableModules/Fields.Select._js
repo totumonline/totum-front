@@ -523,11 +523,10 @@ fieldTypes.select = {
 
                         setTimeout(function () {
                             if (input.data('selectpicker').$bsContainer.offset()['top'] > divParent.find('button').offset()['top']) {
-                                let cdiv = input.closest('td').find('.cdiv')
+                                let cdiv = input.closest('td').find('.cdiv').css('top', 0).css('bottom', '')
                                 let popover = cdiv.data('bs.popover');
-
                                 if (popover) {
-                                    popover.applyPlacement(popover.getCalculatedOffset('top', popover.getPosition(), popover.$tip.width() + 8, popover.$tip.height() + 33), 'top');
+                                    popover.applyPlacement(popover.getCalculatedOffset('top', popover.getPosition(), popover.$tip.width() + 8, popover.$tip.height()), 'top');
                                     popover.$tip.removeClass('bottom').addClass('top')
                                 }
                             }
