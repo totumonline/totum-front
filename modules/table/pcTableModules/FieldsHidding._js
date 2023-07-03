@@ -68,6 +68,10 @@
             this.fieldCategories.column.forEach(function (field) {
                 if (field.showMeWidth) {
                     pcTable.fieldCategories.visibleColumns.push(field);
+                } else {
+                    if (pcTable.selectedCells) {
+                        delete pcTable.selectedCells.ids[field.name];
+                    }
                 }
             });
 
@@ -208,7 +212,7 @@
                     this._hideHell_storage.checkIssetFields.call(pcTable);
                     this._refreshHiddenFieldsBlock();
                 }
-            }else{
+            } else {
                 this._rerendParamsblock();
                 if (this.isCreatorView) {
                     this._refreshHiddenFieldsBlock()
