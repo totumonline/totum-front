@@ -84,9 +84,9 @@
         },
         isDocPreviewExt: function (ext) {
             switch (ext) {
-                case 'xls':
+              //  case 'xls':
                 case 'xlsx':
-                case 'doc':
+              //  case 'doc':
                 case 'docx':
                     return true
             }
