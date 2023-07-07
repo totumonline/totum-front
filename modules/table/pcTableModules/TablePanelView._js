@@ -81,6 +81,8 @@
 
                 if (Field.editable && Field.pcTable.control.editing && !format.block) {
                     td.addClass('panel-edt');
+                } else if (Field.CodeActionOnClickAsUrl) {
+                    td.addClass('asUrl');
                 }
 
                 if (format.showhand !== false && data[field.field].h) {
@@ -109,6 +111,23 @@
                             console.log(error);
                         });
                     })
+                } else if (Field.CodeActionOnClick) {
+                    const actionOnClick = () => {
+                        if (!td.data('blocked')) {
+                            td.data('blocked', true);
+                            td.html('<div class="text-center"><i class="fa fa-spinner"></i></div>')
+                            Field.pcTable.model.dblClick(id, Field.name).always((json) => {
+                                td.data('blocked', false)
+                                Field.pcTable.table_modify(json);
+                            })
+                        }
+                    };
+
+                    if (Field.CodeActionOnClickAsUrl) {
+                        td.addClass('asUrl').on('click', actionOnClick)
+                    } else {
+                        td.on('dblclick', actionOnClick)
+                    }
                 }
 
             } else {
