@@ -416,7 +416,8 @@ App.langs.es =
 "Date formats":"Formatos de fecha",
 "Number dectimal delimiter":"Número delimitador dectimal",
 "Excel import":"Importar de Excel",
-"You are in mobile mode - switch to desktop mode to enable the admin layer.":"Estás en modo móvil - cambia a modo escritorio para habilitar la capa de administración."
+"You are in mobile mode - switch to desktop mode to enable the admin layer.":"Estás en modo móvil - cambia a modo escritorio para habilitar la capa de administración.",
+"The panel view is disabled due to exceeding the number of rows in the displayed table":"La vista de panel está desactivada debido a que se ha superado el número de filas de la tabla mostrada."
 }
 
 	}

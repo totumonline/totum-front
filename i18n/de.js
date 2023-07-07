@@ -416,7 +416,8 @@ App.langs.de =
 "Date formats":"Datumsformate",
 "Number dectimal delimiter":"Nummer dezimales Trennzeichen",
 "Excel import":"Excel-Import",
-"You are in mobile mode - switch to desktop mode to enable the admin layer.":"Sie befinden sich im mobilen Modus - wechseln Sie in den Desktop-Modus, um die Verwaltungsebene zu aktivieren."
+"You are in mobile mode - switch to desktop mode to enable the admin layer.":"Sie befinden sich im mobilen Modus - wechseln Sie in den Desktop-Modus, um die Verwaltungsebene zu aktivieren.",
+"The panel view is disabled due to exceeding the number of rows in the displayed table":"Die Panelansicht ist deaktiviert, da die Anzahl der Zeilen in der angezeigten Tabelle überschritten wurde"
 }
 
 	}

@@ -711,7 +711,10 @@
 
                     if (pcTable.panels === 'off') {
                         btn = $('<button class="btn btn-sm warning-bg" disabled><i class="fa fa-address-card-o"></i></button>');
-                        App.blink(btn, 5, '#fff')
+                        App.blink(btn, 5, '#fff');
+                        let navTopLine = $('#nav-top-line');
+                        navTopLine.text(App.translate('The panel view is disabled due to exceeding the number of rows in the displayed table'));
+                        navTopLine.addClass('pcTable-type-tmp');
                     } else {
                         if (this.viewType !== 'panels') {
                             btn = $('<button class="btn btn-default btn-sm"><i class="fa fa-address-card-o"></i></button>').on('click', () => {
