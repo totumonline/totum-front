@@ -531,7 +531,7 @@ $.extend(App.pcTableMain.prototype, {
 
         td.data('input', input);
 
-        var cdiv = $('<div class="cdiv">').css({height: 0, width: '100%', 'position': 'absolute', bottom: '0px'});
+        var cdiv = $('<div class="cdiv">').css({height: 0, left: 0, right:0, 'position': 'absolute', bottom: '0px'});
         td.append(cdiv);
 
 
