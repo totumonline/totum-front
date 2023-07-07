@@ -841,7 +841,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                     let formatSettings = {};
                     if (placements) {
-                        placements.forEach((v) => {
+                        placements.forEach((v, i) => {
                             if (typeof v === 'object') {
                                 if (v[0] === 'dates-format') {
                                     formatSettings.date = v[1]
@@ -916,7 +916,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         'column-footers': 'footer',
                         'other-footers': 'footer'
                     }
-                    if (placements) {
+
+                    if (placements && placements.indexOf('from-selection') === -1) {
                         ['params', 'filters', 'rows', 'column-footers', 'other-footers'].forEach((pl) => {
                             if (placements.some(x => x === pl)) {
                                 if (pl === 'rows') {

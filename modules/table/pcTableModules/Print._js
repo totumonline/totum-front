@@ -100,14 +100,14 @@ App.pcTableMain.prototype._excelExportSettingForm = function (exportFunction, $f
 App.pcTableMain.prototype._excelCopyExportForm = function (exportFunction) {
     let $printSettings = $('<div class="hidding-form">');
     exportFunction = this._excelExportSettingForm(exportFunction, $printSettings);
-    let title = 'Xlsx export';
-    let Button = 'Export';
+    let title = App.translate('Xlsx export');
+    let Button = App.translate('Export');
 
     let buttons = [
         {
             label: Button,
             action: function (dialogRef) {
-                let settings = ['rows'];
+                let settings = ['from-selection'];
                 $printSettings.find('input[type="text"]').each(function () {
                     settings.push([$(this).attr('name'), $(this).val()]);
                 });
