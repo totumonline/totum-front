@@ -2653,6 +2653,9 @@
                                             }
                                         }
                                     ];
+                                    setTimeout(()=>{
+                                        div.find('input').select();
+                                    })
                                     if (pcTable.isCreatorView) {
                                         btns.splice(0, 0, {
                                             label: App.translate('By default'),
