@@ -30,7 +30,7 @@ $.extend(App.pcTableMain.prototype, {
         let pcTable = this;
         let answers = {};
 
-        let fields = Object.keys(App.filter(pcTable.fields, (x, field) => (!!field.showMeWidth) && field.category === 'column'));
+        let fields = Object.keys(App.filter(pcTable.fields, (x, field) => (!!field.showMeWidth) && field.category === 'column' && ['file', 'button', 'chart'].indexOf(field.type)===-1));
 
         let csvImport = function () {
             pcTable.model.csvImport(csv, type, answers, type == 'full' ? [] : fields).then(function (json) {
