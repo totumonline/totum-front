@@ -417,7 +417,9 @@ App.langs.ru =
 "Number dectimal delimiter":"Десятичный разделитель",
 "Excel import":"Excel импорт",
 "You are in mobile mode - switch to desktop mode to enable the admin layer.":"Вы находитесь в мобильном режиме — переключитесь в десктоп режим, чтобы включить админ-слой.",
-"The panel view is disabled due to exceeding the number of rows in the displayed table":"Вид панелями отключен из-за превышения числа строк в отображаемой таблице"
+"The panel view is disabled due to exceeding the number of rows in the displayed table":"Вид панелями отключен из-за превышения числа строк в отображаемой таблице",
+"Surely to recalculate %s cycles with selected fields?":"Пересчитать %s циклов с выбранными полями?",
+"Surely to recalculate %s rows with selected fields?":"Пересчитать %s строк с выбранными полями?"
 }
 
 	}

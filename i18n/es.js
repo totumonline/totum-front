@@ -417,7 +417,9 @@ App.langs.es =
 "Number dectimal delimiter":"Número delimitador dectimal",
 "Excel import":"Importar de Excel",
 "You are in mobile mode - switch to desktop mode to enable the admin layer.":"Estás en modo móvil - cambia a modo escritorio para habilitar la capa de administración.",
-"The panel view is disabled due to exceeding the number of rows in the displayed table":"La vista de panel está desactivada debido a que se ha superado el número de filas de la tabla mostrada."
+"The panel view is disabled due to exceeding the number of rows in the displayed table":"La vista de panel está desactivada debido a que se ha superado el número de filas de la tabla mostrada.",
+"Surely to recalculate %s cycles with selected fields?":"¿Seguramente recalcular %s ciclos con los campos seleccionados?",
+"Surely to recalculate %s rows with selected fields?":"¿Seguramente recalcular %s filas con los campos seleccionados?"
 }
 
 	}
