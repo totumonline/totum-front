@@ -970,6 +970,9 @@
                         csv.hide();
                     }
                 }
+            }else if (this.isCreatorView) {
+                this._beforeSpace_title.append(csv);
+                csv.addClass('admin-hidden');
             }
 
             if (this.tableRow.description) {
