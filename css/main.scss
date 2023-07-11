@@ -1217,6 +1217,12 @@ th {
     border: 1px solid #f4f4f4;
 
 
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.1) $rowsBackColor;
+    scrollbar-gutter: stable;
+
+
+
     .table-in-notification & {
       padding-left: 0;
     }
