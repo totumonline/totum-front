@@ -376,6 +376,9 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                         case "integer":
                             val = parseInt(element.val());
                             break;
+                        case "number":
+                            val = parseFloat(element.val());
+                            break;
                         default:
                             val = element.val();
                             break;
@@ -671,6 +674,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                 });
                 break;
             case 'integer':
+            case 'number':
                 element = $('<input>').val(oldValue !== undefined ? oldValue : (f.default ? f.default : "")).attr('type', 'number');
                 if (f.min !== undefined) element.attr('min', f.min);
                 if (f.max !== undefined) element.attr('max', f.max);
