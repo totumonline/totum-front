@@ -12,7 +12,7 @@ export class FieldDefault extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         let prepared = this.constructor.prepareInputVal(nextProps.data.v)
-        if (this.props.model.elseData !== nextProps.model.elseData || JSON.stringify(nextProps.data.v) !== JSON.stringify(this.props.data.v) || (!this.state.focus && JSON.stringify(prepared) !== JSON.stringify(nextState.val))) {
+        if (this.props.model.elseData !== nextProps.model.elseData || JSON.stringify(nextProps.data.v) !== JSON.stringify(this.props.data.v) || (!this.state.focus && (!this.inputRef || this.inputRef.current!==document.activeElement) && JSON.stringify(prepared) !== JSON.stringify(nextState.val))) {
             this.setState({
                 val: prepared,
                 inVal: prepared,
