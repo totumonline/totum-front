@@ -964,13 +964,13 @@
             if (this.withTopButtons) {
                 this._beforeSpace_title.append(csv);
                 if (this.f.topbuttons === false) {
-                    if (this.isCreatorView) {
+                    if (this.isCreatorView && window === window.top) {
                         csv.addClass('admin-hidden');
                     } else {
                         csv.hide();
                     }
                 }
-            }else if (this.isCreatorView) {
+            } else if (this.isCreatorView && window === window.top) {
                 this._beforeSpace_title.append(csv);
                 csv.addClass('admin-hidden');
             }
@@ -1136,7 +1136,6 @@
                 let lastId = 0;
                 let prevLastId = null;
                 let val = selector.val();
-
 
 
                 if (this.PageData.countLimit && parseInt(val) > parseInt(this.PageData.countLimit)) {
@@ -2659,7 +2658,7 @@
                                             }
                                         }
                                     ];
-                                    setTimeout(()=>{
+                                    setTimeout(() => {
                                         div.find('input').select();
                                     })
                                     if (pcTable.isCreatorView) {
