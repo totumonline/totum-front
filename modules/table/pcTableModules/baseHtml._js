@@ -2169,7 +2169,7 @@
                 ||
                 (pcTable.f.extbuttons && pcTable.f.extbuttons.length && pcTable.f.extbuttons.indexOf(fieldName) !== -1)
                 ||
-                (pcTable.f.dottedbuttons && pcTable.f.dottedbuttons.length && pcTable.f.dottedbuttons.indexOf(fieldName) !== -1)
+                (pcTable.f.dotbuttons && pcTable.f.dotbuttons.length && pcTable.f.dotbuttons.indexOf(fieldName) !== -1)
             );
         },
         _createHeadCell: function (index, field, panelColor) {
@@ -2374,7 +2374,7 @@
                     if (pcTable.f.extbuttons && pcTable.f.extbuttons.indexOf && pcTable.f.extbuttons.indexOf(field.name) !== -1) {
                         creatorIcons.append('<i class="roles reordered">E</i>');
                     }
-                    if (pcTable.f.dottedbuttons && pcTable.f.dottedbuttons.indexOf && pcTable.f.dottedbuttons.indexOf(field.name) !== -1) {
+                    if (pcTable.f.dotbuttons && pcTable.f.dotbuttons.indexOf && pcTable.f.dotbuttons.indexOf(field.name) !== -1) {
                         creatorIcons.append('<i class="roles reordered">D</i>');
                     }
                 }
