@@ -151,13 +151,12 @@
                     if (field.name in hideShowForse) {
 
                         if (hideShowForse[field.name] === 'force') {
-                            hideShowForse[field.name] = true;
                             pcTable.fields[field.name].__hidden = true;
                         } else {
                             delete pcTable.fields[field.name].__hidden
                         }
 
-                        if (hideShowForse[field.name] === true) {
+                        if (hideShowForse[field.name] === true || hideShowForse[field.name] == 'force') {
                             newVal = 0
                         } else {
                             newVal = field.width;

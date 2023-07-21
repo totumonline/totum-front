@@ -1701,7 +1701,7 @@
                     oldCell.replaceWith(cell);
 
                     if (colorizeIt && paramsChanges[v.name] !== 'f') {
-                        pcTable._colorizeElement(cell, pcTable_COLORS.saved);
+                        pcTable._colorizeElement(cell, pcTable_COLORS.saved, undefined, v.name);
                     }
                 })
             }
@@ -1914,7 +1914,7 @@
                     footers.find('td[data-field="' + v.name + '"]').replaceWith(cell);
 
                     if (colorizeIt && paramsChanges[v.name] !== 'f') {
-                        pcTable._colorizeElement(cell, pcTable_COLORS.saved);
+                        pcTable._colorizeElement(cell, pcTable_COLORS.saved, undefined, v.name);
                     }
                 })
             }
@@ -3012,7 +3012,7 @@
                     let td;
                     $row.append(td = pcTable._createCell(item, field));
                     if (chData.indexOf(field.name) > -1) {
-                        pcTable._colorizeElement(td, pcTable_COLORS.saved);
+                        pcTable._colorizeElement(td, pcTable_COLORS.saved, undefined, field.name, item.id);
                     }
                 }
             }
@@ -3319,16 +3319,30 @@
             return $('<div class="text-center"><i class="fa fa-spinner"></i></div>');
         }
         ,
-        _colorizeElement: function (td, color, repeated) {
+        _colorizeElement: function (td, color, repeated, fieldName, itemId) {
             let i = 10;
-
+            let pcTable = this;
             let colorize = function () {
-                if (i === 0) {
-                    td.css('box-shadow', '');
-                } else {
-                    td.css('box-shadow', 'inset 0 0 100px 100px ' + App.hexToRGB(color, i / 10));
-                    i--;
-                    setTimeout(colorize, 50);
+                if (!td.is(':visible')) {
+                    if (itemId) {
+                        let tr = pcTable.data[itemId].$tr;
+                        if (tr) {
+                            td = pcTable._getTdByFieldName(fieldName, tr);
+                        }
+                    } else if (fieldName) {
+                        td = pcTable._content.find('[data-field="' + fieldName + '"]');
+                    }
+
+                }
+
+                if (td && td.length) {
+                    if (i === 0) {
+                        td.css('box-shadow', '');
+                    } else {
+                        td.css('box-shadow', 'inset 0 0 100px 100px ' + App.hexToRGB(color, i / 10));
+                        i--;
+                        setTimeout(colorize, 50);
+                    }
                 }
             };
 

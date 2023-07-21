@@ -395,7 +395,7 @@ $.extend(App.pcTableMain.prototype, {
             if (!td.length || !td.closest('body').length) return false;
             var tdNew = pcTable._removeEditing.call(pcTable, td);
             if (!noColorize) {
-                pcTable._colorizeElement(tdNew, pcTable_COLORS.blured);
+                pcTable._colorizeElement(tdNew, pcTable_COLORS.blured, undefined, field.name, itemId);
                 goToFunc(event)
             }
         };
