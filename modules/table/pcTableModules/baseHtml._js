@@ -1343,7 +1343,7 @@
                 let comment = $('<div class="pcTable-tableComment">').on('click', function () {
                     App.panel(App.translate('Comment of the table rows part'), pcTable.f.tablecomment)
                 });
-                buttons.prepend(comment.text(this.f.tablecomment));
+                buttons.prepend(comment.html(this.f.tablecomment.replace('<script', '<s cript')));
                 setTimeout(function () {
                     let btnsWidth = 0;
                     comment.parent().find('>span,>button').each(function () {
