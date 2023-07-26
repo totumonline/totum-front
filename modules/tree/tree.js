@@ -127,6 +127,10 @@
                             break;
 
                     }
+                } else {
+                    if (v.type === 'folder') {
+                        v.li_attr = {...v.li_attr, ...{"class": 'folder-with-padding'}}
+                    }
                 }
             });
 
