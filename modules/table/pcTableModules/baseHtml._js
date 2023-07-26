@@ -1341,7 +1341,7 @@
 
             if (this.f.tablecomment) {
                 let comment = $('<div class="pcTable-tableComment">').on('click', function () {
-                    App.panel(App.translate('Comment of the table rows part'), pcTable.f.tablecomment)
+                    App.panel(App.translate('Comment of the table rows part'), pcTable.f.tablecomment.replace('<script', '<s cript'))
                 });
                 buttons.prepend(comment.html(this.f.tablecomment.replace('<script', '<s cript')));
                 setTimeout(function () {
