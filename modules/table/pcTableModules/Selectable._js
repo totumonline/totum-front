@@ -435,6 +435,79 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 if (['select', 'tree', 'date'].indexOf(field.type) !== -1 || textAsValue) {
                     textDiv.find('.creator-select-val').text(JSON.stringify(val.v));
                 }
+                if (val.h && !(!('showhand' in format) || format.showhand === true)) {
+                    if (val.c !== undefined) {
+                        let c = '';
+                        if (val.c_) {
+                            if (field.multiple && val.c_.forEach) {
+                                val.c_.forEach((_c) => {
+                                    if (c) {
+                                        c += ', ';
+                                    }
+                                    if (_c[1]) {
+                                        c += $('<span class="deleted_value">').text(_c[0]).get(0).outerHTML;
+                                    } else {
+                                        c += $('<span class="value">').text(_c[0]).get(0).outerHTML;
+                                    }
+                                })
+                                let limit = 20;
+
+                                let i = 0;
+                                let opened = false;
+                                let opened_inner = false;
+                                let closes_inner = false;
+                                let cBig = c;
+                                let letters = 0;
+                                while (letters < limit || opened) {
+                                    switch (cBig[i]) {
+                                        case "<":
+                                            opened_inner = true;
+                                            opened = true;
+                                            break;
+                                        case "/":
+                                            if (opened_inner) {
+                                                closes_inner = true
+                                            }
+                                            break;
+                                        case ">":
+                                            if (opened && opened_inner && closes_inner) {
+                                                closes_inner = false;
+                                                opened = false;
+                                            }
+                                            opened_inner = false;
+                                            break;
+                                        default:
+                                            if (!opened_inner) {
+                                                letters++;
+                                            }
+                                    }
+                                    i++;
+                                }
+                                if (i < cBig.length) {
+                                    c = cBig.substr(0, i) + '...'
+                                    c += ' ';
+                                    let btn_c = $('<button class="btn btn-default btn-xxs"><i class="fa fa-eye"></i></button>').on('click', () => {
+                                        App.notify(cBig, App.translate('Calculated value'));
+                                    })
+                                    c = $('<div>').html(c);
+                                    c.append(btn_c)
+                                }
+                            } else {
+                                c = val.c_[0];
+                                if (val.c_[1]) {
+                                    c = $('<span class="deleted_value">').text(c);
+                                } else {
+                                    c = $('<span class="value">').text(c);
+                                }
+                            }
+                        } else {
+                            c = val.c;
+                        }
+                        textDiv.find('.creator-select-val').append($('<div class="calc-value"><i class="fa fa-hand-paper-o"></i> ' + App.translate('Calculated value') + ': </div>').append(c));
+                    } else
+                        textDiv.find('.creator-select-val').append('<div class="calc-value"><i class="fa fa-hand-grab-o pull-left"></i> ' + App.translate('Same as calculated') + '</div>');
+                }
+
             }
             const applyText = function (text) {
 

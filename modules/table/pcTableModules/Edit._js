@@ -552,8 +552,17 @@ $.extend(App.pcTableMain.prototype, {
 
         editCellsBlock.append($btn);
 
-        if (groupEdit) {
 
+        let format;
+        try {
+            format = $.extend({}, (pcTable.f || {}), (item.f || {}), (item[field.name].f || {}));
+        } catch (e) {
+            console.log(e, item, field.name);
+            format = {};
+        }
+        let showHand = (!('showhand' in format) || format.showhand === true);
+
+        if (groupEdit) {
 
             $btn = $('<button class="btn btn-sm btn-warning" data-save="true" data-name="' + App.translate('Apply to selected') + '"><i class="fa fa-database" title="' + App.translate('Apply to selected') + '"></i></button>');
 
@@ -595,7 +604,8 @@ $.extend(App.pcTableMain.prototype, {
 
             if (field.code && !field.codeOnlyInAdd) {
 
-                if (Object.keys(pcTable.selectedCells.ids).some((field) => {
+
+                if (showHand && Object.keys(pcTable.selectedCells.ids).some((field) => {
                     return pcTable.selectedCells.ids[field].some((id) => {
                         return !pcTable.data[id][field].h;
                     })
@@ -612,7 +622,7 @@ $.extend(App.pcTableMain.prototype, {
                     });
                     editCellsBlock.append($btn);
                 }
-                if (Object.keys(pcTable.selectedCells.ids).some((field) => {
+                if ((pcTable.isCreatorView || showHand) && Object.keys(pcTable.selectedCells.ids).some((field) => {
                     return pcTable.selectedCells.ids[field].some((id) => {
                         return pcTable.data[id][field].h;
                     })
@@ -630,7 +640,7 @@ $.extend(App.pcTableMain.prototype, {
                 }
             }
 
-        } else if (item[field.name] && item[field.name].h == true) {
+        } else if ((pcTable.isCreatorView || showHand) && item[field.name] && item[field.name].h == true) {
             $btn = $('<button class="btn btn-sm btn-danger" data-name="' + App.translate('Reset manual') + '"><i class="fa fa-eraser" title="' + App.translate('Reset manual') + '"></i></button>');
             $btn.data('click', function () {
                 onAction = true;
@@ -644,7 +654,7 @@ $.extend(App.pcTableMain.prototype, {
                 pcTable._saveEdited.call(pcTable, td, editedData, false);
             });
             editCellsBlock.append($btn)
-        } else if (field.code && !field.codeOnlyInAdd && field.category !== 'filter') {
+        } else if (showHand && field.code && !field.codeOnlyInAdd && field.category !== 'filter') {
             $btn = $('<button class="btn btn-sm btn-default" data-name="' + App.translate('Pin') + '"><i class="fa fa-hand-rock-o" title="' + App.translate('Pin') + '"></i></button>');
             $btn.data('click', function () {
                 onAction = true;
