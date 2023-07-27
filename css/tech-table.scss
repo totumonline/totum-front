@@ -1,13 +1,23 @@
 @import 'vars';
 
+
+#fioPanel{
+  .dropdown-menu{
+    position: relative;
+    margin-top: 6px;
+  }
+  #reUsersSliced{
+    margin-bottom: 0;
+  }
+}
+
 .tech-table {
   position: relative;
 
   > .bottomButtons {
     display: grid;
     grid-template-columns: 1fr;
-    position: absolute;
-    bottom: -5px;
+
     padding: 5px;
     width: 100%;
     .btn{

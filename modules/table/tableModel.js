@@ -652,6 +652,9 @@
             reUser: function (userId) {
                 return this.__ajax('post', {method: 'reuser', userId: userId, location: window.location.pathname});
             },
+            getReUsers: function (q){
+                return this.__ajax('post', {method: 'getReUsers', q: q});
+            },
             printTable: function (settings) {
                 return this.__ajax('post', {method: 'printTable', settings: JSON.stringify(settings)});
             }

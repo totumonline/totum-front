@@ -1,9 +1,8 @@
 (function () {
-
-    App.reUserInterface = function (users, UserTables, isNotCreatorHimSelf, isCreatorView) {
+    App.reUserInterface = function (usersIN, UserTables, isNotCreatorHimSelf, isCreatorView) {
         let UserFio = $('#UserFio');
+        let sliced = false, users;
         UserFio.css('cursor', 'pointer');
-
 
         let model = App.models.table('/Table/', {}, {isCreatorView: isCreatorView});
         let pcTable = $('#table').data('pctable') || {model: model};
@@ -152,16 +151,15 @@
             }
         }
 
-        const addFioClick = function (event) {
+        const addFioClick = async function (event) {
 
             if (UserFio.attr('aria-describedby')) {
                 return true;
             }
 
-            let selectDiv = $('<div class="tech-table" style="width: 200px;"></div>');
+            let selectDiv = $('<div class="tech-table" id="fioPanel" style="width: 200px;"></div>');
             let select;
             if (UserTables.length) {
-                selectDiv.height(125)
                 let buttons = $('<div class="panel-buttons">');
                 selectDiv.prepend(buttons)
                 UserTables.forEach((t) => {
@@ -172,8 +170,6 @@
                     buttons.append(btn)
                 })
             } else if (!isCreatorView) {
-
-                selectDiv.height(70)
 
                 let divForPannelFormats = $('<div>');
                 selectDiv.prepend(divForPannelFormats);
@@ -220,17 +216,35 @@
                     }
                 })
             }
+            let Sliced;
+            let loadUsers = async function (q) {
+                let model = App.models.table('/Table/', {}, {isCreatorView: isCreatorView});
+                let pcTable = $('#table').data('pctable') || {model: model};
+                model.addPcTable(pcTable);
 
-
-            if (Object.keys(users).length) {
-                let sBtn = $('<div class="select-btn"></div>').appendTo(selectDiv);
-                select = $('<select data-size="' + (UserTables.length ? 13 - UserTables.length - 1 : (isCreatorView ? 13 : 11)) + '" class="open" title="' + App.translate("Select user") + '" data-style="btn-sm btn-default" data-live-search="true" data-width="100%">');
-
-                Object.keys(users).forEach(function (uId) {
-                    select.append($('<option>').text(uId).data('content', users[uId]));
+                let data = await model.getReUsers(q);
+                data = data.users;
+                users = data.users;
+                sliced = data.sliced;
+                select.empty();
+                users.forEach(function (r) {
+                    select.append($('<option>').text(r.id).attr('data-content', r.fio));
                 });
+                select.val('');
+                select.selectpicker('refresh');
+                if (sliced) {
+                    Sliced.show().insertAfter(selectDiv.find('.select-btn'));
+                } else {
+                    Sliced.hide();
+                }
+            }
 
+            if (usersIN === true) {
+                let sBtn = $('<div class="select-btn"></div>').appendTo(selectDiv);
+                select = $('<select class="open" title="' + App.translate("Select user") + '" data-style="btn-sm btn-default" data-live-search="true" data-width="100%">');
                 sBtn.append(select);
+                Sliced = $('<div id="reUsersSliced" class="ttm-paging-danges text-center">' + App.translate('The data is incomplete.') + '</div>');
+                await loadUsers();
             }
 
             UserFio.popover({
@@ -244,9 +258,8 @@
 
             if (select) {
 
-                selectDiv.height(360)
-
                 select.selectpicker('render').selectpicker('toggle');
+
                 select.data('container', selectDiv);
                 select.on('hide.bs.select', function () {
                     if (select.val()) {
@@ -254,6 +267,26 @@
                     }
                     return false;
                 });
+                select.data('selectpicker').$searchbox.off().on('click.dropdown.data-api focus.dropdown.data-api touchend.dropdown.data-api', function (e) {
+                    e.stopPropagation();
+                });
+                let Q = '', searchTimeout;
+                select.data('selectpicker').$searchbox.on('keyup', function (e) {
+
+                    if (e.key === 'Escape') {
+                        $('body').click();
+                        return true;
+                    }
+                    let q = $(this).val();
+                    if (Q !== q) {
+                        Q = q;
+                        if (searchTimeout) {
+                            clearTimeout(searchTimeout)
+                        }
+                        searchTimeout = setTimeout(() => loadUsers(Q), 750);
+                    }
+                });
+
                 setTimeout(function () {
                     UserFio.popover('show');
                     select.selectpicker('render');
@@ -265,7 +298,7 @@
 
 
             setTimeout(() => {
-                UserFio.popover('show');
+
                 let logOutButton = $('<a href="/Auth/logout/" class="btn">' + App.translate('Logout') + '</a>');
                 let divLogout = $('<div class="bottomButtons">').append(logOutButton);
                 if (App.isMobile('isButton')) {
@@ -300,7 +333,9 @@
                         'grid-template-columns': '45px 1fr'
                     })
                 }
-                selectDiv.height(selectDiv.height() + 35).append(divLogout)
+
+                selectDiv.append(divLogout)
+                UserFio.popover('show');
 
                 $('body').one('click.FioPopover', function (e) {
                     if (e.altKey !== undefined) {
