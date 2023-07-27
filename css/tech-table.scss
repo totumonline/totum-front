@@ -19,6 +19,7 @@
     grid-template-columns: 1fr;
 
     padding: 5px;
+    padding-top: 15px;
     width: 100%;
     .btn{
       background-color: #fafafa;
@@ -46,7 +47,7 @@
   }
 
   .select-btn {
-    margin-top: -14px;
+    margin-top: -10px;
 
     .bootstrap-select > button {
       visibility: hidden;
