@@ -613,7 +613,10 @@ $.extend(App.pcTableMain.prototype, {
         if (!input.isAttached()) {
             td.html(input).data('input', input);
         }
-        if (field.code && !field.codeOnlyInAdd) {
+
+        let showHand = (!f || !('showhand' in f) || f.showhand === true);
+
+        if (showHand && field.code && !field.codeOnlyInAdd) {
             let hand = td.find('.fa-hand-paper-o');
 
             if (pcTable._insertItem && pcTable._insertItem[field.name].h) {
