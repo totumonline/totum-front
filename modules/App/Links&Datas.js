@@ -296,45 +296,44 @@
                     form.detach();
 
                 } else {
+                    let uri = linkObject.uri;
+                    if (linkObject.elseData) {
+                        let withoutCategories = [];
+                        if (linkObject.elseData.header === false) {
+                            withoutCategories.push('param')
+                        }
+                        if (linkObject.elseData.footer === false) {
+                            withoutCategories.push('footer')
+                        }
+                        if (linkObject.elseData.topbuttons === false) {
+                            withoutCategories.push('tb')
+                        }
+                        if (linkObject.elseData.hidedots === false) {
+                            withoutCategories.push('hdf')
+                        } else if (linkObject.elseData.hidedots === true) {
+                            withoutCategories.push('hdt')
+                        }
+                        let hashData = {wc: withoutCategories};
+                        if (linkObject.elseData.pointing) {
+                            hashData.pointing = linkObject.elseData.pointing;
+                        }
+                        uri += '#' + encodeURIComponent(JSON.stringify(hashData));
+                    }
+
                     switch (target) {
                         case 'top':
-                            window.top.location.href = linkObject.uri;
-                            break;
                         case 'parent':
-                            //window.parent.App.linkObject=linkObject;;
-                            window.parent.location.href = linkObject.uri;
+                            window.parent.location.href = uri;
                             break;
                         case 'blank':
-                            let a = $('<a href="' + linkObject.uri + '" target="_blank">link</a>');
+                            let a = $('<a href="' + uri + '" target="_blank">link</a>');
                             a.appendTo('body');
                             a.get(0).click();
                             a.remove();
                             break;
                         case 'iframe':
                         case 'top-iframe':
-                            let uri = linkObject.uri;
-                            if (linkObject.elseData) {
-                                let withoutCategories = [];
-                                if (linkObject.elseData.header === false) {
-                                    withoutCategories.push('param')
-                                }
-                                if (linkObject.elseData.footer === false) {
-                                    withoutCategories.push('footer')
-                                }
-                                if (linkObject.elseData.topbuttons === false) {
-                                    withoutCategories.push('tb')
-                                }
-                                if (linkObject.elseData.hidedots === false) {
-                                    withoutCategories.push('hdf')
-                                } else if (linkObject.elseData.hidedots === true) {
-                                    withoutCategories.push('hdt')
-                                }
-                                let hashData = {wc: withoutCategories};
-                                if (linkObject.elseData.pointing) {
-                                    hashData.pointing = linkObject.elseData.pointing;
-                                }
-                                uri += '#' + encodeURIComponent(JSON.stringify(hashData));
-                            }
+
                             let $iframe = $('<iframe src="' + uri + '" style="width: 100%; height: 70vh; border: none"></iframe>');
 
                             let btns;
@@ -449,7 +448,7 @@
                             if (window.parent != window) {
                                 sessionStorage.linkObject = JSON.stringify(linkObject);
                             }
-                            window.location.href = linkObject.uri;
+                            window.location.href = uri;
 
                     }
                 }
