@@ -297,6 +297,7 @@
 
                 } else {
                     let uri = linkObject.uri;
+                    let hash = '';
                     if (linkObject.elseData) {
                         let withoutCategories = [];
                         if (linkObject.elseData.header === false) {
@@ -317,7 +318,9 @@
                         if (linkObject.elseData.pointing) {
                             hashData.pointing = linkObject.elseData.pointing;
                         }
-                        uri += '#' + encodeURIComponent(JSON.stringify(hashData));
+                        if(withoutCategories.length || linkObject.elseData.pointing){
+                            uri += '#' + encodeURIComponent(JSON.stringify(hashData));
+                        }
                     }
 
                     switch (target) {
