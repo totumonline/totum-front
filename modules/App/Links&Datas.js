@@ -297,7 +297,6 @@
 
                 } else {
                     let uri = linkObject.uri;
-                    let hash = '';
                     if (linkObject.elseData) {
                         let withoutCategories = [];
                         if (linkObject.elseData.header === false) {

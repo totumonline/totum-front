@@ -420,7 +420,13 @@ App.langs.de =
 "The panel view is disabled due to exceeding the number of rows in the displayed table":"Die Panelansicht ist deaktiviert, da die Anzahl der Zeilen in der angezeigten Tabelle überschritten wurde",
 "Surely to recalculate %s cycles with selected fields?":"Sicherlich, um %s-Zyklen mit ausgewählten Feldern neu zu berechnen?",
 "Surely to recalculate %s rows with selected fields?":"Sicherlich um %s Zeilen mit ausgewählten Feldern neu zu berechnen?",
-"The data is incomplete.":"Die Daten sind nicht vollständig."
+"The data is incomplete.":"Die Daten sind nicht vollständig.",
+"Expand":"Erweitern",
+"Compress":"Komprimieren",
+"Shared editing":"Gemeinsame Bearbeitung",
+"Single editing":"Bearbeitung von",
+"Viewing":"Einsehen",
+"Save and close":"Speichern und schließen"
 }
 
 	}

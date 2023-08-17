@@ -420,7 +420,13 @@ App.langs.ru =
 "The panel view is disabled due to exceeding the number of rows in the displayed table":"Вид панелями отключен из-за превышения числа строк в отображаемой таблице",
 "Surely to recalculate %s cycles with selected fields?":"Пересчитать %s циклов с выбранными полями?",
 "Surely to recalculate %s rows with selected fields?":"Пересчитать %s строк с выбранными полями?",
-"The data is incomplete.":"Данные не полны."
+"The data is incomplete.":"Данные не полны.",
+"Expand":"Развернуть",
+"Compress":"Свернуть",
+"Shared editing":"Совместное редактирование",
+"Single editing":"Редактирование",
+"Viewing":"Просмотр",
+"Save and close":"Сохранить и закрыть"
 }
 
 	}

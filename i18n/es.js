@@ -420,7 +420,13 @@ App.langs.es =
 "The panel view is disabled due to exceeding the number of rows in the displayed table":"La vista de panel está desactivada debido a que se ha superado el número de filas de la tabla mostrada.",
 "Surely to recalculate %s cycles with selected fields?":"¿Seguramente recalcular %s ciclos con los campos seleccionados?",
 "Surely to recalculate %s rows with selected fields?":"¿Seguramente recalcular %s filas con los campos seleccionados?",
-"The data is incomplete.":"Los datos están incompletos."
+"The data is incomplete.":"Los datos están incompletos.",
+"Expand":"Expandir",
+"Compress":"Comprimir",
+"Shared editing":"Edición compartida",
+"Single editing":"Edición de",
+"Viewing":"Ver",
+"Save and close":"Guardar y cerrar"
 }
 
 	}
