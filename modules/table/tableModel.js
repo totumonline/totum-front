@@ -37,10 +37,10 @@
                 return this.url;
             },
             isCreatorView: function () {
-                if('isCreatorView' in pcTable){
+                if ('isCreatorView' in pcTable) {
                     return pcTable.isCreatorView;
-                }else{
-                    if($('#isCreator').length && localStorage.getItem('notCreator')){
+                } else {
+                    if ($('#isCreator').length && localStorage.getItem('notCreator')) {
                         return true;
                     }
                     return false;
@@ -164,7 +164,7 @@
                                     let codes = $.cookie('pcTableLogs') || '[]';
                                     codes = JSON.parse(codes);
 
-                                    App.blink(pcTableObj.LogButton, 8, codes.length ? '#fff': 'red');
+                                    App.blink(pcTableObj.LogButton, 8, codes.length ? '#fff' : 'red');
                                 }
                             }
                             if (json.FieldLOGS && Object.keys(json.FieldLOGS).length) {
@@ -262,6 +262,10 @@
                         }
                     },
                     fail = function (obj) {
+                        if (RequestObject && RequestObject.noErrorNotice) {
+                            $d.reject(obj);
+                            return;
+                        }
                         let error, timeout;
                         if (obj && obj.status === 200) {
                             if (obj.responseJSON && obj.responseJSON.error) error = obj.responseJSON.error;
@@ -316,11 +320,11 @@
 
                         if (!url.match(/:\/\//)) {
                             url = window.location.protocol + '//' + window.location.host + url;
-                                }
+                        }
                         let _url = new URL(url);
-                            _url.searchParams.delete('rn')
-                            _url.searchParams.append('rn', Math.round(Math.random() * 100000) + (data_tmp['method'] || ''));
-                            url = _url.toString();
+                        _url.searchParams.delete('rn')
+                        _url.searchParams.append('rn', Math.round(Math.random() * 100000) + (data_tmp['method'] || ''));
+                        url = _url.toString();
                     }
                     if (!RequestObject || RequestObject.aborted !== true) {
                         $.ajax({
@@ -421,7 +425,13 @@
                 return this.__ajax('post', {fieldName: fieldName, fieldVal: val, method: 'checkUnic'});
             },
             add: function (hash, data, idsString) {
-                return this.__ajax('post', {hash: hash, method: 'add', fields: this.onlyFields, data: data, ids: idsString});
+                return this.__ajax('post', {
+                    hash: hash,
+                    method: 'add',
+                    fields: this.onlyFields,
+                    data: data,
+                    ids: idsString
+                });
             },
             getValue: function (data, table_id) {
                 return this.__ajax('post', {data: data, method: 'getValue', table_id: table_id});
@@ -605,7 +615,7 @@
 
                 if (refreshType === 'reload') {
                     App.windowReloadWithHash(this);
-                    return ;
+                    return;
                 }
 
                 func = func || function (json) {
@@ -652,7 +662,7 @@
             reUser: function (userId) {
                 return this.__ajax('post', {method: 'reuser', userId: userId, location: window.location.pathname});
             },
-            getReUsers: function (q){
+            getReUsers: function (q) {
                 return this.__ajax('post', {method: 'getReUsers', q: q});
             },
             printTable: function (settings) {

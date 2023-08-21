@@ -1,0 +1,11 @@
+.bugFinder-console{
+  background-color: #333;
+  color: #fff;
+  >div{
+    display: grid;
+    grid-template-columns: 2fr 1fr 40px;
+    &.green{
+      color: lightgreen;
+    }
+  }
+}

@@ -572,6 +572,13 @@
                                 $div.on('click', 'button', function () {
                                     apply()
                                 });
+
+                                /*Freezing code*/
+                                $('<button class="btn btn-default btn-sm pull-right"><i class="fa fa-bug"></i></button>')
+                                    .on('click', () => App.bugFinder())
+                                    .prependTo($div)
+
+
                                 btn.popover({
                                     trigger: "manual",
                                     placement: "bottom",
