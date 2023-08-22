@@ -1,31 +1,118 @@
 (function () {
 
+    setTimeout(() => App.bugFinder(), 10);
+
     App.bugFinder = function () {
         let $div = $('<div id="bugFinder">');
-        let selector = $('<div class="bugFinder-selector" style="display: grid; grid-gap: 10px; grid-template-columns: minmax(50px, max-content) 1fr">').appendTo($div);
+        let selector = $('<div class="bugFinder-selector">').appendTo($div);
+
         let $select = $('<select><option value="1">By address:</option></select>').appendTo(selector)
         let $PathInput = $('<input type="text" class="form-control" placeholder="' + App.translate('put address here') + '">').appendTo(selector)
 
-        let settings = $('<div class="bugFinder-settings" style="padding: 3px 0; display: grid; grid-gap: 10px; grid-template-columns: minmax(70px, max-content) 60px 160px 1fr">').appendTo($div);
+        selector.append('<label>By user:</label>')
+        let $user = $('<select  data-live-search="true" data-title="Current user"></select>').appendTo(selector).val('').selectpicker()
 
-        let console = $('<div class="bugFinder-console" style="background-color: #333333; overflow: auto">').appendTo($div);
+        {
+            $user.data('selectpicker').$searchbox.off().on('click.dropdown.data-api focus.dropdown.data-api touchend.dropdown.data-api', function (e) {
+                e.stopPropagation();
+            });
+            let Q = '', searchTimeout;
+            const loadUsers = async function () {
+                let model = App.models.table('/Table/', {}, {isCreatorView: true});
+                let pcTable = $('#table').data('pctable') || {model: model};
+                model.addPcTable(pcTable);
 
+                let data = await model.getReUsers(Q);
+                data = data.users;
+                $user.empty();
+                data.users.forEach(function (r) {
+                    $user.append($('<option>').text(r.id).attr('data-content', r.fio));
+                });
+                if (data.sliced) {
+                    $user.append($('<option disabled>').text("").attr('data-content', "..."));
+                }
+                $user.val('');
+                $user.selectpicker('refresh');
+            }
+            $user.one('show.bs.select', () => {
+                loadUsers()
+            })
+
+            $user.data('selectpicker').$searchbox.on('keyup', function (e) {
+                if (e.key === 'Escape') {
+                    $('body').click();
+                    return true;
+                }
+                let q = $(this).val();
+                if (Q !== q) {
+                    Q = q;
+                    if (searchTimeout) {
+                        clearTimeout(searchTimeout)
+                    }
+                    searchTimeout = setTimeout(() => loadUsers(Q), 750);
+                }
+            });
+        }
+
+
+        let settings = $('<div class="bugFinder-settings">').appendTo($div);
+
+        let console = $('<div class="bugFinder-console">').appendTo($div);
+        const consoller = (title, error, _class, fieldId) => {
+            let $row = $('<div>');
+            $row.append($('<div>').text(title));
+            if (!_class) {
+                let $btn = $('<button>Error</button>').on('click', () => {
+                    $btn.replaceWith(error)
+                })
+                $row.append($('<div>').html($btn));
+            } else {
+                $row.append($('<div>').text(error));
+            }
+            console.append($row)
+            if (_class) {
+                $row.addClass(_class)
+            }
+            if (fieldId) {
+                $row.append($('<button><i class="fa fa-edit"></i></button>').on('click', () => {
+                    (new EditPanel(2, BootstrapDialog.TYPE_DANGER, {
+                        id: fieldId
+                    }))
+                }))
+            }
+            console.scrollTop(console.get(0).scrollHeight)
+        }
         let timeLimit = $('<input class="form-control" type="number" step="1" min="1" max="20"/>').val(1).appendTo(settings);
-        timeLimit.before($('<label style="margin-top: 7px;">').text('Time limit:'))
+        timeLimit.before($('<label>').text('Time limit:'))
 
-        let pageType = $('<select style="width: 120px;" data-width="css-width" data-size="auto"><option value="main">Main table</option><option value="page">First pagination page</option></select>').val("main").appendTo(settings);
+        let pageType = $('<select class="bugFinder-pageType" data-width="css-width" data-size="auto"><option value="main">Main table</option><option value="page">First pagination page</option></select>').val("main").appendTo(settings);
         pageType.selectpicker()
 
-        let Start = $('<button class="btn btn-danger">').text(App.translate('Start')).appendTo(settings).on('click', () => {
-                let activeProcess = {noErrorNotice: true};
+        let STOP = {
+            v: false,
+            get: function () {
+                return this.v
+            },
+            act: function (byClick) {
+                Start.removeClass('started').text(App.translate('Start'))
+                STOP.v = true;
 
-                if (Start.is('.disabled')) {
-                    Start.removeClass('disabled').text(App.translate('Start'))
-                    if (activeProcess.jqXHR && activeProcess.jqXHR.abort) {
-                        activeProcess.jqXHR.abort();
-                    }
+                if (activeProcess.jqXHR && activeProcess.jqXHR.abort) {
+                    activeProcess.jqXHR.abort();
+                }
+                if (byClick) {
+                    consoller('STOP', '---', 'red')
+                }
+            }
+        };
+        let activeProcess = {noErrorNotice: true};
+        let Start = $('<button class="btn btn-danger">').text(App.translate('Start')).appendTo(settings).on('click', () => {
+                if (Start.is('.started')) {
+                    STOP.act(true);
 
                 } else {
+                    STOP.v = false;
+
                     console.empty();
                     $PathInput.val('/Table/132/587')
 
@@ -43,7 +130,7 @@
                         App.notify('Host must be of your Totum');
                         return;
                     }
-                    Start.addClass('disabled').text(App.translate('Stop'));
+                    Start.addClass('started').text(App.translate('Stop'));
 
                     let model = App.models.table($PathInput.val(), {}, {isCreatorView: true});
                     let pcTable = {model: model};
@@ -55,34 +142,11 @@
                             timeLimit: timeLimit.val(),
                             type: type,
                             pageType: pageType.val(),
-                            fieldNum: fieldNum
+                            fieldNum: fieldNum,
+                            user: $user.val()
                         }, activeProcess)
                     }).bind(model);
 
-                    const consoller = (title, error, _class, fieldId) => {
-                        let $row = $('<div>');
-                        $row.append($('<div>').text(title));
-                        if (!_class) {
-                            let $btn = $('<button>Error</button>').on('click', () => {
-                                $btn.replaceWith(error)
-                            })
-                            $row.append($('<div>').html($btn));
-                        } else {
-                            $row.append($('<div>').text(error));
-                        }
-                        console.append($row)
-                        if (_class) {
-                            $row.addClass(_class)
-                        }
-                        if (fieldId) {
-                            $row.append($('<button><i class="fa fa-edit"></i></button>').on('click', () => {
-                                (new EditPanel(2, BootstrapDialog.TYPE_DANGER, {
-                                    id: fieldId
-                                }))
-                            }))
-                        }
-                        console.scrollTop(console.get(0).scrollHeight)
-                    }
 
                     let tests = [
                         {type: {pl: "param", code: "code"}, title: "headers code"},
@@ -100,42 +164,46 @@
                     ]
 
 
-                    let title = 'Проверка работает ли при включенных кодах'
+                    let title = 'Check for work with on codes'
                     bugFinder({pl: null, code: null})
-                        .then(() => consoller(title, "Все работает. Проверять нечего", "green"))
+                        .then((data) => {
+                            data.ok === 1 ? consoller(title, "All works", "green") : consoller(title, data.ok, "red");
+                            STOP.act()
+                        })
                         .catch(async (error) => {
                             consoller(title, error.responseText)
 
                             try {
                                 let stop;
-                                for (let i = 0; i < tests.length && !stop; i++) {
+                                for (let i = 0; i < tests.length && !stop && !STOP.get(); i++) {
                                     let test = tests[i];
                                     await bugFinder(test.type).then(async () => {
                                         consoller(test.title, 'It\'s OK! Let\'s find the field', "green");
 
                                         let i = 1;
-                                        while (i < 10) {
+                                        while (i < 10 && !STOP.get()) {
                                             try {
                                                 let data = await bugFinder(test.type, i);
                                                 consoller(test.title + ' ' + i, 'THE FIELD IS ' + data.fieldName, "green", data.fieldId);
                                                 stop = true;
+                                                STOP.act()
                                                 break;
                                             } catch (error) {
-                                                consoller(test.title + ' ' + i, error.responseText)
+                                                if (error.statusText != 'abort')
+                                                    consoller(test.title + ' ' + i, error.responseText)
                                             }
                                             i++;
                                         }
-
-                                        throw new Error("FIELD NOT FOUND")
+                                        stop = true;
                                     }).catch((error) => {
-                                        consoller(test.title, error.responseText)
+                                        if (error.statusText != 'abort')
+                                            consoller(test.title, error.responseText)
                                     })
                                 }
 
                             } catch (e) {
-
+                                STOP.act()
                             }
-
 
                         })
 

@@ -1,11 +1,39 @@
-.bugFinder-console{
-  background-color: #333;
-  color: #fff;
-  >div{
-    display: grid;
-    grid-template-columns: 2fr 1fr 40px;
-    &.green{
-      color: lightgreen;
+#bugFinder {
+  label{
+    margin-top: 7px;
+  }
+  .bugFinder-console {
+    background-color: #333;
+    color: #fff;
+    overflow: auto;
+
+    > div {
+      display: grid;
+      grid-template-columns: 2fr 1fr 40px;
+
+      &.green {
+        color: lightgreen;
+      }
+      &.red {
+        color: lightpink;
+      }
     }
+  }
+
+  .bugFinder-settings {
+    padding: 3px 0;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: minmax(70px, max-content) 60px 190px 1fr
+  }
+
+  .bugFinder-selector {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: minmax(50px, max-content) 2fr 100px 1fr
+  }
+
+  .bootstrap-select {
+    width: 100%;
   }
 }
