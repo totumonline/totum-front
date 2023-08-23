@@ -426,7 +426,17 @@ App.langs.de =
 "Shared editing":"Gemeinsame Bearbeitung",
 "Single editing":"Bearbeitung von",
 "Viewing":"Einsehen",
-"Save and close":"Speichern und schließen"
+"Save and close":"Speichern und schließen",
+"bugFinder-warning":"Der Test erfolgt im Nicht-Speichermodus und ist sicher für die Datenbank, kann aber Dienste von Drittanbietern aufrufen und E-Mails versenden, wenn diese Funktionen in die Codekette der geöffneten Seite eingebunden sind.",
+"Enter the path to the table":"Geben Sie den Pfad zur Tabelle ein",
+"Stop":"Stopp",
+"Start":"Start",
+"Current user":"Aktueller Benutzer",
+"By user":"Benutzer",
+"By address":"URL",
+"Time limit, sec.":"Zeitlimit, sec.",
+"Main table":"Haupttabelle",
+"First pagination page":"Erste Paginierungsseite"
 }
 
 	}

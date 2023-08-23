@@ -426,7 +426,17 @@ App.langs.es =
 "Shared editing":"Edición compartida",
 "Single editing":"Edición de",
 "Viewing":"Ver",
-"Save and close":"Guardar y cerrar"
+"Save and close":"Guardar y cerrar",
+"bugFinder-warning":"Las pruebas se realizan en modo no guardado y seguro para la base de datos, pero pueden invocar servicios de terceros y enviar correos electrónicos si esas funciones están implicadas en la cadena de código de la página que se está abriendo.",
+"Enter the path to the table":"Introduzca la ruta a la tabla",
+"Stop":"Stop",
+"Start":"Start",
+"Current user":"Usuario actual",
+"By user":"Usuario",
+"By address":"URL",
+"Time limit, sec.":"Límite, seg.",
+"Main table":"Tabla principal",
+"First pagination page":"Primera página de paginación"
 }
 
 	}

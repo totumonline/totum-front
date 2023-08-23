@@ -57,7 +57,8 @@ App.langs.en =
 "mobileToDesctopWarning":"This display type is only for PCs with a small screen. Do not turn it on if you have a mobile device such as a phone or *PAD",
 "mobileToDesctopUserWarning":"We detected the page type automatically.\n\nIf we made a mistake, you can switch the mobile\/desktop view manually.\n\nYou have to be sure of the action you're performing!\n\nIf you switch to desktop view on your mobile device, the page will not work!",
 "versions(%s)":"versions (%s)",
-"Single editing":"Editing"
+"Single editing":"Editing",
+"bugFinder-warning":"Testing is in non-save mode and safe for the database, but may invoke third-party services and send emails if those functions are involved in the code chain of the page being opened."
 }
 
 	}

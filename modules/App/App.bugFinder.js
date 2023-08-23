@@ -1,16 +1,19 @@
 (function () {
 
-    setTimeout(() => App.bugFinder(), 10);
+   // setTimeout(() => App.bugFinder(), 10);
 
     App.bugFinder = function () {
+
         let $div = $('<div id="bugFinder">');
+        $('<div class="bugFinder-warning">').text(App.translate('bugFinder-warning')).appendTo($div)
+
         let selector = $('<div class="bugFinder-selector">').appendTo($div);
 
-        let $select = $('<select><option value="1">By address:</option></select>').appendTo(selector)
-        let $PathInput = $('<input type="text" class="form-control" placeholder="' + App.translate('put address here') + '">').appendTo(selector)
+        let $select = $('<label>'+App.translate('By address')+':</label>').appendTo(selector)
+        let $PathInput = $('<input type="text" class="form-control" placeholder="' + App.translate('Enter the path to the table') + '">').appendTo(selector)
 
-        selector.append('<label>By user:</label>')
-        let $user = $('<select  data-live-search="true" data-title="Current user"></select>').appendTo(selector).val('').selectpicker()
+        selector.append('<label>'+App.translate('By user')+':</label>')
+        let $user = $('<select  data-live-search="true" data-title="'+App.translate('Current user')+'"></select>').appendTo(selector).val('').selectpicker()
 
         {
             $user.data('selectpicker').$searchbox.off().on('click.dropdown.data-api focus.dropdown.data-api touchend.dropdown.data-api', function (e) {
@@ -63,7 +66,9 @@
             $row.append($('<div>').text(title));
             if (!_class) {
                 let $btn = $('<button>Error</button>').on('click', () => {
-                    $btn.replaceWith(error)
+                    $btn.replaceWith(error.replace(/^\s*<br\s*\/?>\s*/, '') + '<br/>');
+
+                    $btn.parent().addClass('error-text')
                 })
                 $row.append($('<div>').html($btn));
             } else {
@@ -74,18 +79,26 @@
                 $row.addClass(_class)
             }
             if (fieldId) {
-                $row.append($('<button><i class="fa fa-edit"></i></button>').on('click', () => {
-                    (new EditPanel(2, BootstrapDialog.TYPE_DANGER, {
-                        id: fieldId
+                if (typeof fieldId === 'object') {
+                    $row.find('*:last').prepend($('<button><i class="fa fa-edit"></i></button>').on('click', () => {
+                        (new EditPanel(1, BootstrapDialog.TYPE_DANGER, {
+                            id: fieldId.tableId
+                        }))
                     }))
-                }))
+                } else {
+                    $row.find('*:last').prepend($('<button><i class="fa fa-edit"></i></button>').on('click', () => {
+                        (new EditPanel(2, BootstrapDialog.TYPE_DANGER, {
+                            id: fieldId
+                        }))
+                    }))
+                }
             }
             console.scrollTop(console.get(0).scrollHeight)
         }
         let timeLimit = $('<input class="form-control" type="number" step="1" min="1" max="20"/>').val(1).appendTo(settings);
-        timeLimit.before($('<label>').text('Time limit:'))
+        timeLimit.before($('<label>').text(App.translate('Time limit, sec.')+':'))
 
-        let pageType = $('<select class="bugFinder-pageType" data-width="css-width" data-size="auto"><option value="main">Main table</option><option value="page">First pagination page</option></select>').val("main").appendTo(settings);
+        let pageType = $('<select class="bugFinder-pageType" data-width="css-width" data-size="auto"><option value="main">'+App.translate('Main table')+'</option><option value="page">'+App.translate('First pagination page')+'</option></select>').val("main").appendTo(settings);
         pageType.selectpicker()
 
         let STOP = {
@@ -106,7 +119,7 @@
             }
         };
         let activeProcess = {noErrorNotice: true};
-        let Start = $('<button class="btn btn-danger">').text(App.translate('Start')).appendTo(settings).on('click', () => {
+        let Start = $('<button class="btn btn-danger">').text(App.translate('Start')).appendTo(settings).on('click', async () => {
                 if (Start.is('.started')) {
                     STOP.act(true);
 
@@ -114,10 +127,10 @@
                     STOP.v = false;
 
                     console.empty();
-                    $PathInput.val('/Table/132/587')
+                   // $PathInput.val('/Table/132/587')
 
                     if (!$PathInput.val()) {
-                        App.notify('Set address path');
+                        App.notify(App.translate('Enter the path to the table'));
                         return;
                     }
                     let url;
@@ -136,78 +149,104 @@
                     let pcTable = {model: model};
                     model.addPcTable(pcTable);
 
-                    const bugFinder = (function (type, fieldNum) {
+                    const bugFinder = (function (types, fieldNum) {
                         return this.__ajax('post', {
                             method: 'bugFinder',
                             timeLimit: timeLimit.val(),
-                            type: type,
+                            types: types,
                             pageType: pageType.val(),
                             fieldNum: fieldNum,
                             user: $user.val()
                         }, activeProcess)
                     }).bind(model);
 
+                    const bugFinderWrapper = async (types, fieldNum) => {
+                        let data, error;
+                        try {
+                            data = await bugFinder(types, fieldNum)
+                        } catch (e) {
+                            error = e.responseText
+                        }
+                        return [data, error]
+                    }
+
 
                     let tests = [
-                        {type: {pl: "param", code: "code"}, title: "headers code"},
-                        {type: {pl: "filter", code: "code"}, title: "filters code"},
-                        {type: {pl: "column", code: "code"}, title: "columns code"},
-                        {type: {pl: "footer", code: "code"}, title: "footers code"},
-                        {type: {pl: "param", code: "format"}, title: "headers format"},
-                        {type: {pl: "filter", code: "format"}, title: "filters format"},
-                        {type: {pl: "column", code: "format"}, title: "columns format"},
-                        {type: {pl: "footer", code: "format"}, title: "footers format"},
-                        {type: {pl: "param", code: "codeAction"}, title: "headers action"},
-                        {type: {pl: "filter", code: "codeAction"}, title: "filters action"},
-                        {type: {pl: "column", code: "codeAction"}, title: "columns action"},
-                        {type: {pl: "footer", code: "codeAction"}, title: "footers action"},
+                        {type: {pl: "", code: "", table: "default_action"}, title: "Add table action code"},
+                        {type: {pl: "param", code: "code"}, title: "Add headers code"},
+                        {type: {pl: "filter", code: "code"}, title: "Add filters code"},
+                        {type: {pl: "column", code: "code"}, title: "Add columns code"},
+                        {type: {pl: "footer", code: "code"}, title: "Add footers code"},
+
+                        {type: {pl: "", code: "", table: "table_format"}, title: "Add table format code"},
+                        {type: {pl: "", code: "", table: "row_format"}, title: "Add row format code"},
+
+                        {type: {pl: "param", code: "format"}, title: "Add headers format"},
+                        {type: {pl: "filter", code: "format"}, title: "Add filters format"},
+                        {type: {pl: "column", code: "format"}, title: "Add columns format"},
+                        {type: {pl: "footer", code: "format"}, title: "Add footers format"},
+                        {type: {pl: "param", code: "codeAction"}, title: "Add headers action"},
+                        {type: {pl: "filter", code: "codeAction"}, title: "Add filters action"},
+                        {type: {pl: "column", code: "codeAction"}, title: "Add columns action"},
+                        {type: {pl: "footer", code: "codeAction"}, title: "Add footers action"},
                     ]
 
 
-                    let title = 'Check for work with on codes'
-                    bugFinder({pl: null, code: null})
-                        .then((data) => {
-                            data.ok === 1 ? consoller(title, "All works", "green") : consoller(title, data.ok, "red");
-                            STOP.act()
-                        })
-                        .catch(async (error) => {
-                            consoller(title, error.responseText)
+                    let data, error, title, tableId;
 
-                            try {
-                                let stop;
-                                for (let i = 0; i < tests.length && !stop && !STOP.get(); i++) {
-                                    let test = tests[i];
-                                    await bugFinder(test.type).then(async () => {
-                                        consoller(test.title, 'It\'s OK! Let\'s find the field', "green");
+                    [data, error] = await bugFinderWrapper();
+                    title = 'Check for work with all codes'
+                    if (data) {
+                        data.ok === 1 ? consoller(title, "All works", "green") : consoller(title, data.ok, "red");
+                        STOP.act()
+                        return;
+                    } else {
+                        consoller(title, error)
+                    }
+                    [data, error] = await bugFinderWrapper(tests.map((x) => x.type));
+                    title = 'Check for work with no codes'
+                    if (!data) {
+                        consoller(title, error, "red");
+                        STOP.act()
+                        return;
+                    } else {
+                        consoller(title, 'No codes - all works', "green");
+                        tableId = data.tableId;
+                    }
 
-                                        let i = 1;
-                                        while (i < 10 && !STOP.get()) {
-                                            try {
-                                                let data = await bugFinder(test.type, i);
-                                                consoller(test.title + ' ' + i, 'THE FIELD IS ' + data.fieldName, "green", data.fieldId);
-                                                stop = true;
-                                                STOP.act()
-                                                break;
-                                            } catch (error) {
-                                                if (error.statusText != 'abort')
-                                                    consoller(test.title + ' ' + i, error.responseText)
-                                            }
-                                            i++;
-                                        }
-                                        stop = true;
-                                    }).catch((error) => {
-                                        if (error.statusText != 'abort')
-                                            consoller(test.title, error.responseText)
-                                    })
-                                }
-
-                            } catch (e) {
+                    let _tests, test, fields;
+                    for (let i = 0; i < tests.length && !STOP.get(); i++) {
+                        _tests = tests.slice(i + 1).map((x) => x.type);
+                        test = tests[i];
+                        title = test.title;
+                        [data, error] = await bugFinderWrapper(_tests);
+                        if (data) {
+                            consoller(title, 'It works', "green");
+                            fields = data.fields;
+                        } else {
+                            if (test.type.table) {
+                                consoller(title, 'That\'s code!', "red", {tableId: tableId});
                                 STOP.act()
+                                return;
+                            } else {
+                                consoller(title, 'That\'s fields!', "red");
+
+                                let _fields, _field;
+                                for (let _if = 0; _if < fields.length && !STOP.get(); _if++) {
+                                    _fields = fields.slice(_if + 1).map((x) => x.id);
+                                    _field = fields[_if];
+                                    [data, error] = await bugFinderWrapper([test.type, ..._tests], _fields);
+                                    if(error){
+                                        consoller(title+' field '+_field.name, 'That\'s field!', "red", _field.id);
+                                        STOP.act()
+                                        return;
+                                    }else{
+                                        consoller(title+' field '+_field.name, 'It works', "green");
+                                    }
+                                }
                             }
-
-                        })
-
-
+                        }
+                    }
                 }
             }
         )
@@ -223,7 +262,6 @@
             },
             onshown: function (_dialog) {
                 _dialog.$modalContent.width('90vw')
-                _dialog.$modalHeader.append($('<div style>').text(App.translate('Тут текст про то, что все проходит в несохраняющемся режиме безопасно для базы, но может дернуть сторонние сервисы и отправить email.')))
                 _dialog.$modalContent.position({
                     of: $(window.top.document.body),
                     my: 'top+10px',
@@ -231,7 +269,7 @@
                 });
 
                 $select.selectpicker();
-                console.height('calc(100vh - 200px)')
+                console.height('calc(100vh - 250px)')
 
             },
             onshow: function (dialog) {
