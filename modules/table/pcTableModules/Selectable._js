@@ -941,7 +941,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         let _F = {...Field, ...{pcTable: {...Field.pcTable, model: newModel}}};
                         if (formatSettings.date && _F.type === 'date') {
                             if (_F.dateTime) {
-                                _F.dateFormat = formatSettings.date + "H:i"
+                                _F.dateFormat = formatSettings.date + " H:i"
                             } else {
                                 _F.dateFormat = formatSettings.date
                             }
