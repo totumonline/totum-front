@@ -480,13 +480,15 @@
             if (!isMobile) {
                 $scrollTreeBlock.niceScroll({
                     cursorwidth: 7,
-                    mousescrollstep: 190,
-                    mousescroll: 190,
+                    mousescrollstep: 40,
+                    mousescroll: 40,
+                    scrollspeed: 40,
                     autohidemode: false,
                     enablekeyboard: false,
                     cursoropacitymin: 1,
                     railoffset: {left: 4},
-                    cursorcolor: '#e1e0df'
+                    cursorcolor: '#e1e0df',
+
                 });
             }
 
