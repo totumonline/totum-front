@@ -548,7 +548,7 @@
 
         let val = data[1].value;
         let title = data[1].title;
-        let td = $('<div>');
+        let td = $('<div class="edit-field">');
         let special, editVal;
 
 
