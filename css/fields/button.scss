@@ -17,7 +17,7 @@ button {
   background-color: #fafafa;
 }
 
-td.cell-button, span.cell-button {
+td.cell-button, span.cell-button, .InsertRow td {
   button.button-field {
     border-color: transparent;
     box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);

@@ -1398,18 +1398,37 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                                 let count = 0;
                                 let summ = Big(0);
                                 const getNum = function (val) {
-                                    let isMinus = val.toString().match(/^\s*-/) ? "-" : '';
-                                    return isMinus + val.toString().replace(/[^\d.]/g, '');
+                                    try {
+                                        let isMinus = val.toString().match(/^\s*-/) ? "-" : '';
+                                        val = isMinus + val.toString().replace(/[^\d.]/g, '');
+                                    } catch (e) {
+                                        val = 0;
+                                    }
+
+                                    try {
+                                        val = new Big(val);
+                                    } catch (e) {
+                                        val = 0
+                                    }
+                                    return val;
                                 };
                                 selFields.forEach((field) => {
                                     pcTable.selectedCells.ids[field].forEach((id) => {
                                         count++;
                                         if (allNumbers) {
 
-                                            if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue && (typeof pcTable.data[id][field].f.textasvalue === 'string') && pcTable.data[id][field].f.textasvalue.match(/^num/)) {
-                                                if (pcTable.data[id][field].f.text !== null && pcTable.data[id][field].f.text !== "") {
-                                                    let separator = pcTable.data[id][field].f.textasvalue.split('|')[1] || field.dectimalSeparator || '.'
-                                                    summ = summ.plus(getNum(pcTable.data[id][field].f.text.replace(separator, '.')))
+                                            if (pcTable.data[id][field].f && pcTable.data[id][field].f.textasvalue) {
+                                                if (pcTable.data[id][field].f.textasvalue === true || (typeof pcTable.data[id][field].f.textasvalue === 'string' && pcTable.data[id][field].f.textasvalue.match(/^num/))) {
+                                                    if (pcTable.data[id][field].f.text !== null && pcTable.data[id][field].f.text !== "") {
+                                                        let separator;
+
+                                                        try {
+                                                            pcTable.data[id][field].f.textasvalue.split('|')[1] || field.dectimalSeparator || '.'
+                                                        } catch (e) {
+                                                            separator = field.dectimalSeparator || '.';
+                                                        }
+                                                        summ = summ.plus(getNum(pcTable.data[id][field].f.text.replace(separator, '.')))
+                                                    }
                                                 }
                                             } else if (pcTable.data[id][field].v !== null) {
                                                 summ = summ.plus(getNum(pcTable.data[id][field].v))
@@ -1439,13 +1458,15 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                             } else {
                                 pcTable.selectedCells.summarizer.empty();
                             }
-                        } catch (e) {
+                        } catch
+                            (e) {
                             console.log(e);
 
                             pcTable.selectedCells.summarizer.empty();
                             return;
                         }
-                    },
+                    }
+                    ,
                     empty: () => {
                         if (pcTable.selectedCells.summarizer.status) {
                             pcTable.selectedCells.summarizer.status = 0;
@@ -1458,7 +1479,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 }
 
             };
-            this._container.on('contextmenu', '.DataRow td:not(.editing,.n,.id), td.val:not(.editing)', function (e) {
+            this
+                ._container.on('contextmenu', '.DataRow td:not(.editing,.n,.id), td.val:not(.editing)', function (e) {
                 let element = $(this);
 
 
@@ -1473,7 +1495,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
 
                 return false;
             });
-            this._container.on('click', '.DataRow td:not(.editing,.id,.n), td.val:not(.editing), .pcTable-buttons .cell-button', function (event) {
+            this
+                ._container.on('click', '.DataRow td:not(.editing,.id,.n), td.val:not(.editing), .pcTable-buttons .cell-button', function (event) {
 
                 if (event.target.className === 'file-image-preview') {
                     let file = JSON.parse(event.target.getAttribute('data-fileviewpreview'));
@@ -1518,7 +1541,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 }
             });
 
-            this._container.on('click', 'th.id .for-selected button', function () {
+            this
+                ._container.on('click', 'th.id .for-selected button', function () {
                 let btn = $(this);
                 let html = btn.html();
                 btn.html('<i class="fa fa-spinner fa-spin"></i>');
@@ -1531,7 +1555,9 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 });
             });
 
-            $('body').on('keyup', (event) => {
+            $(
+                'body'
+            ).on('keyup', (event) => {
                     if (top.window === window && BootstrapDialog.getTopDialog()) {
                         if (BootstrapDialog.getTopDialog().$modalBody.find('iframe').length) {
                             let win = BootstrapDialog.getTopDialog().$modalBody.find('iframe')[0].contentWindow;
@@ -1811,7 +1837,8 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                 }
             )
             ;
-        };
+        }
+        ;
     }()
 )
 ;

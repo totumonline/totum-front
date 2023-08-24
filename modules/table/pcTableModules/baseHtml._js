@@ -2779,15 +2779,19 @@
                                             itemField = id.row[field.name];
                                         }
                                         let format = itemField.f;
-                                        if (format && format.textasvalue && 'text' in format
-                                            && typeof format.textasvalue === 'string'
-                                            && format.textasvalue.substr(0, 3) === "num") {
-                                            let d1 = (format.textasvalue.split('|')[1] || field.dectimalSeparator);
-                                            let reg = new RegExp('[^0-9\\' + d1 + ']', 'g')
-                                            let val = format.text.toString().replace(reg, '');
-                                            val = val.toString().replace(d1, '.');
+                                        if (format && format.textasvalue) {
+                                            if ('text' in format
+                                                && (format.textasvalue === true || (typeof format.textasvalue === 'string'
+                                                    && format.textasvalue.substr(0, 3) === "num"))) {
+                                                let d1 = (format.textasvalue.split('|')[1] || field.dectimalSeparator);
+                                                let reg = new RegExp('[^0-9\\' + d1 + ']', 'g')
+                                                let val = format.text.toString().replace(reg, '');
+                                                val = val.toString().replace(d1, '.');
 
-                                            BigVal = Big(val);
+                                                BigVal = Big(val);
+                                            } else {
+                                                throw Error('not number')
+                                            }
                                         } else {
                                             BigVal = Big(itemField.v);
                                         }
