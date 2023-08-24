@@ -2,6 +2,9 @@ fieldTypes.button = {
     icon: 'fa-hand-pointer-o',
     required: false,
     getPanelText: function (fieldValue, td, item) {
+        if (this.openContextPanel) {
+            return '';
+        }
         let $btn = this.getCellText(fieldValue, td, item);
         $btn.on('click', () => {
             if (this.pcTable.selectedCells) {
