@@ -139,7 +139,8 @@ App.pcTableMain.prototype._print = function (exportFunction) {
     if (this.fieldCategories.param.length && this.fieldCategories.param.some(isAnyPrinfField)) {
         $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="params" class="form-check-input" checked="checked"> ' + App.translate('Parameters') + '</label></div>');
     }
-    if (this.fieldCategories.filter.length && this._content.find('.pcTable-filtersTable td:visible').length) {
+
+    if (this.fieldCategories.filter.length && this._container.find('.pcTable-filtersTable td:visible').length) {
         $printSettings.append('<div class="form-check no-bold"><label class="form-check-label"><input type="checkbox" name="filters" class="form-check-input" checked="checked"> ' + App.translate('Filters') + '</label></div>');
     }
     if (this.fieldCategories.column.length && this.fieldCategories.column.some(isAnyPrinfField) && this.dataSortedVisible.length) {
