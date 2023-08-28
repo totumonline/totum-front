@@ -265,9 +265,14 @@ $.extend(App.pcTableMain.prototype, {
 
         if (!$row) {
             this.insertRow = $row = $('<tr class="InsertRow" style="height: 35px;"><td class="id"></td></tr>')
-                .on('click focus keydown', 'input,button,select', function (event) {
+                .on('click focus keydown', 'input,button,select', function (event, data) {
+
+                    if (!(data && data.done) && !event.done) {
+                        return;
+                    }
+
                     let inputElement = $(this);
-                    if(inputElement.is('input') && ['focus', 'focusin'].indexOf(event.type)!==-1){
+                    if (inputElement.is('input') && ['focus', 'focusin'].indexOf(event.type) !== -1) {
                         inputElement.select();
                     }
                     if (event.type === 'keydown') {
@@ -280,7 +285,7 @@ $.extend(App.pcTableMain.prototype, {
                         if (pcTable._insertFocusTimeout) {
                             clearTimeout(pcTable._insertFocusTimeout);
                         }
-                        pcTable._insertBlurDelay = Date.now()+100;
+                        pcTable._insertBlurDelay = Date.now() + 250;
                     }
 
                     let active = pcTable._insertRow.find('.active');
@@ -398,7 +403,9 @@ $.extend(App.pcTableMain.prototype, {
             pcTable._addButtons.each(function (i, btn) {
                 $(btn).attr('tabindex', tabi++)
             })
-            pcTable._insertFocusIt.call(pcTable);
+            if (!$row.find('.active').length) {
+                pcTable._insertFocusIt.call(pcTable);
+            }
             pcTable._insertRowWait[0] = false;
         });
 
@@ -709,12 +716,15 @@ $.extend(App.pcTableMain.prototype, {
         let pcTable = this;
 
         if (!outTimed) {
+            if (pcTable._insertBlurDelay >= Date.now()) {
+                return false;
+            }
+
             this._insertFocusTimeout = setTimeout(function () {
                 pcTable._insertFocusIt.call(pcTable, 1);
             }, 10);
             return false;
         }
-
 
         let isLastCell = true;
         let isPanel = this._insertPanel ? true : false;

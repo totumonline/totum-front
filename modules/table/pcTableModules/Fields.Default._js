@@ -307,7 +307,8 @@ var defaultField = {
                         }
                         if (evt.originalEvent) {
                             evt.originalEvent.done = true;
-                            field.target.get(0).dispatchEvent(evt.originalEvent);
+                            field.target.trigger(evt.originalEvent.type, {"done": true});
+                            //field.target.get(0).dispatchEvent(evt.originalEvent);
                         } else {
                             field.target.trigger(evt.type, {"done": true});
                         }

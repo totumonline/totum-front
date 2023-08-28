@@ -1022,7 +1022,7 @@ fieldTypes.select = {
                         }
                         if (evt.originalEvent) {
                             evt.originalEvent.done = true;
-                            input.data('selectpicker').$button.get(0).dispatchEvent(evt.originalEvent);
+                            input.data('selectpicker').$button.trigger(evt.type, {done: true});
                         } else {
                             input.data('selectpicker').$button.trigger(evt.type, {done: true})
                         }
