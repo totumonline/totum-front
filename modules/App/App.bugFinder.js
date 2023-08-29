@@ -197,7 +197,7 @@
                     [data, error] = await bugFinderWrapper();
                     title = 'Check for work with all codes'
                     if (data) {
-                        data.ok === 1 ? consoller(title, "All works", "green") : consoller(title, data.ok, "red");
+                        data.ok === 1 ? consoller(title, "Everything works", "green") : consoller(title, data.ok, "red");
                         STOP.act()
                         return;
                     } else {
@@ -210,7 +210,7 @@
                         STOP.act()
                         return;
                     } else {
-                        consoller(title, 'No codes - all works', "green");
+                        consoller(title, 'No codes - everything works', "green");
                         tableId = data.tableId;
                     }
 
