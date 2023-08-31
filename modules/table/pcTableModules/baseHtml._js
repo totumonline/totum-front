@@ -446,6 +446,30 @@
 
             return btn;
         },
+        topButtonStatus: function (csv) {
+            if (this.withTopButtons) {
+                if (csv)
+                    this._beforeSpace_title.append(csv);
+                if (this.f.topbuttons === false) {
+                    if (this.isCreatorView && window === window.top) {
+                        if (csv)
+                            csv.addClass('admin-hidden');
+                        return 'hidden';
+                    } else {
+                        if (csv)
+                            csv.hide();
+                        return false;
+                    }
+                }
+            } else if (this.isCreatorView && window === window.top) {
+                if (csv) {
+                    this._beforeSpace_title.append(csv);
+                    csv.addClass('admin-hidden');
+                }
+                return 'hidden'
+            }
+            return true;
+        },
         _createBeforeSpace: function () {
             let pcTable = this;
 
@@ -968,19 +992,8 @@
             } else {
                 this._beforeSpace_title = $('<div class="pcTable-title"><span class="bttns"/></div>').prependTo(this._beforeSpace);
             }
-            if (this.withTopButtons) {
-                this._beforeSpace_title.append(csv);
-                if (this.f.topbuttons === false) {
-                    if (this.isCreatorView && window === window.top) {
-                        csv.addClass('admin-hidden');
-                    } else {
-                        csv.hide();
-                    }
-                }
-            } else if (this.isCreatorView && window === window.top) {
-                this._beforeSpace_title.append(csv);
-                csv.addClass('admin-hidden');
-            }
+
+            this.topButtonStatus(csv);
 
             if (this.tableRow.description) {
                 let btnAdd = $('<a class="btn btn-default btn-sm"><i class="fa fa-info"></i></a>');
@@ -2624,24 +2637,26 @@
 
                         //Скрыть
                         if (!pcTable.isMobile) {
-                            let btn = $('<div class="menu-item">');
-                            if (field.showMeWidth) {
-                                btn.append('<i class="fa fa-eye-slash"></i> ' + App.translate('Hide'));
-                                btn.on('click', function () {
-                                    btnDropDown.popover('hide');
-                                    pcTable.fieldsHiddingHide.call(pcTable, field.name);
-                                });
-                            } else {
-                                btn.append('<i class="fa fa-eye-slash"></i> ' + App.translate('Show'));
-                                btn.on('click', function () {
-                                    btnDropDown.popover('hide');
-                                    pcTable.setColumnWidth.call(pcTable, field.name, field.width, field.id);
-                                });
+                            let btn;
+                            if (pcTable.topButtonStatus()) {
+                                btn = $('<div class="menu-item">');
+                                if (field.showMeWidth) {
+                                    btn.append('<i class="fa fa-eye-slash"></i> ' + App.translate('Hide'));
+                                    btn.on('click', function () {
+                                        btnDropDown.popover('hide');
+                                        pcTable.fieldsHiddingHide.call(pcTable, field.name);
+                                    });
+                                } else {
+                                    btn.append('<i class="fa fa-eye-slash"></i> ' + App.translate('Show'));
+                                    btn.on('click', function () {
+                                        btnDropDown.popover('hide');
+                                        pcTable.setColumnWidth.call(pcTable, field.name, field.width, field.id);
+                                    });
+                                }
+                                btn.appendTo($divPopoverArrowDown);
                             }
-                            btn.appendTo($divPopoverArrowDown);
 
-
-                            if (field.category !== 'column' || !pcTable.isRotatedView) {
+                            if (pcTable.topButtonStatus() && (field.category !== 'column' || !pcTable.isRotatedView)) {
                                 //ширина
                                 btn = $('<div class="menu-item">');
                                 btn.append('<i class="fa fa-arrows-h"></i> ' + App.translate('Field width'));
