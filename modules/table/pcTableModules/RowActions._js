@@ -27,7 +27,7 @@
 
             /*dropdown Панель на id строки*/
 
-            pcTable._container.on('click', '.row_delete, .row_restore, .row_duplicate, .row_refresh, .cycle_refresh', function () {
+            pcTable._container.on('click', '.row_delete, .row_restore, .row_duplicate, .row_refresh, .cycle_refresh, .row_delete_force', function () {
                 let self = $(this);
                 if (self.is('.row_delete'))
                     pcTable.rows_delete.call(pcTable, $(this).data('tr'));
@@ -39,6 +39,8 @@
                     pcTable.row_refresh.call(pcTable, $(this).data('tr'));
                 else if (self.is('.cycle_refresh') && pcTable.isCreatorView && pcTable.tableRow.type === 'cycles') {
                     pcTable.cycle_refresh.call(pcTable, $(this).data('tr'))
+                } else if (self.is('.row_delete_force') && pcTable.isCreatorView) {
+                    pcTable.rows_delete.call(pcTable, $(this).data('tr'), true)
                 }
             });
 
@@ -270,20 +272,20 @@
 
         }
         ,
-        getRemoveTitle: function (type, cnt) {
+        getRemoveTitle: function (type, cnt, isForce) {
             switch (type) {
                 case "question_many":
-                    return this.tableRow.deleting === 'hide' ? App.translate('Surely to hide %s rows?', cnt) : App.translate('Surely to delete %s rows?', cnt);
+                    return this.tableRow.deleting === 'hide' && !isForce ? App.translate('Surely to hide %s rows?', cnt) : App.translate('Surely to delete %s rows?', cnt);
                 case "question":
-                    return this.tableRow.deleting === 'hide' ? App.translate('Surely to hide the row?', cnt) : App.translate('Surely to delete the row?', cnt);
+                    return this.tableRow.deleting === 'hide' && !isForce ? App.translate('Surely to hide the row?', cnt) : App.translate('Surely to delete the row?', cnt);
                 case "forTimer_many":
-                    return this.tableRow.deleting === 'hide' ? App.translate('Hiding %s rows', cnt) : App.translate('Deleting %s rows', cnt);
+                    return this.tableRow.deleting === 'hide' && !isForce ? App.translate('Hiding %s rows', cnt) : App.translate('Deleting %s rows', cnt);
                 case "forTimer":
-                    return this.tableRow.deleting === 'hide' ? App.translate('Hiding the row %s', cnt) : App.translate('Deleting the row %s', cnt);
+                    return this.tableRow.deleting === 'hide' && !isForce ? App.translate('Hiding the row %s', cnt) : App.translate('Deleting the row %s', cnt);
                 case "lower":
-                    return this.tableRow.deleting === 'hide' ? App.translate('Hide').toLowerCase() : App.translate('Delete').toLowerCase();
+                    return this.tableRow.deleting === 'hide' && !isForce ? App.translate('Hide').toLowerCase() : App.translate('Delete').toLowerCase();
                 default:
-                    return this.tableRow.deleting === 'hide' ? App.translate('Hide') : App.translate('Delete');
+                    return this.tableRow.deleting === 'hide' && !isForce ? App.translate('Hide') : App.translate('Delete');
             }
 
         },
@@ -698,6 +700,9 @@
                     text.append($('<div class="menu-item"><i class="fa fa-times"></i> ' + this.getRemoveTitle() + '</div>').css('color', 'gray'));
                 } else {
                     text.append($('<div class="menu-item row_delete"><i class="fa fa-times"></i> ' + this.getRemoveTitle() + '</div>').attr('data-tr', trId));
+                    if (this.isCreatorView && this.tableRow.deleting === 'hide') {
+                        text.append($('<div class="menu-item row_delete_force color-danger"><i class="fa fa-times"></i> ' + App.translate('Delete') + '</div>').attr('data-tr', trId));
+                    }
                 }
             }
 
@@ -1016,34 +1021,35 @@
             }
         }
         ,
-        rows_delete: function (trId) {
+        rows_delete: function (trId, isForce) {
             let pcTable = this;
             let checkedRows = this.__getCheckedRowsIds(trId, true, 'blockdelete');
             let checkedOneId = checkedRows.length === 1 ? checkedRows[0] : null;
             if (checkedRows && checkedRows.length) {
 
-                let $message = this.getRemoveTitle("question_many", checkedRows.length);
-                let $messageTimer = this.getRemoveTitle("forTimer_many", checkedRows.length);
+                let $message = this.getRemoveTitle("question_many", checkedRows.length, isForce);
+                let $messageTimer = this.getRemoveTitle("forTimer_many", checkedRows.length, isForce);
                 if (checkedRows.length == 1) {
                     let item = 'id-' + checkedRows[0];
                     if (pcTable.mainFieldName != 'id') {
                         item = pcTable.data[checkedRows[0]][pcTable.mainFieldName];
                         item = 'id-' + checkedRows[0] + ' "' + (item.v_ && item.v_[0] ? item.v_[0] : item.v) + '"';
                     }
-                    $message = this.getRemoveTitle("question");
-                    $messageTimer = this.getRemoveTitle("forTimer", item);
+                    $message = this.getRemoveTitle("question", null, isForce);
+                    $messageTimer = this.getRemoveTitle("forTimer", item, isForce);
                 }
 
 
                 let buttons = [
                     {
-                        label: this.getRemoveTitle(),
+                        label: this.getRemoveTitle(null, null, isForce),
                         cssClass: 'btn-danger',
                         action: function (dialogRef) {
                             dialogRef.close();
 
                             const deleteIt = function () {
-                                pcTable.model.delete(checkedRows).then(function (json) {
+
+                                pcTable.model.delete(checkedRows, isForce).then(function (json) {
                                     pcTable.table_modify.call(pcTable, json);
                                 });
                             };

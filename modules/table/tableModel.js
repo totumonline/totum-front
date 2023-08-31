@@ -379,11 +379,11 @@
                 return $d.promise();
 
             },
-            delete: function (ids) {
+            delete: function (ids, isForce) {
                 if (ids.length === 0)
                     return false;
 
-                return this.__ajax('post', {delete_ids: JSON.stringify(ids), method: 'delete'});
+                return this.__ajax('post', {delete_ids: JSON.stringify(ids), method: 'delete', force: isForce});
             },
             restore: function (ids) {
                 if (ids.length === 0)
