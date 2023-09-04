@@ -13,6 +13,8 @@
         });
         let DbFieldParams = ['where', 'order', 'field', 'sfield', 'bfield', 'tfield', 'pointing', 'preview', 'parent', 'section', 'table', 'filter', 'fieldtitle', 'fieldhide'];
 
+        let asFieldFunctions = ['selectrow', 'selectrowlist'];
+
         CodeMirror.defaults.scrollbarStyle = 'overlay';
 
         CodeMirror.defineInitHook(function (mirror) {
@@ -890,7 +892,6 @@
                             }
                         }
 
-
                         if (stream.peek() === "'") {
                             let quote = stream.peek();
                             stream.next();
@@ -901,6 +902,16 @@
                             return "string-name " + (state.functionParam === 'code' ? 'code-name' : '');
                         }
 
+                        if (/[\^+-\/*!<>=]/.test(stream.peek())) {
+                            stream.next();
+                            return "operator";
+                        }
+
+                        if (asFieldFunctions.includes(state.func[5].toLowerCase()) && ['field', 'sfield'].includes(state.functionParam) && stream.string.substring(stream.start, stream.start + 2) == 'as') {
+                            stream.next();
+                            stream.next();
+                            return "operator";
+                        }
 
                     }
 
