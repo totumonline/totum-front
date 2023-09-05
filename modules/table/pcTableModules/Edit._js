@@ -13,16 +13,26 @@ $.extend(App.pcTableMain.prototype, {
 
             let item = cell.closest('.DataRow').length ? this._getItemBytd(cell) : {};
 
+
+            let startDate = new Date();
+
             this.model.dblClick(item.id, field.name).always((json) => {
-                newcell.remove();
-                cell.show();
-                this.table_modify(json);
+                let timeout = 500 - (new Date() - startDate)
+                if (timeout < 0) {
+                    timeout = 0;
+                }
+
+                setTimeout(() => {
+                    newcell.remove();
+                    cell.show();
+                    this.table_modify(json);
+                }, timeout)
             })
             return false;
         };
 
         const blockFunc = (cell, title) => {
-            if(cell.is('.cell-button')){
+            if (cell.is('.cell-button')) {
                 return;
             }
             let newcell = cell.clone(true).insertAfter(cell);
@@ -531,7 +541,7 @@ $.extend(App.pcTableMain.prototype, {
 
         td.data('input', input);
 
-        var cdiv = $('<div class="cdiv">').css({height: 0, left: 0, right:0, 'position': 'absolute', bottom: '0px'});
+        var cdiv = $('<div class="cdiv">').css({height: 0, left: 0, right: 0, 'position': 'absolute', bottom: '0px'});
         td.append(cdiv);
 
 
