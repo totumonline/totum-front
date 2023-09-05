@@ -571,7 +571,9 @@
 
             if (!withoutRefreshes && refreshContentTable) {
                 this._refreshContentTable(0, false, true);
-                this._container.getNiceScroll().resize();
+                if(this._container){
+                    this._container.getNiceScroll().resize();
+                }
             }
         }
         ,
