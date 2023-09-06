@@ -436,7 +436,8 @@ App.langs.es =
 "By address":"URL",
 "Time limit, sec.":"Límite, seg.",
 "Main table":"Tabla principal",
-"First pagination page":"Primera página de paginación"
+"First pagination page":"Primera página de paginación",
+"Script loading error":"Error de carga del script"
 }
 
 	}

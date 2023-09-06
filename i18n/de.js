@@ -436,7 +436,8 @@ App.langs.de =
 "By address":"URL",
 "Time limit, sec.":"Zeitlimit, sec.",
 "Main table":"Haupttabelle",
-"First pagination page":"Erste Paginierungsseite"
+"First pagination page":"Erste Paginierungsseite",
+"Script loading error":"Fehler beim Laden eines Skripts"
 }
 
 	}

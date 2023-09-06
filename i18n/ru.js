@@ -436,7 +436,8 @@ App.langs.ru =
 "By address":"URL",
 "Time limit, sec.":"Лимит, сек",
 "Main table":"Основная таблица",
-"First pagination page":"Первая страница загрузки"
+"First pagination page":"Первая страница загрузки",
+"Script loading error":"Ошибка загрузки скрипта"
 }
 
 	}
