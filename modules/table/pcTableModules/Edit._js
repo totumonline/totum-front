@@ -907,7 +907,9 @@ $.extend(App.pcTableMain.prototype, {
                 case 'listRow':
                     /*Показать широкое окно*/
 
+                    let onSaving;
                     input = field.getEditElement(td, val, id ? this.data[id] : this.data_params, () => {
+                        onSaving = true;
                         save()
                     }, () => {
                     }, () => {
@@ -919,10 +921,12 @@ $.extend(App.pcTableMain.prototype, {
                         let saveBtn = Dialog.getButtons()[0].action;
                         btns[0].action = (dialog, event, notEnter) => {
                             saveBtn(dialog, event, notEnter);
-                            save();
                         }
 
-                        Dialog.setButtons(btns)
+                        Dialog.setButtons(btns);
+                        Dialog.defaultOptions.onhidden = () => {
+                            onSaving || resolve();
+                        }
 
                     }, 2)
 
@@ -931,7 +935,7 @@ $.extend(App.pcTableMain.prototype, {
                     /*Показать окно с полем*/
 
                     input = field.getEditElement(td, val, id ? this.data[id] : this.data_params, () => {
-                        //save()
+                        save()
                     }, () => {
                     }, () => {
                     });

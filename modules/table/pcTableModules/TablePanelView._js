@@ -31,6 +31,15 @@
                 console.log(e, data, field.field);
                 format = {};
             }
+
+            if (Field.name === this.tableRow.panels_view.kanban) {
+                if (format.block) {
+                    div.addClass('order-blocked')
+                } else if (div.is('.order-blocked')) {
+                    div.removeClass('order-blocked')
+                }
+            }
+
             if (Field.type != "button") {
 
 
@@ -99,7 +108,7 @@
                     td.on('dblclick', function () {
                         let background = td.css('backgroundColor');
                         let html = td.html();
-                        td.html('Редактирование в поле').addClass('editing-in-modal')
+                        td.html(App.translate('Editing in the form')).addClass('editing-in-modal')
                         pcTable.editSingleFieldInPanel(Field, data.id).then((json) => {
                             if (json) {
                                 pcTable.table_modify(json);
@@ -318,7 +327,7 @@
             }
 
             $(div).find('.kanban').sortable({
-                items: '.panelsView-card',
+                items: '.panelsView-card:not(.order-blocked)',
                 connectWith: this.kanban && this.fields[this.tableRow.panels_view.kanban].editable ? '.kanban' : '',
                 over: (event, ui) => {
                     let $item = $(ui.item);
@@ -346,10 +355,12 @@
                 },
                 stop: (event, ui) => {
                     $(div).find('.kanban').removeClass('kanban-enabled')
-                    $(ui.item).removeClass('kanban-disabled')
-
                     let $item = $(ui.item);
+                    $item.removeClass('kanban-disabled')
 
+                    if (!$item.parent().is('.kanban-cards')) {
+                        $item.parent().find('.kanban-cards').append($item)
+                    }
 
                     let itemId = $item.data('id');
 
@@ -373,8 +384,7 @@
                                 this.model.save({[itemId]: {[this.tableRow.panels_view.kanban]: newKanban}}).then((json) => {
                                     this.table_modify(json);
                                     this._container.getNiceScroll().resize();
-                                    App.fullScreenProcesses.hide('sorting');
-                                });
+                                }).always(() => App.fullScreenProcesses.hide('sorting'));
                             })
                         } else {
                             this.model.save({[itemId]: {[this.tableRow.panels_view.kanban]: newKanban}}).then((json) => {
@@ -384,8 +394,9 @@
 
                                 this.table_modify(json);
                                 this._container.getNiceScroll().resize();
-                                App.fullScreenProcesses.hide('sorting');
-                            });
+                            }).catch(() => {
+                                this._refreshContentTable();
+                            }).always(() => App.fullScreenProcesses.hide('sorting'));
                         }
 
                     } else {
