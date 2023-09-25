@@ -42,7 +42,7 @@ td.cell-button, span.cell-button, .InsertRow td {
     height: 25px;
   }
 
-  button:not(.ibtn) {
+  button:not(.ibtn):not(.source-add) {
     width: 100%;
   }
 }
