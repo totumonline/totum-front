@@ -286,10 +286,14 @@ $.extend(App.pcTableMain.prototype, {
                             clearTimeout(pcTable._insertFocusTimeout);
                         }
                         pcTable._insertBlurDelay = Date.now() + 250;
+                        pcTable._insertBlurIndex = $(this).closest('td').data('index');
                     }
 
                     let active = pcTable._insertRow.find('.active');
-                    if (!active.length || (!inputElement.is('[type="checkbox"]') && active !== $(this).closest('td'))) {
+                    if (!active.length) {
+                        pcTable._currentInsertCellIndex = $(this).closest('td').data('index');
+                        $(this).closest('td').addClass('active');
+                    } else if (!inputElement.is('[type="checkbox"]') && active !== $(this).closest('td')) {
                         active.removeClass('active');
                         pcTable._currentInsertCellIndex = $(this).closest('td').data('index');
                         $(this).closest('td').addClass('active');
@@ -403,9 +407,7 @@ $.extend(App.pcTableMain.prototype, {
             pcTable._addButtons.each(function (i, btn) {
                 $(btn).attr('tabindex', tabi++)
             })
-            if (!$row.find('.active').length) {
-                pcTable._insertFocusIt.call(pcTable);
-            }
+            pcTable._insertFocusIt(true);
             pcTable._insertRowWait[0] = false;
         });
 
@@ -547,7 +549,6 @@ $.extend(App.pcTableMain.prototype, {
 
 
         var saveClbck = function ($input, event, refresh, newVal) {
-
             var editValResult = newVal ? newVal.v : getEditVal($input);
 
             if (event.type !== 'hidden') {
@@ -555,9 +556,6 @@ $.extend(App.pcTableMain.prototype, {
             }
             if (editValResult === null || refresh === true) {
                 parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
-                if (event.type !== 'hidden') {
-                    pcTable._insertFocusIt.call(pcTable)
-                }
             } else {
                 if (field.isDataModified(editValResult, pcTable._insertItem[field.name].v)) {
                     pcTable.insertRow.editedFields[field.name] = true;
@@ -567,7 +565,7 @@ $.extend(App.pcTableMain.prototype, {
                     }
                     parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
                 } else if (event.type !== 'hidden') {
-                    pcTable._insertFocusIt.call(pcTable)
+                    pcTable._insertFocusIt(true)
                 }
             }
 
@@ -575,7 +573,6 @@ $.extend(App.pcTableMain.prototype, {
         var blurClbck = function ($input, event, _, setNextIndex) {
             if (setNextIndex && pcTable._insertBlurDelay < Date.now()) {
                 pcTable._currentInsertCellIndex = index + (setNextIndex === -1 ? -1 : 1);
-                pcTable._insertFocusIt.call(pcTable);
             }
 
             setTimeout(function () {
@@ -607,7 +604,7 @@ $.extend(App.pcTableMain.prototype, {
                 pcTable._colorizeElement(td, pcTable_COLORS.blured);
             }
             pcTable._currentInsertCellIndex = index + 1;
-            pcTable._insertFocusIt.call(pcTable);
+            pcTable._insertFocusIt(true);
         };
 
         let input = field.getEditElement(td.data('input'), pcTable._insertItem[field.name], pcTable._insertItem, saveClbck, escClbck, blurClbck);
@@ -712,20 +709,12 @@ $.extend(App.pcTableMain.prototype, {
 
         return td;
     },
-    _insertFocusIt: function (outTimed) {
+    _insertFocusIt: function () {
         let pcTable = this;
 
-        if (!outTimed) {
-            if (pcTable._insertBlurDelay >= Date.now()) {
-                return false;
-            }
-
-            this._insertFocusTimeout = setTimeout(function () {
-                pcTable._insertFocusIt.call(pcTable, 1);
-            }, 10);
+        if (pcTable._insertBlurIndex !== pcTable._currentInsertCellIndex && pcTable._insertBlurDelay >= Date.now()) {
             return false;
         }
-
         let isLastCell = true;
         let isPanel = this._insertPanel ? true : false;
         let $row = this.insertRow;
@@ -739,9 +728,13 @@ $.extend(App.pcTableMain.prototype, {
 
         if (!$row || !$row.length) return false;
 
+
+        let activateTd;
         $.each(pcTable._insertRowFields, function (index, field) {
             if (pcTable._currentInsertCellIndex == index) {
-                if (!field.insertable || (pcTable._insertItem && pcTable._insertItem[field.name] && pcTable._insertItem[field.name].f && pcTable._insertItem[field.name].f.block === true)) {
+                if (!field.insertable || (pcTable._insertItem && pcTable._insertItem[field.name] &&
+                    ((pcTable._insertItem[field.name].f && pcTable._insertItem[field.name].f.block === true)
+                        || (field.type === 'button' && !field.buttonActiveOnInsert)))) {
                     pcTable._currentInsertCellIndex++;
                     return;
                 } else {
@@ -750,7 +743,8 @@ $.extend(App.pcTableMain.prototype, {
                     if (isPanel) {
                         field.focusElement($row.find('.cell:eq(' + (focusIt = index) + ')').data('input'));
                     } else {
-                        field.focusElement(pcTable._getTdByColumnIndex($row, (focusIt = index + 1)).data('input'));
+                        activateTd = pcTable._getTdByColumnIndex($row, (focusIt = index + 1));
+                        field.focusElement(activateTd.data('input'));
                     }
 
                 }
@@ -758,6 +752,7 @@ $.extend(App.pcTableMain.prototype, {
                 return false;
             }
         });
+
         if (isLastCell) {
             this.insertRow.find('td.active').removeClass('active');
 
@@ -767,6 +762,9 @@ $.extend(App.pcTableMain.prototype, {
             } else {
                 $('#saveInsertRow').parent().focus();
             }
+        } else {
+            pcTable._insertRow.find('.active').removeClass('active');
+            activateTd.addClass('active');
         }
     }
 });

@@ -167,11 +167,13 @@ fieldTypes.button = {
                 this.pcTable.model.click({
                     item: this.pcTable._insertRowHash,
                     fieldName: this.name
-
                 }).then(() => {
                     $input.html(html);
                     clicked = false;
                     enterClbk($input, event, true)
+                }).fail(() => {
+                    $input.html(html);
+                    clicked = false;
                 })
             })
         };
@@ -181,8 +183,9 @@ fieldTypes.button = {
                     enterClbk($input, event);
                     break;
                 case 'Enter':
-                    enterClbk($input, clickFunc);
+                    clickFunc();
                     break;
+
             }
         })
         this.checkWaiting($input);

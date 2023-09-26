@@ -14,14 +14,19 @@ fieldTypes.checkbox = {
         if (tabindex) $input.attr('tabindex', tabindex);
         let action = false;
         $input.on('keydown', function (event) {
-            switch (event.keyCode) {
-                case  13:
-                case  9:
+            switch (event.key) {
+                case 'Enter':
+                case  'Tab':
                     action = true;
                     setTimeout(function () {
                         enterClbk($input, event);
                     }, 20);
-
+                    break;
+                case ' ':
+                    $input.prop('checked', $input.is(':checked') ? '' : 'checked')
+                    action = true;
+                    enterClbk($input, event);
+                    break;
             }
         });
         $input.on('blur', function (event) {

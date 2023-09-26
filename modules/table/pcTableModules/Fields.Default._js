@@ -217,10 +217,6 @@ var defaultField = {
         } else {
             input.focus();
         }
-        if (input.closest('tr').is('.InsertRow')) {
-            this.pcTable._insertRow.find('.active').removeClass('active');
-            input.closest('td').addClass('active');
-        }
     },
     isDataModified: function (editVal, itemVal) {
         editVal = editVal + '';
@@ -307,7 +303,13 @@ var defaultField = {
                         }
                         if (evt.originalEvent) {
                             evt.originalEvent.done = true;
-                            field.target.trigger(evt.originalEvent.type, {"done": true});
+                            let e = $.Event(evt.originalEvent.type);
+
+                            e.which = evt.originalEvent.which;
+                            e.key = evt.originalEvent.key;
+                            e.keyCode = evt.originalEvent.keyCode;
+
+                            field.target.trigger(e, {"done": true});
                             //field.target.get(0).dispatchEvent(evt.originalEvent);
                         } else {
                             field.target.trigger(evt.type, {"done": true});

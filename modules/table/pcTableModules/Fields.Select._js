@@ -541,7 +541,7 @@ fieldTypes.select = {
                                 if (input.data('selectpicker').$searchbox.get(0).contains(event.originalEvent.target) ||
                                     (input.data('selectpicker').$newElement.get(0).contains(event.originalEvent.target) || input.data('selectpicker').$menu.get(0).contains(event.originalEvent.target))) {
                                     if (input.data('selectpicker').$menu.is('.open')) {
-                                        input.data('selectpicker').$button.trigger('click', {doIt: true})
+                                        input.data('selectpicker').$menu.dropdown('toggle')
                                     }
                                     enterClbk(divParent, event);
                                 }
@@ -1000,9 +1000,9 @@ fieldTypes.select = {
             let passIt = false;
             input.data('selectpicker').waiter = true;
             const eventFunc = function (evt, elseData) {
-                if (elseData && elseData.doIt) {
-                    return true;
-                }
+                /* if (elseData && elseData.doIt) {
+                     return true;
+                 }*/
 
                 let coggs = false;
                 if (!evt._id) {
@@ -1020,11 +1020,22 @@ fieldTypes.select = {
                         if (coggs) {
                             App.fullScreenProcesses.hide();
                         }
+
+
                         if (evt.originalEvent) {
                             evt.originalEvent.done = true;
-                            input.data('selectpicker').$button.trigger(evt.type, {done: true});
+                            let e = $.Event(evt.originalEvent.type);
+
+                            e.which = evt.originalEvent.which;
+                            e.key = evt.originalEvent.key;
+                            e.keyCode = evt.originalEvent.keyCode;
+                            input.data('selectpicker').$button.trigger(e, {done: true});
                         } else {
-                            input.data('selectpicker').$button.trigger(evt.type, {done: true})
+                            let e = $.Event(evt.type);
+                            e.which = evt.which;
+                            e.key = evt.key;
+                            e.keyCode = evt.keyCode;
+                            input.data('selectpicker').$button.trigger(e, {done: true})
                         }
                     }
                 }
