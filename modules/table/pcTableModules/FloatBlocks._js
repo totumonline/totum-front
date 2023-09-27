@@ -910,7 +910,7 @@
                                     _border = sec.border[field.field.name];
                                 } else if (blockNum in sec.border) {
                                     _border = sec.border[blockNum];
-                                } else {
+                                } else if ('_big' in sec.border) {
                                     _border = sec.border;
                                 }
                                 if (_border) {
