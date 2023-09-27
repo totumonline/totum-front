@@ -461,6 +461,7 @@
                         return false;
                     }
                 }
+                return true;
             } else if (this.isCreatorView && window === window.top) {
                 if (csv) {
                     this._beforeSpace_title.append(csv);
@@ -468,7 +469,7 @@
                 }
                 return 'hidden'
             }
-            return true;
+            return false;
         },
         _createBeforeSpace: function () {
             let pcTable = this;
