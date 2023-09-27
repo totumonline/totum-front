@@ -412,7 +412,7 @@ fieldTypes.text = {
 
             div.on('keydown click', function (event) {
                 if (event.key === 'Tab') {
-                    blurClbk(dialog, event, null, true);
+                    blurClbk($(this), event, null, true);
                     return
                 }
 

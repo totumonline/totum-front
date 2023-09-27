@@ -589,6 +589,8 @@ $.extend(App.pcTableMain.prototype, {
                         pcTable._createInsertCell.call(pcTable, td, field, row, index, nodeName, parentFunction);
                     }
                     parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
+                }else if(setNextIndex){
+                    pcTable._insertFocusIt(true)
                 }
             }, 10)
         };

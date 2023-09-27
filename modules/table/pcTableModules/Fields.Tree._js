@@ -164,7 +164,7 @@
                 div.off().on('click keydown', function (ev) {
                     if (showned) return false;
                     if (ev.key === 'Tab') {
-                        blurClbk(dialog, ev, null, true);
+                        blurClbk($(this), ev, null, true);
                         return
                     }
 
