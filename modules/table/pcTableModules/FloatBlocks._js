@@ -953,9 +953,6 @@
                                     }
                                     field.td.css(func_format(field.format))
                                     field.field.td_style = func_format;
-                                } else {
-                                    field.td.css(func_format(field.format))
-                                    field.field.td_style = func_format;
                                 }
                             }
                         })
