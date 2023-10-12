@@ -79,6 +79,8 @@
                 if (!this._isDisplayngIdEnabled(true)) {
                     $tdId.find('span').addClass('id-hidden')
                 }
+            }else{
+                $tdId.find('span').text('-');
             }
             $tdId.appendTo($row);
             this.row_actions_icons_add($tdId);
