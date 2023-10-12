@@ -317,7 +317,7 @@
                         if (linkObject.elseData.pointing) {
                             hashData.pointing = linkObject.elseData.pointing;
                         }
-                        if(withoutCategories.length || linkObject.elseData.pointing){
+                        if (withoutCategories.length || linkObject.elseData.pointing) {
                             uri += '#' + encodeURIComponent(JSON.stringify(hashData));
                         }
                     }
@@ -1210,8 +1210,13 @@
     };
 
     function showText(data, model) {
-        //Для текста html экранирован на сервере
-        let body = $('<div>').css('white-space', 'pre-wrap').html(data['text']);
+
+        let body = $('<div>').css('white-space', 'pre-wrap');
+        if (data['htmlescaping']) {
+            body.text(data['text'])
+        } else {
+            body.html(data['text'])
+        }
         if (data.height) {
             body = body.height(data.height)
         }
