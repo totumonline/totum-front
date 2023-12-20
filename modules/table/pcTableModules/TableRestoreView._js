@@ -3,14 +3,6 @@
         if (this.isRestoreView) {
             App.windowReloadWithHash(this.model);
             return;
-        } else if (this.isTreeView) {
-            this.isTreeViewRestore = true;
-            this.dataSorted = [];
-            this.dataSortedVisible = [];
-            this.data = {};
-            this.isTreeView = false;
-            this.treeApply = () => {
-            }
         }
 
         this.isRestoreView = !this.isRestoreView;

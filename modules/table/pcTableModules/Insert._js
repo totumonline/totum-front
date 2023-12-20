@@ -211,14 +211,7 @@ $.extend(App.pcTableMain.prototype, {
                 .on('click', func);
         }
 
-        if (this.isTreeView && this.tableRow.type === 'cycles') {
-        } else if (this.viewType === 'panels' || this.isRotatedView || this.isTreeView) {
-            if (!this.isTreeView || !this.fields.tree.treeHideAddButton) {
-                if (!this.f.hideadd) {
-                    getAddButton(App.translate('Add'), AddWithPanel, "add").width(80)
-                }
-            }
-        } else {
+
             if (this.tableRow.id !== 2 && !this.f.hideadd) {
                 getAddButton(App.translate('Add'), AddWithRow, "add").width(80)
             }
@@ -226,7 +219,6 @@ $.extend(App.pcTableMain.prototype, {
             if (!pcTable.isMobile && this.tableRow.panel) {
                 getAddButton('<i class="fa fa-th-large"></i>', AddWithPanel, "panel-adding").css('margin-left', 5);
             }
-        }
         return this._insertButtons;
     },
     _addInsertWithPanel: function (addVars) {

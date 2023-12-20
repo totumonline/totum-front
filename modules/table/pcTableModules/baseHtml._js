@@ -55,12 +55,7 @@
             this._popovers = $('<div class="popovers">');
 
 
-            if (pcTable.isTreeView) {
-                pcTable._connectTreeView.call(pcTable);
-                this.addReOrderRowBind();
-            } else {
-                this.addReOrderRowBind();
-            }
+            this.addReOrderRowBind();
 
 
             if (this.fieldCategories.column.length === 1) {

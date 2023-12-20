@@ -280,9 +280,6 @@
 //=include pcTableModules/ExtButtons._js
 //=include pcTableModules/SortingN._js
 //=include pcTableModules/formatFunctions._js
-//=include pcTableModules/TableTreeView._js
-//=include pcTableModules/TablePanelView._js
-//=include pcTableModules/TableRotatedView._js
 //=include pcTableModules/TableRestoreView._js
 
 
@@ -675,10 +672,7 @@
                             if (field.name !== 'n') {
                                 pcTable.fieldCategories['panel_fields'].push(field);
                             }
-                            if ((field.name === 'tree' && field.category === 'column' && field.treeViewType && !$.cookie('ttm__commonTableView'))) {
-                                pcTable.isTreeView = true;
-                                pcTable.fieldCategories[field.category].unshift(field);
-                            } else if (!pcTable.isCreatorView && field.isCyclesTabButton()) {
+                            if (!pcTable.isCreatorView && field.isCyclesTabButton()) {
                                 return;
                             } else {
                                 pcTable.fieldCategories[field.category].push(field);
@@ -1038,26 +1032,6 @@
 
                     this.loadVisibleFields(this.f && this.f.fieldhide ? this.f.fieldhide : undefined);
 
-
-                    if (this.viewType === 'panels') {
-                        if (!this.isMobile) {
-                            this._renderTablePanelView();
-                        } else {
-                            let path, cName = 'panelSwitcher';
-                            if ($.cookie(cName) !== '0') {
-                                if (this.tableRow.type === 'calcs') {
-                                    cName += this.tableRow.id;
-                                    path = window.location.pathname.replace(/\d+\/\d+\/?$/, '')
-                                } else {
-                                    path = window.location.pathname
-                                }
-                                $.cookie(cName, '0', {path: path});
-                                App.windowReloadWithHash(this.model);
-                            }
-                        }
-                    } else if (!this.isTreeView && (this.tableRow.rotated_view && !$.cookie('ttm__commonTableView'))) {
-                        this._renderRotatedView();
-                    }
 
                     this.ScrollClasterized = this.Scroll();
 
