@@ -4,7 +4,7 @@
         getCellText: function (fieldValue) {
             this.editable = false
             this.insertable = false
-            return "PRO"
+            return $("<div class='PRO-file-text'>PRO</div>")
         },
         getCopyText: function (fieldValue, item) {
             fieldValue = fieldValue.v;
