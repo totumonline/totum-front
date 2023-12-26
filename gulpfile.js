@@ -134,11 +134,11 @@ let path = {
     },
     http: {
         src: ['!./http/*.*', '!./http/.*', '!./http/**/forms.*', './http/**/*.*', './http/**/.*'],
-        dest: '../../../http/'
+        dest: '../http/'
     },
     htmlTemplate: {
-        src: ['../../../totum/templates/page_template*', '../../../totum/templates/html.html'],
-        dest: '../../../totum/templates/'
+        src: ['../totum/templates/page_template*', '../../../totum/templates/html.html'],
+        dest: '../totum/templates/'
     }
 };
 
@@ -298,8 +298,8 @@ gulp.task('QUICK-PROD-DEV', function () {
     });
 
     gulp.task('product:html.html_copy', ['product:templatesReplace'], function () {
-        return gulp.src('../../../totum/templates/html.html')
-            .pipe(gulp.dest('../../../http'));
+        return gulp.src('../totum/templates/html.html')
+            .pipe(gulp.dest('../http'));
     })
 }
 

@@ -7,7 +7,7 @@ $GLOBALS['mktimeStart'] = microtime(true);
 
 ignore_user_abort(false);
 
-require __DIR__ . '/../../../autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 if (!class_exists(Conf::class)) {
     $Config = null;
