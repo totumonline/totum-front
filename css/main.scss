@@ -9,6 +9,9 @@ body {
   //overflow: hidden;
 }
 
+a{
+    color: #0969da;
+}
 
 td, th {
   background-clip: border-box;
@@ -715,7 +718,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     font-family: PTRootUIWeb;
     font-weight: 400;
     white-space: nowrap;
-    color: #4a4a4a;
+    color: #000000;
   }
 
 
