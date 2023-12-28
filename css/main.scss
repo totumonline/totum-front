@@ -234,7 +234,7 @@ footer {
 }
 
 .color-danger {
-  color: #ff6363;
+  color: #cf222e;
 }
 
 .color-primary {
@@ -256,7 +256,7 @@ footer {
 
 .btn.btn-default {
   border-color: #f4f4f4;
-  background-color: #fafafa;
+  background-color: #f7f8fa;
 }
 
 .btn, .btn:active {
@@ -277,12 +277,12 @@ footer {
 
   &.btn-danger {
     background-color: $btn-danger-background-new;
-    border-color: #ff8585;
+    border-color: #cf222e;
     color: #fff;
     text-shadow: none;
 
     &:hover {
-      background-color: #ff6363;
+      background-color: #cf222e;
     }
   }
 
@@ -370,7 +370,7 @@ footer {
   background-image: none;
   border-radius: 0px;
   border: 0px;
-  background-color: #fbfbfb;
+  background-color: #f7f8fa;
   margin: -5px -5px 17px -5px;
   box-shadow: none;
   border-bottom: 1px solid #f4f4f4;
@@ -411,7 +411,7 @@ footer {
 
   &.comment {
     text-align: center;
-    background-color: #fafafa;
+    background-color: #f7f8fa;
   }
 }
 
@@ -537,7 +537,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
 
 @mixin idClass() {
   width: $idWidth;
-  background-color: #fafafa;
+  background-color: #f7f8fa;
   font-size: 10px;
   text-align: right;
   padding: 0;
@@ -821,7 +821,7 @@ th {
     display: inline;
 
     #addField {
-      background-color: #ff8585;
+      background-color: #cf222e;
       color: #fff;
     }
 
@@ -1001,7 +1001,7 @@ th {
 }
 
 .pcTable-table th:not(.id) {
-  background-color: #fafafa;
+  background-color: #f7f8fa;
 }
 
 .bottomRightPopover {
@@ -1213,7 +1213,7 @@ th {
     padding-bottom: 25px;
     padding-left: $idWidth;
     margin-right: 10px;
-    background-color: #fafafa;
+    background-color: #f7f8fa;
     border: 1px solid #f4f4f4;
 
 
@@ -1433,7 +1433,7 @@ th {
   line-height: 21px;
 
   margin-bottom: 20px;
-  background-color: #fafafa;
+  background-color: #f7f8fa;
   border: 1px solid #f4f4f4;
   padding: 10px 20px;
   margin-right: 20px;
@@ -2005,7 +2005,7 @@ th.id .pcTable-filters.for-selected .btn {
   font-size: 12px;
 
   border-color: transparent;
-  background-color: #fcfcfc;
+  background-color: #f7f8fa;
 }
 
 .InsertPanel .cell-wrapper, .fieldparams-edit-panel .jsonForm {
@@ -2056,7 +2056,7 @@ th.id .pcTable-filters.for-selected .btn {
   }
 
   .previews {
-    background-color: #fafafa;
+    background-color: #f7f8fa;
   }
 
   > .btns .btn {
@@ -2099,7 +2099,7 @@ th.id .pcTable-filters.for-selected .btn {
 
   .form-control, [data-field-type="select"] .bootstrap-select button {
     border-color: transparent;
-    background-color: #fcfcfc;
+    background-color: #f7f8fa;
   }
 
   .form-control.bootstrap-select {
@@ -2404,7 +2404,7 @@ input {
 
   .field_name {
     border-color: transparent;
-    background-color: #fafafa;
+    background-color: #f7f8fa;
   }
 
   i.fa-remove {
@@ -2496,7 +2496,7 @@ input {
     margin-left: 3px;
     font-size: 11px;
     font-weight: normal;
-    color: #ff8585;
+    color: #cf222e;
 
     &.roles {
       margin-left: 3px;
@@ -2529,7 +2529,7 @@ input {
     div {
       padding-left: 15px;
       text-indent: -5px;
-      color: #ff8585;
+      color: #cf222e;
       white-space: normal;
     }
 
@@ -2573,7 +2573,7 @@ input {
       text-shadow: none;
 
       &.offed {
-        background-color: #fafafa;
+        background-color: #f7f8fa;
         color: #333;
       }
     }

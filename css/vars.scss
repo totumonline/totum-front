@@ -1,5 +1,5 @@
 $btn-warning-bgcolor: #ffe486;
-$btn-danger-bgcolor: #ff8585;
+$btn-danger-bgcolor: #cf222e;
 $btn-success-bgcolor: #85ff85;
 $btn-primary-bgcolor: #85c6ff;
 $btn-primary-primary-bgcolor: #63b6ff;
@@ -11,13 +11,13 @@ $rowsBackColor: #faf9f8;
 
 $tmp-table-background-line-color: #f6f6f6;
 
-$btn-danger-background-new: coral;
+$btn-danger-background-new: #cf222e;
 
 @mixin selectVal(){
   .loaded-preview{
     padding-left: 6px;
     margin-bottom: 5px;
-    background-color: #fafafa;
+    background-color: #f7f8fa;
     .title{
       &:not(:first-child){
         padding-top: 3px;

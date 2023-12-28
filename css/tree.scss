@@ -14,7 +14,7 @@
 
 #page-tree {
   #branch-title, #searchArea, #serverSearch {
-    background-color: #fcfcfc;
+    background-color: #f7f8fa;
     max-width: 400px;
     margin-left: 0;
   }
@@ -83,7 +83,7 @@
   -ms-overflow-style: none;
 
   position: absolute;
-  background-color: #fcfcfc;
+  background-color: #f7f8fa;
   /*color: #ccc;*/
   top: 0px;
   left: 0px;
@@ -103,7 +103,7 @@
 #leftTree {
   padding-left: 10px;
   padding-bottom: 30px;
-  background-color: #fcfcfc;
+  background-color: #f7f8fa;
   padding-top: 10px;
   width: 300px;
 
@@ -171,7 +171,7 @@
   }
 
   .jstree-creatorView a {
-    color: #ff8585;
+    color: #cf222e;
     opacity: 0.4;
   }
 
