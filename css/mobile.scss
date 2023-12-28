@@ -404,7 +404,7 @@ body.ttm-body-mobile {
   &#pk {
     .pcTable-paramsTables, .pcTable-footersTables, .pcTable-filtersTable:not(#go-buttons) {
       td:not(.cell-button) {
-        background-color: #faf9f8;
+        background-color: #fbfbfb;
       }
 
       button.button-field {
@@ -436,7 +436,7 @@ body.ttm-body-mobile {
 
 
       &:disabled {
-        background-color: #faf9f8;
+        background-color: #fbfbfb;
         box-shadow: 2px 2px 1px -1px rgba(0,0,0,0.08), 0px 0px 2px 0px rgba(0,0,0,0.10);
       }
     }
