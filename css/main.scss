@@ -291,7 +291,7 @@ footer {
 
   &.btn-primary {
     background-color: $btn-primary-bgcolor;
-    border-color: #85c6ff;
+    border-color: #59b1ff;
     color: inherit;
     text-shadow: none;
 
@@ -307,8 +307,8 @@ footer {
     text-shadow: none;
 
     &:hover {
-      background-color: #63b6ff;
-      border-color: #85c6ff;
+      background-color: #59b1ff;
+      border-color: #59b1ff;
     }
   }
 }
@@ -601,7 +601,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
   }
 
   &.error_in_cell {
-    color: red;
+    color: #cf222e;
   }
   input, select {
     width: 100%;
@@ -888,7 +888,7 @@ th {
 
   &.admin-hidden {
     .btn {
-      border-color: #facdcd;
+      border-color: #e99a9f;
     }
   }
 }
@@ -1197,7 +1197,7 @@ th {
     }
 
     i {
-      width: 15px;
+      width: 18px;
     }
 
     i:before {
@@ -1340,7 +1340,7 @@ th {
   }
 
   td, td.with-code {
-    background-color: $bg-filters-ok;
+    background-color: #f7f8fa;
   }
 
   td.warning-backg {
@@ -1598,7 +1598,7 @@ th {
 
   tbody.pcTable-footers {
     tr, th, td, td.with-code {
-      background: #fbfbfb none repeat scroll 0 0;
+      background: #f7f8fa none repeat scroll 0 0;
       border-color: transparent;
 
     }
@@ -1984,7 +1984,7 @@ th.id .pcTable-filters.for-selected .btn {
     }
 
     &.error input {
-      border-color: red;
+      border-color: #cf222e;
     }
 
     .btn-group.open .dropdown-toggle {
@@ -2102,7 +2102,7 @@ th.id .pcTable-filters.for-selected .btn {
 
   .form-control, [data-field-type="select"] .bootstrap-select button {
     border-color: transparent;
-    background-color: #f7f8fa;
+    background-color: #f9fafb;
   }
 
   .form-control.bootstrap-select {
@@ -2176,7 +2176,7 @@ th.id .pcTable-filters.for-selected .btn {
       width: 100%;
       height: 28px;
       background-color: #fbfbfb;
-      border-color: transparent;
+      border: 1px solid #f4f4f4;
       font-size: 12px;
     }
 
@@ -2275,7 +2275,7 @@ ul.CodeMirror-hints {
   }
 
   .modal-dialog .admin-hidden.btn {
-    border-color: #facdcd;
+    border-color: #e99a9f;
   }
 
   .modal-lg {
@@ -2506,7 +2506,6 @@ input {
 
       &.fa-lower {
         color: magenta;
-        opacity: 0.5;
       }
 
       &:first-child {

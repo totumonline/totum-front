@@ -254,6 +254,10 @@
     font-size: 12px;
   }
 
+  input, select{
+    border: 1px solid darkgray;
+  }
+
   input {
     display: inline-block;
     margin-bottom: 5px;

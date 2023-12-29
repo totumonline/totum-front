@@ -450,6 +450,9 @@ $.extend(App.pcTableMain.prototype, {
             td.empty().append($('<span class="cell-value">').html(f.text ? f.text : field.getCellText(val, td, pcTable._insertItem)));
             if (f.comment) {
                 let i = $('<i class="fa fa-info pull-right" style="padding: 3px;">');
+                if (field.type==='button'){
+                    i.css('padding-top', '6px')
+                }
                 i.attr('title', f.comment)
                 td.prepend(i);
 

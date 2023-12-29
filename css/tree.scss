@@ -108,7 +108,7 @@
   width: 300px;
 
   .folder-with-padding.jstree-open{
-    padding-bottom: 10px;
+    padding-bottom: 0;
   }
 
   font-family: 'PTRootUIWeb';
@@ -164,7 +164,7 @@
   .jstree-selected > a, a.jstree-hovered {
     color: #000;
     font-weight: 500;
-    background: #f4f4f4;
+    background: #eaebf0;
     border-radius: 6px 0 0 6px;
     border: none;
     box-shadow: none;
