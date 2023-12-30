@@ -712,7 +712,7 @@ $tdBackgroundSelectedNonEditColorGROUPS: #bceaff;
     }
   }
   &.admin-see {
-    background-color: lighten($btn-danger-bgcolor, 20);
+    background-color: #fff0f1;
   }
   span.cell-title {
     font-family: PTRootUIWeb;
@@ -2043,7 +2043,7 @@ th.id .pcTable-filters.for-selected .btn {
   }
 
   &.admin-see {
-    background-color: lighten($btn-danger-bgcolor, 20);
+    background-color: #fff0f1;
   }
 
   .select-val {
