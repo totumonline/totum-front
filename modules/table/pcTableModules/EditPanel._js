@@ -740,7 +740,7 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                         })
                     } else {
                         EditPanelFunc.pcTable._buttonClick(cell, field, item).then((json) => {
-                            if (field.closeIframeAfterClick || json.chdata.deleted.indexOf(parseInt(EditPanelFunc.editItem.id)) !== -1) {
+                            if (field.closeIframeAfterClick || (json.chdata && json.chdata.deleted.indexOf(parseInt(EditPanelFunc.editItem.id)) !== -1)) {
                                 EditPanelFunc.close();
                             } else {
                                 $input.html(html);
