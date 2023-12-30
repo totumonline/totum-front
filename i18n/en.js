@@ -41,6 +41,8 @@ App.langs.en =
 "Close context data":"<b>Close<\/b> context data",
 "Open context data":"<b>Open<\/b> context data",
 "PATH-TO-DOCUMENTATION":"https:\/\/docs.totum.online\/",
+"Forms":"PRO Forms",
+"Add form":"PRO Add form",
 "FormatShort":"Format",
 "ApplyShort":"Apply",
 "InvertShort":"Invert",
