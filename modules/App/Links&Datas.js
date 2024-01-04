@@ -817,7 +817,7 @@
                         block = true;
                         model.inputClick(data[1].hash, getVal()).then(function () {
                             if (data[1].close && wnd && wnd.closeMe) {
-                                window.closeMe();
+                                wnd.closeMe();
                             } else if (data[1].refresh) {
                                 model.refresh(null, data[1].refresh)
                             }
