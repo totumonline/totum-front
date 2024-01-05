@@ -643,6 +643,10 @@
 
                     if (fieldTypes[field.type]) {
                         field = $.extend({}, defaultField, fieldTypes[field.type], field);
+                        if(field.type==='file'){
+                            field.editable= false
+                            field.insertable = false
+                        }
                     } else {
                         field = $.extend({}, defaultField, field);
                     }
