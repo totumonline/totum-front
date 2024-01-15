@@ -1226,7 +1226,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
                         } else {
                             target = event.originalEvent.target;
                         }
-                        if (target && $(target).is('.asUrl')) {
+                        if (target && ($(target).is('.asUrl') || $(target).parent().is('.asUrl'))) {
                             pcTable.actionOnClick(td);
                             return false;
                         }
@@ -1498,7 +1498,7 @@ App.pcTableMain.prototype.isSelected = function (fieldName, itemId) {
             this
                 ._container.on('click', '.DataRow td:not(.editing,.id,.n), td.val:not(.editing), .pcTable-buttons .cell-button', function (event) {
 
-                if (event.target.className === 'file-image-preview') {
+               if (event.target.className === 'file-image-preview') {
                     let file = JSON.parse(event.target.getAttribute('data-fileviewpreview'));
                     window.top.BootstrapDialog.show({
                         title: file.name,
