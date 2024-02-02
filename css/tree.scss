@@ -72,11 +72,6 @@
 
 
 .Tree {
-  /* хром, сафари */
-  ::-webkit-scrollbar {
-    width: 0;
-  }
-  scrollbar-width: none;
 
   /* ie 10+ */
   overflow: hidden;

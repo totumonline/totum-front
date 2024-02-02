@@ -2,30 +2,6 @@
     let niceScrollOn = false;
     let niceScollTimer;
     $.extend(App.pcTableMain.prototype, {
-        switchContainerNideScroll: function (on_off) {
-            let pcTable = this;
-           // if (pcTable.isAnonim) return;
-            if (niceScollTimer) clearTimeout(niceScollTimer);
-            niceScollTimer = setTimeout(() => {
-                if (on_off !== niceScrollOn) {
-                    if (on_off) {
-                        pcTable._container.niceScroll({
-                            cursorwidth: 7,
-                            mousescrollstep: 90,
-                            scrollspeed: 50,
-                            autohidemode: false,
-                            enablekeyboard: false,
-                            cursoropacitymin: 1,
-                            railoffset: {left: -3},
-                            cursorcolor: '#e1e0df'
-                        });
-                    } else {
-                        pcTable._container.getNiceScroll().remove();
-                    }
-                    niceScrollOn = on_off;
-                }
-            }, 100);
-        },
         addScrollsRules: function () {
             let pcTable = this;
             this._innerContainer
@@ -33,19 +9,9 @@
             if (!pcTable.isMobile) {
                 this._innerContainer.on('scroll', function () {
                     "use strict";
-
                     pcTable._removeEditCell();
-
                 });
-
-                if (!pcTable.withoutScrolls) {
-                    $(function () {
-                        pcTable.switchContainerNideScroll(true);
-                    });
-                }
             }
-
-
         },
         Scroll: function () {
             let pcTable = this;

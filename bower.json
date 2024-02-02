@@ -33,7 +33,6 @@
     "file-saver": "eligrey/FileSaver.js#1.3.3",
     "bootstrap3-dialog": "bootstrap-dialog#^1.35.4",
     "remarkable-bootstrap-notify": "mouse0270/bootstrap-notify#^3.1.3",
-    "jquery.nicescroll": "inuyaksa/jquery.nicescroll#^3.7.6",
     "jquery.cookie": "jquery-cookie#^1.4.1",
     "JetBrainsMono": "https://github.com/JetBrains/JetBrainsMono/releases/download/v2.225/JetBrainsMono-2.225.zip"
   },

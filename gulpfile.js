@@ -101,7 +101,6 @@ let path = {
             , 'bower_components/file-saver/FileSaver.min.js'
             , 'bower_components/bootstrap3-dialog/dist/js/bootstrap-dialog.min.js'
             , 'bower_components/remarkable-bootstrap-notify/bootstrap-notify.min.js'
-            , 'bower_components/jquery.nicescroll/jquery.nicescroll.min.js'
             , 'node_modules/perfect-scrollbar/dist/perfect-scrollbar.js'
         ],
         dest: './http/js/'

@@ -267,7 +267,6 @@
                         } else {
                             elseSearch.html('');
                         }
-                        niceScrollResize();
                     }, 50)
                 })
 
@@ -341,7 +340,6 @@
 
                     }
                 });
-                niceScrollResize();
             };
             $leftTree.on('loaded.jstree after_open.jstree', function (event) {
                 let treeWidth = $leftTree.width();
@@ -355,7 +353,6 @@
                     if (scrollSaved) {
                         $scrollTreeBlock.scrollTop(scrollSaved);
                     }
-                    niceScrollResize();
                 }
 
             });
@@ -424,24 +421,15 @@
             });
 
 
-            const niceScrollResize = function () {
-                setTimeout(function () {
-                    $scrollTreeBlock.getNiceScroll().resize();
-
-                }, 250)
-            };
-
             $leftTree.on('open_node.jstree', function (event, d) {
                 treeStorage[d.node.id] = true;
                 localStorage.setItem('tree', JSON.stringify(treeStorage));
-                niceScrollResize();
             });
             $leftTree.on('close_node.jstree', function (event, d) {
                 if (treeStorage[d.node.id]) {
                     delete treeStorage[d.node.id];
                     localStorage.setItem('tree', JSON.stringify(treeStorage))
                 }
-                niceScrollResize();
             });
 
 
@@ -455,7 +443,6 @@
 
                 if ($setMini) {
                     $('body>.page_content').addClass('tree-minifyed');
-                    $('#LeftTree').getNiceScroll().resize();
                     if (isTreeOnPageSide) {
                         $mainPage.append($('#branch-title, #searchArea, #serverSearch'));
                         $mainPage.append($leftTree);
@@ -474,24 +461,7 @@
                 }
                 createJstree();
                 localStorage.setItem('TreeMinimizer', JSON.stringify(TreeMinimizerStorage));
-                niceScrollResize();
             };
-
-            if (!isMobile) {
-                $scrollTreeBlock.niceScroll({
-                    cursorwidth: 7,
-                    mousescrollstep: 40,
-                    mousescroll: 40,
-                    scrollspeed: 40,
-                    autohidemode: false,
-                    enablekeyboard: false,
-                    cursoropacitymin: 1,
-                    railoffset: {left: 4},
-                    cursorcolor: '#e1e0df',
-
-                });
-            }
-
 
             $('#TreeMaximizer').on('click', function () {
 

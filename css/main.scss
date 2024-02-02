@@ -177,6 +177,7 @@ input.error {
 
 #LeftTree {
   border-right: 1px solid #f4f4f4;
+  overflow: auto;
 }
 
 .btn-sm {
@@ -1030,6 +1031,7 @@ th {
   -moz-user-select: none;
   -khtml-user-select: none;
   user-select: none;
+  overflow: auto;
 
   box-sizing: border-box;
   position: relative;
@@ -2324,7 +2326,7 @@ ul.CodeMirror-hints {
   font-size: 14px;
   font-family: "PTRootUIWeb";
   padding: 0 20px 10px 70px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .InsertPanel .cell-wrapper .cell .text-edit-button,  .InsertPanel .cell-wrapper .edit-btn{

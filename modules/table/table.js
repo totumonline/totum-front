@@ -291,10 +291,8 @@
 
                 if (this.isMobile) {
                     TreeWidth = 5;
-                    this.switchContainerNideScroll(false)
                 } else {
                     TreeWidth = $('body>.page_content:first').is('.tree-minifyed') ? 5 : 300;
-                    this.switchContainerNideScroll(true)
                 }
 
 
@@ -1065,12 +1063,15 @@
                     this.setWidthes();
                     this.__applyFilters();
 
-                    let hashData = JSON.parse(decodeURIComponent(window.location.hash.substring(1)) || '[]');
-                    if (hashData && hashData.pointing) {
-                        this.startPointing = hashData.pointing;
-                    }
-                    this.selectedCells.applyPointing();
+                    try {
+                        let hashData = JSON.parse(decodeURIComponent(window.location.hash.substring(1)) || '[]');
+                        if (hashData && hashData.pointing) {
+                            this.startPointing = hashData.pointing;
+                        }
+                        this.selectedCells.applyPointing();
+                    } catch (Error) {
 
+                    }
                     if (addVars) {
                         if (this.isMobile)
                             pcTable._addInsertWithPanel(addVars);
