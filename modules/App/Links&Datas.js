@@ -1379,7 +1379,6 @@
 
             setTimeout(() => {
                 tempFrameWindow.document.body.innerHTML = '<style>' + styles + '</style>' + body;
-                $(tempFrameWindow.document.body).find('.nicescroll-rails').remove();
             }, 50)
 
             let iBody = tempFrameWindow.document.body;

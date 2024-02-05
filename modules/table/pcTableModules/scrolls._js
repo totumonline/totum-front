@@ -1,6 +1,4 @@
 (function () {
-    let niceScrollOn = false;
-    let niceScollTimer;
     $.extend(App.pcTableMain.prototype, {
         addScrollsRules: function () {
             let pcTable = this;
@@ -215,9 +213,7 @@
                         if (forceRefreshData || checkRows || checkCountRows) {
                             this.setHtml(data.rows, data.top_offset, data.bottom_offset, forceRefreshData);
                         }
-                        if (forceCheckTableHeight && pcTable._container.getNiceScroll) {
-                            pcTable._container.getNiceScroll().resize();
-                        }
+
                         pcTable._content.trigger('scrolled');
                     }
                 },

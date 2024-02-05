@@ -136,10 +136,6 @@ fieldTypes.chart = {
             options: {...options, ...expraProps}
         });
 
-        if (this.pcTable._container.getNiceScroll) {
-            this.pcTable._container.getNiceScroll().resize()
-        }
-
         canvas.on('contextmenu', () => {
             return false;
         })
