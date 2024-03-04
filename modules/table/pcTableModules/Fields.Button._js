@@ -114,12 +114,13 @@ fieldTypes.button = {
             }
 
 
-            if (format.comment && !td.is('.cell')) {
+            if (format.comment && td && !td.is('.cell')) {
                 let i;
                 i = $('<i class="cell-icon fa fa-info"></i>');
                 btn.prepend(i);
                 i.attr('title', format.comment)
-            } else if (format.icon) {
+            }
+            if (format.icon) {
                 let icon = $('<i class="cell-icon fa fa-' + format.icon + '"></i>');
                 btn.prepend(icon);
                 if (btn.text() === "") {
@@ -136,12 +137,13 @@ fieldTypes.button = {
         if (format.text) {
             btn.text(format.text)
         }
-        if (format.comment && !td.is('.cell')) {
+        if (format.comment && td &&  !td.is('.cell')) {
             let i;
             i = $('<i class="cell-icon fa fa-info"></i>');
             btn.prepend(i);
             i.attr('title', format.comment)
-        } else if (format.icon) {
+        }
+        if (format.icon) {
             let icon = $('<i class="cell-icon fa fa-' + format.icon + '"></i>');
             btn.prepend(icon);
             if (btn.text() === "") {
