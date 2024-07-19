@@ -656,7 +656,7 @@ $.extend(App.pcTableMain.prototype, {
                 }
                 let opened = 0;
                 let randomId = window.top.App.randomIds.get();
-                $(window.top.document.body)
+                window.top.jQuery('body')
                     .on('pctable-closed.select-add-' + randomId, function (event, data) {
                         if (!data.panel || data.panel.srcRandomId !== randomId) return;
                         opened--;
@@ -677,13 +677,13 @@ $.extend(App.pcTableMain.prototype, {
                                 }
                                 saveClbck(inputOld, {type: 'hidden'}, false, newVal)
                             }
-                            $('body').off('.select-add-' + randomId);
+                            window.top.jQuery('body').off('.select-add-' + randomId);
                             // parentFunction.call(pcTable, row, pcTable._currentInsertCellIndex, field.name);
                         }
                     });
                 pcTable.model.selectSourceTableAction(field.name, ee, true).then(() => {
                     let offTimeout;
-                    $(window.top.document.body)
+                    window.top.jQuery('body')
                         .on('pctable-opened.select-add-' + randomId, function (event, data) {
                             data.panel.srcRandomId = randomId;
                             opened++;
@@ -691,7 +691,7 @@ $.extend(App.pcTableMain.prototype, {
                                 clearTimeout(offTimeout)
                             }
                             offTimeout = setTimeout(() => {
-                                $(window.top.document.body).off('pctable-opened.select-add-' + randomId);
+                                window.top.jQuery('body').off('pctable-opened.select-add-' + randomId);
                                 window.top.App.randomIds.delete(randomId);
                             }, 200)
                         })
