@@ -1128,6 +1128,12 @@
                     let func;
                     if (pagination) {
                         func = (json) => {
+                            $.each(json.chdata.rows,  (k, v)=> {
+                                let item = this._getItemById(v.id);
+                                if (item !== undefined) {
+                                    this.refreshRow(item.$tr, item, v, false);
+                                }
+                            });
                             this.applyPage(json.chdata, json.allCount, pagination === -1 ? (json.allCount - this.PageData.onPage) : undefined)
                             delete json.chdata.rows;
                             this.table_modify(json);
