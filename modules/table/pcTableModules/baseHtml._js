@@ -1504,20 +1504,15 @@
                                 }
 
 
-
+                                if(searchParams.get('b') && searchParams.get('efl')){
+                                    empty_params.efl = searchParams.get('efl');
+                                }
                                 if (self.is('.eraser')) {
-                                    if(searchParams.get('b') === "tab_fl" && searchParams.get('efl')){
+                                    if(searchParams.get('b') && searchParams.get('efl')){
                                         empty_params.f = searchParams.get('efl');
                                     }
                                     href = '?' + $.param(empty_params);
                                 } else {
-                                    if(searchParams.get('b') === "tab_fl"){
-                                        if (searchParams.get('efl')){
-                                            empty_params.efl = searchParams.get('efl');
-                                        }else if(searchParams.get('f')){
-                                            empty_params.efl = searchParams.get('f');
-                                        }
-                                    }
                                     empty_params.f = pcTable._filtersBlock.data('cryptoFilters') || pcTable.filtersString;
                                     href = '?' + $.param(empty_params);
                                 }
