@@ -132,13 +132,14 @@
 
             div.append(btn.wrap('<div class="button">').parent())
 
-            App.popNotify({
+            let popover = App.popNotify({
                 isParams: true,
                 $text: div,
                 element: span,
                 trigger: 'manual',
                 container: $("body")
             });
+            $('#'+popover).css('z-index', 2000)
             setTimeout(() => {
                 $('#table').data('pctable').closeCallbacks.push(function () {
                     if (span && span.length) span.popover('destroy');
