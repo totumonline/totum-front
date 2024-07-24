@@ -868,7 +868,7 @@
                             return '';
                         }
 
-                        if ((state.functionParam === 'order' || (state.functionParam === 'key' && state.func[5] === 'listSort')) && /[ad]/.test(stream.peek())) {
+                        if ((state.functionParam === 'order' || (state.functionParam === 'key' && state.func[5] === 'listSort')) && /[adn]/.test(stream.peek())) {
                             if (stream.string.substring(stream.start, stream.start + 3) === 'asc') {
                                 stream.next();
                                 stream.next();
@@ -876,6 +876,11 @@
                                 return '';
                             } else if (stream.string.substring(stream.start, stream.start + 4) === 'desc') {
                                 stream.next();
+                                stream.next();
+                                stream.next();
+                                stream.next();
+                                return '';
+                            }else if ((state.functionParam === 'key' && state.func[5] === 'listSort') && stream.string.substring(stream.start, stream.start + 3) === 'nat') {
                                 stream.next();
                                 stream.next();
                                 stream.next();
