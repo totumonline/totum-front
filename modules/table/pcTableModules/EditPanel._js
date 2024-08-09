@@ -269,14 +269,17 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
             } else {
                 let divWrapper = $('<div class="cell-wrapper" style="position: relative"><div class="progressBorder"></div></div>');
 
-                if (field.panelColor) {
-                    divWrapper.css('background-color', App.theme.getColor(field.panelColor))
-                } else if (field.webRoles && field.webRoles.length === 1 && field.webRoles[0].toString() === "1") {
-                    divWrapper.addClass('admin-see');
-                }
+
 
 
                 let label = $('<label>').text(field.title).prependTo(divWrapper);
+
+                if (field.panelColor) {
+                    label.css('background-color', App.theme.getColor(field.panelColor))
+                } else if (field.webRoles && field.webRoles.length === 1 && field.webRoles[0].toString() === "1") {
+                    label.addClass('admin-see');
+                }
+
 
                 if (EditPanelFunc.pcTable.tableRow.id === 1) {
                     label.append('<span class="field-param-lable"><a href="' + App.translate('PATH-TO-DOCUMENTATION') + 'tables#table-settings-' + field.name + '" target="_blank"><i class="fa fa-question-circle-o"></i></a></span>');
