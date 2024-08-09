@@ -257,6 +257,8 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 return;
             }
 
+            let divWrapper
+
             if (cell.length) {
                 if (cell.data('input') && !format.block) {
                     if (this.reCreateInputsForce || field._reloadCellInPanel || !Oldval || field.isDataModified(EditPanelFunc.editItem[field.name].v, Oldval.v) || field.codeSelectIndividual || (EditPanelFunc.panelType == 'insert' && field.code && !field.codeOnlyInAdd) || ['fieldParams'].indexOf(field.type) > -1 || field.name in loadedContextDataFields) {
@@ -266,11 +268,9 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
                 } else {
                     EditPanelFunc.createCell.call(EditPanelFunc, cell, field, index, format)
                 }
+                divWrapper = cell.find('.cell-wrapper')
             } else {
-                let divWrapper = $('<div class="cell-wrapper" style="position: relative"><div class="progressBorder"></div></div>');
-
-
-
+                 divWrapper = $('<div class="cell-wrapper" style="position: relative"><div class="progressBorder"></div></div>');
 
                 let label = $('<label>').text(field.title).prependTo(divWrapper);
 
@@ -358,13 +358,22 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             let $buttons = cell.parent().find('.btns');
             let bBtn = $buttons.find('.backgroundButton');
-            if (format.background || format.color) {
+
+            if(format.background){
+                divWrapper.css('box-shadow', 'inset 0 3px 0 0 '+App.theme.getColor(format.background)+', 2px 2px 1px -1px rgba(0, 0, 0, 0.08), 0px 0px 2px 0px rgba(0, 0, 0, 0.10)')
+            }else{
+                divWrapper.css('box-shadow', '');
+            }
+
+
+            if (format.color) {
                 if (!bBtn.length) {
                     bBtn = $('<span class="backgroundButton btn btn-sm btn-default">').appendTo($buttons).html('<span/>')
                 }
 
-                bBtn.css('background-color', App.theme.getColor(format.background || "transparent"))
-                bBtn.find('span').css('background-color', App.theme.getColor(format.color || format.background));
+                bBtn.css('background-color', App.theme.getColor(format.color))
+                //Маленький кружок
+                //bBtn.find('span').css('background-color', App.theme.getColor(format.color || format.background));
 
             } else if (bBtn.length) {
                 bBtn.remove();
