@@ -176,6 +176,7 @@ input.error {
 }
 
 #LeftTree {
+  width: 300px;
   border-right: 1px solid #f4f4f4;
   overflow: auto;
   z-index: 100;
@@ -1021,7 +1022,7 @@ th {
   }
 
   .popover-content {
-    padding: 3px;
+    padding: 0 3px 3px 3px;
   }
 }
 
@@ -1220,6 +1221,8 @@ th {
     padding-bottom: 25px;
     padding-left: $idWidth;
     margin-right: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
     background-color: #f7f8fa;
     border: 1px solid #f4f4f4;
 
@@ -1260,7 +1263,7 @@ th {
 
       position: fixed;
       bottom: 15px;
-      right: 20px;
+      right: 25px;
       display: inline-flex;
       grid-column-gap: 5px;
       z-index: 100;
