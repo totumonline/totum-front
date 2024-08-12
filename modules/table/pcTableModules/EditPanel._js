@@ -368,12 +368,12 @@ window.EditPanel = function (pcTable, dialogType, inData, isElseItems, insertCha
 
             if (format.color) {
                 if (!bBtn.length) {
-                    bBtn = $('<span class="backgroundButton btn btn-sm btn-default">').appendTo($buttons).html('<span/>')
+                    bBtn = $('<span class="backgroundButton btn btn-sm btn-default">').prependTo($buttons).html('<span/>')
                 }
 
-                bBtn.css('background-color', App.theme.getColor(format.color))
+                bBtn.css('background-color',  'transparent' )
                 //Маленький кружок
-                //bBtn.find('span').css('background-color', App.theme.getColor(format.color || format.background));
+                bBtn.find('span').css('background-color', App.theme.getColor(format.color));
 
             } else if (bBtn.length) {
                 bBtn.remove();
