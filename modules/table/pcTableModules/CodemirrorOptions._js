@@ -104,6 +104,11 @@
             });
 
             TOTUMjsFuncs[nameL][2].forEach((f) => {
+
+                if (App.functions_obsolete_params.indexOf(f) !== -1){
+                    return;
+                }
+
                 let s = $('<span>').text(f);
                 if (TOTUMjsFuncs[nameL][3].indexOf(f) !== -1) {
                     s.addClass('req');
@@ -1204,7 +1209,9 @@
                 let end = token.string.substr(cur.ch - token.start).replace(/^[;\/]+[a-z_]*(.*)/, '$1')
 
                 token.state.func[2].forEach(function (fName) {
-
+                    if (App.functions_obsolete_params.indexOf(fName) !== -1){
+                        return;
+                    }
                     let type = '';
                     let zpt = '';
 
@@ -1573,6 +1580,9 @@
                                 token.end = cur.ch;
                                 keywords = [];
                                 func[2].forEach(function (fName) {
+                                    if (App.functions_obsolete_params.indexOf(fName) !== -1){
+                                        return;
+                                    }
                                     let type = '';
                                     if (func[3].indexOf(fName) !== -1) type += ' item-reqParam';
                                     if (func[4].indexOf(fName) !== -1) type += ' item-multiParam';
@@ -1603,6 +1613,10 @@
                     keywords = [];
 
                     token.state.func[2].forEach(function (fName) {
+
+                        if (App.functions_obsolete_params.indexOf(fName) !== -1){
+                            return;
+                        }
 
                         let type = '';
                         let zpt = '';
