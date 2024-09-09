@@ -437,7 +437,8 @@ App.langs.de =
 "Time limit, sec.":"Zeitlimit, sec.",
 "Main table":"Haupttabelle",
 "First pagination page":"Erste Paginierungsseite",
-"Script loading error":"Fehler beim Laden eines Skripts"
+"Script loading error":"Fehler beim Laden eines Skripts",
+"userNotFoundError":"Der Benutzer wurde abgemeldet, da er getrennt wurde oder die Anzahl der verfügbaren gleichzeitigen Verbindungen überschritten wurde."
 }
 
 	}

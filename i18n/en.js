@@ -43,6 +43,7 @@ App.langs.en =
 "PATH-TO-DOCUMENTATION":"https:\/\/docs.totum.online\/",
 "Forms":"PRO Forms",
 "Add form":"PRO Add form",
+"Click hear to unlock":"Click here to unlock",
 "FormatShort":"Format",
 "ApplyShort":"Apply",
 "InvertShort":"Invert",
@@ -60,7 +61,8 @@ App.langs.en =
 "mobileToDesctopUserWarning":"We detected the page type automatically.\n\nIf we made a mistake, you can switch the mobile\/desktop view manually.\n\nYou have to be sure of the action you're performing!\n\nIf you switch to desktop view on your mobile device, the page will not work!",
 "versions(%s)":"versions (%s)",
 "Single editing":"Editing",
-"bugFinder-warning":"Testing is in non-save mode and safe for the database, but may invoke third-party services and send emails if those functions are involved in the code chain of the page being opened."
+"bugFinder-warning":"Testing is in non-save mode and safe for the database, but may invoke third-party services and send emails if those functions are involved in the code chain of the page being opened.",
+"userNotFoundError":"The user was logged out because their account was disabled or the maximum number of simultaneous connections was exceeded"
 }
 
 	}

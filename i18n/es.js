@@ -437,7 +437,8 @@ App.langs.es =
 "Time limit, sec.":"Límite, seg.",
 "Main table":"Tabla principal",
 "First pagination page":"Primera página de paginación",
-"Script loading error":"Error de carga del script"
+"Script loading error":"Error de carga del script",
+"userNotFoundError":"El usuario fue desconectado porque la cuenta fue desactivada o se excedió la cantidad de conexiones simultáneas permitidas."
 }
 
 	}
