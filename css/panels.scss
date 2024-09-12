@@ -54,7 +54,7 @@
   }
 
   .cell-wrapper.edited {
-    box-shadow: inset 0 0 1000px 1000px seashell !important;
+    background-color: seashell;
   }
 
   [data-field-type="select"], [data-field-type="tree"] {
