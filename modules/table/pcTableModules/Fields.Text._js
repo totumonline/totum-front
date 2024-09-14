@@ -49,6 +49,7 @@ fieldTypes.text = {
                     readOnly: true,
                     theme: 'eclipse',
                     lineNumbers: true,
+                    lineWrapping: App.lineWrapping(),
                     lineWrapping: true,
                     bigOneDialog: true,
                     height: 200
@@ -212,6 +213,7 @@ fieldTypes.text = {
                         readOnly: false,
                         theme: 'eclipse',
                         lineNumbers: true,
+                        lineWrapping: App.lineWrapping(),
                         indentWithTabs: true,
                         autoCloseTags: true,
                         bigOneDialog: editNow === 'editField'

@@ -532,6 +532,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                         readOnly: false,
                         theme: 'eclipse',
                         lineNumbers: true,
+                        lineWrapping: App.lineWrapping(),
                         gutter: false,
                         indentWithTabs: true
                     });
@@ -664,6 +665,7 @@ fieldTypes.fieldParams = $.extend({}, fieldTypes.json, {
                         readOnly: false,
                         theme: 'eclipse',
                         lineNumbers: true,
+                        lineWrapping: App.lineWrapping(),
                         indentWithTabs: true,
                         autoCloseTags: true
                     });

@@ -3570,6 +3570,7 @@
                                 readOnly: false,
                                 theme: 'eclipse',
                                 lineNumbers: true,
+                                lineWrapping: App.lineWrapping(),
                                 indentWithTabs: false,
                                 autoCloseTags: false
                             });

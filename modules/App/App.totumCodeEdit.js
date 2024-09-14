@@ -144,6 +144,7 @@
                         value: value,
                         theme: 'eclipse',
                         lineNumbers: true,
+                        lineWrapping: App.lineWrapping(),
                         indentWithTabs: true,
                         autoCloseTags: true,
                         bigOneDialog: save

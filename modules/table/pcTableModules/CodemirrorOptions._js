@@ -2,6 +2,8 @@
 
         let funcsFromTable = App.functions || [];
 
+        App.lineWrapping = ()=>{return (sessionStorage.getItem('CodeMirror.lineWrapping') || 'true') === 'true';}
+
         let ActiveFuncNames = [];
         funcsFromTable.forEach(function (row) {
             if (!row.d) ActiveFuncNames.push(row.name);
@@ -19,7 +21,43 @@
 
         CodeMirror.defineInitHook(function (mirror) {
             try {
+                    let $lineWrapperSwitcher = $('<i class="fa  fa-angle-down " style="position: absolute;\n' +
+                        '    left: 10px;\n' +
+                        '    bottom: 10px;\n' +
+                        '    z-index: 10000;\n' +
+                        '    font-family: FontAwesome; cursor: pointer"></i>');
+
+                    if ((sessionStorage.getItem('CodeMirror.lineWrapping') || 'true') !== 'true') {
+                        $lineWrapperSwitcher.removeClass('fa-angle-down').addClass('fa-angle-up')
+                    }
+
+                    $lineWrapperSwitcher.on('click', ()=>{
+
+
+                        if ((sessionStorage.getItem('CodeMirror.lineWrapping') || 'true') !== 'true') {
+                            sessionStorage.setItem('CodeMirror.lineWrapping', 'true')
+                            $lineWrapperSwitcher.addClass('fa-angle-down').removeClass('fa-angle-up')
+                        }else{
+                            $lineWrapperSwitcher.removeClass('fa-angle-down').addClass('fa-angle-up')
+                            sessionStorage.setItem('CodeMirror.lineWrapping', 'false')
+                        }
+                        mirror.setOption("lineWrapping", sessionStorage.getItem('CodeMirror.lineWrapping') === 'true');
+                    })
+
+                    $(mirror.display.wrapper).append($lineWrapperSwitcher);
+            } catch (e) {
+                mirror.setValue(e.message);
+            }
+        })
+
+
+
+        CodeMirror.defineInitHook(function (mirror) {
+            try {
                 if (!mirror.options.bigOneDialog && !App.isMobile()) {
+
+
+
                     let $resizer = $('<i class="fa fa-expand codemirror-expander" style="position: absolute;\n' +
                         '    right: 10px;\n' +
                         '    bottom: 10px;\n' +
@@ -65,6 +103,7 @@
                                     value: value,
                                     theme: 'eclipse',
                                     lineNumbers: true,
+                                    lineWrapping: App.lineWrapping(),
                                     indentWithTabs: true,
                                     autoCloseTags: true,
                                     bigOneDialog: dialog

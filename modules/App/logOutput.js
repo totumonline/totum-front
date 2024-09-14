@@ -98,6 +98,7 @@
                                     readOnly: true,
                                     theme: 'eclipse',
                                     lineNumbers: true,
+                                    lineWrapping: App.lineWrapping(),
                                     indentWithTabs: true,
                                     autoCloseTags: true
                                 });

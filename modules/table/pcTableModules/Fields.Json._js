@@ -52,6 +52,7 @@ fieldTypes.json = {
                     readOnly: false,
                     theme: 'eclipse',
                     lineNumbers: true,
+                    lineWrapping: App.lineWrapping(),
                     gutter: true,
                     indentWithTabs: true,
                     autoCloseTags: true
