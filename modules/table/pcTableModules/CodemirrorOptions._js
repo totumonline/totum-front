@@ -21,27 +21,32 @@
 
         CodeMirror.defineInitHook(function (mirror) {
             try {
-                    let $lineWrapperSwitcher = $('<i class="fa  fa-angle-down " style="position: absolute;\n' +
+                    let $lineWrapperSwitcher = $('<i class="fa fa-angle-up CodeMirror-lineWrapperSwitcher" style="position: absolute;\n' +
                         '    left: 10px;\n' +
                         '    bottom: 10px;\n' +
                         '    z-index: 10000;\n' +
-                        '    font-family: FontAwesome; cursor: pointer"></i>');
+                        '    font-family: FontAwesome; cursor: pointer"></i>').data('mirror', mirror);
 
                     if ((sessionStorage.getItem('CodeMirror.lineWrapping') || 'true') !== 'true') {
-                        $lineWrapperSwitcher.removeClass('fa-angle-down').addClass('fa-angle-up')
+                        $lineWrapperSwitcher.addClass('fa-angle-down').removeClass('fa-angle-up')
                     }
 
                     $lineWrapperSwitcher.on('click', ()=>{
-
-
                         if ((sessionStorage.getItem('CodeMirror.lineWrapping') || 'true') !== 'true') {
                             sessionStorage.setItem('CodeMirror.lineWrapping', 'true')
-                            $lineWrapperSwitcher.addClass('fa-angle-down').removeClass('fa-angle-up')
+                            $('.CodeMirror-lineWrapperSwitcher').each(function(){
+                                $(this).removeClass('fa-angle-down').addClass('fa-angle-up')
+                                    .data('mirror').setOption("lineWrapping", true);
+                            })
+                            sessionStorage.setItem('CodeMirror.lineWrapping', 'true')
                         }else{
-                            $lineWrapperSwitcher.removeClass('fa-angle-down').addClass('fa-angle-up')
+                            $('.CodeMirror-lineWrapperSwitcher').each(function(){
+                                $(this).addClass('fa-angle-down').removeClass('fa-angle-up')
+                                    .data('mirror').setOption("lineWrapping", false);
+                            })
                             sessionStorage.setItem('CodeMirror.lineWrapping', 'false')
                         }
-                        mirror.setOption("lineWrapping", sessionStorage.getItem('CodeMirror.lineWrapping') === 'true');
+
                     })
 
                     $(mirror.display.wrapper).append($lineWrapperSwitcher);
