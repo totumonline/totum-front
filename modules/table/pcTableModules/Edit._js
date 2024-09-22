@@ -151,7 +151,13 @@ $.extend(App.pcTableMain.prototype, {
                                 pcTable.row_actions_uncheck_all();
                             }
                             if (field.closeIframeAfterClick && window.closeMe) {
-                                window.closeMe();
+                                if (field.hideIframeAfterClick && window.hideMe){
+                                    window.hideMe();
+                                }
+                                else{
+                                    window.closeMe();
+                                }
+
                             } else if (field.openContextPanel) {
                                 $td.trigger("contextmenu")
                             }

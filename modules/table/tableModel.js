@@ -4,6 +4,7 @@
 
     App.models.table = function (url, tableData, extraData) {
 
+
         let Processes = {}, ProcessesId = 0;
 
         let iframeNum = 0;
@@ -144,6 +145,7 @@
                 }
 
                 let Model = this;
+
                 let success = function (json) {
 
                         let methods = App.lang.modelMethods;
@@ -729,6 +731,8 @@
 
 
         };
+        obj.window = window;
+
         return obj
     }
 })();

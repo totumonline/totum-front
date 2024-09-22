@@ -149,7 +149,7 @@
                 window.top.App.showLInks([linkObject], model);
                 return;
             }
-
+debugger
             let openLinkLocation = function (target) {
                 "use strict";
 
@@ -247,6 +247,14 @@
                                 _window.closeMe = function () {
                                     dialog.close();
                                 };
+                                _window.hideMe = function () {
+                                    dialog.$modal.css({
+                                        overflow: 'hide',
+                                        width: 1,
+                                        height: 1
+                                    })
+                                };
+
                             } catch (e) {
 
                             }
@@ -438,6 +446,13 @@
                                 try {
                                     _window.closeMe = function () {
                                         dialog.close();
+                                    };
+                                    _window.hideMe = function () {
+                                        dialog.$modal.css({
+                                            overflow: 'hide',
+                                            width: 1,
+                                            height: 1
+                                        })
                                     };
                                     $iframe.focus();
                                     _window.focus();
@@ -918,7 +933,7 @@
                     break;
                 case 'table':
                     if (window.top != window) {
-                        return window.top.App.showDatas.call(model, [data]);
+                        return window.top.App.showDatas.call(model, [data], window);
                     } else {
                         dialogs.push(showTable(data[1], model));
                     }
@@ -1185,10 +1200,10 @@
             title: title,
             type: type || null,
             draggable: true,
-            onhidden: function () {
+            onhidden:  ()=> {
                 if (refresh) {
-                    if (refresh === 'close' && window.closeMe) {
-                        window.closeMe();
+                    if (refresh === 'close' && model.window.closeMe) {
+                        model.window.closeMe();
                     } else if (refresh === 'strong') {
                         App.windowReloadWithHash(model);
                     } else {
@@ -1220,7 +1235,7 @@
         if (data.height) {
             body = body.height(data.height)
         }
-        dialog(data['title'], body, data.width, (data.close ? 'close' : data.refresh), null, model)
+        dialog( data['title'], body, data.width, (data.close ? 'close' : data.refresh), null, model)
     }
 
     function showJson(data, model) {
@@ -1346,13 +1361,25 @@
         }
 
         let _dialog = dialog(data['title'], $iframe, data.width, data.refresh, null, model, btns, adminButtonsHidden);
+
         $iframe.on('load', function () {
             let _window = $iframe.get(0).contentWindow;
             $iframe.focus();
             _window.focus();
-            _window.closeMe = function () {
-                _dialog.close();
-            };
+            setTimeout(()=>{
+                _window.closeMe = function () {
+                    _dialog.close();
+                };
+
+                _window.hideMe = function () {
+                    _dialog.$modal.css({
+                        overflow: 'hide',
+                        width: 1,
+                        height: 1
+                    })
+                };
+            }, 300)
+
         })
     }
 
