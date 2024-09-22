@@ -891,7 +891,11 @@ debugger
                                         if (data[1].close && wnd && wnd.closeMe) {
                                             window.closeMe();
                                         } else if (data[1].buttons[i].refresh) {
-                                            model.refresh(null, data[1].buttons[i].refresh)
+                                            if (data[1].buttons[i].refresh === 'close' && model.window.closeMe) {
+                                                model.window.closeMe();
+                                            }else{
+                                                model.refresh(null, data[1].buttons[i].refresh)
+                                            }
                                         }
                                         dialog.close();
                                     });
