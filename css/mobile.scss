@@ -187,6 +187,9 @@ body.ttm-body-mobile {
       }
     }
   }
+  .page_content:not(.tree-minifyed) #LeftTree{
+    width: 54px;
+  }
 
   td.cell-button button:not(.ibtn), span.cell-button button:not(.ibtn){
     width: calc(100% - 4px);
