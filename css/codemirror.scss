@@ -1,5 +1,76 @@
 @import "vars.scss";
 
+.modal-content .fa-graduation-cap{
+  padding-right: 3px;
+}
+
+
+   .bootstrap-dialog-message.With-AI {
+     display: flex;
+     flex-direction: row;
+     //align-items: stretch;
+     height: 100%;
+
+
+     .HTMLEditor {
+       flex: 1;
+       min-height: 300px; // минимальная высота для блока .HTMLEditor
+       height: auto; // позволяет блоку увеличиваться
+
+       div.CodeMirror-cursors {
+         visibility: visible;
+       }
+     }
+
+     .AI-Block {
+       display: flex;
+       flex-direction: column;
+       flex: 1;
+     }
+
+     .AI-Header {
+       height: 50px; // фиксированная высота
+       background-color: gray;
+       padding: 5px;
+     }
+
+     .AI-Dialog {
+       flex: 3; // заполняет всю остающуюся высоту
+         .message { padding: 5px; margin: 5px 0; }
+         .user { text-align: right; color: blue; }
+         .bot { text-align: left; color: green;
+            .code-action{
+              font-family: "FontAwesome" !important;
+              position: absolute;
+              top: -7px;
+              right: 0px;
+              cursor: pointer;
+              z-index: 1000;
+            }
+         }
+     }
+
+     .AI-Input {
+       height: 100px;
+       overflow: auto;
+       .CodeMirror {
+         border: 1px solid #eee;
+         height: auto;
+         min-height: 100px;
+
+       }
+     }
+
+
+     .AI-Buttons {
+       height: 50px; // фиксированная высота
+       button { padding: 5px 10px; margin-right: 10px; }
+     }
+   }
+
+
+
+
 #pk .CodeMirror {
   border-color: transparent;
 

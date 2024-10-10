@@ -2,7 +2,9 @@
 
         let funcsFromTable = App.functions || [];
 
-        App.lineWrapping = ()=>{return (sessionStorage.getItem('CodeMirror.lineWrapping') || 'true') === 'true';}
+        App.lineWrapping = () => {
+            return (sessionStorage.getItem('CodeMirror.lineWrapping') || 'true') === 'true';
+        }
 
         let ActiveFuncNames = [];
         funcsFromTable.forEach(function (row) {
@@ -20,7 +22,8 @@
         CodeMirror.defaults.scrollbarStyle = 'overlay';
 
         CodeMirror.defineInitHook(function (mirror) {
-            try {
+            if (!mirror.options.special_mode) {
+                try {
                     let $lineWrapperSwitcher = $('<i class="fa fa-angle-up CodeMirror-lineWrapperSwitcher" style="position: absolute;\n' +
                         '    left: 10px;\n' +
                         '    bottom: 10px;\n' +
@@ -31,16 +34,16 @@
                         $lineWrapperSwitcher.addClass('fa-angle-down').removeClass('fa-angle-up')
                     }
 
-                    $lineWrapperSwitcher.on('click', ()=>{
+                    $lineWrapperSwitcher.on('click', () => {
                         if ((sessionStorage.getItem('CodeMirror.lineWrapping') || 'true') !== 'true') {
                             sessionStorage.setItem('CodeMirror.lineWrapping', 'true')
-                            $('.CodeMirror-lineWrapperSwitcher').each(function(){
+                            $('.CodeMirror-lineWrapperSwitcher').each(function () {
                                 $(this).removeClass('fa-angle-down').addClass('fa-angle-up')
                                     .data('mirror').setOption("lineWrapping", true);
                             })
                             sessionStorage.setItem('CodeMirror.lineWrapping', 'true')
-                        }else{
-                            $('.CodeMirror-lineWrapperSwitcher').each(function(){
+                        } else {
+                            $('.CodeMirror-lineWrapperSwitcher').each(function () {
                                 $(this).addClass('fa-angle-down').removeClass('fa-angle-up')
                                     .data('mirror').setOption("lineWrapping", false);
                             })
@@ -50,24 +53,205 @@
                     })
 
                     $(mirror.display.wrapper).append($lineWrapperSwitcher);
-            } catch (e) {
-                mirror.setValue(e.message);
+                } catch (e) {
+                    mirror.setValue(e.message);
+                }
             }
         })
 
 
+        const AIINtegrate = function (chatWindow, messageInput, sendButton, stopButton, newButton) {
+
+// Message history for context
+            let messageHistory = [];
+
+            let abortController = null;
+
+// Set the address of your proxy server
+            const PROXY_URL = "https://ai.totum-online.ru/";
+
+
+            let inputCodeMirror = CodeMirror.fromTextArea(messageInput, {
+                value: "",
+                mode: "text",
+                readOnly: false,
+                theme: 'eclipse',
+                lineNumbers: false,
+                lineWrapping: true,
+                scroll: true,
+                height: 'auto',
+                special_mode: true,
+            })
+
+
+            const sendUserMessage = (userMessage) => {
+                addMessageToChat(userMessage, "user");
+                messageHistory.push({role: "user", content: userMessage}); // Add user's message to the history
+                inputCodeMirror.setValue("");
+                sendMessageToChatGPT();
+                /*TEST*/
+                //addMessageToChat("...", "bot");
+                //updateLastMessage("```totum\n=: select(table: 'test'; field: 'test';)\n```")
+            }
+
+            sendButton.addEventListener("click", () => {
+                const userMessage = inputCodeMirror.getValue().trim();
+                if (userMessage) {
+                    sendUserMessage(userMessage)
+                }
+            });
+
+            stopButton.addEventListener("click", () => {
+                if (abortController) {
+                    abortController.abort(); // Stop the current request
+                    stopButton.disabled = true;
+                    console.log("Request aborted by user.");
+                }
+            });
+
+            newButton.addEventListener("click", () => {
+                // Clear message history and UI
+                messageHistory = []; // Reset message context
+                chatWindow.innerHTML = ""; // Clear chat window
+                console.log("New thread created. Message history reset.");
+            });
+
+            function addMessageToChat(message, sender) {
+                const messageElement = document.createElement("div");
+                messageElement.className = `message ${sender}`;
+                messageElement.textContent = message;
+
+                chatWindow.appendChild(messageElement);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }
+
+            async function sendMessageToChatGPT() {
+                addMessageToChat("...", "bot");
+
+                // Create a new AbortController for cancelling the request
+                abortController = new AbortController();
+
+                stopButton.disabled = false; // Enable Stop button
+
+                try {
+                    const response = await fetch(PROXY_URL, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-User-ID": "user1234", // For example, you can add a user identifier for balance checking
+                        },
+                        body: JSON.stringify({
+                            messages: messageHistory, // Pass the entire message history
+                            stream: true // Enable streaming
+                        }),
+                        signal: abortController.signal // Pass signal to the request
+                    });
+
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder("utf-8");
+                    let botMessage = "";
+
+                    while (true) {
+                        const {value, done} = await reader.read();
+                        if (done) break;
+
+                        const chunk = decoder.decode(value, {stream: true});
+
+                        // Split chunk into lines by delimiter "\n"
+                        const lines = chunk.split("\n");
+
+                        for (const line of lines) {
+                            // Ignore lines that do not contain useful information
+                            if (line.trim() === "" || !line.startsWith("data:")) continue;
+
+                            // End of stream if the line contains [DONE]
+                            if (line.includes("[DONE]")) {
+                                console.log("Stream completed.");
+                                break;
+                            }
+
+                            try {
+                                // Remove "data: " before parsing JSON
+                                const json = JSON.parse(line.replace("data: ", ""));
+
+                                // Log the entire received JSON for debugging
+                                console.log("Received JSON:", json);
+
+                                if (json.choices && json.choices[0].delta && json.choices[0].delta.content) {
+                                    botMessage += json.choices[0].delta.content;
+                                    updateLastMessage(botMessage);
+                                }
+                            } catch (error) {
+                                console.error("Error while processing stream:", error);
+                            }
+                        }
+                    }
+
+                    // Add the final bot response to the message history
+                    if (botMessage) {
+                        messageHistory.push({role: "assistant", content: botMessage}); // Now add bot's message to the history
+                    }
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        console.log("Request was successfully cancelled.");
+                    } else {
+                        console.error("Error during request execution:", error);
+                    }
+                } finally {
+                    // Clear and disable Stop button after completion or cancellation
+                    stopButton.disabled = true;
+                    abortController = null;
+                }
+            }
+
+            function updateLastMessage(text) {
+                const lastMessage = chatWindow.querySelector(".message.bot:last-child");
+                if (lastMessage) {
+                    $(lastMessage).text('')
+                    $(lastMessage).data('editor', CodeMirror(lastMessage, {
+                        value: text,
+                        mode: "markdown",
+                        readOnly: true,
+                        theme: 'eclipse',
+                        lineNumbers: false,
+                        lineWrapping: true,
+                        scroll: true,
+                        height: 100,
+                        special_mode: true,
+                    })).find('.CodeMirror-code').each(function () {
+                        let self = $(this);
+                        let pic = $('<i class="fa fa-clipboard code-action"></i>').data('code', text.replace(/(^```totum\n)|(\n```$)/gm, ''))
+                        self.append(pic)
+
+                    })
+
+
+
+                    chatWindow.scrollTop = chatWindow.scrollHeight;
+                }
+            }
+
+            return sendUserMessage;
+        }
+
 
         CodeMirror.defineInitHook(function (mirror) {
             try {
-                if (!mirror.options.bigOneDialog && !App.isMobile()) {
+                if (!mirror.options.special_mode && !mirror.options.bigOneDialog && !App.isMobile()) {
 
-
-
-                    let $resizer = $('<i class="fa fa-expand codemirror-expander" style="position: absolute;\n' +
+                    let $resizer = '<i class="fa fa-expand codemirror-expander" style="position: absolute;\n' +
                         '    right: 10px;\n' +
                         '    bottom: 10px;\n' +
                         '    z-index: 10000;\n' +
-                        '    font-family: FontAwesome; cursor: pointer"></i>');
+                        '    font-family: FontAwesome; cursor: pointer"></i>';
+                    if (mirror.options.mode === 'totum') {
+                        $resizer = '<i class="fa fa-graduation-cap codemirror-expander" style="position: absolute;\n' +
+                            '    right: 25px;\n' +
+                            '    bottom: 10px;\n' +
+                            '    z-index: 10000;\n' +
+                            '    font-family: FontAwesome; cursor: pointer"></i>' + $resizer
+                    }
+                    $resizer = $($resizer);
 
                     $(mirror.display.wrapper).append($resizer);
                     let newCodemirrorDiv;
@@ -78,6 +262,7 @@
                         let editorMax;
                         let eventName = 'ctrlS.CodemirrorMax';
 
+                        let aiStart = $(this).is('.fa-graduation-cap');
 
                         window.top.BootstrapDialog.show({
                             message: newCodemirrorDiv,
@@ -95,9 +280,11 @@
                                 dialog.$modalHeader.css('cursor', 'pointer');
                                 dialog.$modalContent.css({
                                     width: "90vw",
-                                    minHeight: "90vh"
+                                    minHeight: "calc(90vh - 20px)"
                                 });
                                 dialog.$modalHeader.find('button.close').css('font-size', '16px').html('<i class="fa fa-compress"></i>')
+
+                                dialog.$modalHeader.find('.AI-add-panel').data('htmlBlock', dialog.$modalBody.find('.bootstrap-dialog-message'))
                                 $('body').on(eventName, () => {
                                     dialog.close()
                                 })
@@ -125,6 +312,68 @@
                                     at: 'center top+30px',
                                     of: window.top
                                 });
+
+                                if (editorMax.options.mode == 'totum') {
+                                    dialog.$modalHeader.find('button.close').prepend('<i class="fa fa-graduation-cap AI-add-panel"></i>')
+
+                                    dialog.$modalHeader.find('button.close .AI-add-panel').on('click', function () {
+                                        let $htmlBlock = dialog.$modalBody.find('.bootstrap-dialog-message')
+                                        if ($htmlBlock.is('.With-AI')){
+                                            $htmlBlock.removeClass('With-AI').find('.AI-Block').remove()
+                                            return false
+                                        }
+
+
+                                            $htmlBlock.addClass('With-AI')
+
+
+                                        let $AIBlock = $('<div class="AI-Block">')
+
+                                        $htmlBlock.append($AIBlock)
+
+                                        $AIBlock.append('<div class="AI-Header">AI-TOTUM<i class="fa fa-graduation-cap"></i></div><div class="AI-Dialog"></div>')
+
+
+                                        let $AIButtons = $('<div class="AI-Buttons" style=""><button>SEND</button><button name="ask_selected">ASK SELECTED</button><button name="stop">STOP</button><button name="new">NEW</button></div>')
+                                        let sendButton = $AIButtons.find('button:first')
+                                        let stopButton = $AIButtons.find('button[name="stop"]')
+                                        let newButton = $AIButtons.find('button[name="new"]')
+
+                                        let setButton = $AIButtons.find('button[name="set_selected"]')
+                                        let $Input = $('<div class="AI-Input"><textarea placeholder="Type a message..." ></textarea></div>')
+
+                                        $AIBlock.append($Input).append($AIButtons)
+
+                                        editorMax.refresh()
+
+                                        /*let lastHeight = $htmlBlock.height()
+                                        new ResizeObserver(() =>{
+                                                if (Math.abs($htmlBlock.height() - lastHeight) > 50){
+                                                    $AIBlock.height((lastHeight = $htmlBlock.height()) - 45)
+                                                }
+                                            }).observe($htmlBlock.get(0))*/
+
+                                        const sendMessage = AIINtegrate($htmlBlock.find('.AI-Dialog').get(0), $Input.find('textarea').get(0), sendButton.get(0), stopButton.get(0), newButton.get(0))
+                                        $AIBlock.find('.AI-Dialog').on('click', '.code-action', function(){
+                                            var doc = editorMax.getDoc();
+                                            var cursor = doc.getCursor();
+                                            doc.replaceRange($(this).data('code'), cursor);
+                                        })
+
+
+                                        $AIButtons.find('button[name="ask_selected"]').on('click', () => {
+                                            if (editorMax.getSelection().trim() !== '') {
+                                                sendMessage(editorMax.getSelection())
+                                            }
+                                        })
+
+                                        return false;
+                                    })
+                                    if (aiStart) {
+                                        dialog.$modalHeader.find('button.close .AI-add-panel').click();
+                                    }
+                                }
+
                             }
 
                         });
@@ -149,7 +398,7 @@
 
             TOTUMjsFuncs[nameL][2].forEach((f) => {
 
-                if (App.functions_obsolete_params.indexOf(f) !== -1){
+                if (App.functions_obsolete_params.indexOf(f) !== -1) {
                     return;
                 }
 
@@ -188,7 +437,7 @@
                 trigger: 'manual',
                 container: $("body")
             });
-            $('#'+popover).css('z-index', 2000)
+            $('#' + popover).css('z-index', 2000)
             setTimeout(() => {
                 $('#table').data('pctable').closeCallbacks.push(function () {
                     if (span && span.length) span.popover('destroy');
@@ -929,7 +1178,7 @@
                                 stream.next();
                                 stream.next();
                                 return '';
-                            }else if ((state.functionParam === 'key' && state.func[5] === 'listSort') && stream.string.substring(stream.start, stream.start + 3) === 'nat') {
+                            } else if ((state.functionParam === 'key' && state.func[5] === 'listSort') && stream.string.substring(stream.start, stream.start + 3) === 'nat') {
                                 stream.next();
                                 stream.next();
                                 stream.next();
@@ -1253,7 +1502,7 @@
                 let end = token.string.substr(cur.ch - token.start).replace(/^[;\/]+[a-z_]*(.*)/, '$1')
 
                 token.state.func[2].forEach(function (fName) {
-                    if (App.functions_obsolete_params.indexOf(fName) !== -1){
+                    if (App.functions_obsolete_params.indexOf(fName) !== -1) {
                         return;
                     }
                     let type = '';
@@ -1624,7 +1873,7 @@
                                 token.end = cur.ch;
                                 keywords = [];
                                 func[2].forEach(function (fName) {
-                                    if (App.functions_obsolete_params.indexOf(fName) !== -1){
+                                    if (App.functions_obsolete_params.indexOf(fName) !== -1) {
                                         return;
                                     }
                                     let type = '';
@@ -1658,7 +1907,7 @@
 
                     token.state.func[2].forEach(function (fName) {
 
-                        if (App.functions_obsolete_params.indexOf(fName) !== -1){
+                        if (App.functions_obsolete_params.indexOf(fName) !== -1) {
                             return;
                         }
 
