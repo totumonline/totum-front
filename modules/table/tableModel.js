@@ -727,6 +727,9 @@
                         pcTable.table_modify({chdata: {params: json.params}})
                     }
                 })
+            },
+            getAIProxyData: function (){
+                return this.__ajax('post', {method: 'getAIProxyData'});
             }
 
 

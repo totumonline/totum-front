@@ -60,6 +60,16 @@
         })
 
 
+        let proxyData;
+
+        const getProxyData = async ()=> {
+            if (!proxyData){
+                proxyData = await $('#table').data('pctable').model.getAIProxyData()
+            }
+            return proxyData
+        }
+
+
         const AIINtegrate = function (chatWindow, messageInput, sendButton, stopButton, newButton) {
 
 // Message history for context
@@ -68,7 +78,7 @@
             let abortController = null;
 
 // Set the address of your proxy server
-            const PROXY_URL = "https://ai.totum-online.ru/";
+
 
 
             let inputCodeMirror = CodeMirror.fromTextArea(messageInput, {
@@ -133,12 +143,14 @@
 
                 stopButton.disabled = false; // Enable Stop button
 
+                let ProxyData = await getProxyData()
+
                 try {
-                    const response = await fetch(PROXY_URL, {
+                    const response = await fetch(ProxyData['url'], {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            "X-User-ID": "user1234", // For example, you can add a user identifier for balance checking
+                            "X-User-ID": ProxyData['key'], // For example, you can add a user identifier for balance checking
                         },
                         body: JSON.stringify({
                             messages: messageHistory, // Pass the entire message history
