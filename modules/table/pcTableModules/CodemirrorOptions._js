@@ -70,7 +70,26 @@
         }
 
 
-        const AIINtegrate = function (chatWindow, messageInput, sendButton, stopButton, newButton) {
+        const getMarked = async function (text) {
+            if (typeof marked === 'undefined'){
+                let Resolve
+                let p = new Promise((resolve)=>{
+                    Resolve = resolve;
+                })
+                $.getScript('/js/lib/marked.min.js', ()=>{
+                    var setIntervalID = setInterval(function() {
+                        if (window.marked) {
+                            clearInterval(setIntervalID);
+                            Resolve(marked.parse(text));
+                        };
+                    }, 300);
+                })
+                return p
+            }
+            return marked.parse(text)
+        }
+
+        const AIINtegrate = function (chatWindow, messageInput, sendButton, stopButton, newButton, table) {
 
 // Message history for context
             let messageHistory = [];
@@ -92,16 +111,17 @@
                 height: 'auto',
                 special_mode: true,
             })
+            inputCodeMirror.table = table;
 
 
             const sendUserMessage = (userMessage) => {
                 addMessageToChat(userMessage, "user");
                 messageHistory.push({role: "user", content: userMessage}); // Add user's message to the history
                 inputCodeMirror.setValue("");
-                sendMessageToChatGPT();
+                //sendMessageToChatGPT();
                 /*TEST*/
-                //addMessageToChat("...", "bot");
-                //updateLastMessage("```totum\n=: select(table: 'test'; field: 'test';)\n```")
+                addMessageToChat("...", "bot");
+                updateLastMessage("*TEST*\n\n```totum\n=: select(table: 'test'; field: 'test';)\n```")
             }
 
             sendButton.addEventListener("click", () => {
@@ -216,26 +236,67 @@
                 }
             }
 
-            function updateLastMessage(text) {
+            const updateLastMessage = async function (text) {
                 const lastMessage = chatWindow.querySelector(".message.bot:last-child");
                 if (lastMessage) {
                     $(lastMessage).text('')
-                    $(lastMessage).data('editor', CodeMirror(lastMessage, {
-                        value: text,
-                        mode: "markdown",
-                        readOnly: true,
-                        theme: 'eclipse',
-                        lineNumbers: false,
-                        lineWrapping: true,
-                        scroll: true,
-                        height: 100,
-                        special_mode: true,
-                    })).find('.CodeMirror-code').each(function () {
-                        let self = $(this);
-                        let pic = $('<i class="fa fa-clipboard code-action"></i>').data('code', text.replace(/(^```totum\n)|(\n```$)/gm, ''))
-                        self.append(pic)
+
+                    let totumCodes=[];
+
+                    let codesMatches = [...text.matchAll(/(?:^|\n)```((?<start>totum\n)|(?<code>[a-z][^\n]+\n)|(?<end>\n|$))/mg)];
+
+                    let StartNum = null;
+                    let countCodes = 0;
+
+                    codesMatches.forEach((match, i)=>{
+                        if (StartNum===null){
+                            if (match.groups.start !== undefined){
+                                StartNum = match.index
+                            }
+                        }else{
+                            if (match.groups.code !== undefined){
+                                countCodes++
+                            }else if (match.groups.end !== undefined ){
+                                if (countCodes == 0){
+                                    totumCodes.push(text.substring(StartNum+9, match.index))
+                                    text = text.replace(text.substring(StartNum, match.index+4+match.groups.end.length), '!!!TOTUM'+totumCodes.length+"!!!\n")
+                                }else{
+                                    countCodes--
+                                }
+                            }
+                        }
+                    })
+
+
+                    text = await getMarked(text)
+                    for (var code in totumCodes){
+                        text = text.replace("!!!TOTUM"+(parseInt(code)+1)+"!!!", '<div class="totum-code"><div><textarea>'+totumCodes[code]+'</textarea></div></div>')
+                    }
+
+
+                    $(lastMessage).html(text).find('.totum-code textarea').each(function () {
+                        let textarea = $(this)
+                        let pic = $('<i class="fa fa-clipboard code-action"></i>').data('code', textarea.val())
+                        textarea.parent().parent().prepend(pic)
+                        let editor=CodeMirror.fromTextArea(this, {
+                            value: textarea.val(),
+                            mode: "totum",
+                            readOnly: false,
+                            theme: 'eclipse',
+                            lineNumbers: true,
+                            lineWrapping: true,
+                            scroll: true,
+                            height: 'auto',
+                            special_mode: true,
+                        })
+                        editor.table = table;
+
 
                     })
+
+
+
+
 
 
 
@@ -256,7 +317,7 @@
                         '    bottom: 10px;\n' +
                         '    z-index: 10000;\n' +
                         '    font-family: FontAwesome; cursor: pointer"></i>';
-                    if (mirror.options.mode === 'totum') {
+                    if (App.isCreatorView) {
                         $resizer = '<i class="fa fa-graduation-cap codemirror-expander" style="position: absolute;\n' +
                             '    right: 25px;\n' +
                             '    bottom: 10px;\n' +
@@ -325,7 +386,7 @@
                                     of: window.top
                                 });
 
-                                if (editorMax.options.mode == 'totum') {
+                                if (App.isCreatorView) {
                                     dialog.$modalHeader.find('button.close').prepend('<i class="fa fa-graduation-cap AI-add-panel"></i>')
 
                                     dialog.$modalHeader.find('button.close .AI-add-panel').on('click', function () {
@@ -343,7 +404,7 @@
 
                                         $htmlBlock.append($AIBlock)
 
-                                        $AIBlock.append('<div class="AI-Header">AI-TOTUM<i class="fa fa-graduation-cap"></i></div><div class="AI-Dialog"></div>')
+                                        $AIBlock.append('<div class="AI-Dialog"></div>')
 
 
                                         let $AIButtons = $('<div class="AI-Buttons" style=""><button>SEND</button><button name="ask_selected">ASK SELECTED</button><button name="stop">STOP</button><button name="new">NEW</button></div>')
@@ -365,7 +426,7 @@
                                                 }
                                             }).observe($htmlBlock.get(0))*/
 
-                                        const sendMessage = AIINtegrate($htmlBlock.find('.AI-Dialog').get(0), $Input.find('textarea').get(0), sendButton.get(0), stopButton.get(0), newButton.get(0))
+                                        const sendMessage = AIINtegrate($htmlBlock.find('.AI-Dialog').get(0), $Input.find('textarea').get(0), sendButton.get(0), stopButton.get(0), newButton.get(0), editorMax.table)
                                         $AIBlock.find('.AI-Dialog').on('click', '.code-action', function(){
                                             var doc = editorMax.getDoc();
                                             var cursor = doc.getCursor();

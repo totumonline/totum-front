@@ -280,6 +280,11 @@ gulp.task('QUICK-PROD-DEV', function () {
             .pipe(gulp.dest('./http/js/lib/'));
 
     });
+    gulp.task('product:jsMarked', function () {
+        gulp.src('./marked.min.js')
+            .pipe(gulp.dest('./http/js/lib/'));
+
+    });
 
     gulp.task('product:templatesReplace', ['product:http_files'], function () {
         return gulp.src(path.htmlTemplate.src).pipe(urlReplacer({replaceFrom: '/', replaceTo: '../../http/'}))
@@ -290,7 +295,7 @@ gulp.task('QUICK-PROD-DEV', function () {
             .pipe(gulp.dest(path.htmlTemplate.dest))
     });
 
-    gulp.task('product:http_files', ['product:css', 'product:jsChart', 'product:cssImgs', 'product:imgsLibs', 'product:cssLibs', 'product:fonts', 'product:js', 'product:jsLibs', 'product:langs'], function () {
+    gulp.task('product:http_files', ['product:css', 'product:jsChart', 'product:jsMarked', 'product:cssImgs', 'product:imgsLibs', 'product:cssLibs', 'product:fonts', 'product:js', 'product:jsLibs', 'product:langs'], function () {
         return gulp.src(path.http.src)/*.pipe(debug())*/
             .pipe(gulp.dest(path.http.dest));
 

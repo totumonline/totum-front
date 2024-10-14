@@ -5,7 +5,7 @@
 }
 
 
-   .bootstrap-dialog-message.With-AI {
+ #pk  .bootstrap-dialog-message.With-AI {
      display: flex;
      flex-direction: row;
      //align-items: stretch;
@@ -23,9 +23,11 @@
      }
 
      .AI-Block {
+       padding-left: 10px;
        display: flex;
        flex-direction: column;
        flex: 1;
+       gap: 10px;
      }
 
      .AI-Header {
@@ -39,13 +41,23 @@
          .message { padding: 5px; margin: 5px 0; }
          .user { text-align: right; color: blue; }
          .bot { text-align: left; color: green;
+           .totum-code{
+             position: relative;
+             .CodeMirror-scroll{
+               border-radius: 5px;
+             }
+             .CodeMirror {
+               height: auto;
+             }
+           }
             .code-action{
               font-family: "FontAwesome" !important;
               position: absolute;
-              top: -7px;
+              top: -14px;
               right: 0px;
               cursor: pointer;
               z-index: 1000;
+              opacity: 0.3;
             }
          }
      }
@@ -63,8 +75,13 @@
 
 
      .AI-Buttons {
-       height: 50px; // фиксированная высота
-       button { padding: 5px 10px; margin-right: 10px; }
+       button {
+         padding: 5px 10px;
+         margin-right: 10px;
+         margin-bottom: 1px;
+         border-radius: 4px;
+         border: 1px solid transparent;
+       }
      }
    }
 
