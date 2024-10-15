@@ -118,10 +118,10 @@
                 addMessageToChat(userMessage, "user");
                 messageHistory.push({role: "user", content: userMessage}); // Add user's message to the history
                 inputCodeMirror.setValue("");
-                //sendMessageToChatGPT();
+                sendMessageToChatGPT();
                 /*TEST*/
-                addMessageToChat("...", "bot");
-                updateLastMessage("*TEST*\n\n```totum\n=: select(table: 'test'; field: 'test';)\n```")
+                //addMessageToChat("...", "bot");
+                //updateLastMessage("*TEST*\n\n```totum\n=: select(table: 'test'; field: 'test';)\n```")
             }
 
             sendButton.addEventListener("click", () => {
@@ -407,13 +407,13 @@
                                         $AIBlock.append('<div class="AI-Dialog"></div>')
 
 
-                                        let $AIButtons = $('<div class="AI-Buttons" style=""><button>SEND</button><button name="ask_selected">ASK SELECTED</button><button name="stop">STOP</button><button name="new">NEW</button></div>')
+                                        let $AIButtons = $('<div class="AI-Buttons" style=""><button>Send</button><button name="ask_selected">Ask selected</button><button name="stop">Stop</button><button name="new">New</button></div>')
                                         let sendButton = $AIButtons.find('button:first')
                                         let stopButton = $AIButtons.find('button[name="stop"]')
                                         let newButton = $AIButtons.find('button[name="new"]')
 
                                         let setButton = $AIButtons.find('button[name="set_selected"]')
-                                        let $Input = $('<div class="AI-Input"><textarea placeholder="Type a message..." ></textarea></div>')
+                                        let $Input = $('<div class="AI-Input"><textarea placeholder=">" ></textarea></div>')
 
                                         $AIBlock.append($Input).append($AIButtons)
 
