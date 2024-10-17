@@ -91,6 +91,7 @@
 
         const AIINtegrate = function (chatWindow, messageInput, sendButton, stopButton, newButton, table) {
 
+            getMarked('')
 // Message history for context
             let messageHistory = [];
 
@@ -135,7 +136,7 @@
                 if (abortController) {
                     abortController.abort(); // Stop the current request
                     stopButton.disabled = true;
-                    console.log("Request aborted by user.");
+                    //console.log("Request aborted by user.");
                 }
             });
 
@@ -143,7 +144,7 @@
                 // Clear message history and UI
                 messageHistory = []; // Reset message context
                 chatWindow.innerHTML = ""; // Clear chat window
-                console.log("New thread created. Message history reset.");
+                //console.log("New thread created. Message history reset.");
             });
 
             function addMessageToChat(message, sender) {
@@ -166,6 +167,26 @@
                 let ProxyData = await getProxyData()
 
                 try {
+
+                    let history = [];
+                    for (var i in messageHistory){
+                        let message = messageHistory[i]
+                        if (message['role']==='assistant'){
+                            let _message = {'role': 'assistant'}
+                            let content = message.content.text;
+                            message.content.part.find('.totum-code>div>textarea').each((i, textarea)=>{
+                                content = content.replace("!!!TOTUM"+(i+1)+"!!!", $(textarea).data('editor').getValue())
+                            })
+
+
+                            _message.content = content;
+                            history.push(_message)
+                        }else{
+                            history.push(message)
+                        }
+                    }
+
+
                     const response = await fetch(ProxyData['url'], {
                         method: "POST",
                         headers: {
@@ -173,7 +194,7 @@
                             "X-User-ID": ProxyData['key'], // For example, you can add a user identifier for balance checking
                         },
                         body: JSON.stringify({
-                            messages: messageHistory, // Pass the entire message history
+                            messages: history, // Pass the entire message history
                             stream: true // Enable streaming
                         }),
                         signal: abortController.signal // Pass signal to the request
@@ -198,7 +219,7 @@
 
                             // End of stream if the line contains [DONE]
                             if (line.includes("[DONE]")) {
-                                console.log("Stream completed.");
+                                //console.log("Stream completed.");
                                 break;
                             }
 
@@ -207,7 +228,7 @@
                                 const json = JSON.parse(line.replace("data: ", ""));
 
                                 // Log the entire received JSON for debugging
-                                console.log("Received JSON:", json);
+                                //console.log("Received JSON:", json);
 
                                 if (json.choices && json.choices[0].delta && json.choices[0].delta.content) {
                                     botMessage += json.choices[0].delta.content;
@@ -221,11 +242,12 @@
 
                     // Add the final bot response to the message history
                     if (botMessage) {
-                        messageHistory.push({role: "assistant", content: botMessage}); // Now add bot's message to the history
+                        updateLastMessage(botMessage, true);
+
                     }
                 } catch (error) {
                     if (error.name === 'AbortError') {
-                        console.log("Request was successfully cancelled.");
+                        //console.log("Request was successfully cancelled.");
                     } else {
                         console.error("Error during request execution:", error);
                     }
@@ -236,7 +258,7 @@
                 }
             }
 
-            const updateLastMessage = async function (text) {
+            const updateLastMessage = async function (text, addToHistory) {
                 const lastMessage = chatWindow.querySelector(".message.bot:last-child");
                 if (lastMessage) {
                     $(lastMessage).text('')
@@ -267,7 +289,9 @@
                         }
                     })
 
-
+                    if (addToHistory){
+                        messageHistory.push({role: "assistant", content: {text: text, part: $(lastMessage)}}); // Now add bot's message to the history
+                    }
                     text = await getMarked(text)
                     for (var code in totumCodes){
                         text = text.replace("!!!TOTUM"+(parseInt(code)+1)+"!!!", '<div class="totum-code"><div><textarea>'+totumCodes[code]+'</textarea></div></div>')
@@ -290,7 +314,7 @@
                             special_mode: true,
                         })
                         editor.table = table;
-
+                        textarea.data('editor', editor)
 
                     })
 
@@ -313,13 +337,13 @@
                 if (!mirror.options.special_mode && !mirror.options.bigOneDialog && !App.isMobile()) {
 
                     let $resizer = '<i class="fa fa-expand codemirror-expander" style="position: absolute;\n' +
-                        '    right: 10px;\n' +
+                        '    right: 30px;\n' +
                         '    bottom: 10px;\n' +
                         '    z-index: 10000;\n' +
                         '    font-family: FontAwesome; cursor: pointer"></i>';
                     if (App.isCreatorView) {
-                        $resizer = '<i class="fa fa-graduation-cap codemirror-expander" style="position: absolute;\n' +
-                            '    right: 25px;\n' +
+                        $resizer = '<i class="fa fa-commenting codemirror-expander" style="position: absolute;\n' +
+                            '    right: 10px;\n' +
                             '    bottom: 10px;\n' +
                             '    z-index: 10000;\n' +
                             '    font-family: FontAwesome; cursor: pointer"></i>' + $resizer
@@ -335,7 +359,7 @@
                         let editorMax;
                         let eventName = 'ctrlS.CodemirrorMax';
 
-                        let aiStart = $(this).is('.fa-graduation-cap');
+                        let aiStart = $(this).is('.fa-commenting');
 
                         window.top.BootstrapDialog.show({
                             message: newCodemirrorDiv,
@@ -387,7 +411,7 @@
                                 });
 
                                 if (App.isCreatorView) {
-                                    dialog.$modalHeader.find('button.close').prepend('<i class="fa fa-graduation-cap AI-add-panel"></i>')
+                                    dialog.$modalHeader.find('button.close').append('<i class="fa fa-commenting AI-add-panel"></i>')
 
                                     dialog.$modalHeader.find('button.close .AI-add-panel').on('click', function () {
                                         let $htmlBlock = dialog.$modalBody.find('.bootstrap-dialog-message')
@@ -397,14 +421,24 @@
                                         }
 
 
-                                            $htmlBlock.addClass('With-AI')
+                                        $htmlBlock.addClass('With-AI')
 
 
                                         let $AIBlock = $('<div class="AI-Block">')
 
                                         $htmlBlock.append($AIBlock)
 
-                                        $AIBlock.append('<div class="AI-Dialog"></div>')
+                                        let $AIDialog = $('<div class="AI-Dialog"></div>');
+
+                                        $AIBlock.append($AIDialog)
+                                        $modal = $AIDialog.closest('.modal')
+                                        $modal.on('scroll', ()=>{
+
+                                                $AIDialog.css('padding-top', $modal.scrollTop()-30)
+
+
+                                        })
+
 
 
                                         let $AIButtons = $('<div class="AI-Buttons" style=""><button>Send</button><button name="ask_selected">Ask selected</button><button name="stop">Stop</button><button name="new">New</button></div>')

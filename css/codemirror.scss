@@ -5,11 +5,16 @@
 }
 
 
+.AI-add-panel {
+  padding-left: 10px;
+}
+
  #pk  .bootstrap-dialog-message.With-AI {
      display: flex;
      flex-direction: row;
      //align-items: stretch;
      height: 100%;
+
 
 
      .HTMLEditor {
@@ -25,12 +30,14 @@
 
      .AI-Block {
        padding: 10px;
+       padding-bottom: 5px;
        border: 1px solid #eee;
        border-radius: 4px;
        margin-left: 10px;
        display: flex;
        flex-direction: column;
        flex: 1;
+       box-sizing: border-box;
        gap: 10px;
      }
 
@@ -41,9 +48,12 @@
      }
 
      .AI-Dialog {
-       flex: 3; // заполняет всю остающуюся высоту
+       height: calc(90vh - 237px);
+       max-height: 100%;
+       box-sizing: content-box;
+       overflow: auto;
          .message { padding: 5px; margin: 5px 0; }
-         .user { text-align: right; color: #222; }
+         .user { text-align: right; color: #222; white-space: pre-line}
          .bot {
            text-align: left; color: #222;
            div.CodeMirror-scroll {
@@ -90,12 +100,13 @@
      .AI-Input {
        height: 100px;
        overflow: auto;
-
+       border: 1px solid #eee;
+       border-radius: 4px;
        .CodeMirror {
-         border: 1px solid #eee;
+
          height: auto;
-         min-height: 100px;
-         border-radius: 4px;
+         min-height: 98px;
+
        }
        .CodeMirror-scroll{
          background-color: transparent;
