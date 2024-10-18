@@ -89,7 +89,7 @@
             return marked.parse(text)
         }
 
-        const AIINtegrate = function (chatWindow, messageInput, sendButton, stopButton, newButton, table) {
+        window.AIINtegrate = function (chatWindow, messageInput, sendButton, stopButton, newButton, table) {
 
             getMarked('')
 // Message history for context
@@ -112,6 +112,7 @@
                 height: 'auto',
                 special_mode: true,
             })
+            $(messageInput).data('editor', inputCodeMirror)
             inputCodeMirror.table = table;
 
 
@@ -466,7 +467,7 @@
                                                 }
                                             }).observe($htmlBlock.get(0))*/
 
-                                        const sendMessage = AIINtegrate($htmlBlock.find('.AI-Dialog').get(0), $Input.find('textarea').get(0), sendButton.get(0), stopButton.get(0), newButton.get(0), editorMax.table)
+                                        const sendMessage = window.AIINtegrate($htmlBlock.find('.AI-Dialog').get(0), $Input.find('textarea').get(0), sendButton.get(0), stopButton.get(0), newButton.get(0), editorMax.table)
                                         $AIBlock.find('.AI-Dialog').on('click', '.code-action', function(){
                                             editorMax.replaceSelection($(this).data('editor').getValue());
                                         })
@@ -474,7 +475,8 @@
 
                                         $AIButtons.find('button[name="ask_selected"]').on('click', () => {
                                             if (editorMax.getSelection().trim() !== '') {
-                                                sendMessage(editorMax.getSelection())
+                                                let text = $Input.find('textarea').data('editor').getValue().trim()
+                                                sendMessage(editorMax.getSelection() + (text != "" ? "\n" + text : ""))
                                             }
                                         })
 

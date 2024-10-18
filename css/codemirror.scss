@@ -9,7 +9,11 @@
   padding-left: 10px;
 }
 
- #pk  .bootstrap-dialog-message.With-AI {
+#pk button[data-name="totum-ai"]{
+  margin-bottom: 10px;
+}
+
+ #pk  .With-AI {
      display: flex;
      flex-direction: row;
      //align-items: stretch;
@@ -42,14 +46,8 @@
        gap: 10px;
      }
 
-     .AI-Header {
-       height: 50px; // фиксированная высота
-       background-color: gray;
-       padding: 5px;
-     }
-
      .AI-Dialog {
-       height: calc(90vh - 237px);
+       height: calc(90vh - 307px);
        max-height: 100%;
        box-sizing: content-box;
        overflow: auto;
@@ -99,7 +97,7 @@
      }
 
      .AI-Input {
-       height: 100px;
+       height: 170px;
        overflow: auto;
        border: 1px solid #eee;
        border-radius: 4px;
