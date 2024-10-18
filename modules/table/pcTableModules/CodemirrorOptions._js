@@ -273,6 +273,7 @@
                     codesMatches.forEach((match, i)=>{
                         if (StartNum===null){
                             if (match.groups.start !== undefined){
+                                countCodes = 0
                                 StartNum = match.index
                             }
                         }else{
@@ -280,13 +281,17 @@
                                 countCodes++
                             }else if (match.groups.end !== undefined ){
                                 if (countCodes == 0){
-                                    totumCodes.push(text.substring(StartNum+9, match.index))
-                                    text = text.replace(text.substring(StartNum, match.index+4+match.groups.end.length), '!!!TOTUM'+totumCodes.length+"!!!\n")
+                                    totumCodes.push([text.substring(StartNum, match.index+4+match.groups.end.length), text.substring(StartNum+9, match.index)])
+                                    StartNum = null
                                 }else{
                                     countCodes--
                                 }
                             }
                         }
+                    })
+                    totumCodes.forEach((code, i)=>{
+                        text = text.replace(code[0], '!!!TOTUM'+(i+1)+"!!!\n")
+                        totumCodes[i]=code[1]
                     })
 
                     if (addToHistory){
