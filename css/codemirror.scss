@@ -21,6 +21,7 @@
        flex: 1;
        min-height: 300px; // минимальная высота для блока .HTMLEditor
        height: auto; // позволяет блоку увеличиваться
+       max-width: calc(50% - 16px);
 
        div.CodeMirror-cursors {
          visibility: visible;
