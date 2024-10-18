@@ -11,6 +11,12 @@
 
 #pk button[data-name="totum-ai"]{
   margin-bottom: 10px;
+  background-color: #cf222e;
+  color: white;
+  width: 100%;
+  border: transparent;
+  border-radius: 4px;
+  height: 30px;
 }
 
  #pk  .With-AI {
@@ -38,7 +44,7 @@
        padding-bottom: 5px;
        border: 1px solid #eee;
        border-radius: 4px;
-       margin-left: 10px;
+
        display: flex;
        flex-direction: column;
        flex: 1;
@@ -52,7 +58,15 @@
        box-sizing: content-box;
        overflow: auto;
          .message { padding: 5px; margin: 5px 0; }
-         .user { text-align: right; color: #222; white-space: pre-line}
+
+       .user {
+         text-align: right;
+         color: #222;
+         white-space: pre-line;
+         background: #f9fafb;
+         border-radius: 4px;
+         padding: 10px;
+       }
          .bot {
            text-align: left; color: #222;
            div.CodeMirror-scroll {
@@ -123,6 +137,11 @@
        }
      }
    }
+#pk  .bootstrap-dialog-message.With-AI {
+    .AI-Block{
+      margin-left: 10px;
+    }
+}
 
 
 
