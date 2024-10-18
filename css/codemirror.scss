@@ -137,11 +137,29 @@
        }
      }
    }
-#pk  .bootstrap-dialog-message.With-AI {
+#pk  .bootstrap-dialog-message.With-AI, #pk  .totum-edit-codes.With-AI {
     .AI-Block{
       margin-left: 10px;
     }
 }
+#pk  .With-AI.With-AI2 {
+
+  .totum-edit-codes{
+    flex: 1;
+    .HTMLEditor{
+      flex: none;
+      max-width: 100%;
+      max-height: calc(90vh - 174px);
+      .CodeMirror-scroll{
+        min-height: calc(90vh - 226px);
+      }
+    }
+  }
+  .AI-Dialog{
+    max-height: calc(90vh - 327px);
+  }
+}
+
 
 
 

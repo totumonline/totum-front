@@ -139,6 +139,9 @@
                 },
 
                 onshown: function (dialog) {
+
+
+
                     editorMax = window.top.CodeMirror(newCodemirrorDiv.get(0), {
                         mode: "totum",
                         value: value,
@@ -167,6 +170,64 @@
                         at: 'center top+30px',
                         of: window.top
                     });
+
+                    <!---->
+
+                    dialog.$modalHeader.find('button.close').append('<i class="fa fa-commenting AI-add-panel"></i>')
+
+                    dialog.$modalHeader.find('button.close .AI-add-panel').on('click', function () {
+                        let $htmlBlock = dialog.$modalBody.find('.bootstrap-dialog-message')
+                        if ($htmlBlock.is('.With-AI')){
+                            $htmlBlock.removeClass('With-AI').find('.AI-Block').remove()
+                            editorMax.getScrollerElement().style.minHeight = minheight + 'px';
+                            return false
+                        }
+                        editorMax.getScrollerElement().style.minHeight = "";
+
+                        $htmlBlock.addClass('With-AI With-AI2')
+
+
+                        let $AIBlock = $('<div class="AI-Block">')
+
+                        $htmlBlock.append($AIBlock)
+
+                        let $AIDialog = $('<div class="AI-Dialog"></div>');
+
+                        $AIBlock.append($AIDialog)
+                        $modal = $AIDialog.closest('.modal')
+
+                        $modal.on('scroll', ()=>{
+                            $AIDialog.css('padding-top', $modal.scrollTop()-30)
+                        })
+
+
+
+                        let $AIButtons = $('<div class="AI-Buttons" style=""><button>Send</button><button name="ask_selected">Ask selected</button><button name="stop">Stop</button><button name="new">New</button></div>')
+                        let sendButton = $AIButtons.find('button:first')
+                        let stopButton = $AIButtons.find('button[name="stop"]')
+                        let newButton = $AIButtons.find('button[name="new"]')
+
+                        let setButton = $AIButtons.find('button[name="set_selected"]')
+                        let $Input = $('<div class="AI-Input"><textarea placeholder=">" ></textarea></div>')
+
+                        $AIBlock.append($Input).append($AIButtons)
+
+                        editorMax.refresh()
+
+                        const sendMessage = window.AIINtegrate($htmlBlock.find('.AI-Dialog').get(0), $Input.find('textarea').get(0), sendButton.get(0), stopButton.get(0), newButton.get(0), editorMax.table)
+                        $AIBlock.find('.AI-Dialog').on('click', '.code-action', function(){
+                            editorMax.replaceSelection($(this).data('editor').getValue());
+                        })
+
+
+                        $AIButtons.find('button[name="ask_selected"]').on('click', () => {
+                            if (editorMax.getSelection().trim() !== '') {
+                                let text = $Input.find('textarea').data('editor').getValue().trim()
+                                sendMessage(editorMax.getSelection() + (text != "" ? "\n" + text : ""))
+                            }
+                        })
+                        return false;
+                    })
                 }
 
             });
