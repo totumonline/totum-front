@@ -300,7 +300,7 @@
 
                     $(lastMessage).html(text).find('.totum-code textarea').each(function () {
                         let textarea = $(this)
-                        let pic = $('<i class="fa fa-clipboard code-action"></i>').data('code', textarea.val())
+                        let pic = $('<i class="fa fa-clipboard code-action"></i>')
                         textarea.parent().parent().prepend(pic)
                         let editor=CodeMirror.fromTextArea(this, {
                             value: textarea.val(),
@@ -313,6 +313,7 @@
                             height: 'auto',
                             special_mode: true,
                         })
+                        pic.data('editor', editor)
                         editor.table = table;
                         textarea.data('editor', editor)
 
@@ -462,9 +463,7 @@
 
                                         const sendMessage = AIINtegrate($htmlBlock.find('.AI-Dialog').get(0), $Input.find('textarea').get(0), sendButton.get(0), stopButton.get(0), newButton.get(0), editorMax.table)
                                         $AIBlock.find('.AI-Dialog').on('click', '.code-action', function(){
-                                            var doc = editorMax.getDoc();
-                                            var cursor = doc.getCursor();
-                                            doc.replaceRange($(this).data('code'), cursor);
+                                            editorMax.replaceSelection($(this).data('editor').getValue());
                                         })
 
 
