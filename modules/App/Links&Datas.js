@@ -149,7 +149,7 @@
                 window.top.App.showLInks([linkObject], model);
                 return;
             }
-debugger
+
             let openLinkLocation = function (target) {
                 "use strict";
 
