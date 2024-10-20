@@ -64,7 +64,7 @@
 
         const getProxyData = async ()=> {
             if (!proxyData){
-                proxyData = await $('#table').data('pctable').model.getAIProxyData()
+                proxyData = await App.getSimpleModel().getAIProxyData()
             }
             return proxyData
         }
